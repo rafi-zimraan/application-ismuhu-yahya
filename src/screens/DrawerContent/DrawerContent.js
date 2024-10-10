@@ -9,179 +9,118 @@ import {
 } from 'react-native';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {useSelector} from 'react-redux';
-import {AppVersion, Gap, Line} from '../../Component';
+import {useDispatch, useSelector} from 'react-redux';
+import {Gap} from '../../Component';
 import {IMG_DRAWER, IMG_PONDOK_DIGITAL_WHITE} from '../../assets';
 import {COLORS} from '../../utils';
 
 export default function DrawerContent({navigation}) {
-  const {data, user} = useSelector(state => state.auth.user_data);
+  const {email, name} = useSelector(state => state.auth.user);
+  const dispatch = useDispatch();
 
   function logout() {
     Alert.alert('Keluar', 'Sesi Anda akan berakhir.', [
       {
         text: 'Keluar',
-        style: 'destructive',
-        onPress: () => {
-          EncryptedStorage.removeItem('user_login');
-          navigation.replace('Login');
+        onPress: async () => {
+          await EncryptedStorage.removeItem('credentials');
+          navigation.reset({routes: [{name: 'Login'}]});
         },
       },
       {
-        text: 'Kembali',
-        style: 'cancel',
+        text: 'Batal',
       },
     ]);
   }
 
   return (
     <View style={{flex: 1}}>
-      <Image
-        source={IMG_DRAWER}
-        style={styles.drawerCover}
-        resizeMethod="resize"
-      />
-      <View style={styles.coverOverlay} />
-      <Image
-        source={IMG_PONDOK_DIGITAL_WHITE}
-        style={styles.drawerLogo}
-        resizeMethod="resize"
-      />
-      <View style={styles.viewProfile}>
-        <Icon name="account" size={40} color="black" />
-      </View>
-      <Gap height={10} />
-      <View style={styles.viewUserdata}>
-        <View style={{flex: 1, justifyContent: 'center'}}>
-          <Text style={styles.textName} numberOfLines={2}>
-            {user?.name}
-          </Text>
-          <Text style={styles.textDepartment}>{user?.email}</Text>
-          {data?.length != 0 ? (
-            <View style={styles.viewDetail}>
-              <Icon name="badge-account-outline" size={27} color="black" />
-              <Gap width={10} />
-              <View style={{flex: 0.97}}>
-                <Text
-                  numberOfLines={1}
-                  style={{fontWeight: 'bold', color: 'black'}}>
-                  {data[0]?.division_name}
-                </Text>
-                <Text numberOfLines={1} style={{color: 'black', fontSize: 12}}>
-                  {data[0]?.department_name}
-                </Text>
-              </View>
-            </View>
-          ) : (
-            <Gap height={15} />
-          )}
-          <Line />
+      <Image source={IMG_DRAWER} style={styles.imgBackground} />
+      <View style={styles.overlay} />
+      <Image source={IMG_PONDOK_DIGITAL_WHITE} style={styles.imgPD} />
+      <View style={{flexDirection: 'row'}}>
+        <View style={styles.viewAccount}>
+          <Icon name="account" size={40} color={'black'} />
         </View>
+        <Text style={styles.textUsername}>{name}</Text>
       </View>
-      <Gap height={20} />
-      <TouchableNativeFeedback useForeground onPress={logout}>
-        <View style={styles.buttonLogout}>
+      <Text style={styles.textEmail}>{email}</Text>
+      <View style={styles.line} />
+      <TouchableNativeFeedback
+        useForeground
+        background={TouchableNativeFeedback.Ripple(COLORS.ripple, false)}
+        onPress={logout}>
+        <View style={styles.btnLogout}>
           <Icon
-            color="black"
             name="logout"
-            size={27}
+            color={'black'}
+            size={25}
             style={{transform: [{rotate: '180deg'}]}}
           />
-          <Gap width={15} />
+          <Gap width={10} />
           <Text style={{color: 'black'}}>Keluar</Text>
         </View>
       </TouchableNativeFeedback>
-      <AppVersion />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  viewDetail: {
+  btnLogout: {
     flexDirection: 'row',
-    paddingHorizontal: 12.5,
-    paddingVertical: 7.5,
-    marginBottom: 5,
     alignItems: 'center',
+    padding: 10,
+    paddingHorizontal: 15,
+    borderBottomWidth: 1,
   },
-  textDepartment: {
-    fontStyle: 'italic',
-    color: 'grey',
-    marginLeft: 17.5,
-    marginTop: 5,
+  line: {
+    height: 1.5,
+    width: '100%',
+    backgroundColor: COLORS.black,
+    marginVertical: 10,
+  },
+  textEmail: {
     color: 'black',
+    marginHorizontal: 20,
+    marginVertical: 5,
+    fontStyle: 'italic',
   },
-  textName: {
+  textUsername: {
+    color: 'black',
     fontWeight: 'bold',
     fontSize: 17,
-    marginLeft: 80,
-    marginRight: 15,
-    color: 'black',
-  },
-  viewUserdata: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    // backgroundColor: 'aqua',
-    marginTop: -35,
-  },
-  viewProfile: {
-    width: 60,
-    height: 60,
-    borderRadius: 60 / 2,
-    overflow: 'hidden',
-    borderWidth: 2.5,
-    alignItems: 'center',
-    justifyContent: 'center',
+    flex: 1,
     margin: 10,
-    marginTop: -25,
+  },
+  viewAccount: {
+    width: 65,
+    height: 65,
+    borderRadius: 65 / 2,
     backgroundColor: COLORS.white,
-  },
-  buttonLogout: {
-    flexDirection: 'row',
+    elevation: 5,
+    justifyContent: 'center',
     alignItems: 'center',
-    overflow: 'hidden',
-    padding: 10,
-    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderWidth: 2,
+    marginTop: -25,
+    marginLeft: 20,
   },
-  drawerCover: {
-    width: '100%',
-    height: 150,
-  },
-  coverOverlay: {
-    width: '100%',
-    height: 150,
+  imgPD: {
+    height: 50,
+    width: 200,
     position: 'absolute',
-    backgroundColor: COLORS.blackDark,
-  },
-  drawerLogo: {
-    width: 180,
-    height: 45,
-    position: 'absolute',
-    margin: 10,
     alignSelf: 'center',
-    marginTop: 110 / 2,
+    marginTop: 65,
   },
-  buttonLoan: {
-    overflow: 'hidden',
-    padding: 10,
-    borderRadius: 2,
-    flexDirection: 'row',
-    alignItems: 'center',
-    elevation: 3,
+  overlay: {
+    height: 170,
+    width: '100%',
+    backgroundColor: COLORS.black,
     position: 'absolute',
-    backgroundColor: COLORS.greenBoy,
-    bottom: 15,
-    right: 15,
+    opacity: 0.5,
   },
-  textButtonLoan: {
-    fontWeight: 'bold',
-    color: 'white',
-    marginHorizontal: 5,
-    includeFontPadding: false,
-  },
-  imgLogo: {
-    width: 300,
-    height: 80,
-    alignSelf: 'center',
+  imgBackground: {
+    height: 170,
+    width: '100%',
+    backgroundColor: COLORS.black,
   },
 });

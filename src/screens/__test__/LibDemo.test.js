@@ -169,24 +169,22 @@
 // });
 
 import React from 'react';
+import {useForm} from 'react-hook-form';
 import {StyleSheet, View} from 'react-native';
 import {
+  AlertPopUp,
   ButtonCommon,
-  ButtonDate,
-  ButtonModal,
-  ButtonRefresh,
-  ButtonViewMore,
-  ErrorGlobal,
-  FloatingButton,
+  FormInput,
   Gap,
   Header,
   HeaderTransparent,
-  Line,
-  SearchInput,
 } from '../../Component';
+// import {FormInput} from '../../features/authentication';
 import {COLORS} from '../../utils';
 
 export default function LibDemo() {
+  const {control, handleSubmit} = useForm();
+
   return (
     <View
       style={{
@@ -196,7 +194,7 @@ export default function LibDemo() {
         padding: 20,
       }}>
       <ButtonCommon iconName={'home'} title={'hii'} iconColor={COLORS.black} />
-      <Gap height={10} />
+      {/* <Gap height={10} />
       <ButtonDate title="hiii" />
       <Gap height={10} />
       <ButtonModal title="hii" loading={false} />
@@ -209,23 +207,130 @@ export default function LibDemo() {
       <Gap height={10} />
       <FloatingButton iconName="plus" />
       <Gap height={10} />
-      <Header />
+      
       <Gap height={10} />
-      <HeaderTransparent icon="home" title="hii" />
       <Gap height={10} />
       <Line height={10} width={10} marginHorizontal={10} marginVertical={10} />
-      <Gap height={10} />
+      <Gap height={10} /> */}
       {/* <ModalLoading /> */}
+      <HeaderTransparent icon="chevron-left-circle" title="hii" />
       <Gap height={10} />
+      <Header />
       {/* <ModalCustom
         title="halo"
         iconModalName="home"
         backgroundColorStatusBar="HII"
       /> */}
       <Gap height={10} />
-      <SearchInput style={{width: 200}} borderColor="red" />
+      {/* <SearchInput style={{width: 200}} borderColor="red" /> */}
       <Gap height={10} />
-      {/* <FormInput /> */}
+      <FormInput
+        control={control}
+        name="password"
+        autoCapitalize="none"
+        iconName="lock"
+        placeholder="Kata sandi..."
+        title="Password"
+        secureText
+      />
+      {/* <FormInput
+        control={control}
+        name="name"
+        iconName="account"
+        placeholder="Masukan nama..."
+        title="Nama Lengkap"
+        autoCapitalize="words"
+      />
+      <FormInput
+        control={control}
+        name="password"
+        iconName="lock"
+        placeholder="Kata sandi..."
+        title="Password"
+        secureText
+        autoCapitalize="none"
+      />
+      <FormInput
+        control={control}
+        name="division"
+        mode="picker"
+        iconName="office-building"
+        title="Divisi"
+        picker={{
+          // data: divisions,
+          // error: divisionsError,
+          // loading: divisionsLoading,
+          label: 'name',
+          value: 'id',
+          // onRefresh: () => getDivisions(),
+        }}
+      />
+      <FormInput
+        control={control}
+        name="department"
+        mode="picker"
+        iconName="domain"
+        title="Departemen"
+        picker={{
+          // data: departments,
+          // error: departmentsError,
+          // loading: departmentsLoading,
+          label: 'name',
+          value: 'id',
+          // onRefresh: () => getDepartments(),
+        }}
+      /> */}
+      {/* <FormInput
+        control={control}
+        name="branch"
+        mode="picker"
+        iconName="source-branch"
+        title="Cabang"
+        picker={{
+          // data: branches,
+          // error: branchesError,
+          // loading: branchesLoading,
+          label: 'name',
+          value: 'id',
+          // onRefresh: () => getBranches(),
+        }}
+      /> */}
+      {/* <FormInput
+        control={control}
+        name="position"
+        mode="picker"
+        iconName="card-account-details-star"
+        title="Jabatan"
+        picker={{
+          data: [
+            {name: 'Staff', value: 'staff'},
+            {name: 'Supervisor', value: 'supervisor'},
+            {name: 'Manager', value: 'manager'},
+          ],
+          loading: false,
+          label: 'name',
+          value: 'value',
+        }}
+      /> */}
+      {/* <FormInput
+        control={control}
+        name="gender"
+        mode="picker"
+        iconName="gender-male-female"
+        title="Gender"
+        picker={{
+          data: [
+            {name: 'Pria', value: 'Pria'},
+            {name: 'Wanita', value: 'Wanita'},
+          ],
+          loading: false,
+          label: 'name',
+          value: 'value',
+        }}
+      /> */}
+      <Gap height={10} />
+      <AlertPopUp show={true} />
+      <Gap height={10} />
     </View>
   );
 }

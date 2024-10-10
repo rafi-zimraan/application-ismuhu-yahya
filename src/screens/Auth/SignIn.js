@@ -1,119 +1,165 @@
 import React, {useState} from 'react';
+import {useForm} from 'react-hook-form';
+import {Dimensions, Image, ScrollView, StyleSheet, View} from 'react-native';
+// import {Background, Gap} from '../../components';
+import EncryptedStorage from 'react-native-encrypted-storage';
+import {Background, Gap} from '../../Component';
+import {IMG_ISMUHUYAHYA_FUll} from '../../assets';
 import {
-  Image,
-  KeyboardAvoidingView,
-  Platform,
-  SafeAreaView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
-import {ButtonAction, Gap, SearchInput} from '../../Component';
-import {ICONS} from '../../assets';
+  ButtonAuth,
+  FormInput,
+  ModalRecovery,
+} from '../../features/authentication';
+import {login} from '../../features/authentication/services/authApiSlice';
 import {COLORS} from '../../utils';
 
-export default function SignIn({navigation}) {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+const {height, width} = Dimensions.get('window');
 
-  async function konfirmasiPembelian() {
+export default function SignIn({navigation}) {
+  const {control, handleSubmit} = useForm();
+  const [loading, setLoading] = useState(false);
+
+  const onSubmit = async data => {
+    setLoading(true);
     try {
-      // kirim notifikasi ke korwil untuk melihat detail transaksi
-      const response = axios.post('http://localhost:3000/send-fcm', {
-        device_token: teknisiDetail.device_token,
-        title: `User Anu Telah Membeli CCTV ${userDetail.product.name}`,
-        body: 'Harap periksa detail transaksi',
-      });
-      console.log(response);
+      const loginData = {
+        email: data.email,
+        password: data.password,
+      };
+      const response = await login(loginData, navigation);
+      console.log('RESPONSE', response);
+      if (response?.token) {
+        await EncryptedStorage.setItem('token', JSON.stringify(response.token));
+
+        const credential = {
+          email: data.email,
+          isFirstLogin: true,
+        };
+        await EncryptedStorage.setItem(
+          'Credential',
+          JSON.stringify(credential),
+        );
+        navigation.replace('Dasboard');
+      }
     } catch (error) {
-      console.log(error);
+      console.log('LOGIN ERROR:', error?.message);
+    } finally {
+      setLoading(false);
     }
-  }
+  };
+
+  // // ! OPSI PERTAMA
+  // async function konfirmasiPembelian() {
+  //   try {
+  //     // kirim notifikasi ke korwil untuk melihat detail transaksi
+  //     const response = axios.post('http://localhost:3000/send-fcm', {
+  //       device_token: teknisiDetail.device_token,
+  //       title: `User Anu Telah Membeli CCTV ${userDetail.product.name}`,
+  //       body: 'Harap periksa detail transaksi',
+  //     });
+  //     console.log(response);
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // }
 
   return (
-    <KeyboardAvoidingView
-      style={{flex: 1}}
-      behavior={Platform.OS === 'android' ? 'padding' : 'height'}
-      keyboardVerticalOffset={Platform.OS === 'android' ? '5' : '0'}>
-      <SafeAreaView style={styles.container}>
-        <Gap height={15} />
-        <View style={styles.navbar}>
-          <Image source={ICONS.IconCLose} style={styles.IconCLose} />
-          <Text style={styles.title}> Sign In</Text>
-          <TouchableOpacity onPress={() => navigation.navigate('SignUp')}>
-            <Text style={styles.SignUp}>SignUp</Text>
-          </TouchableOpacity>
-        </View>
-        <Gap height={5} />
-        <View style={styles.bodyTxtAnnouncement}>
-          <Text style={styles.textAnnouncement}>
-            Login {'\n'}and <Text style={styles.txtGreen}>explore</Text>
-          </Text>
-          <Gap height={20} />
-          <SearchInput placeholderTextColor={'black'} placeholder="Username" />
-          <Gap height={20} />
-          <SearchInput
-            placeholderTextColor={'black'}
-            placeholder="Password"
-            secureTextEntry
-            borderColor="black"
-          />
-        </View>
-        <View style={styles.Bottom}>
-          <ButtonAction title="Login" />
-          <Gap height={25} />
-          <ButtonAction
-            title="Forgot your password"
-            backgroundColor="white"
-            borderColor={COLORS.turquoiseGreen}
-            color={COLORS.turquoiseGreen}
-          />
-        </View>
-      </SafeAreaView>
-    </KeyboardAvoidingView>
+    <View style={{flex: 1}}>
+      <Background />
+      <View style={styles.container}>
+        <ScrollView style={styles.body}>
+          <View style={{alignSelf: 'center'}}>
+            <Image source={IMG_ISMUHUYAHYA_FUll} style={styles.img} />
+          </View>
+          <Gap height={50} />
+          <View style={styles.viewContainer}>
+            <View style={styles.context}>
+              <FormInput
+                control={control}
+                name="email"
+                autoCapitalize="none"
+                iconName="gmail"
+                keyboardType="email-address"
+                placeholder="contoh@email.com"
+                title="Email"
+                pattern={{
+                  value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+                  message: 'Email tidak valid',
+                }}
+              />
+              <FormInput
+                control={control}
+                name="password"
+                autoCapitalize="none"
+                iconName="lock"
+                placeholder="Kata sandi..."
+                title="Password"
+                secureText={true}
+              />
+              <Gap height={5} />
+              <ButtonAuth
+                title="Masuk"
+                onPress={handleSubmit(onSubmit)}
+                maxWidth={400}
+                priority="primary"
+                width={'70%'}
+                loading={loading}
+              />
+              <Gap height={20} />
+              <View style={styles.viewForgetPass}>
+                <ModalRecovery />
+              </View>
+              {/* <ButtonAuth
+                title="Daftar"
+                onPress={() => navigation.navigate('SignUp')}
+                maxWidth={400}
+                width={'70%'}
+                priority="white"
+                color={COLORS.gold}
+              /> */}
+            </View>
+          </View>
+        </ScrollView>
+      </View>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  txtGreen: {
-    color: COLORS.turquoiseGreen,
+  textTitle: {
+    color: 'black',
+    fontSize: 25,
+    fontWeight: 'bold',
+    textAlign: 'center',
   },
-  Bottom: {
-    bottom: 20,
-    flex: 1,
-    justifyContent: 'flex-end',
+  context: {
+    backgroundColor: COLORS.white,
+    padding: 15,
+    elevation: 2,
+    borderRadius: 10,
+  },
+  body: {
+    padding: 5,
+    marginTop: 25,
+    alignSelf: 'centers',
+  },
+  img: {
+    height: height * 0.25,
+    width: width * 0.9,
+    resizeMode: 'contain',
+  },
+  viewForgetPass: {
+    alignSelf: 'flex-end',
+    flexDirection: 'row',
+  },
+  viewContainer: {
+    marginHorizontal: 15,
   },
   container: {
     flex: 1,
-    backgroundColor: COLORS.white,
-  },
-  navbar: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    padding: 15,
-  },
-  title: {
-    fontSize: 38,
-    color: COLORS.black,
-    fontWeight: '500',
-  },
-  SignUp: {
-    fontSize: 18,
-    color: '#5DB075',
-    fontWeight: '300',
-  },
-  bodyTxtAnnouncement: {
-    padding: 25,
-  },
-  textAnnouncement: {
-    fontSize: 34,
-    fontWeight: 'bold',
-    color: COLORS.black,
-  },
-  IconCLose: {
-    width: 20,
-    height: 20,
+    justifyContent: 'center',
+    width: '100%',
+    alignSelf: 'center',
+    maxWidth: 570,
   },
 });

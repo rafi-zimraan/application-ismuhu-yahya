@@ -1,3 +1,5 @@
+import {TouchableNativeFeedback} from 'react-native';
+
 const COLORS = {
   softGrey: '#D9D9D9 ',
   darkGreen: '#1C2522 ',
@@ -13,6 +15,9 @@ const COLORS = {
   icon: '#d6a800',
   gold: '#FFD700',
   greenBoy: '#0cb300',
+  secondary: '#6bbd00',
+  secondary_off: '#7d8e67',
+  ripple: TouchableNativeFeedback.Ripple('#0000001a', false),
 };
 
 export {COLORS};

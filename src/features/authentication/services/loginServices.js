@@ -1,7 +1,7 @@
 import {ToastAndroid} from 'react-native';
 import EncryptedStorage from 'react-native-encrypted-storage';
-import {setUserData, setUserToken} from '../../../redux/slices/authSlice';
 import {getUserDetail, postLogin} from '../../../utils/@APIs';
+import {setUserData, setUserToken} from './authSlice';
 
 const showToast = (message, duration = 'SHORT') => {
   ToastAndroid.show(message, ToastAndroid[duration]);

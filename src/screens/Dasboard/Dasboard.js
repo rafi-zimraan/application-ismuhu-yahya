@@ -1,14 +1,20 @@
 import React from 'react';
-import {Image, ScrollView, StatusBar, StyleSheet, View} from 'react-native';
-import {useSelector} from 'react-redux';
+import {
+  Dimensions,
+  Image,
+  ScrollView,
+  StatusBar,
+  StyleSheet,
+  View,
+} from 'react-native';
 import {Background, Gap, HeaderTransparent} from '../../Component';
 import {IMG_ISMUHUYAHYA_FUll} from '../../assets';
-import {ButtonFeature} from '../../features/Dasboard';
+import {ButtonMenu} from '../../features/Dasboard';
 import {COLORS} from '../../utils';
 
-export default function Dashboard({navigation}) {
-  const {token, user_data} = useSelector(state => state.auth);
+const {height, width} = Dimensions.get('window');
 
+export default function Dashboard({navigation}) {
   return (
     <View style={{flex: 1}}>
       <Background />
@@ -23,41 +29,12 @@ export default function Dashboard({navigation}) {
           resizeMethod="scale"
         />
         <View style={styles.viewButton}>
-          {/* <ButtonFeature
-            title="Pinjam Mobil"
-            iconName="car"
-            iconSize={50}
-            onPress={() => navigation.navigate('CarLoan')}
-          /> */}
-          <ButtonFeature
+          <ButtonMenu
             title="Presensi"
-            iconName="home"
-            iconSize={50}
-            // onPress={() => navigation.navigate('CarLoan')}
+            iconName="qrcode-scan"
+            iconSize={60}
+            onPress={() => navigation.navigate('MenuPresence')}
           />
-          {/* <ButtonFeature
-            title="Absen Makan"
-            iconName="food-fork-drink"
-            iconSize={50}
-            onPress={() => navigation.navigate('MealControl')}
-          />
-          <ButtonFeature
-            title="Aktivitas"
-            iconName="format-list-checks"
-            iconSize={50}
-            onPress={() => navigation.navigate('TodoActivity')}
-          /> */}
-          {/* <ButtonFeature
-            title="Presensi"
-            iconName="calendar-check"
-            iconSize={50}
-            onPress={() => navigation.navigate('Presence')}
-          />
-          <ButtonFeature
-            title="Amal Yaumi"
-            image={IMG_LOGO_YAUMI}
-            onPress={() => navigation.navigate('Yaumi')}
-          /> */}
         </View>
         <Gap height={100} />
       </ScrollView>
@@ -125,6 +102,8 @@ const styles = StyleSheet.create({
   imgLogo: {
     width: 350,
     height: 125,
+    // width: width * 0.3,
+    // height: height * 0.13,
     alignSelf: 'center',
     marginVertical: 50,
   },

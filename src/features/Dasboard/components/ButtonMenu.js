@@ -9,7 +9,13 @@ import {
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {COLORS} from '../../../utils';
 
-function ButtonFeature({onPress, iconName, iconSize, title, image}) {
+export default function ButtonMenu({
+  onPress,
+  iconName,
+  iconSize,
+  title,
+  image,
+}) {
   return (
     <TouchableNativeFeedback useForeground onPress={onPress}>
       <View style={styles.viewButton}>
@@ -44,12 +50,11 @@ const styles = StyleSheet.create({
     width: 115,
     height: 100,
     marginBottom: 15,
-    marginHorizontal: 10,
+    marginHorizontal: 15,
   },
   textTitle: {
     fontWeight: 'bold',
     color: 'black',
+    top: 5,
   },
 });
-
-export default ButtonFeature;

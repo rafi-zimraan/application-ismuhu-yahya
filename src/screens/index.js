@@ -6,11 +6,17 @@ import DrawerContent from './DrawerContent/DrawerContent';
 import Label from './Label/Label';
 import Onboarding from './Onboarding/Onboarding';
 import PhoneBook from './PhoneBook/PhoneBook';
+import DaftarPresence from './PresenceEmployee/DaftarPresence';
+import MenuPresence from './PresenceEmployee/MenuPresence';
+import PresenceEmployee from './PresenceEmployee/PresenceEmployee';
 import SettingUser from './SettingUser/SettingUser';
 import SplashScreen from './SplashScreen/SplashScreen';
 import LibDemo from './__test__/LibDemo.test';
 
 export {
+  DaftarPresence,
+  MenuPresence,
+  PresenceEmployee,
   DrawerContent,
   DasboardMaster,
   Onboarding,

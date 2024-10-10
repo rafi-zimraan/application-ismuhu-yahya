@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   ActivityIndicator,
   Image,
@@ -13,13 +13,23 @@ import {IMG_ISMUHUYAHYA_POTRAIT, IMG_YELLOWWISH_FRIST} from '../../assets';
 import {COLORS} from '../../utils';
 
 export default function SplashScreen({navigation}) {
+  const [loading, setLoading] = useState(false);
+
   useEffect(() => {
     async function statusUserChecking() {
+      setLoading(true);
+
       try {
-        const dasboard = await EncryptedStorage.getItem('Dasboard');
+        const storedCredential = await EncryptedStorage.getItem('Credential');
+
         setTimeout(() => {
-          if (!dasboard) {
-            navigation.replace('Dasboard');
+          if (storedCredential) {
+            const credential = JSON.parse(storedCredential);
+            if (credential.isFirstLogin) {
+              navigation.replace('Dasboard');
+            } else {
+              navigation.replace('SignIn');
+            }
           } else {
             navigation.replace('SignIn');
           }
@@ -40,7 +50,11 @@ export default function SplashScreen({navigation}) {
         <StatusBar barStyle={'dark-content'} backgroundColor={'transparent'} />
         <Image source={IMG_ISMUHUYAHYA_POTRAIT} style={styles.img} />
         <Gap height={25} />
-        <ActivityIndicator size={'large'} color={COLORS.black} />
+        <ActivityIndicator
+          size={'large'}
+          animating={loading}
+          color={COLORS.gold}
+        />
       </View>
       <AppVersion />
     </ImageBackground>

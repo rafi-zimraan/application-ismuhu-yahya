@@ -1,6 +1,6 @@
 import {Alert, ToastAndroid} from 'react-native';
-import {SetStatusRecovery} from '../../../redux/slices/authSlice';
 import {postPasswordRecovery} from '../../../utils/@APIs';
+import {SetStatusRecovery} from './authSlice';
 
 const showToast = (message, duration = 'SHORT') => {
   ToastAndroid.show(message, ToastAndroid[duration]);
