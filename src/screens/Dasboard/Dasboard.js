@@ -17,8 +17,12 @@ const {height, width} = Dimensions.get('window');
 export default function Dashboard({navigation}) {
   return (
     <View style={{flex: 1}}>
+      <StatusBar barStyle={'default'} backgroundColor={'transparent'} />
       <Background />
-      <ScrollView stickyHeaderHiddenOnScroll stickyHeaderIndices={[0]}>
+      <ScrollView
+        stickyHeaderHiddenOnScroll
+        stickyHeaderIndices={[0]}
+        style={{padding: 15}}>
         <HeaderTransparent
           title="Pondok Digital"
           onPress={() => navigation.openDrawer()}

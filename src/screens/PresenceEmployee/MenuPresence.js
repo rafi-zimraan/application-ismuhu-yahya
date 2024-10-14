@@ -1,5 +1,5 @@
 import React from 'react';
-import {Dimensions, Image, StyleSheet, View} from 'react-native';
+import {Dimensions, Image, StatusBar, StyleSheet, View} from 'react-native';
 import {Background, Gap, HeaderTransparent} from '../../Component';
 import {IMG_ISMUHUYAHYA_FUll} from '../../assets';
 import {ButtonMenu} from '../../features/Dasboard';
@@ -9,6 +9,7 @@ const {height, width} = Dimensions.get('window');
 export default function MenuPresence({navigation}) {
   return (
     <View style={{flex: 1}}>
+      <StatusBar barStyle={'default'} backgroundColor={'transparent'} />
       <Background />
       <HeaderTransparent
         icon="arrow-left-circle-outline"
@@ -34,7 +35,7 @@ export default function MenuPresence({navigation}) {
             title="Presensi"
             iconName="calendar-check"
             iconSize={60}
-            onPress={() => navigation.navigate('DaftarPresence')}
+            onPress={() => navigation.navigate('PresenceEmployee')}
           />
         </View>
         <Gap height={100} />

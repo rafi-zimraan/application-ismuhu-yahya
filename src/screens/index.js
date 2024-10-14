@@ -5,7 +5,6 @@ import DasboardMaster from './DasboardMaster/DasboardMaster';
 import DrawerContent from './DrawerContent/DrawerContent';
 import Label from './Label/Label';
 import Onboarding from './Onboarding/Onboarding';
-import PhoneBook from './PhoneBook/PhoneBook';
 import DaftarPresence from './PresenceEmployee/DaftarPresence';
 import MenuPresence from './PresenceEmployee/MenuPresence';
 import PresenceEmployee from './PresenceEmployee/PresenceEmployee';
@@ -24,7 +23,6 @@ export {
   SignIn,
   LibDemo,
   SettingUser,
-  PhoneBook,
   Label,
   SplashScreen,
   Dashboard,

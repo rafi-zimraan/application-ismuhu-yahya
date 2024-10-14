@@ -1,3 +1,3 @@
 import BiometricSvg from './components/BiometricSvg';
-
-export {BiometricSvg};
+import ModalSucces from './components/ModalSucces';
+export {BiometricSvg, ModalSucces};

@@ -1,3 +1,4 @@
+import React from 'react';
 import {
   StatusBar,
   StyleSheet,
@@ -5,7 +6,6 @@ import {
   TouchableNativeFeedback,
   View,
 } from 'react-native';
-import React from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 export default function HeaderTransparent({
@@ -36,7 +36,7 @@ export default function HeaderTransparent({
 
 const styles = StyleSheet.create({
   text: {
-    fontSize: 15,
+    fontSize: 23,
     color: 'black',
     fontWeight: '500',
   },

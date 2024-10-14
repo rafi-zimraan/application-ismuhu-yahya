@@ -1,4 +1,5 @@
 import AlertPopUp from './screens/AlertPopUp';
+import AlertWarning from './screens/AlertWarning';
 import AppVersion from './screens/AppVersion';
 import Background from './screens/Background';
 import ButtonAction from './screens/ButtonAction';
@@ -19,6 +20,7 @@ import ModalLoading from './screens/ModalLoading';
 import SearchInput from './screens/SearchInput';
 
 export {
+  AlertWarning,
   AlertPopUp,
   Gap,
   SearchInput,
