@@ -47,7 +47,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   view: {
-    height: 50,
+    // height: 50,
     alignItems: 'center',
     flexDirection: 'row',
     marginTop: StatusBar.currentHeight,

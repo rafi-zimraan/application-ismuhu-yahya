@@ -1,4 +1,5 @@
-import React from 'react';
+import {useNavigation} from '@react-navigation/native';
+import React, {useEffect, useState} from 'react';
 import {
   Alert,
   Image,
@@ -9,22 +10,38 @@ import {
 } from 'react-native';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {useDispatch, useSelector} from 'react-redux';
 import {Gap} from '../../Component';
 import {IMG_DRAWER, IMG_PONDOK_DIGITAL_WHITE} from '../../assets';
 import {COLORS} from '../../utils';
 
-export default function DrawerContent({navigation}) {
-  const {email, name} = useSelector(state => state.auth.user);
-  const dispatch = useDispatch();
+export default function DrawerContent() {
+  const [userData, setUserData] = useState({name: '', email: ''});
+  const navigation = useNavigation;
+
+  useEffect(() => {
+    const loadUserData = async () => {
+      try {
+        const storedUser = await EncryptedStorage.getItem('user');
+        if (storedUser) {
+          const user = JSON.parse(storedUser);
+          setUserData({name: user.name, email: user.email});
+        }
+      } catch (error) {
+        console.log('Error fetching user data', error);
+      }
+    };
+
+    loadUserData();
+  }, []);
 
   function logout() {
     Alert.alert('Keluar', 'Sesi Anda akan berakhir.', [
       {
         text: 'Keluar',
         onPress: async () => {
-          await EncryptedStorage.removeItem('credentials');
-          navigation.reset({routes: [{name: 'Login'}]});
+          await EncryptedStorage.removeItem('token');
+          await EncryptedStorage.removeItem('user');
+          navigation.navigate({routes: [{name: 'SignIn'}]});
         },
       },
       {
@@ -32,7 +49,6 @@ export default function DrawerContent({navigation}) {
       },
     ]);
   }
-
   return (
     <View style={{flex: 1}}>
       <Image source={IMG_DRAWER} style={styles.imgBackground} />
@@ -42,9 +58,9 @@ export default function DrawerContent({navigation}) {
         <View style={styles.viewAccount}>
           <Icon name="account" size={40} color={'black'} />
         </View>
-        <Text style={styles.textUsername}>{name}</Text>
+        <Text style={styles.textUsername}>{userData.name}</Text>
       </View>
-      <Text style={styles.textEmail}>{email}</Text>
+      <Text style={styles.textEmail}>{userData.email}</Text>
       <View style={styles.line} />
       <TouchableNativeFeedback
         useForeground

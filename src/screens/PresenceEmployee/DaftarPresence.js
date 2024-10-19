@@ -1,41 +1,102 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {useForm} from 'react-hook-form';
 import {
   Image,
+  ScrollView,
   StatusBar,
   StyleSheet,
   Text,
+  ToastAndroid,
   TouchableOpacity,
   View,
 } from 'react-native';
+import ReactNativeBiometrics from 'react-native-biometrics';
+import EncryptedStorage from 'react-native-encrypted-storage';
 import {Background, Gap, HeaderTransparent} from '../../Component';
 import {IMG_ISMUHUYAHYA_POTRAIT} from '../../assets';
-import {BiometricSvg, ModalSucces} from '../../features/PresenceEmployee';
+import {
+  BiometricSvg,
+  ModalSucces,
+  createFinger,
+  getAllDivision,
+  getDepartmentByDivision,
+  getUserFromDepartment,
+} from '../../features/PresenceEmployee';
 import {FormInput} from '../../features/authentication';
 import {COLORS} from '../../utils';
 
 export default function DaftarPresence({navigation}) {
-  const {control, handleSubmit, getValues} = useForm(); // Menggunakan getValues untuk validasi
-  const [isFingerprintAdded, setIsFingerprintAdded] = useState(false); // Untuk status fingerprint
-  const [modalVisible, setModalVisible] = useState(false); // Untuk menampilkan modal
-  const [showAlert, setShowAlert] = useState(false); // Menyimpan status alert
+  const {control, handleSubmit, getValues, watch} = useForm();
+  const [isFingerprintAdded, setIsFingerprintAdded] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [divisions, setDivisions] = useState([]);
+  const [departements, setDepartements] = useState([]);
+  const [users, setUsers] = useState([]);
 
-  // Fungsi untuk validasi input
-  const handleAddFingerprint = () => {
-    const division = getValues('division');
-    const department = getValues('department');
-    const username = getValues('username');
+  // save id
+  const selectedDivision = watch('division');
+  const selectedDepartment = watch('department');
+  const selectedUser = watch('username');
 
-    // Cek jika salah satu dari field divisi, department, atau nama belum diisi
-    // if (!division || !department || !username) {
-    //   setShowAlert(true); // Tampilkan alert jika input tidak valid
-    //   return;
-    // }
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const divisionData = await getAllDivision();
+        setDivisions(divisionData);
 
-    // Jika semua data sudah diisi, maka bisa tambahkan fingerprint
-    setIsFingerprintAdded(true);
-    setModalVisible(true);
-    setShowAlert(false);
+        // Fetch departmant when a division is selected
+        if (selectedDivision) {
+          const departmentData = await getDepartmentByDivision(
+            selectedDivision,
+          );
+          setDepartements(departmentData);
+        }
+
+        if (selectedDivision && selectedDepartment) {
+          const userData = await getUserFromDepartment(
+            selectedDivision,
+            selectedDepartment,
+          );
+          setUsers(userData);
+        }
+      } catch (error) {
+        console.log('error fecthing data:', error);
+        ToastAndroid.show(error.message, ToastAndroid.SHORT);
+      }
+    };
+    fetchData();
+  }, [selectedDivision, selectedDepartment]);
+
+  const handleAddFingerPrint = async () => {
+    const rnBiometrics = new ReactNativeBiometrics({
+      allowDeviceCredentials: true,
+    });
+    try {
+      const {available, biometryType} = await rnBiometrics.isSensorAvailable();
+
+      if (available && biometryType) {
+        // Generate publicKey
+        const {publicKey} = await rnBiometrics.createKeys();
+        console.log('publickey', publicKey);
+        await EncryptedStorage.setItem('publickey', publicKey);
+
+        if (selectedUser) {
+          await createFinger(publicKey, selectedUser);
+          setIsFingerprintAdded(true);
+          setModalVisible(true);
+          setTimeout(() => {
+            setModalVisible(false);
+          }, 5000);
+        } else {
+          ToastAndroid.show('User ID not selected', ToastAndroid.SHORT);
+        }
+      } else {
+        ToastAndroid.show('Biometric not available', ToastAndroid.SHORT);
+      }
+    } catch (e) {
+      console.log('error', e);
+      ToastAndroid.show('Error Registering fingerprint', ToastAndroid.SHORT);
+    }
   };
 
   return (
@@ -47,73 +108,77 @@ export default function DaftarPresence({navigation}) {
         title="Daftar fingerprint"
         onPress={() => navigation.goBack()}
       />
-      <Gap height={25} />
-      <View style={styles.body}>
-        <Image source={IMG_ISMUHUYAHYA_POTRAIT} style={styles.img} />
-        <View style={styles.content}>
-          <Text style={styles.txtTitle}>
-            "Selesaikan pendaftaran diri anda, {'\n'}Sesuaikan pekerjaan anda
-            dengan benar!"
-          </Text>
-          <Gap height={20} />
+      <ScrollView stickyHeaderHiddenOnScroll stickyHeaderIndices={[0]}>
+        <Gap height={25} />
+        <View style={styles.body}>
+          <Image source={IMG_ISMUHUYAHYA_POTRAIT} style={styles.img} />
+          <View style={styles.content}>
+            <Text style={styles.txtTitle}>
+              "Selesaikan pendaftaran diri anda, {'\n'}Sesuaikan pekerjaan anda
+              dengan benar!"
+            </Text>
+            <Gap height={20} />
 
-          {/* Picker for divisions */}
-          <FormInput
-            control={control}
-            name="division"
-            mode="picker"
-            iconName="office-building"
-            title="Divisi"
-            // picker={{data: divisions, label: 'name', value: 'id'}}
-          />
-          <Gap height={20} />
+            {/* Picker for divisions */}
+            <FormInput
+              control={control}
+              name="division"
+              mode="picker"
+              iconName="office-building"
+              title="Divisi"
+              picker={{data: divisions, label: 'division_name', value: 'id'}}
+            />
+            <Gap height={20} />
 
-          {/* Picker for departments (auto refresh based on divId) */}
-          <FormInput
-            control={control}
-            name="department"
-            mode="picker"
-            iconName="domain"
-            title="Department"
-            // picker={{data: departments, label: 'name', value: 'id'}}
-          />
-          <Gap height={20} />
+            {/* Picker for departments */}
+            <FormInput
+              control={control}
+              name="department"
+              mode="picker"
+              iconName="domain"
+              title="Department"
+              picker={{
+                data: departements,
+                label: 'department',
+                value: 'id_department',
+              }}
+            />
+            <Gap height={20} />
 
-          {/* Picker for username */}
-          <FormInput
-            control={control}
-            name="username"
-            iconName="account"
-            title="Name"
-            placeholder="Nama Lengkap"
-          />
-          <Gap height={30} />
+            {/* Picker for username */}
+            <FormInput
+              control={control}
+              name="username"
+              iconName="account"
+              title="Name"
+              mode="picker"
+              picker={{
+                data: users,
+                label: 'name',
+                value: 'user_id',
+              }}
+            />
+            <Gap height={30} />
 
-          {/* Fingerprint Section */}
-          <View style={{alignSelf: 'center'}}>
-            <Text style={styles.txtFingerPrint}> Create your fingerprint</Text>
-            <TouchableOpacity
-              activeOpacity={0.7}
-              onPress={handleAddFingerprint}>
-              <BiometricSvg
-                width={100}
-                height={100}
-                style={{alignSelf: 'center'}}
-              />
-            </TouchableOpacity>
+            {/* Fingerprint Section */}
+            <View style={{alignSelf: 'center'}}>
+              <Text style={styles.txtFingerPrint}>Create your fingerprint</Text>
+              <TouchableOpacity
+                activeOpacity={0.13}
+                onPress={handleAddFingerPrint}>
+                <BiometricSvg
+                  width={100}
+                  height={100}
+                  style={{alignSelf: 'center'}}
+                />
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
-      </View>
 
-      {/* Modal sukses setelah semua data dan fingerprint ditambahkan */}
-      {modalVisible && <ModalSucces />}
-
-      {/* {!isFingerprintAdded && showAlert && (
-        <AlertPopUp
-          show={true}
-          message="Harap isi semua data (divisi, department, dan nama) sebelum menambahkan fingerprint."
-        />
-      )} */}
+        {/* Modal sukses setelah semua data dan fingerprint ditambahkan */}
+        {modalVisible && <ModalSucces />}
+      </ScrollView>
     </View>
   );
 }

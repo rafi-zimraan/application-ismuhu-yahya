@@ -16,7 +16,7 @@ api.interceptors.request.use(
   async config => {
     try {
       const token = await EncryptedStorage.getItem('token');
-      console.log('tokenlogin:', token);
+      // console.log('tokenlogin:', token);
       if (token) config.headers.Authorization = `Bearer ${JSON.parse(token)}`;
       return config;
     } catch (error) {

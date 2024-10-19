@@ -25,7 +25,6 @@ export default function SignUp({navigation}) {
   const [divisions, setDivisions] = useState([]);
   const [departments, setDepartments] = useState([]);
   const [branches, setBranches] = useState([]);
-
   const divId = watch('division'); // Watch for division ID
 
   // Fetch divisions, departments, and branches data

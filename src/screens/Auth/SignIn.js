@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import {useForm} from 'react-hook-form';
 import {Dimensions, Image, ScrollView, StyleSheet, View} from 'react-native';
 // import {Background, Gap} from '../../components';
-import EncryptedStorage from 'react-native-encrypted-storage';
+import {useDispatch} from 'react-redux';
 import {Background, Gap} from '../../Component';
 import {IMG_ISMUHUYAHYA_FUll} from '../../assets';
 import {
@@ -18,6 +18,7 @@ const {height, width} = Dimensions.get('window');
 export default function SignIn({navigation}) {
   const {control, handleSubmit} = useForm();
   const [loading, setLoading] = useState(false);
+  const dispatch = useDispatch();
 
   const onSubmit = async data => {
     setLoading(true);
@@ -26,42 +27,13 @@ export default function SignIn({navigation}) {
         email: data.email,
         password: data.password,
       };
-      const response = await login(loginData, navigation);
-      console.log('RESPONSE', response);
-      if (response?.token) {
-        await EncryptedStorage.setItem('token', JSON.stringify(response.token));
-
-        const credential = {
-          email: data.email,
-          isFirstLogin: true,
-        };
-        await EncryptedStorage.setItem(
-          'Credential',
-          JSON.stringify(credential),
-        );
-        navigation.replace('Dasboard');
-      }
+      await login(loginData, navigation, dispatch);
     } catch (error) {
       console.log('LOGIN ERROR:', error?.message);
     } finally {
       setLoading(false);
     }
   };
-
-  // // ! OPSI PERTAMA
-  // async function konfirmasiPembelian() {
-  //   try {
-  //     // kirim notifikasi ke korwil untuk melihat detail transaksi
-  //     const response = axios.post('http://localhost:3000/send-fcm', {
-  //       device_token: teknisiDetail.device_token,
-  //       title: `User Anu Telah Membeli CCTV ${userDetail.product.name}`,
-  //       body: 'Harap periksa detail transaksi',
-  //     });
-  //     console.log(response);
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // }
 
   return (
     <View style={{flex: 1}}>

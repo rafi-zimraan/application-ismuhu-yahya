@@ -1425,6 +1425,11 @@
   dependencies:
     invariant "^2.2.4"
 
+"@react-native-community/netinfo@^11.4.1":
+  version "11.4.1"
+  resolved "https://registry.npmjs.org/@react-native-community/netinfo/-/netinfo-11.4.1.tgz"
+  integrity sha512-B0BYAkghz3Q2V09BF88RA601XursIEA111tnc2JOaN7axJWmNefmfjZqw/KdSxKZp7CZUuPpjBmz/WCR9uaHYg==
+
 "@react-native-picker/picker@^2.8.1":
   version "2.8.1"
   resolved "https://registry.npmjs.org/@react-native-picker/picker/-/picker-2.8.1.tgz"
@@ -5238,7 +5243,7 @@ react-native-version-info@^1.1.1:
   resolved "https://registry.npmjs.org/react-native-version-info/-/react-native-version-info-1.1.1.tgz"
   integrity sha512-huOj2WeEtmBbGa4+5ZiaKfi1ASN73Fbz81leYDWHhFKjsRdIis3vVgSJXXhHlC5wazsu1viujnLkGXVtu4Ns9g==
 
-react-native@*, "react-native@^0.0.0-0 || >=0.65 <1.0", "react-native@>= 0.60.2", "react-native@>= 0.62", react-native@>=0.59.0, react-native@>=0.60.0, react-native@>=0.70.0, react-native@0.74.4:
+react-native@*, "react-native@^0.0.0-0 || >=0.65 <1.0", "react-native@>= 0.60.2", "react-native@>= 0.62", react-native@>=0.59, react-native@>=0.59.0, react-native@>=0.60.0, react-native@>=0.70.0, react-native@0.74.4:
   version "0.74.4"
   dependencies:
     "@jest/create-cache-key-function" "^29.6.3"

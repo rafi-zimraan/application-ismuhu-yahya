@@ -21,7 +21,7 @@ export default function Navigator() {
         statusBarColor: 'transparent',
         statusBarTranslucent: true,
       }}
-      initialRouteName={'LibDemo'}>
+      initialRouteName={'SplashScreen'}>
       <Stack.Screen name="LibDemo" component={LibDemo} />
       <Stack.Screen name="SplashScreen" component={SplashScreen} />
       <Stack.Screen name="SignIn" component={SignIn} />

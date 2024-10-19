@@ -20,20 +20,19 @@ export default function SplashScreen({navigation}) {
       setLoading(true);
 
       try {
-        const storedCredential = await EncryptedStorage.getItem('Credential');
+        const storedCredential = await EncryptedStorage.getItem('token');
 
         setTimeout(() => {
           if (storedCredential) {
-            const credential = JSON.parse(storedCredential);
-            if (credential.isFirstLogin) {
-              navigation.replace('Dasboard');
-            } else {
-              navigation.replace('SignIn');
-            }
+            console.log('tokenlogin', storedCredential);
+
+            // if there is token, replace to dasboard
+            navigation.replace('Dasboard');
           } else {
+            // if nothing token, replace to signIn
             navigation.replace('SignIn');
           }
-        }, 3000);
+        }, 2000);
       } catch (error) {
         console.log('error masbro', error);
       }

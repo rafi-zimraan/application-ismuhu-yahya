@@ -1,35 +1,56 @@
+import NetInfo from '@react-native-community/netinfo';
 import {ToastAndroid} from 'react-native';
+import EncryptedStorage from 'react-native-encrypted-storage';
+import {setUserSession} from '..';
 import api from '../../../utils/axiosInstance';
 
 // login
-export const login = async (data, navigation) => {
+export const login = async (data, navigation, dispatch) => {
   try {
+    // Cek koneksi internet
+    const netInfo = await NetInfo.fetch();
+    if (!netInfo.isConnected) {
+      ToastAndroid.show('Tidak ada koneksi internet', ToastAndroid.SHORT);
+      return;
+    }
+
     console.log('DATA YANG DIKIRIM:', data);
     const response = await api.post('/login', data);
-    console.log('RESPONSE:', response.data);
+    console.log('RESPONSE login:', response.data);
 
     const token = response.data?.token;
-    if (token) {
-      console.log('TOKEN:', token);
-      return {token, user: response.data?.user};
+    const user = response.data?.user[0];
+    if (token && user) {
+      // Simpan ke Redux
+      dispatch(
+        setUserSession({
+          token: token,
+          user: {
+            IDUser: user.IDUser,
+            email: user.email,
+            name: user.name,
+            role: user.role,
+          },
+        }),
+      );
+
+      // Simpan ke EncryptedStorage
+      await EncryptedStorage.setItem('token', JSON.stringify(token));
+      await EncryptedStorage.setItem('user', JSON.stringify(user));
+
+      navigation.replace('Dasboard');
     } else {
-      throw new Error('Token tidak ditemukan');
+      throw new Error('Token atau user tidak ditemukan');
     }
   } catch (error) {
     const errorData = error.response?.data || {};
     const errorMessage = error.message;
 
-    if (errorData.error == 'invalid_credentials') {
+    if (errorData.error === 'invalid_credentials') {
       ToastAndroid.show('Akun tidak ditemukan', ToastAndroid.SHORT);
-    }
-
-    if (error.message?.status === 500) {
-      ToastAndroid.show('Server Error', ToastAndroid.SHORT);
     } else {
-      ToastAndroid.show('Silahkan Consultasi ke developer', ToastAndroid.SHORT);
+      console.log(errorMessage);
     }
-
-    console.log('ERROR', errorData || errorMessage); // response server
   }
 };
 
@@ -63,6 +84,8 @@ export const getDepartment = async divisionId => {
     console.log('DEPARTMENT ERROR:', error);
   }
 };
+
+// branch
 export const getBranches = async () => {
   try {
     const response = await api.get('/branches');
