@@ -71,6 +71,7 @@ export default function DaftarPresence({navigation}) {
     const rnBiometrics = new ReactNativeBiometrics({
       allowDeviceCredentials: true,
     });
+
     try {
       const {available, biometryType} = await rnBiometrics.isSensorAvailable();
 
@@ -81,12 +82,34 @@ export default function DaftarPresence({navigation}) {
         await EncryptedStorage.setItem('publickey', publicKey);
 
         if (selectedUser) {
-          await createFinger(publicKey, selectedUser);
-          setIsFingerprintAdded(true);
-          setModalVisible(true);
-          setTimeout(() => {
-            setModalVisible(false);
-          }, 5000);
+          const response = await createFinger(publicKey, selectedUser);
+
+          if (response.success && response.saveFinger) {
+            // create payload for signature
+            let saveTimeSignature = Math.random(
+              new Date().getTime() / 1000,
+            ).toString();
+            let payload = saveTimeSignature + 'save_verification';
+
+            // create signature for fingerprint verification
+            const {success, signature} = await rnBiometrics.createSignature({
+              promptMessage: 'Sentuh sensor sidik jari',
+              payload: payload,
+            });
+
+            if (success) {
+              await EncryptedStorage.setItem('signature', signature);
+              console.log('signature', signature);
+
+              setIsFingerprintAdded(true);
+              setModalVisible(true);
+              setTimeout(() => {
+                setModalVisible(false);
+              }, 2000);
+            } else {
+              ToastAndroid.show('Error creating signature', ToastAndroid.SHORT);
+            }
+          }
         } else {
           ToastAndroid.show('User ID not selected', ToastAndroid.SHORT);
         }

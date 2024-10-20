@@ -45,7 +45,6 @@ export default function PresenceEmployee({navigation}) {
       });
 
       if (success) {
-        // Authentikasi sidik jari berhasil, ambil data finger dari createfinger
         const saveFinger = await createFinger();
         if (saveFinger) {
           await fingerPresence(saveFinger);

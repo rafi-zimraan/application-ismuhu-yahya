@@ -41,9 +41,12 @@ export const createFinger = async (finger, user_id) => {
     console.log('saveFinger', saveFinger);
 
     // handle response
-    if (response.data?.status && saveFinger) {
+    if (response?.data?.message === 'Data Anda Telah Berhasil Tersimpan') {
       ToastAndroid.show(response.data?.message, ToastAndroid.SHORT);
-      return saveFinger;
+      return {success: true, saveFinger}; // Mengembalikan finger jika berhasil
+    } else if (response?.data?.message === 'Anda Sudah Mendaftar Sebelumnya') {
+      ToastAndroid.show('Fingerprint sudah terdaftar', ToastAndroid.SHORT);
+      return {success: false}; // Indikasi bahwa fingerprint sudah terdaftar
     } else {
       throw new Error(response.data?.message || 'Error saat menyimpan data');
     }
@@ -57,6 +60,7 @@ export const createFinger = async (finger, user_id) => {
       console.log('ERROR CODE:', error.message);
       ToastAndroid.show(error.message, ToastAndroid.SHORT);
     }
+    return {success: false}; // Jika ada error, juga kembalikan false
   }
 };
 
