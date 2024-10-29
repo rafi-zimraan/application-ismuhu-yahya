@@ -5,45 +5,53 @@ import api from '../../../utils/axiosInstance';
 export const fingerPresence = async finger => {
   try {
     const response = await api.post('/presence', {finger: finger});
+
     console.log('RESPONSE FINGER:', response.data);
 
     if (response.data?.status) {
       ToastAndroid.show(response.data?.message, ToastAndroid.SHORT);
-    } else if (response.data?.message.includes('Telah Presensi Sebelumnya')) {
+    } else if (
+      response.data?.message.includes('Data Anda Telah Berhasil Tersimpan')
+    ) {
+      // Menampilkan pesan spesifik untuk presensi sebelumnya
       ToastAndroid.show(response.data?.message, ToastAndroid.SHORT);
     } else {
       throw new Error(response.data?.message || 'Error fingerprint!');
     }
   } catch (error) {
     if (error.response) {
-      // VALIDASI ERROR RESPONSE API
-      console.log('ERROR API RESPONSE:', error.response.data);
-      ToastAndroid.show(error.response.data, ToastAndroid.SHORT);
+      // Menampilkan pesan error spesifik dari API
+      const errorMessage = error.response?.data?.message || 'Terjadi kesalahan';
+      ToastAndroid.show(errorMessage, ToastAndroid.SHORT);
+      console.log('ERROR MESSAGE:', errorMessage);
     } else {
-      // VALIDASI ERROR DEVELOPER
+      // Menampilkan pesan kesalahan umum
       console.log('ERROR CODE:', error.message);
       ToastAndroid.show(error.message, ToastAndroid.SHORT);
     }
   }
 };
 
-// Create finger
 export const createFinger = async (finger, user_id) => {
   try {
     const response = await api.post('/create-finger', {
       finger: finger,
       user_id: user_id,
     });
+
+    if (response.status === 503) {
+      throw new Error(
+        'server sedang dalam perawatan atau sibuk. silahkan coba lagi nanti.',
+      );
+    }
     console.log('RESPONSE CREATE FINGER:', response.data);
 
-    // get data finger from response
+    const name = response.data?.user?.name;
     const saveFinger = response.data?.user?.finger;
-    console.log('saveFinger', saveFinger);
 
-    // handle response
     if (response?.data?.message === 'Data Anda Telah Berhasil Tersimpan') {
       ToastAndroid.show(response.data?.message, ToastAndroid.SHORT);
-      return {success: true, saveFinger}; // Mengembalikan finger jika berhasil
+      return {success: true, saveFinger, name}; // Mengembalikan finger jika berhasil
     } else if (response?.data?.message === 'Anda Sudah Mendaftar Sebelumnya') {
       ToastAndroid.show('Fingerprint sudah terdaftar', ToastAndroid.SHORT);
       return {success: false}; // Indikasi bahwa fingerprint sudah terdaftar
@@ -51,16 +59,23 @@ export const createFinger = async (finger, user_id) => {
       throw new Error(response.data?.message || 'Error saat menyimpan data');
     }
   } catch (error) {
-    if (error.response) {
+    if (error.response && error.response.status === 503) {
+      // Khusus untuk error 503
+      console.log('ERROR API RESPONSE CREATE: 503 Service Unavailable');
+      ToastAndroid.show(
+        'Server sedang dalam perawatan atau sibuk. Silakan coba lagi nanti.',
+        ToastAndroid.LONG,
+      );
+    } else if (error.response) {
       // VALIDASI ERROR RESPONSE API
-      console.log('ERROR API RESPONSE CREATE:', error.response?.data.message);
-      ToastAndroid.show(error.response?.data.message, ToastAndroid.SHORT);
+      console.log('ERROR API RESPONSE CREATE:', error.response?.data?.message);
+      ToastAndroid.show(error.response?.data?.message, ToastAndroid.SHORT);
     } else {
       // VALIDASI ERROR DEVELOPER
       console.log('ERROR CODE:', error.message);
       ToastAndroid.show(error.message, ToastAndroid.SHORT);
     }
-    return {success: false}; // Jika ada error, juga kembalikan false
+    return {success: false};
   }
 };
 

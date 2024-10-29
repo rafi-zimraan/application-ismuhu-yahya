@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {useForm} from 'react-hook-form';
 import {
+  ActivityIndicator,
   Image,
   ScrollView,
   StatusBar,
@@ -27,11 +28,11 @@ import {COLORS} from '../../utils';
 
 export default function DaftarPresence({navigation}) {
   const {control, handleSubmit, getValues, watch} = useForm();
-  const [isFingerprintAdded, setIsFingerprintAdded] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [divisions, setDivisions] = useState([]);
   const [departements, setDepartements] = useState([]);
   const [users, setUsers] = useState([]);
+  const [isFingerLoading, setIsFingerLoading] = useState(false);
 
   // save id
   const selectedDivision = watch('division');
@@ -75,51 +76,61 @@ export default function DaftarPresence({navigation}) {
     try {
       const {available, biometryType} = await rnBiometrics.isSensorAvailable();
 
-      if (available && biometryType) {
-        // Generate publicKey
-        const {publicKey} = await rnBiometrics.createKeys();
-        console.log('publickey', publicKey);
-        await EncryptedStorage.setItem('publickey', publicKey);
+      if (!available || !biometryType) {
+        setIsFingerLoading(false);
+        return ToastAndroid.show('Biometric not available', ToastAndroid.SHORT);
+      }
 
-        if (selectedUser) {
-          const response = await createFinger(publicKey, selectedUser);
+      const {publicKey} = await rnBiometrics.createKeys();
+      // console.log('publickey----->', publicKey);
 
-          if (response.success && response.saveFinger) {
-            // create payload for signature
-            let saveTimeSignature = Math.random(
-              new Date().getTime() / 1000,
-            ).toString();
-            let payload = saveTimeSignature + 'save_verification';
+      if (!selectedUser) {
+        setIsFingerLoading(false);
+        return ToastAndroid.show('ID not found', ToastAndroid.SHORT);
+      }
 
-            // create signature for fingerprint verification
-            const {success, signature} = await rnBiometrics.createSignature({
-              promptMessage: 'Sentuh sensor sidik jari',
-              payload: payload,
-            });
+      const response = await createFinger(publicKey, selectedUser);
 
-            if (success) {
-              await EncryptedStorage.setItem('signature', signature);
-              console.log('signature', signature);
+      if (response.success && response.saveFinger && response.name) {
+        const payload = 'fixedPayloadForRegistration';
+        const {success, signature} = await rnBiometrics.createSignature({
+          promptMessage: 'Silahkan sentuh sensor',
+          payload: payload,
+        });
 
-              setIsFingerprintAdded(true);
-              setModalVisible(true);
-              setTimeout(() => {
-                setModalVisible(false);
-              }, 2000);
-            } else {
-              ToastAndroid.show('Error creating signature', ToastAndroid.SHORT);
-            }
-          }
+        if (success) {
+          console.log('Signature for registation----->', signature);
+
+          const registrationData = {
+            name: response.name,
+            saveFinger: response.saveFinger,
+            signature: signature,
+          };
+
+          const storedData =
+            (await EncryptedStorage.getItem('fingerprintData')) || [];
+          const localData = storedData.length > 0 ? JSON.parse(storedData) : [];
+          EncryptedStorage.setItem(
+            'fingerprintData',
+            JSON.stringify([...localData, registrationData]),
+          );
+
+          setModalVisible(true);
+          setTimeout(() => {
+            setModalVisible(false);
+          }, 2000);
         } else {
-          ToastAndroid.show('User ID not selected', ToastAndroid.SHORT);
+          console.log('error create fingerprint');
+          ToastAndroid.show('error create fingerprint', ToastAndroid.SHORT);
         }
       } else {
-        ToastAndroid.show('Biometric not available', ToastAndroid.SHORT);
+        console.log('fingerprint error create ', response);
       }
-    } catch (e) {
-      console.log('error', e);
-      ToastAndroid.show('Error Registering fingerprint', ToastAndroid.SHORT);
+    } catch (error) {
+      console.log('error registering fingerprint', error);
+      ToastAndroid.show('Error registering fingerprint', ToastAndroid.SHORT);
     }
+    setIsFingerLoading(false);
   };
 
   return (
@@ -189,17 +200,20 @@ export default function DaftarPresence({navigation}) {
               <TouchableOpacity
                 activeOpacity={0.13}
                 onPress={handleAddFingerPrint}>
-                <BiometricSvg
-                  width={100}
-                  height={100}
-                  style={{alignSelf: 'center'}}
-                />
+                {isFingerLoading ? (
+                  <ActivityIndicator size={'small'} color={COLORS.black} />
+                ) : (
+                  <BiometricSvg
+                    width={100}
+                    height={100}
+                    style={{alignSelf: 'center'}}
+                  />
+                )}
               </TouchableOpacity>
             </View>
           </View>
         </View>
 
-        {/* Modal sukses setelah semua data dan fingerprint ditambahkan */}
         {modalVisible && <ModalSucces />}
       </ScrollView>
     </View>
