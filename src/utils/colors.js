@@ -14,6 +14,7 @@ const COLORS = {
   header: '#ffe500',
   icon: '#d6a800',
   gold: '#FFD700',
+  goldenOrange: '#FFB200',
   greenBoy: '#0cb300',
   secondary: '#6bbd00',
   secondary_off: '#7d8e67',

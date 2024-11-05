@@ -8,7 +8,10 @@ import ICON_PRESENCE_OUT from '../assets/icons/presence-out.png';
 import ICON_PRESENCE_RANDOM from '../assets/icons/presence-random.png';
 import ICON_YAUMI from '../assets/icons/yaumi.png';
 import IMG_LOGO from '../assets/images/LOGO.png';
+import IMG_WOMEN from '../assets/images/Women.png';
+import IMG_BANNER from '../assets/images/banner.png';
 import IMG_DRAWER from '../assets/images/drawer.jpg';
+import IMG_BG_NEWS from '../assets/images/imgBGNews.png';
 import IMG_ISMUHUYAHYA_FUll from '../assets/images/logo-ishmuhu-full.png';
 import IMG_ISMUHUYAHYA_POTRAIT from '../assets/images/logo-ishmuhu-potrait.png';
 import IMG_PONDOK_DIGITAL_WHITE from '../assets/pondok-digital-logo/full-white.png';
@@ -20,6 +23,9 @@ import ICON_PRAYING from '../assets/yaumi/praying.png';
 import ICON_READING_QURAN from '../assets/yaumi/reading-quran.png';
 
 export {
+  IMG_WOMEN,
+  IMG_BG_NEWS,
+  IMG_BANNER,
   IMG_DRAWER,
   IMG_BG_GREEN_WAVE_FRIST,
   IMG_BG_GREEN_WAVE,

@@ -15,46 +15,49 @@ export default function ButtonMenu({
   iconSize,
   title,
   image,
+  color = COLORS.gold,
+  backgroundColor = '#FFF',
 }) {
   return (
-    <TouchableNativeFeedback useForeground onPress={onPress}>
-      <View style={styles.viewButton}>
-        {image && <Image source={image} style={styles.image} />}
-        {iconName && (
-          <Icon name={iconName} size={iconSize} color={COLORS.icon} />
-        )}
-        <Text style={styles.textTitle} numberOfLines={1} adjustsFontSizeToFit>
-          {title}
-        </Text>
-      </View>
-    </TouchableNativeFeedback>
+    <View style={styles.container}>
+      <TouchableNativeFeedback useForeground onPress={onPress}>
+        <View style={{...styles.viewButton, backgroundColor}}>
+          {image && <Image source={image} style={styles.image} />}
+          {iconName && <Icon name={iconName} size={iconSize} color={color} />}
+        </View>
+      </TouchableNativeFeedback>
+      <Text style={styles.textTitle} numberOfLines={1} adjustsFontSizeToFit>
+        {title}
+      </Text>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
+  container: {
+    alignItems: 'center',
+    marginBottom: 15,
+    marginHorizontal: 7,
+  },
   image: {
     width: 47.5,
     height: 47.5,
     marginBottom: 2.5,
   },
   viewButton: {
-    backgroundColor: COLORS.white,
-    borderColor: COLORS.primary_dark,
-    borderWidth: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: 5,
+    borderRadius: 15,
     overflow: 'hidden',
     elevation: 3,
     padding: 10,
-    width: 115,
-    height: 100,
-    marginBottom: 15,
-    marginHorizontal: 15,
+    width: 79,
+    height: 80,
   },
   textTitle: {
     fontWeight: 'bold',
     color: 'black',
     top: 5,
+    textAlign: 'center',
   },
 });

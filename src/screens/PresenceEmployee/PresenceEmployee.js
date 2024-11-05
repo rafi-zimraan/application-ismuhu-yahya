@@ -1,5 +1,6 @@
 import moment from 'moment';
 import React, {useEffect, useState} from 'react';
+import {useForm} from 'react-hook-form';
 import {
   Dimensions,
   Image,
@@ -15,15 +16,18 @@ import ReactNativeBiometrics from 'react-native-biometrics';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import {Background, Gap, HeaderTransparent} from '../../Component';
 import {IMG_ISMUHUYAHYA_FUll} from '../../assets';
-import {BiometricSvg} from '../../features/PresenceEmployee';
+import {BiometricSvg, fingerPresence} from '../../features/PresenceEmployee';
 import {COLORS} from '../../utils';
 
 const {width, height} = Dimensions.get('window');
 
 export default function PresenceEmployee({navigation}) {
+  const {watch} = useForm();
   const [newTime, setNewTime] = useState(moment());
   const formatWaktu = newTime.format('hh:mm A');
   const formatTanggal = newTime.format('dddd, DD MMMM YYYY');
+  // const selecteduser = watch('username');
+  // // console.log('user_id', selecteduser);
 
   useEffect(() => {
     const changeClock = setInterval(() => {
@@ -33,97 +37,62 @@ export default function PresenceEmployee({navigation}) {
     return () => clearInterval(changeClock);
   }, []);
 
-  // const handleFinger = async () => {
-  //   const rnBiometrics = new ReactNativeBiometrics({
-  //     allowDeviceCredentials: true,
-  //   });
+  const verifyUserFingerprint = async (user, signature, payload) => {
+    const rnBiometrics = new ReactNativeBiometrics({
+      allowDeviceCredentials: true,
+    });
+    const {success} = await rnBiometrics.verifySignature({
+      publicKey: user.saveFinger,
+      signature,
+      payload,
+    });
+    return success;
+  };
 
-  //   try {
-  //     // Periksa apakah sensor biometrik tersedia
-  //     const {available, biometryType} = await rnBiometrics.isSensorAvailable();
-
-  //     if (!available || !biometryType) {
-  //       return ToastAndroid.show('Biometric not available', ToastAndroid.SHORT);
-  //     }
-
-  //     // Ambil signature yang sudah tersimpan dari EncryptedStorage
-  //     const storedSignature = await EncryptedStorage.getItem('signature');
-  //     if (!storedSignature) {
-  //       return ToastAndroid.show('Signature not found', ToastAndroid.SHORT);
-  //     }
-
-  //     // Ambil 'saveFinger' yang sudah disimpan
-  //     const storedFingers = await EncryptedStorage.getItem('saveFinger');
-  //     if (!storedFingers) {
-  //       return ToastAndroid.show(
-  //         'Fingerprint belum terdaftar',
-  //         ToastAndroid.SHORT,
-  //       );
-  //     }
-
-  //     // Gunakan payload tetap yang sama dengan saat pendaftaran fingerprint
-  //     const payload = 'fixedPayloadForRegistration';
-  //     console.log('Payload for validation:', payload);
-
-  //     const {success, signature} = await rnBiometrics.createSignature({
-  //       promptMessage: 'Verifikasi Sidik Jari Anda',
-  //       payload: payload,
-  //     });
-
-  //     if (success) {
-  //       console.log('Signature for validation:', signature);
-
-  //       const fingerArray = JSON.parse(storedFingers);
-  //       console.log('FINGER PRESENCE:', fingerArray);
-
-  //       // Cari dan validasi hanya fingerprint yang sesuai dengan signature yang disimpan
-  //       const matchingFinger = fingerArray.find(finger => finger === signature);
-  //       console.log('matchFinger---->', matchingFinger);
-
-  //       if (matchingFinger) {
-  //         try {
-  //           await fingerPresence(matchingFinger);
-  //           console.log(`Finger ${matchingFinger} berhasil divalidasi`);
-
-  //           // Tampilkan respon berhasil
-  //           ToastAndroid.show(
-  //             'Fingerprint validated successfully',
-  //             ToastAndroid.SHORT,
-  //           );
-  //         } catch (error) {
-  //           console.log(`Error validasi finger ${matchingFinger}:`, error);
-  //         }
-  //       } else {
-  //         // Jika tidak ada fingerprint yang cocok
-  //         ToastAndroid.show('Fingerprint tidak sesuai', ToastAndroid.SHORT);
-  //       }
-  //     } else {
-  //       ToastAndroid.show('Fingerprint validation failed', ToastAndroid.SHORT);
-  //     }
-  //   } catch (error) {
-  //     console.error('Error validating fingerprint:', error);
-  //     ToastAndroid.show('Error validating fingerprint', ToastAndroid.SHORT);
-  //   }
-  // };
   const handleFinger = async () => {
     const rnBiometrics = new ReactNativeBiometrics({
       allowDeviceCredentials: true,
     });
 
     try {
-      // Periksa apakah sensor biometrik tersedia
       const {available, biometryType} = await rnBiometrics.isSensorAvailable();
 
       if (!available || !biometryType) {
         return ToastAndroid.show('Biometric not available', ToastAndroid.SHORT);
       }
 
-      // Ambil data registrasi fingerprint dari EncryptedStorage
-      const storedData =
-        (await EncryptedStorage.getItem('fingerprintData')) || [];
-      console.log('DATA---->', storedData);
+      const storedData = JSON.parse(
+        (await EncryptedStorage.getItem('fingerprintData')) || '[]',
+      );
+      console.log('data--->', storedData);
+      // const payload = selecteduser;
+      const {signature, success} = await rnBiometrics.simplePrompt({
+        promptMessage: 'Verifikasi Sidik Jari Anda',
+        payload: payload,
+      });
 
-      // return false;
+      if (success) {
+        const matchingFinger = storedData.find(async user => {
+          try {
+            return await verifyUserFingerprint(user, signature, payload);
+          } catch (error) {
+            console.log('vefify failed for user', user.name);
+          }
+        });
+
+        if (matchingFinger) {
+          try {
+            await fingerPresence(matchingFinger.saveFinger);
+            console.log(`Finger ${matchingFinger} berhasil divalidasi`);
+          } catch (error) {
+            console.log(`Error validasi finger ${matchingFinger}:`, error);
+          }
+        } else {
+          ToastAndroid.show('Fingerprint tidak sesuai', ToastAndroid.SHORT);
+        }
+      } else {
+        ToastAndroid.show('Fingerprint validation failed', ToastAndroid.SHORT);
+      }
     } catch (error) {
       console.error('Error validating fingerprint:', error);
       ToastAndroid.show('Error validating fingerprint', ToastAndroid.SHORT);
@@ -155,7 +124,7 @@ export default function PresenceEmployee({navigation}) {
             {/* Fingerprint */}
             <View style={styles.kontainerFingerprint}>
               <Text style={styles.teksKonfirmasi}>
-                Konfirmasi menggunakan sidik jari Anda
+                Sentuh gambar fingerprint di layar
               </Text>
               <Gap height={5} />
               <Text style={styles.teksDeskripsi}>

@@ -20,12 +20,10 @@ export const fingerPresence = async finger => {
     }
   } catch (error) {
     if (error.response) {
-      // Menampilkan pesan error spesifik dari API
       const errorMessage = error.response?.data?.message || 'Terjadi kesalahan';
       ToastAndroid.show(errorMessage, ToastAndroid.SHORT);
       console.log('ERROR MESSAGE:', errorMessage);
     } else {
-      // Menampilkan pesan kesalahan umum
       console.log('ERROR CODE:', error.message);
       ToastAndroid.show(error.message, ToastAndroid.SHORT);
     }
@@ -51,27 +49,23 @@ export const createFinger = async (finger, user_id) => {
 
     if (response?.data?.message === 'Data Anda Telah Berhasil Tersimpan') {
       ToastAndroid.show(response.data?.message, ToastAndroid.SHORT);
-      return {success: true, saveFinger, name}; // Mengembalikan finger jika berhasil
+      return {success: true, saveFinger, name};
     } else if (response?.data?.message === 'Anda Sudah Mendaftar Sebelumnya') {
       ToastAndroid.show('Fingerprint sudah terdaftar', ToastAndroid.SHORT);
-      return {success: false}; // Indikasi bahwa fingerprint sudah terdaftar
+      return {success: false};
     } else {
       throw new Error(response.data?.message || 'Error saat menyimpan data');
     }
   } catch (error) {
     if (error.response && error.response.status === 503) {
-      // Khusus untuk error 503
-      console.log('ERROR API RESPONSE CREATE: 503 Service Unavailable');
       ToastAndroid.show(
         'Server sedang dalam perawatan atau sibuk. Silakan coba lagi nanti.',
         ToastAndroid.LONG,
       );
     } else if (error.response) {
-      // VALIDASI ERROR RESPONSE API
       console.log('ERROR API RESPONSE CREATE:', error.response?.data?.message);
       ToastAndroid.show(error.response?.data?.message, ToastAndroid.SHORT);
     } else {
-      // VALIDASI ERROR DEVELOPER
       console.log('ERROR CODE:', error.message);
       ToastAndroid.show(error.message, ToastAndroid.SHORT);
     }
@@ -85,16 +79,11 @@ export const getUserFromDepartment = async (id_division, id_department) => {
     const response = await api.get(
       `/user/division/${id_division}/department/${id_department}`,
     );
-    // console.log('USER DATA:', response.data.data);
     return response.data?.data;
   } catch (error) {
     if (error.response) {
-      // VALIDASI ERROR RESPONSE API
-      console.log('ERROR API RESPONSE:', error.response.data);
       ToastAndroid.show(error.response.data, ToastAndroid.SHORT);
     } else {
-      // VALIDASI ERROR DEVELOPER
-      console.log('ERROR CODE:', error.message);
       ToastAndroid.show(error.message, ToastAndroid.SHORT);
     }
   }
@@ -104,7 +93,6 @@ export const getUserFromDepartment = async (id_division, id_department) => {
 export const getAllDivision = async () => {
   try {
     const response = await api.get('/data-division');
-    // console.log('response data divisi', response.data?.data);
     const division = response.data?.data;
     if (division) {
       return division;
@@ -113,12 +101,8 @@ export const getAllDivision = async () => {
     }
   } catch (error) {
     if (error.response) {
-      // VALIDASI ERROR RESPONSE API
-      console.log('ERROR API RESPONSE:', error.response.data);
       ToastAndroid.show(error.response.data, ToastAndroid.SHORT);
     } else {
-      // VALIDASI ERROR DEVELOPER
-      console.log('ERROR CODE:', error.message);
       ToastAndroid.show(error.message, ToastAndroid.SHORT);
     }
   }
@@ -128,7 +112,6 @@ export const getAllDivision = async () => {
 export const getDepartmentByDivision = async id_division => {
   try {
     const response = await api.get(`/data-department/${id_division}`);
-    // console.log('response data department', response.data?.data);
     const departement = response.data?.data;
 
     if (departement) {
@@ -138,12 +121,8 @@ export const getDepartmentByDivision = async id_division => {
     }
   } catch (error) {
     if (error.response) {
-      // VALIDASI ERROR RESPONSE API
-      console.log('ERROR RESPONSE API:', error.response.data);
       ToastAndroid.show(error.response.data, ToastAndroid.SHORT);
     } else {
-      // VALIDASI ERROR DEVELOPER
-      console.log('ERROR CODE:', error.message);
       ToastAndroid.show(error.message, ToastAndroid.SHORT);
     }
   }
