@@ -99,6 +99,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     justifyContent: 'center',
     alignItems: 'center',
-    elevation: 2, // Untuk memberikan bayangan pada lingkaran
+    elevation: 2,
   },
 });
