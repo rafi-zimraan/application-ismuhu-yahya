@@ -15,7 +15,6 @@ export default function ButtonAction({
   backgroundColor = '#00AF81',
   color = 'white',
   loading = false,
-  borderColor = '#00AF81',
   iconLeft,
   iconRight,
 }) {
@@ -24,7 +23,7 @@ export default function ButtonAction({
       useForeground
       onPress={onPress}
       disabled={disabled}>
-      <View style={{...styles.container, backgroundColor, borderColor}}>
+      <View style={{...styles.container, backgroundColor}}>
         {loading ? (
           <ActivityIndicator color={'white'} size={'small'} />
         ) : (
@@ -61,7 +60,6 @@ const styles = StyleSheet.create({
     width: '90%',
     height: 50,
     borderRadius: 50 / 5,
-    borderWidth: 1,
     overflow: 'hidden',
     elevation: 3,
     alignSelf: 'center',

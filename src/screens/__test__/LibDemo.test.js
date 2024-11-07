@@ -256,109 +256,21 @@
 
 // export default LibDemo;
 
-// import React from 'react';
-// import {Alert, StyleSheet, View} from 'react-native';
-// import {Gap, HeaderSearch} from '../../Component';
-
-// export default function LibDemo() {
-//   function alertTes() {
-//     Alert.alert('hii', 'hello');
-//   }
-
-//   return (
-//     <View style={{alignItems: 'flex-start', flex: 1, padding: 15}}>
-//       <Gap height={40} />
-//       <HeaderSearch
-//         placeholder="search something..."
-//         onChangeText={text => console.log(text)}
-//         placeholderTextColor={'green'}
-//         onProfilePress={alertTes}
-//       />
-//     </View>
-//   );
-// }
-
-// const styles = StyleSheet.create({});
-
 import React from 'react';
-import {Text, TouchableOpacity, View} from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons'; // Icon library
+import {Text, View} from 'react-native';
+import {ModalCustom} from '../../Component';
 
-function BottomTabBar({state, descriptors, navigation}) {
-  const iconColorDefault = '#808080'; // Grey color
-  const iconColorActive = '#FFB200'; // Active color
-
+export default function LibDemo({navigation}) {
   return (
-    <View
-      style={{
-        flexDirection: 'row',
-        backgroundColor: '#fff',
-        paddingVertical: 10,
-      }}>
-      {state.routes.map((route, index) => {
-        const {options} = descriptors[route.key];
-        const label =
-          options.tabBarLabel !== undefined
-            ? options.tabBarLabel
-            : options.title !== undefined
-            ? options.title
-            : route.name;
-
-        const isFocused = state.index === index;
-
-        // Icon for each tab based on route name
-        let iconName;
-        if (route.name === 'Beranda') {
-          iconName = 'home';
-        } else if (route.name === 'Message') {
-          iconName = 'message';
-        } else if (route.name === 'Setting') {
-          iconName = 'cog';
-        }
-
-        const onPress = () => {
-          const event = navigation.emit({
-            type: 'tabPress',
-            target: route.key,
-            canPreventDefault: true,
-          });
-
-          if (!isFocused && !event.defaultPrevented) {
-            navigation.navigate(route.name, route.params);
-          }
-        };
-
-        const onLongPress = () => {
-          navigation.emit({
-            type: 'tabLongPress',
-            target: route.key,
-          });
-        };
-
-        return (
-          <TouchableOpacity
-            key={route.key}
-            accessibilityRole="button"
-            accessibilityState={isFocused ? {selected: true} : {}}
-            accessibilityLabel={options.tabBarAccessibilityLabel}
-            testID={options.tabBarTestID}
-            onPress={onPress}
-            onLongPress={onLongPress}
-            style={{flex: 1, alignItems: 'center'}}>
-            <Icon
-              name={iconName}
-              size={24}
-              color={isFocused ? iconColorActive : iconColorDefault} // Change icon color when focused
-            />
-            <Text
-              style={{color: isFocused ? iconColorActive : iconColorDefault}}>
-              {label}
-            </Text>
-          </TouchableOpacity>
-        );
-      })}
+    <View style={{flex: 1}}>
+      {/* <AlertPopUp /> */}
+      <ModalCustom
+        iconModalName="check-decagram-outline"
+        title="Cuti Successfuly"
+        description="Selamat melanjutkan aktivitas anda.. semoga di permudah aktivitasnya yaa 😆"
+        buttonSubmit={() => navigation.navigate('SignIn')}
+      />
+      <Text> hii</Text>
     </View>
   );
 }
-
-export default BottomTabBar;

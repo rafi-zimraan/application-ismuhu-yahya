@@ -11,9 +11,10 @@ import {Background, Gap, HeaderTransparent} from '../../Component';
 import {IMG_ISMUHUYAHYA_FUll} from '../../assets';
 import {ButtonMenu} from '../../features/Dasboard';
 
-const {height, width} = Dimensions.get('window');
+const {width} = Dimensions.get('window');
 
 export default function MenuPresence({navigation}) {
+  const isTablet = width > 600;
   return (
     <View style={{flex: 1}}>
       <StatusBar barStyle={'default'} backgroundColor={'transparent'} />
@@ -27,7 +28,10 @@ export default function MenuPresence({navigation}) {
         <View style={styles.content}>
           <Image
             source={IMG_ISMUHUYAHYA_FUll}
-            style={styles.img}
+            style={[
+              styles.img,
+              isTablet ? styles.imgTablet : styles.imgHandphone,
+            ]}
             resizeMethod="scale"
           />
           <Gap height={20} />
@@ -35,14 +39,14 @@ export default function MenuPresence({navigation}) {
             <ButtonMenu
               title="Daftar Fingerprint"
               iconName="fingerprint"
-              iconSize={60}
+              iconSize={40}
               onPress={() => navigation.navigate('DaftarPresence')}
             />
             <Gap width={5} />
             <ButtonMenu
               title="Presensi"
               iconName="calendar-check"
-              iconSize={60}
+              iconSize={40}
               onPress={() => navigation.navigate('PresenceEmployee')}
             />
           </View>
@@ -62,10 +66,18 @@ const styles = StyleSheet.create({
     top: 50,
   },
   img: {
-    width: 535,
-    height: 185,
     resizeMode: 'contain',
     alignSelf: 'center',
+  },
+  imgTablet: {
+    width: 535,
+    height: 185,
+  },
+  imgHandphone: {
+    width: '90%',
+    height: undefined,
+    aspectRatio: 535 / 185,
+    paddingHorizontal: 10,
   },
   bodyButton: {
     flexWrap: 'wrap',

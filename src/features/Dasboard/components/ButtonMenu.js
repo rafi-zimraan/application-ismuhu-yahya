@@ -37,7 +37,7 @@ const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
     marginBottom: 15,
-    marginHorizontal: 7,
+    marginHorizontal: 15,
   },
   image: {
     width: 47.5,
@@ -51,8 +51,8 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     elevation: 3,
     padding: 10,
-    width: 79,
-    height: 80,
+    width: 60,
+    height: 60,
   },
   textTitle: {
     fontWeight: 'bold',

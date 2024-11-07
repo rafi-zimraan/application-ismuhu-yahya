@@ -18,7 +18,7 @@ function BottomTabs() {
       <Tab.Screen
         name="Message"
         component={Message}
-        options={{tabBarLabel: 'Message'}}
+        options={{tabBarLabel: 'Notification'}}
       />
       <Tab.Screen
         name="Setting"

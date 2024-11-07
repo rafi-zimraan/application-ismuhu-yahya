@@ -26,6 +26,7 @@ export default function PresenceEmployee({navigation}) {
   const [newTime, setNewTime] = useState(moment());
   const formatWaktu = newTime.format('hh:mm A');
   const formatTanggal = newTime.format('dddd, DD MMMM YYYY');
+  const isTablet = width > 600;
   // const selecteduser = watch('username');
   // // console.log('user_id', selecteduser);
 
@@ -110,7 +111,7 @@ export default function PresenceEmployee({navigation}) {
       />
       <ScrollView stickyHeaderHiddenOnScroll stickyHeaderIndices={[0]}>
         <View style={styles.badan}>
-          <Image source={IMG_ISMUHUYAHYA_FUll} style={styles.gambar} />
+          <Image source={IMG_ISMUHUYAHYA_FUll} style={styles.img} />
           <Gap height={55} />
 
           <View style={styles.isi}>
@@ -157,7 +158,17 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     padding: 15,
   },
-  gambar: {
+  imgPhone: {
+    width: '90%',
+    height: undefined,
+    aspectRatio: 535 / 185,
+    paddingHorizontal: 10,
+  },
+  imgTablet: {
+    width: 535,
+    height: 185,
+  },
+  img: {
     height: height * 0.21,
     width: width * 0.9,
     resizeMode: 'contain',

@@ -18,6 +18,7 @@ const COLORS = {
   greenBoy: '#0cb300',
   secondary: '#6bbd00',
   secondary_off: '#7d8e67',
+  greenSoft: '#00880C',
   ripple: TouchableNativeFeedback.Ripple('#0000001a', false),
 };
 

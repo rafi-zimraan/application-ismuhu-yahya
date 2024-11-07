@@ -10,7 +10,7 @@ import ButtonRefresh from './screens/ButtonRefresh';
 import ButtonViewMore from './screens/ButtonViewMore';
 import ErrorGlobal from './screens/ErrorGlobal';
 import FloatingButton from './screens/FloatingButton';
-import FormInput from './screens/FormInput';
+import FormInputComponent from './screens/FormInputComponent';
 import Gap from './screens/Gap';
 import Header from './screens/Header';
 import HeaderSearch from './screens/HeaderSearch';
@@ -26,7 +26,7 @@ export {
   AlertPopUp,
   Gap,
   SearchInput,
-  FormInput,
+  FormInputComponent,
   ButtonAction,
   Background,
   AppVersion,

@@ -1,9 +1,12 @@
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import React from 'react';
+import {FormulirCuti} from '../features/Perizinan';
 import {
   DaftarPresence,
+  History,
   LibDemo,
   MenuPresence,
+  Perizinan,
   PresenceEmployee,
   SignIn,
   SignUp,
@@ -30,6 +33,9 @@ export default function Navigator() {
       <Stack.Screen name="PresenceEmployee" component={PresenceEmployee} />
       <Stack.Screen name="MenuPresence" component={MenuPresence} />
       <Stack.Screen name="DaftarPresence" component={DaftarPresence} />
+      <Stack.Screen name="Perizinan" component={Perizinan} />
+      <Stack.Screen name="FormulirCuti" component={FormulirCuti} />
+      <Stack.Screen name="History" component={History} />
       {/* <Stack.Screen name="BottomUser" component={BottomUser} /> */}
       {/* <Stack.Screen name="Onboarding" component={Onboarding} /> */}
     </Stack.Navigator>
