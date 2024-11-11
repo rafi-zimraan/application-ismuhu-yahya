@@ -24,40 +24,47 @@ export default function MenuPresence({navigation}) {
         title="Menu Presensi"
         onPress={() => navigation.goBack()}
       />
-      <ScrollView stickyHeaderHiddenOnScroll stickyHeaderIndices={[0]}>
-        <View style={styles.content}>
-          <Image
-            source={IMG_ISMUHUYAHYA_FUll}
-            style={[
-              styles.img,
-              isTablet ? styles.imgTablet : styles.imgHandphone,
-            ]}
-            resizeMethod="scale"
-          />
-          <Gap height={20} />
-          <View style={styles.bodyButton}>
-            <ButtonMenu
-              title="Daftar Fingerprint"
-              iconName="fingerprint"
-              iconSize={40}
-              onPress={() => navigation.navigate('DaftarPresence')}
+      <View style={styles.container}>
+        <ScrollView stickyHeaderHiddenOnScroll stickyHeaderIndices={[0]}>
+          <View style={styles.content}>
+            <Image
+              source={IMG_ISMUHUYAHYA_FUll}
+              style={[
+                styles.img,
+                isTablet ? styles.imgTablet : styles.imgHandphone,
+              ]}
+              resizeMethod="scale"
             />
-            <Gap width={5} />
-            <ButtonMenu
-              title="Presensi"
-              iconName="calendar-check"
-              iconSize={40}
-              onPress={() => navigation.navigate('PresenceEmployee')}
-            />
+            <Gap height={20} />
+            <View style={styles.bodyButton}>
+              <ButtonMenu
+                title="Daftar Fingerprint"
+                iconName="fingerprint"
+                iconSize={40}
+                onPress={() => navigation.navigate('DaftarPresence')}
+              />
+              <Gap width={5} />
+              <ButtonMenu
+                title="Presensi"
+                iconName="calendar-check"
+                iconSize={40}
+                onPress={() => navigation.navigate('PresenceEmployee')}
+              />
+            </View>
+            <Gap height={100} />
           </View>
-          <Gap height={100} />
-        </View>
-      </ScrollView>
+        </ScrollView>
+      </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
+  container: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 37,
+  },
   content: {
     flex: 1,
     justifyContent: 'center',
@@ -84,7 +91,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     maxWidth: 720,
-    alignSelf: 'center',
+    // alignSelf: 'center',
     alignItems: 'center',
   },
 });

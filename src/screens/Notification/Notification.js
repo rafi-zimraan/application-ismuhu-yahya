@@ -1,4 +1,5 @@
 import React from 'react';
+import {useForm} from 'react-hook-form';
 import {
   Alert,
   Image,
@@ -12,12 +13,21 @@ import {
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {Background, Gap} from '../../Component';
 import {IMG_PROFILE_FAKE} from '../../assets';
+import {DropdownPicker} from '../../features/Notification';
 import {COLORS} from '../../utils';
 
-export default function Message() {
+export default function Notification() {
+  const {control} = useForm();
+
   const handleAllert = () => {
     Alert.alert('Perhatian', 'Doakan Agar fitur segera selesai');
   };
+
+  const pickerData = [
+    {label: 'Item 1', value: 'item1'},
+    {label: 'Item 2', value: 'item2'},
+    {label: 'Item 3', value: 'item3'},
+  ];
 
   return (
     <View style={{flex: 1}}>
@@ -35,9 +45,17 @@ export default function Message() {
           </View>
         </View>
 
-        {/* Menu */}
+        {/* Button Filter */}
+        <DropdownPicker
+          title="Select Item"
+          picker={{
+            data: pickerData,
+            onSelect: value => console.log(value),
+          }}
+        />
+
         <View style={{padding: 15}}>
-          {/* Title */}
+          {/* Menu */}
           <View style={styles.contentMenu}>
             <Text style={styles.txtTitleMenu}>Obrolan Baru-baru ini</Text>
             <Gap width={15} />
@@ -46,7 +64,7 @@ export default function Message() {
           <Gap height={15} />
 
           {/* Body Message */}
-          <View style={styles.bodyNotification}>
+          <TouchableOpacity activeOpacity={0.7} style={styles.bodyNotification}>
             <Image source={IMG_PROFILE_FAKE} style={styles.imgNotif} />
             <Gap width={13} />
             <View style={styles.viewMessage}>
@@ -62,7 +80,7 @@ export default function Message() {
                 <Text style={styles.msgCountText}>3</Text>
               </View>
             </View>
-          </View>
+          </TouchableOpacity>
         </View>
       </ScrollView>
     </View>
@@ -73,23 +91,21 @@ const styles = StyleSheet.create({
   rightContainer: {
     alignItems: 'center',
     justifyContent: 'space-between',
+    alignSelf: 'flex-end',
   },
-
   txtTime: {
     fontSize: 13,
     color: COLORS.grey,
     fontWeight: '600',
     alignSelf: 'flex-end',
   },
-
   msgCountContainer: {
     marginTop: 8,
-    backgroundColor: COLORS.blue,
+    backgroundColor: COLORS.goldenOrange,
     borderRadius: 10,
     paddingHorizontal: 6,
     paddingVertical: 2,
   },
-
   msgCountText: {
     fontSize: 12,
     color: COLORS.white,
@@ -109,18 +125,20 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     alignSelf: 'center',
     height: 50,
+    flex: 1,
   },
   imgNotif: {
     height: 55,
     width: 55,
   },
   bodyNotification: {
-    flexDirection: 'row',
     backgroundColor: COLORS.blueLight,
-    height: 80,
-    elevation: 5,
+    flexDirection: 'row',
+    alignItems: 'center',
     borderRadius: 15,
+    elevation: 5,
     padding: 15,
+    height: 80,
   },
   contentMenu: {
     justifyContent: 'flex-start',
@@ -133,7 +151,7 @@ const styles = StyleSheet.create({
     fontWeight: '800',
   },
   txtTitleMenuMonth: {
-    fontSize: 15,
+    fontSize: 13,
     color: COLORS.grey,
     fontWeight: '600',
   },

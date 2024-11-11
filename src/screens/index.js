@@ -5,7 +5,7 @@ import DasboardMaster from './DasboardMaster/DasboardMaster';
 import DrawerContent from './DrawerContent/DrawerContent';
 import History from './History/History';
 import Label from './Label/Label';
-import Message from './Message/Message';
+import Notification from './Notification/Notification';
 import Onboarding from './Onboarding/Onboarding';
 import Perizinan from './Perizinan/Perizinan';
 import DaftarPresence from './PresenceEmployee/DaftarPresence';
@@ -18,7 +18,7 @@ import LibDemo from './__test__/LibDemo.test';
 export {
   History,
   Perizinan,
-  Message,
+  Notification,
   Profile,
   DaftarPresence,
   MenuPresence,

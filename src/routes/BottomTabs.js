@@ -1,6 +1,6 @@
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import React from 'react';
-import {Dashboard, Message, Profile} from '../screens';
+import {Dashboard, Notification, Profile} from '../screens';
 import BottomTabBar from './BottomTabBar';
 
 const Tab = createBottomTabNavigator();
@@ -17,7 +17,7 @@ function BottomTabs() {
       />
       <Tab.Screen
         name="Message"
-        component={Message}
+        component={Notification}
         options={{tabBarLabel: 'Notification'}}
       />
       <Tab.Screen
