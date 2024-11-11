@@ -8,6 +8,7 @@ import ICON_PRESENCE_OUT from '../assets/icons/presence-out.png';
 import ICON_PRESENCE_RANDOM from '../assets/icons/presence-random.png';
 import ICON_YAUMI from '../assets/icons/yaumi.png';
 import IMG_NEWS from '../assets/images/IMGNEWS.png';
+import IMG_PROFILE_FAKE from '../assets/images/ImageFake.png';
 import IMG_LOGO from '../assets/images/LOGO.png';
 import IMG_BANNER from '../assets/images/banner.png';
 import IMG_BANNER_MASJID from '../assets/images/bannerMasjid.jpg';
@@ -23,6 +24,7 @@ import ICON_PRAYING from '../assets/yaumi/praying.png';
 import ICON_READING_QURAN from '../assets/yaumi/reading-quran.png';
 
 export {
+  IMG_PROFILE_FAKE,
   IMG_BANNER_MASJID,
   IMG_NEWS,
   IMG_BANNER,

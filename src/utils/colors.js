@@ -1,6 +1,7 @@
 import {TouchableNativeFeedback} from 'react-native';
 
 const COLORS = {
+  red: '#FC2D2D',
   softGrey: '#D9D9D9 ',
   darkGreen: '#1C2522 ',
   black: '#000000',
@@ -8,7 +9,7 @@ const COLORS = {
   white: '#FFFFFF',
   turquoiseGreen: '#00AF81',
   greyText: '#5DB075',
-  grey: 'grey',
+  grey: '#4F5E7B',
   primary: '#f0c800',
   primary_dark: '#b8a500',
   header: '#ffe500',
@@ -19,6 +20,8 @@ const COLORS = {
   secondary: '#6bbd00',
   secondary_off: '#7d8e67',
   greenSoft: '#00880C',
+  blue: '#537FE7',
+  blueLight: '#67A3F4',
   ripple: TouchableNativeFeedback.Ripple('#0000001a', false),
 };
 

@@ -12,7 +12,6 @@ import DaftarPresence from './PresenceEmployee/DaftarPresence';
 import MenuPresence from './PresenceEmployee/MenuPresence';
 import PresenceEmployee from './PresenceEmployee/PresenceEmployee';
 import Profile from './Profile/Profile';
-import SettingUser from './SettingUser/SettingUser';
 import SplashScreen from './SplashScreen/SplashScreen';
 import LibDemo from './__test__/LibDemo.test';
 
@@ -30,7 +29,6 @@ export {
   SignUp,
   SignIn,
   LibDemo,
-  SettingUser,
   Label,
   SplashScreen,
   Dashboard,
