@@ -11,12 +11,12 @@ import {
 import {COLORS} from '../../utils';
 
 export default function Dashboard({navigation}) {
-  const [allTime, setAllTime] = useState(moment());
-  const formatTime = allTime.format('hh:mm A');
+  const [allTime, setAllTime] = useState(moment().utcOffset(7)); // set offset ke wib (UTC + 7)
+  const formatTime = allTime.format('HH:mm:ss') + ' WIB'; // hh:mm A
 
   useEffect(() => {
     const Time = setInterval(() => {
-      setAllTime(moment());
+      setAllTime(moment().utcOffset(7));
     }, 1000);
     return () => clearInterval(Time);
   }, []);

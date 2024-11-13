@@ -22,7 +22,7 @@ const authSlice = createSlice({
     },
     ClearUserSession(state) {
       state.token = '';
-      state.user = {email: '', name: ''};
+      state.user = {email: '', name: '', role: ''};
     },
     setToken(state, {payload}) {
       state.token = payload;

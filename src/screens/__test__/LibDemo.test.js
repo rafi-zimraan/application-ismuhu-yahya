@@ -256,7 +256,7 @@
 
 // export default LibDemo;
 
-// import React, {useEffect, useRef} from 'react';
+// import React, { useEffect, useRef } from 'react';
 // import {
 //   Animated,
 //   FlatList,
@@ -455,7 +455,6 @@
 import {Picker} from '@react-native-picker/picker';
 import React, {useState} from 'react';
 import {useForm} from 'react-hook-form';
-import {StyleSheet, View} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {Gap} from '../../Component';
 

@@ -1,11 +1,11 @@
 import {Picker} from '@react-native-picker/picker';
 import React, {useState} from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {COLORS} from '../../../utils';
 
 export default function DropdownPicker({
-  title = 'filter',
+  title = 'select item',
   picker = {
     data: [],
     loading: false,
@@ -18,14 +18,9 @@ export default function DropdownPicker({
 
   return (
     <View style={styles.container}>
-      <View style={styles.dropdownContainer}>
-        <Icon
-          name="filter-menu-outline"
-          size={18} // Memperbesar ikon
-          color="black"
-          style={styles.icon}
-        />
-        <Text style={styles.filterText}>Filter</Text>
+      <TouchableOpacity style={styles.dropdownContainer} activeOpacity={0.7}>
+        <Text style={styles.filterText}>{title}</Text>
+        <Icon name="menu-down" size={24} color="black" style={styles.icon} />
         <Picker
           selectedValue={selectedValue}
           onValueChange={value => {
@@ -33,8 +28,9 @@ export default function DropdownPicker({
             if (picker.onSelect) picker.onSelect(value);
           }}
           style={styles.picker}
-          dropdownIconColor="black">
-          <Picker.Item label={`${title}`} value={null} />
+          dropdownIconColor="black"
+          mode="dialog">
+          <Picker.Item label={title} value={null} />
           {picker.data.map((item, index) => (
             <Picker.Item
               key={index}
@@ -43,7 +39,7 @@ export default function DropdownPicker({
             />
           ))}
         </Picker>
-      </View>
+      </TouchableOpacity>
     </View>
   );
 }
@@ -51,29 +47,31 @@ export default function DropdownPicker({
 const styles = StyleSheet.create({
   container: {
     justifyContent: 'center',
-    padding: 8, // Padding lebih kecil
-    width: 110, // Lebih kecil lagi
+    padding: 8,
+    width: 90,
     alignSelf: 'flex-end',
   },
   dropdownContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: COLORS.grey,
+    justifyContent: 'center',
+    backgroundColor: COLORS.goldenOrange,
+    height: 35,
     borderRadius: 8,
-    overflow: 'hidden',
-    paddingHorizontal: 5, // Padding lebih kecil
-    // width: 150, // Lebar lebih kecil
-  },
-  icon: {
-    marginRight: 8, // Jarak lebih luas antar ikon dan teks
+    paddingHorizontal: 5,
   },
   filterText: {
-    fontSize: 14, // Ukuran font filter lebih jelas
-    marginRight: 8, // Menjaga jarak antara teks dan dropdown
+    fontSize: 14,
+    color: COLORS.black,
+    fontWeight: '500',
+  },
+  icon: {
+    marginLeft: 2,
   },
   picker: {
-    flex: 1,
-    height: 25, // Menurunkan tinggi picker untuk kompak
-    color: 'black',
+    position: 'absolute',
+    width: '100%',
+    height: '100%',
+    opacity: 0,
   },
 });

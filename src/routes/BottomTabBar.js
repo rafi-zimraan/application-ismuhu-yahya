@@ -27,8 +27,8 @@ export default function BottomTabBar({state, descriptors, navigation}) {
         let iconName;
         if (route.name === 'Beranda') {
           iconName = 'home';
-        } else if (route.name === 'Message') {
-          iconName = 'message';
+        } else if (route.name === 'bell-outline') {
+          iconName = 'bell-outline';
         } else if (route.name === 'Setting') {
           iconName = 'cog';
         }
@@ -58,19 +58,36 @@ export default function BottomTabBar({state, descriptors, navigation}) {
             accessibilityRole="button"
             accessibilityState={isFocused ? {selected: true} : {}}
             accessibilityLabel={options.tabBarAccessibilityLabel}
+            activeOpacity={0.4}
             testID={options.tabBarTesId}
             onPress={onPress}
             onLongPress={onLongPress}
             style={{flex: 1, alignItems: 'center'}}>
             <Icon
               name={iconName}
-              size={24}
+              size={34}
               color={isFocused ? iconColorActive : iconColorDefault}
             />
             <Text
               style={{color: isFocused ? iconColorActive : iconColorDefault}}>
               {label}
             </Text>
+            {options.tabBarBadge != null && (
+              <View
+                style={{
+                  position: 'absolute',
+                  top: 2,
+                  right: 42,
+                  backgroundColor: 'red',
+                  borderRadius: 10,
+                  paddingHorizontal: 6,
+                  paddingVertical: 2,
+                }}>
+                <Text style={{color: 'white', fontSize: 13, fontWeight: '800'}}>
+                  {options.tabBarBadge}
+                </Text>
+              </View>
+            )}
           </TouchableOpacity>
         );
       })}

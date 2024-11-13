@@ -1,13 +1,5 @@
 import React from 'react';
-import {
-  Alert,
-  Image,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import {Alert, Image, StyleSheet, Text, View} from 'react-native';
 import {IMG_LOGO} from '../../../assets';
 import {COLORS} from '../../../utils';
 
@@ -26,7 +18,7 @@ export default function ClockDasboard({formatTime}) {
           <Image source={IMG_LOGO} style={styles.imgLogoClock} />
           <Text style={styles.txtClock}>{formatTime}</Text>
         </View>
-        <TouchableOpacity
+        {/* <TouchableOpacity
           activeOpacity={0.6}
           style={styles.contentRequest}
           onPress={handleAlert}>
@@ -38,7 +30,7 @@ export default function ClockDasboard({formatTime}) {
             />
           </View>
           <Text style={styles.txtBodyRequest}>Saran</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
     </View>
   );
@@ -56,9 +48,10 @@ const styles = StyleSheet.create({
   bodyClock: {
     backgroundColor: COLORS.white,
     elevation: 5,
+    // alignSelf: 'center',
     alignItems: 'center',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    // flexDirection: 'row',
+    // justifyContent: 'space-between',
     height: 80,
     width: '90%',
     padding: 15,
@@ -70,14 +63,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   imgLogoClock: {
-    width: 85,
-    height: 45,
+    width: 101,
+    height: 54,
   },
   txtClock: {
-    textAlign: 'left',
-    fontSize: 24,
+    textAlign: 'auto',
+    fontSize: 27,
     color: COLORS.black,
     fontWeight: '600',
+    right: 10,
   },
   contentRequest: {
     alignItems: 'center',

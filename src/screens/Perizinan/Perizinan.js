@@ -25,7 +25,7 @@ export default function Perizinan({navigation}) {
           <StatusButton
             iconColor="tomato"
             iconName="alert-outline"
-            label="0 Dipakai"
+            label="0 Tidak Terpakai"
           />
           <StatusButton
             iconColor="green"

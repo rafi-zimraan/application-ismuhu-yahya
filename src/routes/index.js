@@ -3,6 +3,7 @@ import React from 'react';
 import {FormulirCuti} from '../features/Perizinan';
 import {
   DaftarPresence,
+  DetailNotification,
   History,
   LibDemo,
   MenuPresence,
@@ -12,6 +13,7 @@ import {
   SignUp,
   SplashScreen,
 } from '../screens';
+import BottomTabs from './BottomTabs';
 import DrawerNavigation from './drawer';
 
 const Stack = createNativeStackNavigator();
@@ -36,6 +38,8 @@ export default function Navigator() {
       <Stack.Screen name="Perizinan" component={Perizinan} />
       <Stack.Screen name="FormulirCuti" component={FormulirCuti} />
       <Stack.Screen name="History" component={History} />
+      <Stack.Screen name="DetailNotification" component={DetailNotification} />
+      <Stack.Screen name="BottomTabs" component={BottomTabs} />
       {/* <Stack.Screen name="BottomUser" component={BottomUser} /> */}
       {/* <Stack.Screen name="Onboarding" component={Onboarding} /> */}
     </Stack.Navigator>

@@ -10,6 +10,7 @@ import {
   ModalCustom,
 } from '../../../Component';
 import {COLORS} from '../../../utils';
+import {FormInput} from '../../authentication';
 
 export default function FormulirCuti({navigation}) {
   const {control, handleSubmit, watch, setValue} = useForm();
@@ -65,10 +66,9 @@ export default function FormulirCuti({navigation}) {
             mode="text"
             placeholder="inputkan nama anda.."
           />
-
-          {/* <Gap height={10} /> */}
+          <Gap height={10} />
           {/* divisi */}
-          {/* <FormInput
+          <FormInput
             control={control}
             name="division"
             mode="picker"
@@ -77,16 +77,16 @@ export default function FormulirCuti({navigation}) {
             style={styles.dropdown}
           />
 
-          <Gap height={10} /> */}
+          <Gap height={10} />
           {/* department */}
-          {/* <FormInput
+          <FormInput
             control={control}
             name="department"
             mode="picker"
             iconName="domain"
             title="Divisi"
             style={styles.dropdown}
-          /> */}
+          />
           <Gap height={10} />
           {/* date & time cuti */}
           <Gap height={5} />
