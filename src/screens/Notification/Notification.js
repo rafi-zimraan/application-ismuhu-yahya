@@ -252,10 +252,8 @@
 //     fontWeight: '700',
 //   },
 // });
-
 import React, {useEffect, useState} from 'react';
 import {
-  Alert,
   Image,
   ScrollView,
   StatusBar,
@@ -275,8 +273,10 @@ import {COLORS} from '../../utils';
 export default function Notification({navigation}) {
   const dispatch = useDispatch();
   const unreadCount = useSelector(state => state.notification.unreadCount);
-  console.log('count', unreadCount);
   const [selectedMessages, setSelectedMessages] = useState([]);
+  const [selectedMonth, setSelectedMonth] = useState(null);
+  console.log('ini data bulan', selectedMonth);
+
   const [messageState, setMessageState] = useState([
     {
       id: 1,
@@ -285,6 +285,7 @@ export default function Notification({navigation}) {
       time: '07.00',
       count: 3,
       status: 'read',
+      month: 'Nov',
     },
     {
       id: 2,
@@ -293,6 +294,7 @@ export default function Notification({navigation}) {
       time: '17.30',
       count: 2,
       status: 'delivered',
+      month: 'Dec',
     },
     {
       id: 3,
@@ -301,6 +303,7 @@ export default function Notification({navigation}) {
       time: '13.00',
       count: 1,
       status: 'delivered',
+      month: 'Oct',
     },
   ]);
 
@@ -308,20 +311,8 @@ export default function Notification({navigation}) {
     const count = messageState
       .filter(msg => msg.status === 'delivered')
       .reduce((acc, curr) => acc + curr.count, 0);
-    console.log('count notif', unreadCount);
-
     dispatch(setUnreadCount(count));
   }, [messageState, dispatch]);
-
-  // useEffect(() => {
-  //   navigation.setOptions({
-  //     tabBarBadge: unreadCount > 0 ? unreadCount : null,
-  //   });
-  // }, [unreadCount, navigation]);
-
-  const handleAlert = () => {
-    Alert.alert('Perhatian', 'Doakan Agar fitur segera selesai');
-  };
 
   const handleDelete = () => {
     setMessageState(
@@ -338,11 +329,17 @@ export default function Notification({navigation}) {
     );
   };
 
+  // Data bulan untuk filter
   const pickerData = [
-    {label: 'Item 1', value: 'item1'},
-    {label: 'Item 2', value: 'item2'},
-    {label: 'Item 3', value: 'item3'},
+    {label: 'Oktober', value: 'Oct'},
+    {label: 'November', value: 'Nov'},
+    {label: 'Desember', value: 'Dec'},
   ];
+
+  // Pesan yang difilter berdasarkan bulan yang dipilih
+  const filteredMessages = selectedMonth
+    ? messageState.filter(msg => msg.month === selectedMonth)
+    : messageState;
 
   return (
     <View style={{flex: 1}}>
@@ -363,7 +360,7 @@ export default function Notification({navigation}) {
             ) : (
               <>
                 <Text style={styles.txtNotif}>Notification</Text>
-                <TouchableOpacity activeOpacity={0.5} onPress={handleAlert}>
+                <TouchableOpacity activeOpacity={0.5}>
                   <View style={styles.viewIconMagnify}>
                     <Icon name="magnify" size={30} color={COLORS.primary} />
                   </View>
@@ -375,10 +372,10 @@ export default function Notification({navigation}) {
 
         {/* Button Filter */}
         <DropdownPicker
-          title="filter"
+          title="Filter"
           picker={{
             data: pickerData,
-            onSelect: value => console.log(value),
+            onSelect: value => setSelectedMonth(value),
           }}
         />
 
@@ -386,11 +383,13 @@ export default function Notification({navigation}) {
           <View style={styles.contentMenu}>
             <Text style={styles.txtTitleMenu}>Obrolan Baru-baru ini</Text>
             <Gap width={15} />
-            <Text style={styles.txtTitleMenuMonth}>Nov</Text>
+            <Text style={styles.txtTitleMenuMonth}>
+              {selectedMonth || 'Bulan'}
+            </Text>
           </View>
           <Gap height={15} />
 
-          {messageState.map(({id, sender, message, time, count}) => (
+          {filteredMessages.map(({id, sender, message, time, count}) => (
             <TouchableOpacity
               key={id}
               activeOpacity={0.7}
@@ -429,7 +428,6 @@ export default function Notification({navigation}) {
     </View>
   );
 }
-
 const styles = StyleSheet.create({
   viewIconMagnify: {
     width: 40,

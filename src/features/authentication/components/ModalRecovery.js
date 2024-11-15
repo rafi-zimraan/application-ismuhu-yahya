@@ -51,7 +51,7 @@ export default function ModalRecovery() {
       <TouchableOpacity
         style={{alignSelf: 'center'}}
         onPress={() => setVisible(true)}>
-        <Text style={{color: 'grey', fontWeight: 'bold'}}>
+        <Text style={{color: COLORS.goldenOrange, fontWeight: 'bold'}}>
           Lupa kata sandi?
         </Text>
       </TouchableOpacity>

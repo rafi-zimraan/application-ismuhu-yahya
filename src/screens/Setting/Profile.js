@@ -1,41 +1,59 @@
 import React from 'react';
-import {
-  Animated,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import {Animated, ScrollView, StyleSheet, Text, View} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import {
+  Background,
+  FloatingButton,
+  Gap,
+  HeaderTransparent,
+} from '../../Component';
 import {IMG_PROFILE_FAKE} from '../../assets';
 
-export default function Biodata() {
+export default function Profile({navigation}) {
   const scrollY = new Animated.Value(0);
 
-  const headerHeight = scrollY.interpolate({
-    inputRange: [0, 150],
-    outputRange: [250, 120],
+  const profileImageSize = scrollY.interpolate({
+    inputRange: [10, 180],
+    outputRange: [130, 190],
     extrapolate: 'clamp',
   });
 
-  const profileImageSize = scrollY.interpolate({
+  const headerTransparentTop = scrollY.interpolate({
+    inputRange: [0, 120],
+    outputRange: [10, -20],
+    extrapolate: 'clamp',
+  });
+
+  const headerTransparentHeight = scrollY.interpolate({
     inputRange: [0, 150],
-    outputRange: [120, 60],
+    outputRange: [60, 10],
     extrapolate: 'clamp',
   });
 
   return (
     <View style={styles.container}>
-      {/* Animated Header */}
-      <Animated.View style={[styles.header, {height: headerHeight}]}>
+      <Background />
+      {/* Header dengan tinggi tetap */}
+      <View style={styles.header}>
+        <Animated.View
+          style={[
+            styles.headerTransparent,
+            {top: headerTransparentTop, height: headerTransparentHeight},
+          ]}>
+          <HeaderTransparent
+            title="profile "
+            icon="arrow-left-circle-outline"
+            onPress={() => navigation.goBack()}
+          />
+        </Animated.View>
         <LinearGradient
           colors={['#ffd700', '#daa520']}
           start={{x: 0, y: 0}}
           end={{x: 1, y: 1}}
           style={styles.gradientBackground}
         />
+        <Gap height={35} />
         <Animated.Image
           source={IMG_PROFILE_FAKE}
           style={[
@@ -43,10 +61,7 @@ export default function Biodata() {
             {width: profileImageSize, height: profileImageSize},
           ]}
         />
-        <TouchableOpacity style={styles.editIcon}>
-          <Icon name="pencil" size={24} color="white" />
-        </TouchableOpacity>
-      </Animated.View>
+      </View>
 
       <ScrollView
         contentContainerStyle={styles.scrollContainer}
@@ -64,32 +79,35 @@ export default function Biodata() {
 
         {/* Details Section */}
         <View style={styles.detailsContainer}>
-          <DetailRow
-            icon="map-marker"
-            label="Address"
-            text="123 Main St, Springfield"
-          />
-          <DetailRow icon="phone" label="Phone Number" text="+123 456 7890" />
-          <DetailRow icon="email" label="Email" text="johndoe@example.com" />
+          <View style={styles.detailRow}>
+            <Icon name="map-marker" size={24} color="#666" />
+            <View style={styles.detailTextContainer}>
+              <Text style={styles.detailsLabel}>Address</Text>
+              <Text style={styles.detailsText}>123 Main St, Springfield</Text>
+            </View>
+          </View>
+          <View style={styles.detailRow}>
+            <Icon name="phone" size={24} color="#666" />
+            <View style={styles.detailTextContainer}>
+              <Text style={styles.detailsLabel}>Phone Number</Text>
+              <Text style={styles.detailsText}>+123 456 7890</Text>
+            </View>
+          </View>
+          <View style={styles.detailRow}>
+            <Icon name="email" size={24} color="#666" />
+            <View style={styles.detailTextContainer}>
+              <Text style={styles.detailsLabel}>Email</Text>
+              <Text style={styles.detailsText}>johndoe@example.com</Text>
+            </View>
+          </View>
         </View>
       </ScrollView>
 
       {/* Floating Edit Button */}
-      <TouchableOpacity style={styles.editButton}>
-        <Icon name="pencil" size={28} color="white" />
-      </TouchableOpacity>
-    </View>
-  );
-}
-
-function DetailRow({icon, label, text}) {
-  return (
-    <View style={styles.detailRow}>
-      <Icon name={icon} size={24} color="#666" />
-      <View style={styles.detailTextContainer}>
-        <Text style={styles.detailsLabel}>{label}</Text>
-        <Text style={styles.detailsText}>{text}</Text>
-      </View>
+      <FloatingButton
+        iconName="pencil"
+        onPress={() => navigation.navigate('EditProfile')}
+      />
     </View>
   );
 }
@@ -97,7 +115,6 @@ function DetailRow({icon, label, text}) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
   },
   header: {
     backgroundColor: '#ffd700',
@@ -111,6 +128,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 10,
     elevation: 10,
+    height: 250,
   },
   gradientBackground: {
     ...StyleSheet.absoluteFillObject,
@@ -119,19 +137,14 @@ const styles = StyleSheet.create({
     borderRadius: 60,
     borderWidth: 4,
     borderColor: 'white',
-    marginBottom: 10,
+    marginTop: 30,
   },
-  editIcon: {
+  headerTransparent: {
     position: 'absolute',
-    top: 20,
+    left: 20,
     right: 20,
-    backgroundColor: '#daa520',
-    borderRadius: 12,
-    padding: 4,
-    shadowColor: '#000',
-    shadowOffset: {width: 0, height: 2},
-    shadowOpacity: 0.3,
-    elevation: 5,
+    zIndex: 10,
+    justifyContent: 'center',
   },
   scrollContainer: {
     padding: 20,
@@ -163,7 +176,7 @@ const styles = StyleSheet.create({
     color: '#888',
   },
   detailsContainer: {
-    marginTop: 20,
+    marginTop: 15,
     backgroundColor: '#fff',
     borderRadius: 15,
     padding: 20,
@@ -187,18 +200,5 @@ const styles = StyleSheet.create({
   detailsText: {
     fontSize: 16,
     color: '#333',
-  },
-  editButton: {
-    position: 'absolute',
-    bottom: 20,
-    right: 20,
-    backgroundColor: '#daa520',
-    borderRadius: 50,
-    padding: 14,
-    shadowColor: '#000',
-    shadowOffset: {width: 0, height: 5},
-    shadowOpacity: 0.3,
-    shadowRadius: 10,
-    elevation: 10,
   },
 });

@@ -64,15 +64,15 @@ export default function History({navigation}) {
 }
 
 const styles = StyleSheet.create({
+  body: {
+    padding: 15,
+  },
   viewBodyHistory: {
     backgroundColor: COLORS.white,
     borderRadius: 15,
     padding: 15,
     marginBottom: 15,
     elevation: 7,
-  },
-  body: {
-    padding: 15,
   },
   horizontalLine: {
     borderBottomColor: COLORS.black,

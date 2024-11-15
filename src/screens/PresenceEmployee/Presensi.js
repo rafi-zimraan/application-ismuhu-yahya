@@ -2,16 +2,19 @@ import React from 'react';
 import {Image, StatusBar, StyleSheet, Text, View} from 'react-native';
 import {Background, Gap, HeaderTransparent} from '../../Component';
 import {IMG_BANNER_MASJID} from '../../assets';
-import {MenuItem, StatusButton} from '../../features/Perizinan';
+import {
+  MenuItemPresensi,
+  StatusPresensi,
+} from '../../features/PresenceEmployee';
 import {COLORS} from '../../utils';
 
-export default function Perizinan({navigation}) {
+export default function Presensi({navigation}) {
   return (
     <View style={{flex: 1}}>
       <StatusBar barStyle={'default'} backgroundColor={'transparent'} />
       <Background />
       <HeaderTransparent
-        title="Perizinan"
+        title="Presensi"
         icon="arrow-left-circle-outline"
         onPress={() => navigation.goBack()}
       />
@@ -21,33 +24,42 @@ export default function Perizinan({navigation}) {
       <Gap height={15} />
       <View style={styles.body}>
         <Text style={styles.txtBody}>Skor Izin</Text>
-        <View style={{flexDirection: 'row', justifyContent: 'space-evenly'}}>
-          <StatusButton
-            iconColor="tomato"
-            iconName="alert-outline"
-            label="0 Tidak Terpakai"
-          />
-          <StatusButton
+
+        {/* Row 1 */}
+        <View style={styles.row}>
+          <StatusPresensi
             iconColor="green"
-            iconName="checkbox-marked-circle-outline"
-            label="0 Dipakai"
+            iconName="checkbox-marked-circle-outline" // suitable for "hadir"
+            label="Hadir"
+          />
+          <StatusPresensi
+            iconColor="blue"
+            iconName="clock-outline" // suitable for "pulang"
+            label="Pulang"
+          />
+        </View>
+
+        {/* Row 2 */}
+        <View style={styles.row}>
+          <StatusPresensi
+            iconColor="orange"
+            iconName="alert-outline" // suitable for "izin"
+            label="Izin"
+          />
+          <StatusPresensi
+            iconColor="purple"
+            iconName="calendar-remove-outline" // suitable for "cuti"
+            label="Cuti"
           />
         </View>
         <Gap height={15} />
-        <Text style={styles.txtMenu}>Menu Perizinan</Text>
+        <Text style={styles.txtMenu}>Menu Presensi</Text>
         <Gap height={10} />
-        <MenuItem
+        <MenuItemPresensi
           iconName="rocket-launch-outline"
           iconColor={COLORS.primary}
           label="Pengajuan Cuti"
           onPress={() => navigation.navigate('FormulirCuti')}
-        />
-        <Gap height={20} />
-        <MenuItem
-          iconName="history"
-          iconColor={COLORS.primary}
-          label="History"
-          onPress={() => navigation.navigate('History')}
         />
       </View>
     </View>
@@ -55,6 +67,11 @@ export default function Perizinan({navigation}) {
 }
 
 const styles = StyleSheet.create({
+  row: {
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+    marginBottom: 10, // space between rows
+  },
   txtMenu: {
     fontSize: 21,
     color: COLORS.black,

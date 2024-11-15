@@ -18,10 +18,21 @@ export const login = async (data, navigation, dispatch) => {
     const response = await api.post('/login', data);
     console.log('RESPONSE login:', response.data);
 
+    // if response failed
+    if (response.data.status === false) {
+      // send ToastAndroid to warning
+      const errorMessage =
+        response.data.message?.email[0] || 'Terjadi Kesalahan';
+      // console.log(errorMessage);
+      ToastAndroid.show(errorMessage, ToastAndroid.SHORT);
+      return;
+    }
+
     const token = response.data?.token;
     const user = response.data?.user[0];
+    console.log('data user', user);
+
     if (token && user) {
-      // Simpan ke Redux
       dispatch(
         setUserSession({
           token: token,
@@ -34,23 +45,22 @@ export const login = async (data, navigation, dispatch) => {
         }),
       );
 
-      // Simpan ke EncryptedStorage
+      // Save data to EncryptedStorage
       await EncryptedStorage.setItem('token', JSON.stringify(token));
       await EncryptedStorage.setItem('user', JSON.stringify(user));
 
-      navigation.replace('Dasboard');
+      // successfuly load data
+      ToastAndroid.show(`Selamat Datang ${user.name}`, ToastAndroid.SHORT);
+      navigation.navigate('Dasboard');
     } else {
       throw new Error('Token atau user tidak ditemukan');
     }
   } catch (error) {
-    const errorData = error.response?.data || {};
-    const errorMessage = error.message;
-
-    if (errorData.error === 'invalid_credentials') {
-      ToastAndroid.show('Akun tidak ditemukan', ToastAndroid.SHORT);
-    } else {
-      console.log(errorMessage);
-    }
+    console.log('error:', error.message);
+    ToastAndroid.show(
+      'Terjadi Kesalahan, silahkan coba lagi',
+      ToastAndroid.SHORT,
+    );
   }
 };
 

@@ -10,22 +10,22 @@ import Notification from './Notification/Notification';
 import Onboarding from './Onboarding/Onboarding';
 import Perizinan from './Perizinan/Perizinan';
 import DaftarPresence from './PresenceEmployee/DaftarPresence';
-import MenuPresence from './PresenceEmployee/MenuPresence';
 import PresenceEmployee from './PresenceEmployee/PresenceEmployee';
-import Biodata from './Profile/Biodata';
-import Profile from './Profile/Profile';
+import Presensi from './PresenceEmployee/Presensi';
+import Profile from './Setting/Profile';
+import Settings from './Setting/Setting';
 import SplashScreen from './SplashScreen/SplashScreen';
 import LibDemo from './__test__/LibDemo.test';
 
 export {
-  Biodata,
+  Profile,
   DetailNotification,
   History,
   Perizinan,
   Notification,
-  Profile,
+  Settings,
   DaftarPresence,
-  MenuPresence,
+  Presensi,
   PresenceEmployee,
   DrawerContent,
   DasboardMaster,

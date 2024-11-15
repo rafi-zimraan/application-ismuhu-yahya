@@ -1,13 +1,42 @@
-import React from 'react';
-import {Image, StatusBar, StyleSheet, Text, View} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {
+  Image,
+  StatusBar,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import EncryptedStorage from 'react-native-encrypted-storage';
 import {useSelector} from 'react-redux';
 import {Background, Gap, HeaderTransparent} from '../../Component';
 import {IMG_PROFILE_FAKE} from '../../assets';
 import {COLORS} from '../../utils';
 
 export default function DetailNotification({navigation}) {
-  const role = useSelector(state => state.auth.user.role);
+  const roleRedux = useSelector(state => state.auth.user.role);
+  const [role, setRole] = useState(roleRedux);
   console.log('ini role sekarang', role);
+
+  useEffect(() => {
+    const loadingRoleFromEncryptedStorage = async () => {
+      if (!roleRedux) {
+        try {
+          const getRoleFromStorage = await EncryptedStorage.getItem('user');
+          console.log('data user', getRoleFromStorage);
+
+          if (getRoleFromStorage) {
+            const user = JSON.parse(getRoleFromStorage);
+            setRole(user.role);
+          }
+        } catch (error) {
+          console.log('Error load fole from EncryptedStorage', error);
+        }
+      }
+    };
+
+    loadingRoleFromEncryptedStorage();
+  }, [roleRedux]);
 
   return (
     <View style={{flex: 1}}>
@@ -36,8 +65,61 @@ export default function DetailNotification({navigation}) {
           </View>
         </View>
       ) : (
-        <View>
-          <Text> ini Human Capital</Text>
+        <View style={styles.HcContainer}>
+          <View style={styles.HcBody}>
+            <Gap height={10} />
+            {/* status */}
+            <View style={styles.HcViewApproval}>
+              <TouchableOpacity
+                activeOpacity={0.6}
+                style={styles.HcContentApproval}>
+                <Text style={styles.HcTxtApproval}>Approval</Text>
+              </TouchableOpacity>
+              <Gap width={35} />
+              <TouchableOpacity
+                activeOpacity={0.6}
+                style={styles.HcContentTolak}>
+                <Text style={styles.HcTxtTolak}>Tolak</Text>
+              </TouchableOpacity>
+            </View>
+            <Gap height={5} />
+            {/* body */}
+            <View style={styles.viewBodyHistory}>
+              <View style={styles.textRow}>
+                <Text style={styles.label}>Nama</Text>
+                <Gap width={15} />
+                <Text style={styles.value}>: Fulan bin Fulanah</Text>
+              </View>
+              <View style={styles.textRow}>
+                <Text style={styles.label}>Divisi</Text>
+                <Gap width={15} />
+                <Text style={styles.value}>: Dkv</Text>
+              </View>
+              <View style={styles.textRow}>
+                <Text style={styles.label}>Department</Text>
+                <Gap width={15} />
+                <Text style={styles.value}>: IT Sport</Text>
+              </View>
+
+              <View style={styles.textRow}>
+                <Text style={styles.label}>TTL Cuti</Text>
+                <Gap width={15} />
+                <Text style={styles.value}>: 22/08/2024</Text>
+              </View>
+              <View style={styles.textRow}>
+                <Text style={styles.label}>TTL Masuk</Text>
+                <Gap width={15} />
+                <Text style={styles.value}>: 03/09/2024</Text>
+              </View>
+              <View style={styles.textRow}>
+                <Text style={styles.label}>Keterangan</Text>
+                <Gap width={15} />
+                <Text style={styles.valueKet}>
+                  : Izin cuti di karenakan besok ke makkah bari rafi zimraan
+                </Text>
+              </View>
+            </View>
+          </View>
         </View>
       )}
     </View>
@@ -45,6 +127,86 @@ export default function DetailNotification({navigation}) {
 }
 
 const styles = StyleSheet.create({
+  viewBodyHistory: {
+    width: 360,
+    maxWidth: 360,
+    padding: 13,
+  },
+  horizontalLine: {
+    borderBottomColor: COLORS.black,
+    borderBottomWidth: 0.5,
+    width: '100%',
+  },
+  textRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 5,
+  },
+  label: {
+    fontSize: 16,
+    fontWeight: '400',
+    color: COLORS.black,
+    width: 90,
+  },
+  valueKet: {
+    fontSize: 16,
+    fontWeight: '400',
+    color: COLORS.black,
+    flex: 1,
+    textAlign: 'left',
+  },
+  value: {
+    fontSize: 16,
+    fontWeight: '400',
+    color: COLORS.black,
+    flex: 1,
+    textAlign: 'left',
+  },
+  HcTxtTolak: {
+    color: COLORS.white,
+    fontSize: 17,
+    fontWeight: '500',
+  },
+  HcTxtApproval: {
+    color: COLORS.black,
+    fontSize: 17,
+    fontWeight: '500',
+  },
+  HcContentTolak: {
+    backgroundColor: COLORS.greenSoft,
+    height: 55,
+    width: 100,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 10,
+  },
+  HcContentApproval: {
+    backgroundColor: COLORS.goldenOrange,
+    height: 55,
+    width: 100,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 10,
+  },
+  HcViewApproval: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+  },
+  HcBody: {
+    backgroundColor: COLORS.champagne,
+    alignItems: 'center',
+    height: 300,
+    elevation: 5,
+    borderRadius: 15,
+    borderWidth: 0.5,
+    borderColor: COLORS.black,
+  },
+  HcContainer: {
+    flex: 1,
+
+    alignSelf: 'center',
+  },
   headerContainerTextNameAndTime: {
     flexDirection: 'row',
     alignItems: 'center',

@@ -1,7 +1,7 @@
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import React from 'react';
 import {useSelector} from 'react-redux';
-import {Dashboard, Notification, Profile} from '../screens';
+import {Dashboard, Notification, Settings} from '../screens';
 import BottomTabBar from './BottomTabBar';
 
 const Tab = createBottomTabNavigator();
@@ -43,7 +43,7 @@ export default function BottomTabs({navigation}) {
       />
       <Tab.Screen
         name="Setting"
-        component={Profile}
+        component={Settings}
         options={{
           tabBarLabel: 'Setting',
         }}

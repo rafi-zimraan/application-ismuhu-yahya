@@ -452,79 +452,92 @@
 //   },
 // });
 
-import {Picker} from '@react-native-picker/picker';
-import React, {useState} from 'react';
-import {useForm} from 'react-hook-form';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {Gap} from '../../Component';
+// import {Picker} from '@react-native-picker/picker';
+// import React, {useState} from 'react';
+// import {useForm} from 'react-hook-form';
+// import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+// import {Gap} from '../../Component';
 
-export default function LibDemo({
-  title = 'filter',
-  picker = {
-    data: [],
-    loading: false,
-    label: 'label',
-    value: 'value',
-    onSelect: value => null,
-  },
-}) {
-  const {control} = useForm();
-  const [selectedValue, setSelectedValue] = useState(null);
+// export default function LibDemo({
+//   title = 'filter',
+//   picker = {
+//     data: [],
+//     loading: false,
+//     label: 'label',
+//     value: 'value',
+//     onSelect: value => null,
+//   },
+// }) {
+//   const {control} = useForm();
+//   const [selectedValue, setSelectedValue] = useState(null);
 
+//   return (
+//     <View style={styles.container}>
+//       <View style={styles.dropdownContainer}>
+//         <Icon
+//           name="filter-menu-outline"
+//           size={20}
+//           color="black"
+//           style={styles.icon}
+//         />
+//         <Picker
+//           selectedValue={selectedValue}
+//           onValueChange={value => {
+//             setSelectedValue(value);
+//             if (picker.onSelect) picker.onSelect(value);
+//           }}
+//           style={styles.picker}
+//           dropdownIconColor="black">
+//           <Picker.Item label={`${title}`} value={null} />
+//           {picker.data.map((item, index) => (
+//             <Picker.Item
+//               key={index}
+//               label={item[picker.label]}
+//               value={item[picker.value]}
+//             />
+//           ))}
+//         </Picker>
+//       </View>
+
+//       <Gap height={20} />
+//     </View>
+//   );
+// }
+
+// const styles = StyleSheet.create({
+//   container: {
+//     flex: 1,
+//     justifyContent: 'center',
+//     padding: 15,
+//     width: 250,
+//   },
+//   dropdownContainer: {
+//     flexDirection: 'row',
+//     alignItems: 'center',
+//     backgroundColor: 'grey',
+//     borderRadius: 8,
+//     overflow: 'hidden',
+//     paddingHorizontal: 5,
+//   },
+//   icon: {
+//     marginRight: 8,
+//   },
+//   picker: {
+//     flex: 1,
+//     height: 40,
+//     color: 'black',
+//   },
+// });
+
+import React from 'react';
+import {StyleSheet, Text, View} from 'react-native';
+
+export default function LibDemo() {
   return (
-    <View style={styles.container}>
-      <View style={styles.dropdownContainer}>
-        <Icon
-          name="filter-menu-outline"
-          size={20}
-          color="black"
-          style={styles.icon}
-        />
-        <Picker
-          selectedValue={selectedValue}
-          onValueChange={value => {
-            setSelectedValue(value);
-            if (picker.onSelect) picker.onSelect(value);
-          }}
-          style={styles.picker}
-          dropdownIconColor="black">
-          <Picker.Item label={`${title}`} value={null} />
-          {picker.data.map((item, index) => (
-            <Picker.Item
-              key={index}
-              label={item[picker.label]}
-              value={item[picker.value]}
-            />
-          ))}
-        </Picker>
-      </View>
-
-      <Gap height={20} />
+    <View>
+      <Text>LibDemo</Text>
     </View>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    padding: 15,
-    width: 250,
-  },
-  dropdownContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: 'grey',
-    borderRadius: 8,
-    overflow: 'hidden',
-    paddingHorizontal: 5,
-  },
-  icon: {
-    marginRight: 8,
-  },
-  picker: {
-    flex: 1,
-    height: 40,
-    color: 'black',
-  },
-});
+const styles = StyleSheet.create({});

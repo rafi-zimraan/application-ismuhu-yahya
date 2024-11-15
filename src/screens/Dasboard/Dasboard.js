@@ -33,8 +33,8 @@ export default function Dashboard({navigation}) {
             title="Perizinan"
             iconName="check-decagram-outline"
             iconSize={40}
-            color={COLORS.greenBoy}
-            backgroundColor={'#D9D9D9'}
+            color={COLORS.white}
+            backgroundColor={COLORS.goldenOrange}
             onPress={() => navigation.navigate('Perizinan')}
           />
           <ButtonMenu
@@ -43,14 +43,14 @@ export default function Dashboard({navigation}) {
             color={COLORS.white}
             backgroundColor={COLORS.goldenOrange}
             iconSize={40}
-            onPress={() => navigation.navigate('MenuPresence')}
+            onPress={() => navigation.navigate('Presensi')}
           />
           <ButtonMenu
             title="Yaumi"
             iconName="playlist-plus"
             iconSize={40}
-            color={COLORS.greenBoy}
-            backgroundColor={'#D9D9D9'}
+            color={COLORS.white}
+            backgroundColor={COLORS.goldenOrange}
           />
           <ButtonMenu
             title="Mobil"
