@@ -10,7 +10,7 @@ import Notification from './Notification/Notification';
 import Onboarding from './Onboarding/Onboarding';
 import Perizinan from './Perizinan/Perizinan';
 import DaftarPresence from './PresenceEmployee/DaftarPresence';
-import PresenceEmployee from './PresenceEmployee/PresenceEmployee';
+import PresenceFormulir from './PresenceEmployee/PresenceFormulir';
 import Presensi from './PresenceEmployee/Presensi';
 import Profile from './Setting/Profile';
 import Settings from './Setting/Setting';
@@ -26,7 +26,7 @@ export {
   Settings,
   DaftarPresence,
   Presensi,
-  PresenceEmployee,
+  PresenceFormulir,
   DrawerContent,
   DasboardMaster,
   Onboarding,

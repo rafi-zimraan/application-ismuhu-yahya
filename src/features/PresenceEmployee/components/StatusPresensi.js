@@ -7,18 +7,31 @@ export default function StatusPresensi({iconColor, iconName, label}) {
   return (
     <TouchableNativeFeedback useForeground background={COLORS.ripple}>
       <View style={styles.btnCarStatus}>
-        <Icon color={iconColor} style={styles.icon} name={iconName} size={40} />
-        <Text style={styles.label}>{label}</Text>
+        <View style={styles.body}>
+          <Icon
+            color={iconColor}
+            style={styles.icon}
+            name={iconName}
+            size={40}
+          />
+          <Text style={styles.label}>{label}</Text>
+        </View>
       </View>
     </TouchableNativeFeedback>
   );
 }
 
 const styles = {
+  body: {
+    width: 130,
+    height: 65,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   btnCarStatus: {
     backgroundColor: COLORS.white,
-    elevation: 3,
-    width: 120,
+    elevation: 5,
+    width: 152,
     height: 65,
     borderRadius: 20,
     justifyContent: 'center',

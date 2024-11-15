@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {
   Image,
   StatusBar,
@@ -7,7 +7,6 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import EncryptedStorage from 'react-native-encrypted-storage';
 import {useSelector} from 'react-redux';
 import {Background, Gap, HeaderTransparent} from '../../Component';
 import {IMG_PROFILE_FAKE} from '../../assets';
@@ -18,25 +17,25 @@ export default function DetailNotification({navigation}) {
   const [role, setRole] = useState(roleRedux);
   console.log('ini role sekarang', role);
 
-  useEffect(() => {
-    const loadingRoleFromEncryptedStorage = async () => {
-      if (!roleRedux) {
-        try {
-          const getRoleFromStorage = await EncryptedStorage.getItem('user');
-          console.log('data user', getRoleFromStorage);
+  // useEffect(() => {
+  //   const loadingRoleFromEncryptedStorage = async () => {
+  //     if (!roleRedux) {
+  //       try {
+  //         const getRoleFromStorage = await EncryptedStorage.getItem('user');
+  //         console.log('data user', getRoleFromStorage);
 
-          if (getRoleFromStorage) {
-            const user = JSON.parse(getRoleFromStorage);
-            setRole(user.role);
-          }
-        } catch (error) {
-          console.log('Error load fole from EncryptedStorage', error);
-        }
-      }
-    };
+  //         if (getRoleFromStorage) {
+  //           const user = JSON.parse(getRoleFromStorage);
+  //           setRole(user.role);
+  //         }
+  //       } catch (error) {
+  //         console.log('Error load fole from EncryptedStorage', error);
+  //       }
+  //     }
+  //   };
 
-    loadingRoleFromEncryptedStorage();
-  }, [roleRedux]);
+  //   loadingRoleFromEncryptedStorage();
+  // }, [roleRedux]);
 
   return (
     <View style={{flex: 1}}>
@@ -68,21 +67,7 @@ export default function DetailNotification({navigation}) {
         <View style={styles.HcContainer}>
           <View style={styles.HcBody}>
             <Gap height={10} />
-            {/* status */}
-            <View style={styles.HcViewApproval}>
-              <TouchableOpacity
-                activeOpacity={0.6}
-                style={styles.HcContentApproval}>
-                <Text style={styles.HcTxtApproval}>Approval</Text>
-              </TouchableOpacity>
-              <Gap width={35} />
-              <TouchableOpacity
-                activeOpacity={0.6}
-                style={styles.HcContentTolak}>
-                <Text style={styles.HcTxtTolak}>Tolak</Text>
-              </TouchableOpacity>
-            </View>
-            <Gap height={5} />
+
             {/* body */}
             <View style={styles.viewBodyHistory}>
               <View style={styles.textRow}>
@@ -119,6 +104,21 @@ export default function DetailNotification({navigation}) {
                 </Text>
               </View>
             </View>
+            {/* status */}
+            <View style={styles.HcViewApproval}>
+              <TouchableOpacity
+                activeOpacity={0.6}
+                style={styles.HcContentApproval}>
+                <Text style={styles.HcTxtApproval}>Approval</Text>
+              </TouchableOpacity>
+              <Gap width={35} />
+              <TouchableOpacity
+                activeOpacity={0.6}
+                style={styles.HcContentTolak}>
+                <Text style={styles.HcTxtTolak}>Tolak</Text>
+              </TouchableOpacity>
+            </View>
+            <Gap height={5} />
           </View>
         </View>
       )}

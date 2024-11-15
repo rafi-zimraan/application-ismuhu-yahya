@@ -8,7 +8,7 @@ import {
   History,
   LibDemo,
   Perizinan,
-  PresenceEmployee,
+  PresenceFormulir,
   Presensi,
   Profile,
   SignIn,
@@ -34,7 +34,7 @@ export default function Navigator() {
       <Stack.Screen name="SignIn" component={SignIn} />
       <Stack.Screen name="SignUp" component={SignUp} />
       <Stack.Screen name="Dasboard" component={DrawerNavigation} />
-      <Stack.Screen name="PresenceEmployee" component={PresenceEmployee} />
+      <Stack.Screen name="PresenceFormulir" component={PresenceFormulir} />
       <Stack.Screen name="Presensi" component={Presensi} />
       <Stack.Screen name="DaftarPresence" component={DaftarPresence} />
       <Stack.Screen name="Perizinan" component={Perizinan} />

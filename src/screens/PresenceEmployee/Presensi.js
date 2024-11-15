@@ -23,19 +23,20 @@ export default function Presensi({navigation}) {
       </View>
       <Gap height={15} />
       <View style={styles.body}>
-        <Text style={styles.txtBody}>Skor Izin</Text>
+        <Text style={styles.txtSkor}>Jumlah total presensi</Text>
+        <Gap height={17} />
 
         {/* Row 1 */}
         <View style={styles.row}>
           <StatusPresensi
             iconColor="green"
-            iconName="checkbox-marked-circle-outline" // suitable for "hadir"
-            label="Hadir"
+            iconName="checkbox-marked-circle-outline"
+            label="0 Hadir"
           />
           <StatusPresensi
             iconColor="blue"
-            iconName="clock-outline" // suitable for "pulang"
-            label="Pulang"
+            iconName="clock-outline"
+            label=" 0 Pulang"
           />
         </View>
 
@@ -43,23 +44,23 @@ export default function Presensi({navigation}) {
         <View style={styles.row}>
           <StatusPresensi
             iconColor="orange"
-            iconName="alert-outline" // suitable for "izin"
-            label="Izin"
+            iconName="alert-outline"
+            label="0 Izin"
           />
           <StatusPresensi
             iconColor="purple"
-            iconName="calendar-remove-outline" // suitable for "cuti"
-            label="Cuti"
+            iconName="calendar-remove-outline"
+            label="0 Cuti"
           />
         </View>
         <Gap height={15} />
         <Text style={styles.txtMenu}>Menu Presensi</Text>
-        <Gap height={10} />
+        <Gap height={17} />
         <MenuItemPresensi
-          iconName="rocket-launch-outline"
+          iconName="calendar-check-outline"
           iconColor={COLORS.primary}
-          label="Pengajuan Cuti"
-          onPress={() => navigation.navigate('FormulirCuti')}
+          label="Presensi Now"
+          onPress={() => navigation.navigate('PresenceFormulir')}
         />
       </View>
     </View>
@@ -70,18 +71,18 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: 'row',
     justifyContent: 'space-evenly',
-    marginBottom: 10, // space between rows
+    marginBottom: 10,
   },
   txtMenu: {
-    fontSize: 21,
+    fontSize: 20,
     color: COLORS.black,
     fontWeight: '600',
   },
   body: {
     padding: 15,
   },
-  txtBody: {
-    fontSize: 21,
+  txtSkor: {
+    fontSize: 20,
     fontWeight: '600',
     color: COLORS.black,
   },
