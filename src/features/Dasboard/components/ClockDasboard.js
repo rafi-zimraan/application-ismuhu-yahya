@@ -39,7 +39,7 @@ export default function ClockDasboard({formatTime}) {
 const styles = StyleSheet.create({
   bodyClockWrapper: {
     position: 'absolute',
-    top: 245,
+    top: 255,
     left: 0,
     right: 0,
     alignItems: 'center',
@@ -48,11 +48,8 @@ const styles = StyleSheet.create({
   bodyClock: {
     backgroundColor: COLORS.white,
     elevation: 5,
-    // alignSelf: 'center',
     alignItems: 'center',
-    // flexDirection: 'row',
-    // justifyContent: 'space-between',
-    height: 80,
+    height: 65,
     width: '90%',
     padding: 15,
     borderRadius: 15,
@@ -61,16 +58,17 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    height: 35,
   },
   imgLogoClock: {
-    width: 101,
-    height: 54,
+    width: 87,
+    height: 47,
   },
   txtClock: {
     textAlign: 'auto',
     fontSize: 27,
     color: COLORS.black,
-    fontWeight: '600',
+    fontWeight: '500',
     right: 10,
   },
   contentRequest: {
@@ -81,7 +79,7 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: 'white',
+    backgroundColor: COLORS.white,
     justifyContent: 'center',
     alignItems: 'center',
     elevation: 5,

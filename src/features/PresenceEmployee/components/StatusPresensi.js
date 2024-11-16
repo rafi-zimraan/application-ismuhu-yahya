@@ -31,7 +31,7 @@ const styles = {
   btnCarStatus: {
     backgroundColor: COLORS.white,
     elevation: 5,
-    width: 152,
+    width: 140,
     height: 65,
     borderRadius: 20,
     justifyContent: 'center',

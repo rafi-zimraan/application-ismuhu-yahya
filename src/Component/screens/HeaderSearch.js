@@ -74,7 +74,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     elevation: 3,
     alignItems: 'center',
-    width: 280,
+    width: 245,
     height: 47,
     borderRadius: 85,
     backgroundColor: COLORS.white,

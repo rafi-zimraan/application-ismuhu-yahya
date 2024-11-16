@@ -9,7 +9,7 @@ import DetailNotification from './Notification/DetailNotification';
 import Notification from './Notification/Notification';
 import Onboarding from './Onboarding/Onboarding';
 import Perizinan from './Perizinan/Perizinan';
-import DaftarPresence from './PresenceEmployee/DaftarPresence';
+import FaceScaanPresence from './PresenceEmployee/FaceScaanPresence';
 import PresenceFormulir from './PresenceEmployee/PresenceFormulir';
 import Presensi from './PresenceEmployee/Presensi';
 import Profile from './Setting/Profile';
@@ -24,7 +24,7 @@ export {
   Perizinan,
   Notification,
   Settings,
-  DaftarPresence,
+  FaceScaanPresence,
   Presensi,
   PresenceFormulir,
   DrawerContent,

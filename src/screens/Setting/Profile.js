@@ -119,6 +119,7 @@ const styles = StyleSheet.create({
   header: {
     backgroundColor: '#ffd700',
     justifyContent: 'center',
+
     alignItems: 'center',
     overflow: 'hidden',
     borderBottomLeftRadius: 30,

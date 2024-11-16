@@ -122,6 +122,7 @@
 
 import React, {useState} from 'react';
 import {
+  Dimensions,
   Image,
   SafeAreaView,
   StyleSheet,
@@ -136,17 +137,19 @@ import {
   Gap,
   HeaderTransparent,
 } from '../../Component';
-// import AlertPopUp from '../../Component/AlertPopUp'; // Pastikan path AlertPopUp benar
 import {ICON_PRESENCE} from '../../assets';
 import {COLORS} from '../../utils';
 
+const {width, height} = Dimensions.get('window');
+
 export default function PresenceFormulir({navigation}) {
-  const [selectedStatus, setSelectedStatus] = useState(''); // State untuk status absensi
-  const [showAlert, setShowAlert] = useState(false); // State untuk AlertPopUp
+  const [selectedStatus, setSelectedStatus] = useState('');
+  const [showAlert, setShowAlert] = useState(false);
 
   const handleSubmit = () => {
     if (!selectedStatus) {
-      setShowAlert(true); // Tampilkan Alert jika status belum dipilih
+      setShowAlert(true);
+      navigation.navigate('FaceScaanPresence');
       return;
     }
     console.log('Absensi sekarang:', selectedStatus);
@@ -161,12 +164,18 @@ export default function PresenceFormulir({navigation}) {
         onPress={() => navigation.goBack()}
       />
       <View style={styles.container}>
-        <Image source={ICON_PRESENCE} style={styles.img} />
+        <Image
+          source={ICON_PRESENCE}
+          style={[styles.img, {width: width - 10, height: width - 60}]}
+          resizeMode="contain"
+        />
       </View>
+      <Gap height={50} />
       <View style={styles.containerFormulir}>
         <View style={styles.content}>
           <Text style={styles.txtTitleAbensi}>Absensi Spa</Text>
           <Gap height={10} />
+
           {/* Status Absensi */}
           <View style={styles.bodyBottomStatus}>
             {/* Tombol Hadir */}
@@ -192,7 +201,7 @@ export default function PresenceFormulir({navigation}) {
                 Hadir
               </Text>
             </TouchableOpacity>
-            <Gap width={25} />
+            <Gap width={15} />
             {/* Tombol Pulang */}
             <TouchableOpacity
               activeOpacity={0.6}
@@ -217,6 +226,7 @@ export default function PresenceFormulir({navigation}) {
               </Text>
             </TouchableOpacity>
           </View>
+
           <Gap height={17} />
           <Text style={styles.txtDec}>
             Pilih kotak menu di atas {'\n'}untuk keterangan absensi anda 😀
@@ -227,9 +237,11 @@ export default function PresenceFormulir({navigation}) {
             backgroundColor={COLORS.goldenOrange}
             title="Absensi Sekarang"
             onPress={handleSubmit}
+            style={styles.btnSubmit}
           />
         </View>
       </View>
+
       {/* AlertPopUp */}
       <AlertPopUp
         show={showAlert}
@@ -241,13 +253,15 @@ export default function PresenceFormulir({navigation}) {
 
 const styles = StyleSheet.create({
   txtDec: {
-    fontSize: 19,
+    fontSize: 16,
     fontWeight: '500',
     color: COLORS.grey,
+    textAlign: 'left',
   },
   img: {
-    height: 380,
+    height: 'auto',
     width: '100%',
+    maxWidth: 350,
   },
   viewStatus: {
     alignItems: 'center',
@@ -255,24 +269,34 @@ const styles = StyleSheet.create({
     borderRadius: 11,
     elevation: 7,
     height: 50,
-    width: 120,
+    flex: 1,
   },
   bodyBottomStatus: {
     flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%',
   },
   content: {
     padding: 15,
   },
   txtTitleAbensi: {
-    fontSize: 21,
+    fontSize: 22,
     color: COLORS.black,
-    fontWeight: '800',
+    fontWeight: '500',
+    textAlign: 'left',
   },
   containerFormulir: {
     backgroundColor: COLORS.white,
     flex: 1,
+    paddingBottom: 20,
   },
   container: {
     padding: 15,
+    alignItems: 'center',
+  },
+  btnSubmit: {
+    marginTop: 30,
+    width: '80%',
+    alignSelf: 'center',
   },
 });

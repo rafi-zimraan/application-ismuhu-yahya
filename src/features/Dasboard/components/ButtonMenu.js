@@ -20,7 +20,10 @@ export default function ButtonMenu({
 }) {
   return (
     <View style={styles.container}>
-      <TouchableNativeFeedback useForeground onPress={onPress}>
+      <TouchableNativeFeedback
+        useForeground
+        background={COLORS.ripple}
+        onPress={onPress}>
         <View style={{...styles.viewButton, backgroundColor}}>
           {image && <Image source={image} style={styles.image} />}
           {iconName && <Icon name={iconName} size={iconSize} color={color} />}
@@ -36,8 +39,8 @@ export default function ButtonMenu({
 const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
-    marginBottom: 15,
-    marginHorizontal: 15,
+    marginBottom: 10,
+    marginHorizontal: 10,
   },
   image: {
     width: 47.5,

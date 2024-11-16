@@ -66,36 +66,18 @@ export default function DetailNotification({navigation}) {
       ) : (
         <View style={styles.HcContainer}>
           <View style={styles.HcBody}>
-            <Gap height={10} />
-
-            {/* body */}
             <View style={styles.viewBodyHistory}>
-              <View style={styles.textRow}>
-                <Text style={styles.label}>Nama</Text>
-                <Gap width={15} />
-                <Text style={styles.value}>: Fulan bin Fulanah</Text>
-              </View>
-              <View style={styles.textRow}>
-                <Text style={styles.label}>Divisi</Text>
-                <Gap width={15} />
-                <Text style={styles.value}>: Dkv</Text>
-              </View>
-              <View style={styles.textRow}>
-                <Text style={styles.label}>Department</Text>
-                <Gap width={15} />
-                <Text style={styles.value}>: IT Sport</Text>
-              </View>
-
-              <View style={styles.textRow}>
-                <Text style={styles.label}>TTL Cuti</Text>
-                <Gap width={15} />
-                <Text style={styles.value}>: 22/08/2024</Text>
-              </View>
-              <View style={styles.textRow}>
-                <Text style={styles.label}>TTL Masuk</Text>
-                <Gap width={15} />
-                <Text style={styles.value}>: 03/09/2024</Text>
-              </View>
+              {['Nama', 'Divisi', 'Department', 'TTL Cuti', 'TTL Masuk'].map(
+                (label, index) => (
+                  <View key={index} style={styles.textRow}>
+                    <Text style={styles.label}>{label}</Text>
+                    <Gap width={15} />
+                    <Text style={styles.value}>
+                      : {label === 'Nama' ? 'Fulan bin Fulanah' : 'Dkv'}
+                    </Text>
+                  </View>
+                ),
+              )}
               <View style={styles.textRow}>
                 <Text style={styles.label}>Keterangan</Text>
                 <Gap width={15} />
@@ -104,7 +86,7 @@ export default function DetailNotification({navigation}) {
                 </Text>
               </View>
             </View>
-            {/* status */}
+
             <View style={styles.HcViewApproval}>
               <TouchableOpacity
                 activeOpacity={0.6}
@@ -128,9 +110,8 @@ export default function DetailNotification({navigation}) {
 
 const styles = StyleSheet.create({
   viewBodyHistory: {
-    width: 360,
-    maxWidth: 360,
-    padding: 13,
+    width: '90%',
+    padding: 15,
   },
   horizontalLine: {
     borderBottomColor: COLORS.black,
@@ -141,13 +122,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 5,
+    marginBottom: 8,
   },
   label: {
     fontSize: 16,
     fontWeight: '400',
     color: COLORS.black,
-    width: 90,
+    width: '30%',
   },
   valueKet: {
     fontSize: 16,
@@ -196,16 +177,18 @@ const styles = StyleSheet.create({
   HcBody: {
     backgroundColor: COLORS.champagne,
     alignItems: 'center',
-    height: 300,
+    padding: 15,
     elevation: 5,
     borderRadius: 15,
     borderWidth: 0.5,
     borderColor: COLORS.black,
+    width: '90%',
+    maxWidth: 400,
   },
   HcContainer: {
     flex: 1,
-
-    alignSelf: 'center',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   headerContainerTextNameAndTime: {
     flexDirection: 'row',
@@ -224,20 +207,19 @@ const styles = StyleSheet.create({
     borderColor: COLORS.black,
   },
   profileImage: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    marginRight: 10,
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    marginRight: 15,
   },
   headerTextContainer: {
     flexDirection: 'column',
-    width: '80%',
-    height: '50%',
+    flex: 1,
   },
   senderName: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: 'bold',
-    maxWidth: 150,
+    maxWidth: '75%',
   },
   time: {
     fontSize: 14,

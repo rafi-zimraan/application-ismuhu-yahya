@@ -520,13 +520,11 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   txtDes: {
-    fontSize: 12,
-    color: COLORS.softGrey,
-    fontWeight: '500',
+    fontSize: 14,
+    color: '#888',
   },
   txtTitle: {
-    fontSize: 17,
-    color: COLORS.black,
-    fontWeight: '700',
+    fontSize: 16,
+    color: '#333',
   },
 });

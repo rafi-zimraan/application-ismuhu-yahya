@@ -182,6 +182,7 @@ export default function EditProfile({navigation}) {
             title="save"
             backgroundColor={COLORS.goldenOrange}
             loading={isLoading}
+            color={COLORS.white}
             onPress={handleSubmit(onSubmit)}
           />
         </ScrollView>
@@ -219,7 +220,7 @@ const styles = StyleSheet.create({
     height: 130,
     borderRadius: 65,
     borderWidth: 4,
-    borderColor: '#fff',
+    borderColor: COLORS.white,
   },
   placeholderImage: {
     width: 130,
@@ -233,7 +234,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 0,
     right: 10,
-    backgroundColor: 'goldenrod', // Warna golden orange
+    backgroundColor: COLORS.goldenOrange,
     borderRadius: 20,
     padding: 5,
   },
@@ -253,11 +254,12 @@ const styles = StyleSheet.create({
   input: {
     height: 45,
     paddingHorizontal: 10,
-    backgroundColor: '#fff',
+    backgroundColor: COLORS.white,
     borderRadius: 10,
     borderColor: '#ddd',
     borderWidth: 1,
-    fontSize: 16,
+    fontSize: 13,
+    color: COLORS.black,
   },
   saveButton: {
     backgroundColor: 'goldenrod',
@@ -273,7 +275,7 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   saveButtonText: {
-    color: '#fff',
+    color: COLORS.white,
     fontWeight: 'bold',
     fontSize: 16,
   },

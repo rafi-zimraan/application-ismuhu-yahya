@@ -3,8 +3,8 @@ import React from 'react';
 import {FormulirCuti} from '../features/Perizinan';
 import {EditProfile} from '../features/Profile';
 import {
-  DaftarPresence,
   DetailNotification,
+  FaceScaanPresence,
   History,
   LibDemo,
   Perizinan,
@@ -36,7 +36,7 @@ export default function Navigator() {
       <Stack.Screen name="Dasboard" component={DrawerNavigation} />
       <Stack.Screen name="PresenceFormulir" component={PresenceFormulir} />
       <Stack.Screen name="Presensi" component={Presensi} />
-      <Stack.Screen name="DaftarPresence" component={DaftarPresence} />
+      <Stack.Screen name="FaceScaanPresence" component={FaceScaanPresence} />
       <Stack.Screen name="Perizinan" component={Perizinan} />
       <Stack.Screen name="FormulirCuti" component={FormulirCuti} />
       <Stack.Screen name="History" component={History} />

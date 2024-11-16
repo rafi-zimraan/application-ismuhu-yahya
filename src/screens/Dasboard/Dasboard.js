@@ -27,7 +27,7 @@ export default function Dashboard({navigation}) {
       <ScrollView stickyHeaderHiddenOnScroll stickyHeaderIndices={[0]}>
         <HeaderComponent navigation={navigation} />
         <ClockDasboard formatTime={formatTime} />
-        <Gap height={72} />
+        <Gap height={45} />
         <View style={styles.menu}>
           <ButtonMenu
             title="Perizinan"

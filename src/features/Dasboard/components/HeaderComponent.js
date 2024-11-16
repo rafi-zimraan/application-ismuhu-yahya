@@ -8,14 +8,21 @@ export default function HeaderComponent({navigation}) {
   return (
     <View style={styles.containerlayerNavbar}>
       <View style={styles.contentlayer}>
-        <View style={styles.stickyHeader}>
-          <HeaderSearch onProfilePress={() => navigation.openDrawer()} />
-        </View>
-        <Gap height={2} />
+        {/* component search bar */}
+        <HeaderSearch
+          placeholderTextColor={COLORS.black}
+          placeholder="Search"
+          onProfilePress={() => navigation.openDrawer()}
+        />
+        {/* component iklan */}
+        <Gap height={7} />
         <View style={styles.bodyContentLayer}>
           <View style={{top: 15}}>
             <Text style={styles.txtContentLayer}>
-              Ya Allah {'\n'}Izinkan aku kembali{'\n'}
+              Ya Allah {'\n'}
+              <Text style={styles.txtContentLayerSecondry}>
+                Izinkan aku kembali{'\n'}
+              </Text>
               <Text style={styles.txtDesContentLayer}>
                 Aku rindu dengan dengan mu
               </Text>
@@ -29,9 +36,10 @@ export default function HeaderComponent({navigation}) {
 }
 
 const styles = StyleSheet.create({
+  txtContentLayerSecondry: {color: COLORS.black, fontSize: 20},
   containerlayerNavbar: {
     backgroundColor: COLORS.goldenOrange,
-    height: 270,
+    height: 290,
     width: '100%',
     position: 'relative',
   },
@@ -39,7 +47,6 @@ const styles = StyleSheet.create({
     marginTop: 25,
     padding: 15,
   },
-  stickyHeader: {},
   bodyContentLayer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -47,10 +54,10 @@ const styles = StyleSheet.create({
   txtContentLayer: {
     color: COLORS.black,
     fontSize: 23,
-    fontWeight: 'bold',
+    fontWeight: '500',
   },
   txtDesContentLayer: {
-    color: COLORS.black,
+    color: '#333',
     fontSize: 12,
   },
   imgBanner: {
