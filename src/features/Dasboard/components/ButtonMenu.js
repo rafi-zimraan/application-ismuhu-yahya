@@ -39,8 +39,8 @@ export default function ButtonMenu({
 const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
-    marginBottom: 10,
-    marginHorizontal: 10,
+    marginBottom: 5,
+    marginHorizontal: 12,
   },
   image: {
     width: 47.5,
@@ -54,8 +54,8 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     elevation: 3,
     padding: 10,
-    width: 60,
-    height: 60,
+    width: 58,
+    height: 58,
   },
   textTitle: {
     fontWeight: 'bold',

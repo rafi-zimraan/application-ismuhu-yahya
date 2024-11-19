@@ -45,7 +45,6 @@ export default function Navigator() {
       <Stack.Screen name="Profile" component={Profile} />
       <Stack.Screen name="EditProfile" component={EditProfile} />
       {/* <Stack.Screen name="BottomUser" component={BottomUser} /> */}
-      {/* <Stack.Screen name="Onboarding" component={Onboarding} /> */}
     </Stack.Navigator>
   );
 }

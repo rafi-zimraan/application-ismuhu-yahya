@@ -1,7 +1,14 @@
 import React, {useState} from 'react';
 import {useForm} from 'react-hook-form';
-import {Dimensions, Image, ScrollView, StyleSheet, View} from 'react-native';
-// import {Background, Gap} from '../../components';
+import {
+  Dimensions,
+  Image,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  View,
+} from 'react-native';
 import {useDispatch} from 'react-redux';
 import {Background, Gap} from '../../Component';
 import {IMG_ISMUHUYAHYA_FUll} from '../../assets';
@@ -36,64 +43,65 @@ export default function SignIn({navigation}) {
   };
 
   return (
-    <View style={{flex: 1}}>
-      <Background />
-      <View style={styles.container}>
-        <ScrollView style={styles.body}>
-          <View style={{alignSelf: 'center'}}>
-            <Image source={IMG_ISMUHUYAHYA_FUll} style={styles.img} />
-          </View>
-          <Gap height={50} />
-          <View style={styles.viewContainer}>
-            <View style={styles.context}>
-              <FormInput
-                control={control}
-                name="email"
-                autoCapitalize="none"
-                iconName="gmail"
-                keyboardType="email-address"
-                placeholder="contoh@email.com"
-                title="Email"
-                pattern={{
-                  value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-                  message: 'Email tidak valid',
-                }}
-              />
-              <FormInput
-                control={control}
-                name="password"
-                autoCapitalize="none"
-                iconName="lock"
-                placeholder="Kata sandi..."
-                title="Password"
-                secureText={true}
-              />
-              <Gap height={5} />
-              <ButtonAuth
-                title="Masuk"
-                onPress={handleSubmit(onSubmit)}
-                maxWidth={400}
-                priority="primary"
-                width={'70%'}
-                loading={loading}
-              />
-              <Gap height={20} />
-              <View style={styles.viewForgetPass}>
-                <ModalRecovery />
-              </View>
-              {/* <ButtonAuth
-                title="Daftar"
-                onPress={() => navigation.navigate('SignUp')}
-                maxWidth={400}
-                width={'70%'}
-                priority="white"
-                color={COLORS.gold}
-              /> */}
+    <KeyboardAvoidingView
+      style={{flex: 1}}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 40 : 0} // Offset untuk menghindari header tertutup
+    >
+      <View style={{flex: 1}}>
+        <Background />
+        <View style={styles.container}>
+          <ScrollView
+            style={styles.body}
+            contentContainerStyle={{flexGrow: 1}}
+            keyboardShouldPersistTaps="handled">
+            <View style={{alignSelf: 'center'}}>
+              <Image source={IMG_ISMUHUYAHYA_FUll} style={styles.img} />
             </View>
-          </View>
-        </ScrollView>
+            <Gap height={50} />
+            <View style={styles.viewContainer}>
+              <View style={styles.context}>
+                <FormInput
+                  control={control}
+                  name="email"
+                  autoCapitalize="none"
+                  iconName="gmail"
+                  keyboardType="email-address"
+                  placeholder="contoh@email.com"
+                  title="Email"
+                  pattern={{
+                    value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+                    message: 'Email tidak valid',
+                  }}
+                />
+                <FormInput
+                  control={control}
+                  name="password"
+                  autoCapitalize="none"
+                  iconName="lock"
+                  placeholder="Kata sandi..."
+                  title="Password"
+                  secureText={true}
+                />
+                <Gap height={5} />
+                <ButtonAuth
+                  title="Masuk"
+                  onPress={handleSubmit(onSubmit)}
+                  maxWidth={400}
+                  priority="primary"
+                  width={'70%'}
+                  loading={loading}
+                />
+                <Gap height={20} />
+                <View style={styles.viewForgetPass}>
+                  <ModalRecovery />
+                </View>
+              </View>
+            </View>
+          </ScrollView>
+        </View>
       </View>
-    </View>
+    </KeyboardAvoidingView>
   );
 }
 
@@ -113,7 +121,7 @@ const styles = StyleSheet.create({
   body: {
     padding: 5,
     marginTop: 25,
-    alignSelf: 'centers',
+    alignSelf: 'center',
   },
   img: {
     height: height * 0.25,

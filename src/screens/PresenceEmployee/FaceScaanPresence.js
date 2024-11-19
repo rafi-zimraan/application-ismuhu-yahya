@@ -95,7 +95,7 @@ import {Camera, useCameraDevice} from 'react-native-vision-camera';
 import {HeaderTransparent} from '../../Component';
 import {COLORS} from '../../utils';
 
-export default function FaceScaanPresence() {
+export default function FaceScaanPresence({navigation}) {
   const [cameraPermission, setCameraPermission] = useState(false);
   const [faceDetected, setFaceDetected] = useState(null); // State untuk respon deteksi wajah
   const device = useCameraDevice('back');
@@ -137,7 +137,11 @@ export default function FaceScaanPresence() {
 
   return (
     <SafeAreaView style={{flex: 1}}>
-      <HeaderTransparent title="Scan Face" icon="arrow-left-circle-outline" />
+      <HeaderTransparent
+        title="Scan Face"
+        icon="arrow-left-circle-outline"
+        onPress={() => navigation.goBack()}
+      />
 
       <View style={styles.container}>
         {/* Ikon Gembok */}

@@ -1275,13 +1275,6 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
-"@react-native-async-storage/async-storage@^2.0.0":
-  version "2.0.0"
-  resolved "https://registry.npmjs.org/@react-native-async-storage/async-storage/-/async-storage-2.0.0.tgz"
-  integrity sha512-af6H9JjfL6G/PktBfUivvexoiFKQTJGQCtSWxMdivLzNIY94mu9DdiY0JqCSg/LyPCLGKhHPUlRQhNvpu3/KVA==
-  dependencies:
-    merge-options "^3.0.4"
-
 "@react-native-community/blur@^4.4.1":
   version "4.4.1"
   resolved "https://registry.npmjs.org/@react-native-community/blur/-/blur-4.4.1.tgz"
@@ -1694,6 +1687,14 @@
     mkdirp "^1.0.4"
     rimraf "^3.0.2"
 
+"@shopify/react-native-skia@*", "@shopify/react-native-skia@^1.5.3":
+  version "1.5.3"
+  resolved "https://registry.npmjs.org/@shopify/react-native-skia/-/react-native-skia-1.5.3.tgz"
+  integrity sha512-uZeSI9TEm6To+1comcz75+IRaZSym8Yu9YYH3LJmiu2ZG6kWCL17kd7spfwUCeIBJc5MnlrArKW63L1reaEp5g==
+  dependencies:
+    canvaskit-wasm "0.39.1"
+    react-reconciler "0.27.0"
+
 "@sideway/address@^4.1.5":
   version "4.1.5"
   dependencies:
@@ -2024,6 +2025,11 @@
 
 "@ungap/structured-clone@^1.2.0":
   version "1.2.0"
+
+"@webgpu/types@0.1.21":
+  version "0.1.21"
+  resolved "https://registry.npmjs.org/@webgpu/types/-/types-0.1.21.tgz"
+  integrity sha512-pUrWq3V5PiSGFLeLxoGqReTZmiiXwY3jRkIG5sLLKjyqNxrwm/04b4nw7LSmGWJcKk59XOM/YRTUwOzo4MMlow==
 
 "@xmldom/xmldom@^0.8.8":
   version "0.8.10"
@@ -2448,6 +2454,13 @@ camelcase@^6.2.0:
 
 caniuse-lite@^1.0.30001663:
   version "1.0.30001664"
+
+canvaskit-wasm@0.39.1:
+  version "0.39.1"
+  resolved "https://registry.npmjs.org/canvaskit-wasm/-/canvaskit-wasm-0.39.1.tgz"
+  integrity sha512-Gy3lCmhUdKq+8bvDrs9t8+qf7RvcjuQn+we7vTVVyqgOVO1UVfHpsnBxkTZw+R4ApEJ3D5fKySl9TU11hmjl/A==
+  dependencies:
+    "@webgpu/types" "0.1.21"
 
 chalk@^2.4.2:
   version "2.4.2"
@@ -3769,11 +3782,6 @@ is-number@^7.0.0:
 is-path-inside@^3.0.3:
   version "3.0.3"
 
-is-plain-obj@^2.1.0:
-  version "2.1.0"
-  resolved "https://registry.npmjs.org/is-plain-obj/-/is-plain-obj-2.1.0.tgz"
-  integrity sha512-YWnfyRwxL/+SsrWYfOpUtz5b3YD+nyfkHvjbcanzk8zgyO4ASD67uVMRt8k5bM4lLMDnXfriRhOpemw+NfT1eA==
-
 is-plain-object@^2.0.4:
   version "2.0.4"
   dependencies:
@@ -4421,13 +4429,6 @@ mdn-data@2.0.30:
 memoize-one@^5.0.0:
   version "5.2.1"
 
-merge-options@^3.0.4:
-  version "3.0.4"
-  resolved "https://registry.npmjs.org/merge-options/-/merge-options-3.0.4.tgz"
-  integrity sha512-2Sug1+knBjkaMsMgf1ctR1Ujx+Ayku4EdJN4Z+C2+JzoeF7A3OZ9KM2GY0CpQS51NR61LTurMJrRKPhSs3ZRTQ==
-  dependencies:
-    is-plain-obj "^2.1.0"
-
 merge-stream@^2.0.0:
   version "2.0.0"
 
@@ -5053,7 +5054,7 @@ prompts@^2.0.1, prompts@^2.4.2:
     kleur "^3.0.3"
     sisteransi "^1.0.5"
 
-prop-types@^15.7.2, prop-types@^15.8.1:
+prop-types@^15.6.2, prop-types@^15.7.2, prop-types@^15.8.1:
   version "15.8.1"
   dependencies:
     loose-envify "^1.4.0"
@@ -5173,6 +5174,13 @@ react-native-bootsplash@^5.5.3:
     ts-dedent "^2.2.0"
     xml-formatter "^3.6.0"
 
+react-native-camera@^4.2.1:
+  version "4.2.1"
+  resolved "https://registry.npmjs.org/react-native-camera/-/react-native-camera-4.2.1.tgz"
+  integrity sha512-+Vkql24PFYQfsPRznJCvPwJQfyzCnjlcww/iZ4Ej80bgivKjL9eU0IMQIXp4yi6XCrKi4voWXxIDPMupQZKeIQ==
+  dependencies:
+    prop-types "^15.6.2"
+
 react-native-device-info@^14.0.0:
   version "14.0.0"
   resolved "https://registry.npmjs.org/react-native-device-info/-/react-native-device-info-14.0.0.tgz"
@@ -5208,10 +5216,10 @@ react-native-pager-view@*, "react-native-pager-view@>= 4.0.0":
   resolved "https://registry.npmjs.org/react-native-pager-view/-/react-native-pager-view-6.4.1.tgz"
   integrity sha512-HnDxXTRHnR6WJ/vnOitv0C32KG9MJjxLnxswuQlBJmQ7RxF2GWOHSPIRAdZ9fLxdLstV38z9Oz1C95+t+yXkcg==
 
-react-native-reanimated@*, react-native-reanimated@^3.11.0, "react-native-reanimated@>= 1.0.0":
-  version "3.15.3"
-  resolved "https://registry.npmjs.org/react-native-reanimated/-/react-native-reanimated-3.15.3.tgz"
-  integrity sha512-5QBk/7PZvZ98Adxm4MRyglwzsRzReTQIe4Hd2wbBBAZ68IC4OYKvsc8cPEjgx3/1mG8HgHFYhbcDe5U2RjeFqw==
+react-native-reanimated@*, react-native-reanimated@^3.16.1, "react-native-reanimated@>= 1.0.0", react-native-reanimated@>=2.0.0:
+  version "3.16.1"
+  resolved "https://registry.npmjs.org/react-native-reanimated/-/react-native-reanimated-3.16.1.tgz"
+  integrity sha512-Wnbo7toHZ6kPLAD8JWKoKCTfNoqYOMW5vUEP76Rr4RBmJCrdXj6oauYP0aZnZq8NCbiP5bwwu7+RECcWtoetnQ==
   dependencies:
     "@babel/plugin-transform-arrow-functions" "^7.0.0-0"
     "@babel/plugin-transform-class-properties" "^7.0.0-0"
@@ -5282,7 +5290,7 @@ react-native-vision-camera@^4.6.1:
   resolved "https://registry.npmjs.org/react-native-vision-camera/-/react-native-vision-camera-4.6.1.tgz"
   integrity sha512-USp7g+Q/H7nzIS2XBJTWVdzZArxgZu+IFafgswVzxdmr0iSpLjLUtoUp+SUWxZ+nLhJriYYvqg8hfZrJtnpnlw==
 
-react-native@*, "react-native@^0.0.0-0 || >=0.65 <1.0", "react-native@>= 0.60.2", "react-native@>= 0.62", react-native@>=0.59, react-native@>=0.59.0, react-native@>=0.60.0, "react-native@>=0.60.0-rc.0 <1.0.x", react-native@>=0.70.0, react-native@0.74.4:
+react-native@*, "react-native@>= 0.60.2", "react-native@>= 0.62", react-native@>=0.59, react-native@>=0.59.0, react-native@>=0.60.0, "react-native@>=0.60.0-rc.0 <1.0.x", react-native@>=0.64, react-native@>=0.70.0, react-native@0.74.4:
   version "0.74.4"
   dependencies:
     "@jest/create-cache-key-function" "^29.6.3"
@@ -5323,6 +5331,14 @@ react-native@*, "react-native@^0.0.0-0 || >=0.65 <1.0", "react-native@>= 0.60.2"
     ws "^6.2.2"
     yargs "^17.6.2"
 
+react-reconciler@0.27.0:
+  version "0.27.0"
+  resolved "https://registry.npmjs.org/react-reconciler/-/react-reconciler-0.27.0.tgz"
+  integrity sha512-HmMDKciQjYmBRGuuhIaKA1ba/7a+UsM5FzOZsMO2JYHt9Jh8reCb7j1eDC95NOyUlKM9KRyvdx0flBuDvYSBoA==
+  dependencies:
+    loose-envify "^1.1.0"
+    scheduler "^0.21.0"
+
 "react-redux@^7.2.1 || ^8.1.3 || ^9.0.0", react-redux@^9.1.2:
   version "9.1.2"
   resolved "https://registry.npmjs.org/react-redux/-/react-redux-9.1.2.tgz"
@@ -5347,7 +5363,7 @@ react-test-renderer@18.2.0:
     react-shallow-renderer "^16.15.0"
     scheduler "^0.23.0"
 
-react@*, "react@^16.0.0 || ^17.0.0 || ^18.0.0", "react@^16.8.0 || ^17 || ^18 || ^19", "react@^16.8.0 || ^17.0.0 || ^18.0.0", "react@^16.9.0 || ^17.0.0 || ^18", react@^18.0, react@^18.2.0, react@>=16.8, react@>=16.8.1, react@>=17.0.0, react@>=18.1.0, react@18.2.0:
+react@*, "react@^16.0.0 || ^17.0.0 || ^18.0.0", "react@^16.8.0 || ^17 || ^18 || ^19", "react@^16.8.0 || ^17.0.0 || ^18.0.0", "react@^16.9.0 || ^17.0.0 || ^18", react@^18.0, react@^18.0.0, react@^18.2.0, react@>=16.8, react@>=16.8.1, react@>=17.0.0, react@>=18.0, react@>=18.1.0, react@18.2.0:
   version "18.2.0"
   dependencies:
     loose-envify "^1.1.0"
@@ -5546,6 +5562,13 @@ sax@>=0.6.0:
   version "1.4.1"
   resolved "https://registry.npmjs.org/sax/-/sax-1.4.1.tgz"
   integrity sha512-+aWOz7yVScEGoKNd4PA10LZ8sk0A/z5+nXQG5giUO5rprX9jgYsTdov9qCchZiPIZezbZH+jRut8nPodFAX4Jg==
+
+scheduler@^0.21.0:
+  version "0.21.0"
+  resolved "https://registry.npmjs.org/scheduler/-/scheduler-0.21.0.tgz"
+  integrity sha512-1r87x5fz9MXqswA2ERLo0EbOAU74DpIUO090gIasYTqlVoJeMcl+Z1Rg7WHz+qtPujhS/hGIt9kxZOYBV3faRQ==
+  dependencies:
+    loose-envify "^1.1.0"
 
 scheduler@^0.23.0:
   version "0.23.2"

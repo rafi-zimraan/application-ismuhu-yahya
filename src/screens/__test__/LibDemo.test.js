@@ -452,54 +452,194 @@
 //   },
 // });
 
-// import {Picker} from '@react-native-picker/picker';
-// import React, {useState} from 'react';
-// import {useForm} from 'react-hook-form';
-// import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-// import {Gap} from '../../Component';
+// import React, {useEffect, useState} from 'react';
+// import {
+//   StyleSheet,
+//   Text,
+//   View,
+//   StatusBar,
+//   PermissionsAndroid,
+// } from 'react-native';
+// import {colors} from '../../utils/constant';
+// import * as Animatable from 'react-native-animatable';
+// import {useDispatch} from 'react-redux';
+// import {signQrCode} from '../../features/Auth/services/signQrCode';
+// import {useSelector} from 'react-redux';
+// import {SetQrLoading} from '../../redux/slices/authSlice';
+// import {RNCamera} from 'react-native-camera';
+// import QRCodeScanner from 'react-native-qrcode-scanner';
 
-// export default function LibDemo({
-//   title = 'filter',
-//   picker = {
-//     data: [],
-//     loading: false,
-//     label: 'label',
-//     value: 'value',
-//     onSelect: value => null,
+// export default function ScanQR({navigation}) {
+//   const dispatch = useDispatch();
+//   const {qr_loading} = useSelector(state => state.auth);
+//   const [isLoading, setIsLoading] = useState(false);
+//   const [animationDuration, setAnimasionDuration] = useState(3000);
+//   const [isCameraAuthorized, setIsCameraAuthorized] = useState(false);
+//   const check_permission = async () => {
+//     try {
+//       const granted = await PermissionsAndroid.request(
+//         PermissionsAndroid.PERMISSIONS.CAMERA,
+//       );
+
+//       if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+//         setIsCameraAuthorized(true);
+//         setAnimasionDuration(3000);
+//       }
+//     } catch (error) {
+//       console.log('Error Chaking camera', error);
+//     }
+//   };
+
+//   useEffect(() => {
+//     const refresh = navigation.addListener('focus', () => {
+//       check_permission();
+//       dispatch(SetQrLoading(false));
+//     });
+//     return refresh;
+//   }, [navigation]);
+
+//   function handleSignWithQrCode(rfid) {
+//     dispatch(SetQrLoading(true));
+//     console.log('Signing in with QR code:', rfid);
+//     dispatch(signQrCode({rfid, navigation}));
+
+//     // Setelah pemindaian QR code selesai, kembalikan ke tampilan awal
+//     dispatch(SetQrLoading(false));
+//   }
+
+//   // Menampilkan loading indicator jika isLoading adalah true
+//   if (!isCameraAuthorized) {
+//     return (
+//       <View style={styles.loadingContainer}>
+//         <StatusBar
+//           barStyle={'dark-content'}
+//           translucent={true}
+//           backgroundColor="transparent"
+//         />
+//         <Text style={styles.loadingText}>Memuat...</Text>
+//       </View>
+//     );
+//   }
+
+//   return (
+//     <View style={styles.Container}>
+//       <StatusBar
+//         barStyle={'dark-content'}
+//         translucent={true}
+//         backgroundColor="transparent"
+//       />
+
+//       <QRCodeScanner
+//         onRead={event => handleSignWithQrCode(event.data)}
+//         flashMode={RNCamera.Constants.FlashMode.torch}
+//         topContent={
+//           <Text style={styles.centerText}>
+//             Go for <Text style={styles.textBold}>Login Panther Mania </Text>
+//             from scan the QR code.
+//           </Text>
+//         }
+//       />
+
+//       <Animatable.View
+//         style={styles.qrScannBox}
+//         animation="pulse" // Anda dapat memilih animasi yang sesuai
+//         easing="linear"
+//         iterationCount="infinite"
+//         duration={animationDuration}
+//       />
+
+//       <View style={styles.qrScannBox} />
+//     </View>
+//   );
+// }
+
+// const styles = StyleSheet.create({
+//   centerText: {
+//     flex: 1,
+//     fontSize: 18,
+//     padding: 32,
+//     color: '#777',
+//     alignSelf: 'center',
+//     justifyContent: 'center',
 //   },
-// }) {
-//   const {control} = useForm();
-//   const [selectedValue, setSelectedValue] = useState(null);
+//   textBold: {
+//     fontWeight: '500',
+//     color: '#000',
+//   },
+//   Container: {
+//     flex: 1,
+//     paddingTop: StatusBar.currentHeight,
+//   },
+//   ContentModal: {
+//     backgroundColor: '#FFF',
+//     paddingVertical: 10,
+//     paddingHorizontal: 30,
+//     borderRadius: 10,
+//   },
+//   HeaderModal: {
+//     justifyContent: 'center',
+//   },
+//   AboutData: {
+//     textAlign: 'auto',
+//     color: colors.black,
+//     margin: 7,
+//   },
+//   TextWarning: {
+//     color: '#000',
+//     fontFamily: 'Poppins-SemiBold',
+//     fontSize: 18,
+//   },
+//   txtDesciption: {
+//     color: '#000',
+//     fontFamily: 'Poppins-Medium',
+//     fontSize: 14,
+//   },
+//   TextClose: {
+//     color: '#000',
+//     fontSize: 30,
+//   },
+//   qrScannBox: {
+//     position: 'absolute',
+//     top: '30%', // Sesuaikan dengan posisi yang Anda inginkan
+//     left: '10%', // Sesuaikan dengan posisi yang Anda inginkan
+//     width: '80%',
+//     height: '40%',
+//     borderWidth: 2,
+//     borderColor: colors.white,
+//   },
+//   box: {
+//     width: 100,
+//     height: 100,
+//     backgroundColor: 'blue',
+//   },
+//   loadingContainer: {
+//     flex: 1,
+//     justifyContent: 'center',
+//     alignItems: 'center',
+//   },
+//   loadingText: {
+//     marginTop: 10,
+//     fontSize: 16,
+//     color: colors.primary,
+//   },
+// });
+
+// import React from 'react';
+// import {StyleSheet, View} from 'react-native';
+// import {Camera, useCameraDevices} from 'react-native-vision-camera';
+
+// export default function LibDemo() {
+//   const devices = useCameraDevices();
+//   console.log(devices);
+//   const device = devices.back;
+//   console.log(device);
+//   if (device == null) {
+//     return <View style={styles.errorContainer} />;
+//   }
 
 //   return (
 //     <View style={styles.container}>
-//       <View style={styles.dropdownContainer}>
-//         <Icon
-//           name="filter-menu-outline"
-//           size={20}
-//           color="black"
-//           style={styles.icon}
-//         />
-//         <Picker
-//           selectedValue={selectedValue}
-//           onValueChange={value => {
-//             setSelectedValue(value);
-//             if (picker.onSelect) picker.onSelect(value);
-//           }}
-//           style={styles.picker}
-//           dropdownIconColor="black">
-//           <Picker.Item label={`${title}`} value={null} />
-//           {picker.data.map((item, index) => (
-//             <Picker.Item
-//               key={index}
-//               label={item[picker.label]}
-//               value={item[picker.value]}
-//             />
-//           ))}
-//         </Picker>
-//       </View>
-
-//       <Gap height={20} />
+//       <Camera style={StyleSheet.absoluteFill} device={device} isActive={true} />
 //     </View>
 //   );
 // }
@@ -507,37 +647,110 @@
 // const styles = StyleSheet.create({
 //   container: {
 //     flex: 1,
-//     justifyContent: 'center',
-//     padding: 15,
-//     width: 250,
+//     backgroundColor: 'black',
 //   },
-//   dropdownContainer: {
-//     flexDirection: 'row',
-//     alignItems: 'center',
-//     backgroundColor: 'grey',
-//     borderRadius: 8,
-//     overflow: 'hidden',
-//     paddingHorizontal: 5,
-//   },
-//   icon: {
-//     marginRight: 8,
-//   },
-//   picker: {
+//   errorContainer: {
 //     flex: 1,
-//     height: 40,
-//     color: 'black',
+//     justifyContent: 'center',
+//     alignItems: 'center',
+//     backgroundColor: 'black',
 //   },
 // });
 
-import React from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import React, {useRef, useState} from 'react';
+import {Dimensions, StyleSheet, View} from 'react-native';
+import {RNCamera} from 'react-native-camera';
+const width = Dimensions.get('window').width;
+const height = Dimensions.get('window').height;
 
-export default function LibDemo() {
+const LibsTest = () => {
+  const [type, setType] = useState(RNCamera.Constants.Type.front);
+  const [box, setBox] = useState(null);
+  const cameraRef = useRef(null);
+
+  const handlerFace = ({faces}) => {
+    if (faces[0]) {
+      setBox({
+        boxs: {
+          width: faces[0].bounds.size.width,
+          height: faces[0].bounds.size.height,
+          x: faces[0].bounds.origin.x,
+          y: faces[0].bounds.origin.y,
+          yawAngle: faces[0].yawAngle,
+          rollAngle: faces[0].rollAngle,
+        },
+        rightEyePosition: faces[0].rightEyePosition,
+        leftEyePosition: faces[0].leftEyePosition,
+        bottomMounthPosition: faces[0].bottomMounthPosition,
+      });
+    } else {
+      setBox(null);
+    }
+  };
   return (
-    <View>
-      <Text>LibDemo</Text>
+    <View style={styles.container}>
+      <RNCamera
+        ref={cameraRef}
+        style={styles.camera}
+        type={type}
+        captureAudio={false}
+        onFacesDetected={handlerFace}
+        faceDetectionLandmarks={RNCamera.Constants.FaceDetection.Landmarks.all}
+      />
+      {box && (
+        <>
+          {/* <Image
+            source={ImgAppLogo}
+            style={styles.glasses({
+              rightEyePosition: box.rightEyePosition,
+              leftEyePosition: box.leftEyePosition,
+              yawAngle: box.yawAngle,
+              rollAngle: box.rollAngle,
+            })}
+          /> */}
+          <View
+            style={styles.bound({
+              width: box.boxs.width,
+              height: box.boxs.height,
+              x: box.boxs.x,
+              y: box.boxs.y,
+            })}
+          />
+        </>
+      )}
     </View>
   );
-}
+};
 
-const styles = StyleSheet.create({});
+export default LibsTest;
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: 'gray',
+  },
+  camera: {
+    flexGrow: 1,
+  },
+  bound: ({width, height, x, y}) => {
+    return {
+      position: 'absolute',
+      top: y,
+      left: x - 50,
+      height,
+      width,
+      borderWidth: 5,
+      borderColor: 'red',
+      zIndex: 3000,
+    };
+  },
+  // glasses: ({rightEyePosition, leftEyePosition, yawAngle, rollAngle}) => {
+  //   return {
+  //     position: 'absolute',
+  //     top: rightEyePosition.y - 60,
+  //     left: rightEyePosition.x - 100,
+  //     resizeMode: 'contain',
+  //     width: Math.abs(leftEyePosition.x - rightEyePosition.x) + 100,
+  //   };
+  // },
+});

@@ -23,6 +23,7 @@ export default function AlertPopUp({
   duration = 3000,
   message = 'Type something...',
   paddingTop = StatusBar.currentHeight,
+  onClose,
 }) {
   const [alertVisible, setAlertVisible] = useState(false);
 
@@ -35,6 +36,7 @@ export default function AlertPopUp({
     timeout = setTimeout(() => {
       LayoutAnimation.easeInEaseOut();
       setAlertVisible(false);
+      if (onClose) onClose();
     }, duration);
   };
 
