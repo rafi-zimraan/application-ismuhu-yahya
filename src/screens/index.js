@@ -6,6 +6,7 @@ import DrawerContent from './DrawerContent/DrawerContent';
 import History from './History/History';
 import DetailNotification from './Notification/DetailNotification';
 import Notification from './Notification/Notification';
+import OnboardingFrist from './Onboarding/OnboardingFrist';
 import Perizinan from './Perizinan/Perizinan';
 import FaceScaanPresence from './PresenceEmployee/FaceScaanPresence';
 import PresenceFormulir from './PresenceEmployee/PresenceFormulir';
@@ -16,6 +17,7 @@ import SplashScreen from './SplashScreen/SplashScreen';
 import LibDemo from './__test__/LibDemo.test';
 
 export {
+  OnboardingFrist,
   Profile,
   DetailNotification,
   History,

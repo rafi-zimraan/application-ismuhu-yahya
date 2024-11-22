@@ -7,6 +7,7 @@ import {
   FaceScaanPresence,
   History,
   LibDemo,
+  OnboardingFrist,
   Perizinan,
   PresenceFormulir,
   Presensi,
@@ -28,7 +29,7 @@ export default function Navigator() {
         statusBarColor: 'transparent',
         statusBarTranslucent: true,
       }}
-      initialRouteName={'SplashScreen'}>
+      initialRouteName={'LibDemo'}>
       <Stack.Screen name="LibDemo" component={LibDemo} />
       <Stack.Screen name="SplashScreen" component={SplashScreen} />
       <Stack.Screen name="SignIn" component={SignIn} />
@@ -44,6 +45,7 @@ export default function Navigator() {
       <Stack.Screen name="BottomTabs" component={BottomTabs} />
       <Stack.Screen name="Profile" component={Profile} />
       <Stack.Screen name="EditProfile" component={EditProfile} />
+      <Stack.Screen name="Onboarding" component={OnboardingFrist} />
       {/* <Stack.Screen name="BottomUser" component={BottomUser} /> */}
     </Stack.Navigator>
   );

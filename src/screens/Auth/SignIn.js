@@ -46,8 +46,7 @@ export default function SignIn({navigation}) {
     <KeyboardAvoidingView
       style={{flex: 1}}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      keyboardVerticalOffset={Platform.OS === 'ios' ? 40 : 0} // Offset untuk menghindari header tertutup
-    >
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 40 : 0}>
       <View style={{flex: 1}}>
         <Background />
         <View style={styles.container}>
