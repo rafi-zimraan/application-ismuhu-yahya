@@ -62,6 +62,7 @@ const Tab = createBottomTabNavigator();
 
 export default function BottomTabs({navigation}) {
   const [unreadCount, setUnreadCount] = useState(0);
+  console.log('unreadCount', unreadCount);
 
   useEffect(() => {
     const fecthUnreadCount = async () => {

@@ -11,7 +11,6 @@ import {
 import {COLORS} from '../../utils';
 
 export default function Notification({navigation}) {
-  // Tidak perlu menerima setUnreadCount sebagai prop
   const [selectedMessages, setSelectedMessages] = useState([]);
 
   const pickerData = [

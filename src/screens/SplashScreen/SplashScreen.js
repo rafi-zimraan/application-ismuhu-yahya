@@ -18,18 +18,18 @@ export default function SplashScreen({navigation}) {
   useEffect(() => {
     async function statusUserChecking() {
       setLoading(true);
-
       try {
         const storedCredential = await EncryptedStorage.getItem('token');
-
+        const onboarding = await EncryptedStorage.getItem('is_boarding');
         setTimeout(() => {
           if (storedCredential) {
             console.log('tokenlogin', storedCredential);
-
-            // if there is token, replace to dasboard
             navigation.replace('Dasboard');
+          } else if (!onboarding) {
+            console.log('onboarding', onboarding);
+            navigation.replace('Onboarding');
           } else {
-            // if nothing token, replace to signIn
+            console.log('No token, but onboarding completed');
             navigation.replace('SignIn');
           }
         }, 2000);
