@@ -82,12 +82,10 @@ export default function Notification({navigation}) {
 
   useEffect(() => {
     const unreadCount = messageState
-      .filter(msg => msg.status === 'delivered') // Pesan yang belum dibaca
-      .reduce((acc, curr) => acc + curr.count, 0); // Total jumlah pesan yang belum dibaca
+      .filter(msg => msg.status === 'delivered')
+      .reduce((acc, curr) => acc + curr.count, 0);
 
-    saveUnreadCount(unreadCount); // Simpan ke EncryptedStorage
-
-    // Perbarui tabBarBadge di BottomTabs
+    saveUnreadCount(unreadCount);
     navigation.setOptions({
       tabBarBadge: unreadCount > 0 ? unreadCount : null,
     });

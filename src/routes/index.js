@@ -3,14 +3,17 @@ import React from 'react';
 import {FormulirCuti} from '../features/Perizinan';
 import {EditProfile} from '../features/Profile';
 import {
+  AboutApplication,
   DetailNotification,
   FaceScaanPresence,
+  HelpSetting,
   History,
   LibDemo,
   OnBoarding,
   Perizinan,
   PresenceFormulir,
   Presensi,
+  PrivasiSetting,
   Profile,
   SignIn,
   SignUp,
@@ -46,7 +49,9 @@ export default function Navigator() {
       <Stack.Screen name="BottomTabs" component={BottomTabs} />
       <Stack.Screen name="Profile" component={Profile} />
       <Stack.Screen name="EditProfile" component={EditProfile} />
-      {/* <Stack.Screen name="BottomUser" component={BottomUser} /> */}
+      <Stack.Screen name="PrivasiSetting" component={PrivasiSetting} />
+      <Stack.Screen name="AboutApplication" component={AboutApplication} />
+      <Stack.Screen name="HelpSetting" component={HelpSetting} />
     </Stack.Navigator>
   );
 }
