@@ -2,14 +2,16 @@ import {createSlice} from '@reduxjs/toolkit';
 
 const initialState = {
   token: '',
-  user: {
-    IDUser: '',
-    email: '',
-    name: '',
-    role: '',
+  name: '',
+  email: '',
+  category: '',
+  roles: [],
+  permissions: [],
+  url_photo: '',
+  data_notifications: {
+    notification: [],
+    approvals: [],
   },
-  divisions: [],
-  departement: [],
 };
 
 const authSlice = createSlice({
@@ -18,30 +20,30 @@ const authSlice = createSlice({
   reducers: {
     setUserSession(state, {payload}) {
       state.token = payload.token;
-      state.user = payload.user;
+      state.name = payload.name;
+      state.email = payload.email;
+      state.category = payload.category;
+      state.roles = payload.roles;
+      state.permissions = payload.permissions;
+      state.url_photo = payload.url_photo;
+      state.data_notifications = payload.data_notifications;
     },
     ClearUserSession(state) {
       state.token = '';
-      state.user = {email: '', name: '', role: ''};
+      state.name = '';
+      state.email = '';
+      state.category = '';
+      state.roles = [];
+      state.permissions = [];
+      state.url_photo = '';
+      state.data_notifications = {notification: [], approvals: []};
     },
     setToken(state, {payload}) {
       state.token = payload;
     },
-    setDivisions(state, {payload}) {
-      state.divisions = payload;
-    },
-    setDepartments(state, {payload}) {
-      state.departement = payload;
-    },
   },
 });
 
-export const {
-  setUserSession,
-  ClearUserSession,
-  setToken,
-  setDivisions,
-  setDepartments,
-} = authSlice.actions;
+export const {setUserSession, ClearUserSession, setToken} = authSlice.actions;
 
 export default authSlice.reducer;

@@ -16,12 +16,13 @@ import {COLORS} from '../../utils';
 
 export default function DrawerContent() {
   const [userData, setUserData] = useState({name: '', email: ''});
+  console.log(setUserData);
   const navigation = useNavigation;
 
   useEffect(() => {
     const loadUserData = async () => {
       try {
-        const storedUser = await EncryptedStorage.getItem('user');
+        const storedUser = await EncryptedStorage.getItem('user_sesion');
         if (storedUser) {
           const user = JSON.parse(storedUser);
           setUserData({name: user.name, email: user.email});

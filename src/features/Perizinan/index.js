@@ -1,5 +1,8 @@
+import CreateFormulirPerizinan from './components/CreateFormulirPerizinan';
 import FormulirCuti from './components/FormulirCuti';
-import MenuItem from './components/MenuItem';
-import StatusButton from './components/StatusButton';
+import {getAllPerizinan} from './services/perizinanApiSlice';
 
-export {FormulirCuti, MenuItem, StatusButton};
+// component
+export {FormulirCuti, CreateFormulirPerizinan};
+// slice
+export {getAllPerizinan};

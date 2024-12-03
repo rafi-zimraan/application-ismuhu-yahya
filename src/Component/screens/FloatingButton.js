@@ -44,6 +44,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.icon,
     elevation: 3,
     overflow: 'hidden',
+    backgroundColor: COLORS.goldenOrange,
   },
   containerTextAbsolute: {
     paddingHorizontal: 10,

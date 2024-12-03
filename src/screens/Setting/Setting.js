@@ -29,6 +29,7 @@ export default function Settings({navigation}) {
         <Gap height={35} />
         {/* Bagian Profil */}
 
+        <Text style={styles.sectionHeader}>Profile</Text>
         <TouchableOpacity
           style={styles.section}
           activeOpacity={0.6}
@@ -52,6 +53,20 @@ export default function Settings({navigation}) {
           <View style={styles.sectionTextContainer}>
             <Text style={styles.sectionTitle}>Privasi</Text>
             <Text style={styles.sectionSubtitle}>Atur pengaturan privasi</Text>
+          </View>
+        </TouchableOpacity>
+
+        {/* Ganti Password */}
+        <TouchableOpacity
+          style={styles.section}
+          activeOpacity={0.6}
+          onPress={() => navigation.navigate('ChangePassword')}>
+          <Icon name="lock-reset" size={28} color={COLORS.goldenOrange} />
+          <View style={styles.sectionTextContainer}>
+            <Text style={styles.sectionTitle}>Ganti Password</Text>
+            <Text style={styles.sectionSubtitle}>
+              Ubah password untuk keamanan Anda
+            </Text>
           </View>
         </TouchableOpacity>
 
@@ -152,13 +167,13 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     color: COLORS.black,
-    marginVertical: 10,
+    marginVertical: 8,
   },
   sectionHeader: {
     fontSize: 18,
     fontWeight: 'bold',
     color: COLORS.darkGray,
-    marginVertical: 10,
+    marginVertical: 8,
   },
   section: {
     flexDirection: 'row',
@@ -166,7 +181,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     padding: 15,
     borderRadius: 10,
-    marginBottom: 10,
+    marginBottom: 8,
     shadowColor: '#000',
     shadowOffset: {width: 0, height: 2},
     shadowOpacity: 0.1,

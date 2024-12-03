@@ -1,6 +1,7 @@
 import React from 'react';
-import {View, Text, StyleSheet} from 'react-native';
+import {StyleSheet, Text} from 'react-native';
 import version from 'react-native-version-info';
+import {COLORS} from '../../utils';
 
 const AppVersion = () => {
   return <Text style={styles.textVersion}>{version.appVersion}</Text>;
@@ -8,9 +9,9 @@ const AppVersion = () => {
 
 const styles = StyleSheet.create({
   textVersion: {
-    color: 'grey',
+    color: COLORS.black,
     position: 'absolute',
-    bottom: 5,
+    bottom: 15,
     alignSelf: 'center',
   },
 });

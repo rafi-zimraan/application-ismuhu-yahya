@@ -68,7 +68,7 @@ export default function OnBoarding({navigation}) {
         flex: 1,
         backgroundColor: screens[currentScreen].backgroundColor,
       }}>
-      <StatusBar barStyle={'default'} backgroundColor={'transparent'} />
+      <StatusBar barStyle={'dark-content'} backgroundColor={'transparent'} />
       {currentScreen === 0 && <BGOnBoarding />}
       {currentScreen === 0 && (
         <View style={styles.navbarLogo}>

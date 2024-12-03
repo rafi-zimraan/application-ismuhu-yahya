@@ -1,15 +1,9 @@
 import React, {useEffect, useState} from 'react';
-import {
-  ActivityIndicator,
-  Image,
-  ImageBackground,
-  StatusBar,
-  StyleSheet,
-  View,
-} from 'react-native';
+import {ActivityIndicator, Image, StyleSheet, View} from 'react-native';
 import EncryptedStorage from 'react-native-encrypted-storage';
+import LinearGradient from 'react-native-linear-gradient';
 import {AppVersion, Gap} from '../../Component';
-import {IMG_ISMUHUYAHYA_POTRAIT, IMG_YELLOWWISH_FRIST} from '../../assets';
+import {IMG_ISMUHUYAHYA_POTRAIT} from '../../assets';
 import {COLORS} from '../../utils';
 
 export default function SplashScreen({navigation}) {
@@ -41,12 +35,14 @@ export default function SplashScreen({navigation}) {
   }, [navigation]);
 
   return (
-    <ImageBackground
-      source={IMG_YELLOWWISH_FRIST}
-      style={styles.background}
-      resizeMode="cover">
+    // <ImageBackground
+    //   source={IMG_YELLOWWISH_FRIST}
+    //   style={styles.background}
+    //   resizeMode="cover">
+    // </ImageBackground>
+
+    <LinearGradient colors={['#FFFFFF', '#F8F8F8']} style={styles.background}>
       <View style={styles.container}>
-        <StatusBar barStyle={'dark-content'} backgroundColor={'transparent'} />
         <Image source={IMG_ISMUHUYAHYA_POTRAIT} style={styles.img} />
         <Gap height={25} />
         <ActivityIndicator
@@ -56,7 +52,7 @@ export default function SplashScreen({navigation}) {
         />
       </View>
       <AppVersion />
-    </ImageBackground>
+    </LinearGradient>
   );
 }
 
@@ -65,6 +61,7 @@ const styles = StyleSheet.create({
     flex: 1,
     width: '100%',
     height: '100%',
+    backgroundColor: '#F5F5F5',
   },
   container: {
     flex: 1,
@@ -72,7 +69,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   img: {
-    width: 390,
-    height: 290,
+    width: 380,
+    height: 260,
   },
 });

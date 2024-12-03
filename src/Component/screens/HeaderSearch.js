@@ -1,14 +1,7 @@
 import React, {useState} from 'react';
-import {
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableNativeFeedback,
-  TouchableOpacity,
-  View,
-} from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import {Image, StyleSheet, TouchableOpacity, View} from 'react-native';
 import {Gap} from '..';
+import {IMG_PROFILE_FAKE} from '../../assets';
 import {COLORS} from '../../utils';
 
 export default function HeaderSearch({
@@ -20,10 +13,29 @@ export default function HeaderSearch({
   onProfilePress,
 }) {
   const [showPassword, setShowPassword] = useState(secureTextEntry);
+  const [profileImage, setProfileImage] = useState(null);
+
+  // useEffect(() => {
+  //   const loadUserProfile = async () => {
+  //     try {
+  //       const storedUserSession = await EncryptedStorage.getItem(
+  //         'user_session',
+  //       );
+  //       if (storedUserSession) {
+  //         const userSession = JSON.parse(storedUserSession);
+  //         setProfileImage(userSession.profileImage);
+  //       }
+  //     } catch (error) {
+  //       console.log('Error fetching user profile image', error);
+  //     }
+  //   };
+
+  //   loadUserProfile();
+  // }, []);
 
   return (
     <View style={styles.headerContainer}>
-      <View
+      {/* <View
         style={{
           ...styles.containerSearchBar,
         }}>
@@ -50,13 +62,10 @@ export default function HeaderSearch({
             </TouchableNativeFeedback>
           )}
         </View>
-      </View>
+      </View> */}
       <Gap width={30} />
-      {/* Tambahkan lingkaran dengan icon profile di luar search input */}
       <TouchableOpacity onPress={onProfilePress} activeOpacity={0.7}>
-        <View style={styles.profileIconContainer}>
-          <Icon name="account-circle" color={COLORS.primary} size={30} />
-        </View>
+        <Image source={IMG_PROFILE_FAKE} style={{height: 50, width: 50}} />
       </TouchableOpacity>
     </View>
   );
@@ -91,14 +100,5 @@ const styles = StyleSheet.create({
   },
   showText: {
     color: COLORS.black,
-  },
-  profileIconContainer: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: COLORS.white,
-    justifyContent: 'center',
-    alignItems: 'center',
-    elevation: 2,
   },
 });

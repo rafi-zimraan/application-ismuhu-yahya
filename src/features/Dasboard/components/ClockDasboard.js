@@ -1,16 +1,9 @@
 import React from 'react';
-import {Alert, Image, StyleSheet, Text, View} from 'react-native';
+import {Image, StyleSheet, Text, View} from 'react-native';
 import {IMG_LOGO} from '../../../assets';
 import {COLORS} from '../../../utils';
 
 export default function ClockDasboard({formatTime}) {
-  function handleAlert() {
-    Alert.alert(
-      'Perhatian!!',
-      'Fitur dalam perkembangan, minta doanya agar segera selesai',
-    );
-  }
-
   return (
     <View style={styles.bodyClockWrapper}>
       <View style={styles.bodyClock}>
@@ -18,19 +11,6 @@ export default function ClockDasboard({formatTime}) {
           <Image source={IMG_LOGO} style={styles.imgLogoClock} />
           <Text style={styles.txtClock}>{formatTime}</Text>
         </View>
-        {/* <TouchableOpacity
-          activeOpacity={0.6}
-          style={styles.contentRequest}
-          onPress={handleAlert}>
-          <View style={styles.bodyRequest}>
-            <Icon
-              name="rocket-launch-outline"
-              color={COLORS.primary}
-              size={26}
-            />
-          </View>
-          <Text style={styles.txtBodyRequest}>Saran</Text>
-        </TouchableOpacity> */}
       </View>
     </View>
   );
@@ -39,7 +19,7 @@ export default function ClockDasboard({formatTime}) {
 const styles = StyleSheet.create({
   bodyClockWrapper: {
     position: 'absolute',
-    top: 255,
+    top: 195,
     left: 0,
     right: 0,
     alignItems: 'center',
@@ -50,7 +30,7 @@ const styles = StyleSheet.create({
     elevation: 5,
     alignItems: 'center',
     height: 65,
-    width: '90%',
+    width: '75%',
     padding: 15,
     borderRadius: 15,
   },
@@ -61,15 +41,15 @@ const styles = StyleSheet.create({
     height: 35,
   },
   imgLogoClock: {
-    width: 87,
-    height: 47,
+    width: 77,
+    height: 37,
   },
   txtClock: {
-    textAlign: 'auto',
-    fontSize: 27,
+    textAlign: 'center',
+    fontSize: 23,
     color: COLORS.black,
     fontWeight: '500',
-    right: 10,
+    right: 5,
   },
   contentRequest: {
     alignItems: 'center',

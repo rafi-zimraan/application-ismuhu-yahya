@@ -20,6 +20,7 @@ import IMG_LOGIN from '../assets/images/imgLogin.png';
 import IMG_ONBOARDING_SECONDRY from '../assets/images/imgOnboardingSecondry.png';
 import IMG_ISMUHUYAHYA_FUll from '../assets/images/logo-ishmuhu-full.png';
 import IMG_ISMUHUYAHYA_POTRAIT from '../assets/images/logo-ishmuhu-potrait.png';
+import IMG_NOTHING_DATA_HISTORY_PERIZINA from '../assets/images/nothingDataHistory.png';
 import IMG_PONDOK_DIGITAL_WHITE from '../assets/pondok-digital-logo/full-white.png';
 import IMG_PONDOK_DIGITAL from '../assets/pondok-digital-logo/full.png';
 import ICON_CUTLERY from '../assets/yaumi/cutlery.png';
@@ -29,6 +30,7 @@ import ICON_PRAYING from '../assets/yaumi/praying.png';
 import ICON_READING_QURAN from '../assets/yaumi/reading-quran.png';
 
 export {
+  IMG_NOTHING_DATA_HISTORY_PERIZINA,
   IMG_LOGIN,
   IMG_ONBOARDING_TREESECONDRY,
   IMG_ONBOARDING_SECONDRY,

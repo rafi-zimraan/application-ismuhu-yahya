@@ -15,42 +15,43 @@ export const login = async (data, navigation, dispatch) => {
     }
 
     console.log('DATA YANG DIKIRIM:', data);
-    const response = await api.post('/login', data);
+    const response = await api.post('/mobile/login', data);
     console.log('RESPONSE login:', response.data);
 
     // if response failed
     if (response.data.status === false) {
-      // send ToastAndroid to warning
       const errorMessage =
         response.data.message?.email[0] || 'Terjadi Kesalahan';
-      // console.log(errorMessage);
       ToastAndroid.show(errorMessage, ToastAndroid.SHORT);
       return;
     }
 
     const token = response.data?.token;
-    const user = response.data?.user[0];
-    console.log('data user', user);
+    const responseData = response.data;
+    // console.log('Data login user', responseData);
 
-    if (token && user) {
+    if (token && responseData.name && responseData.email) {
       dispatch(
         setUserSession({
           token: token,
-          user: {
-            IDUser: user.IDUser,
-            email: user.email,
-            name: user.name,
-            role: user.role,
-          },
+          name: responseData.name,
+          email: responseData.email,
+          ...responseData, // save all data to state
         }),
       );
 
       // Save data to EncryptedStorage
       await EncryptedStorage.setItem('token', JSON.stringify(token));
-      await EncryptedStorage.setItem('user', JSON.stringify(user));
+      await EncryptedStorage.setItem(
+        'user_sesion',
+        JSON.stringify(responseData),
+      );
 
       // successfuly load data
-      ToastAndroid.show(`Selamat Datang ${user.name}`, ToastAndroid.SHORT);
+      ToastAndroid.show(
+        `Selamat Datang ${responseData.name}`,
+        ToastAndroid.SHORT,
+      );
       navigation.navigate('Dasboard');
     } else {
       throw new Error('Token atau user tidak ditemukan');

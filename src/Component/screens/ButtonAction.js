@@ -12,7 +12,7 @@ export default function ButtonAction({
   title = 'Button',
   onPress,
   disabled,
-  backgroundColor = '#00AF81',
+  backgroundColor = '#FFB200',
   color = 'white',
   loading = false,
   iconLeft,

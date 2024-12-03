@@ -58,9 +58,9 @@ const styles = StyleSheet.create({
     height: 58,
   },
   textTitle: {
-    fontWeight: 'bold',
+    fontWeight: '500',
     color: 'black',
-    top: 5,
+    top: 2,
     textAlign: 'center',
   },
 });

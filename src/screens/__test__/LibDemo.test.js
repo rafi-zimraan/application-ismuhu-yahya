@@ -103,132 +103,15 @@
 //   },
 // });
 
-import React, {useState} from 'react';
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {Background, Gap} from '../../Component';
-import {COLORS} from '../../utils';
+import React from 'react';
+import {StyleSheet, Text, View} from 'react-native';
 
-export default function HelpScreen({navigation}) {
-  const [expandedIndex, setExpandedIndex] = useState(null);
-
-  const toggleDescription = index => {
-    setExpandedIndex(index === expandedIndex ? null : index);
-  };
-
-  const helpData = [
-    {
-      title: 'Bagaimana cara melakukan logout?',
-      description:
-        'Untuk melakukan logout, buka menu Pengaturan, gulir ke bawah, dan tekan tombol "Logout". Konfirmasi jika diminta.',
-    },
-    {
-      title: 'Bagaimana cara mengubah kata sandi?',
-      description:
-        'Buka menu Pengaturan > Pengaturan Akun > Privasi. Pilih opsi "Ubah Kata Sandi" dan ikuti instruksi.',
-    },
-    {
-      title: 'Bagaimana cara mengatur notifikasi?',
-      description:
-        'Pergi ke menu Pengaturan > Pengaturan Aplikasi. Aktifkan atau nonaktifkan notifikasi sesuai preferensi Anda.',
-    },
-  ];
-
+export default function LibDemo() {
   return (
-    <SafeAreaView style={{flex: 1}}>
-      <StatusBar barStyle={'dark-content'} backgroundColor={'transparent'} />
-      <Background />
-      <ScrollView style={styles.container}>
-        <Gap height={25} />
-        <Text style={styles.titleText}>Bantuan & Panduan</Text>
-        <Gap height={20} />
-
-        {helpData.map((item, index) => (
-          <View key={index}>
-            <TouchableOpacity
-              style={styles.section}
-              activeOpacity={0.6}
-              onPress={() => toggleDescription(index)}>
-              <Icon
-                name="help-circle-outline"
-                size={28}
-                color={COLORS.goldenOrange}
-              />
-              <View style={styles.sectionTextContainer}>
-                <Text style={styles.sectionTitle}>{item.title}</Text>
-              </View>
-              <Icon
-                name={expandedIndex === index ? 'chevron-up' : 'chevron-down'}
-                size={24}
-                color={COLORS.goldenOrange}
-              />
-            </TouchableOpacity>
-            {expandedIndex === index && (
-              <View style={styles.descriptionContainer}>
-                <Text style={styles.description}>{item.description}</Text>
-              </View>
-            )}
-          </View>
-        ))}
-      </ScrollView>
-    </SafeAreaView>
+    <View style={{flex: 1}}>
+      <Text>LibDemo</Text>
+    </View>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-  },
-  titleText: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: COLORS.black,
-    marginVertical: 10,
-  },
-  section: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#fff',
-    padding: 15,
-    borderRadius: 10,
-    marginBottom: 10,
-    shadowColor: '#000',
-    shadowOffset: {width: 0, height: 2},
-    shadowOpacity: 0.1,
-    elevation: 3,
-    justifyContent: 'space-between',
-  },
-  sectionTextContainer: {
-    flex: 1,
-    marginLeft: 15,
-  },
-  sectionTitle: {
-    fontSize: 16,
-    color: COLORS.darkGray,
-  },
-  descriptionContainer: {
-    backgroundColor: COLORS.beige, // Warna background untuk deskripsi
-    padding: 15,
-    marginTop: -10, // Supaya terlihat rapi
-    marginBottom: 10,
-    borderRadius: 10,
-    shadowColor: '#000',
-    shadowOffset: {width: 0, height: 1},
-    shadowOpacity: 0.1,
-    elevation: 2,
-  },
-  description: {
-    fontSize: 14,
-    color: COLORS.darkGray,
-    lineHeight: 20,
-  },
-});
+const styles = StyleSheet.create({});

@@ -1,148 +1,3 @@
-// import React, {useState} from 'react';
-// import {useForm} from 'react-hook-form';
-// import {
-//   Dimensions,
-//   Image,
-//   KeyboardAvoidingView,
-//   Platform,
-//   ScrollView,
-//   StyleSheet,
-//   View,
-// } from 'react-native';
-// import {useDispatch} from 'react-redux';
-// import {Background, Gap} from '../../Component';
-// import {IMG_ISMUHUYAHYA_FUll} from '../../assets';
-// import {
-//   ButtonAuth,
-//   FormInput,
-//   ModalRecovery,
-// } from '../../features/authentication';
-// import {login} from '../../features/authentication/services/authApiSlice';
-// import {COLORS} from '../../utils';
-
-// const {height, width} = Dimensions.get('window');
-
-// export default function SignIn({navigation}) {
-//   const {control, handleSubmit} = useForm();
-//   const [loading, setLoading] = useState(false);
-//   const dispatch = useDispatch();
-
-//   const onSubmit = async data => {
-//     setLoading(true);
-//     try {
-//       const loginData = {
-//         email: data.email,
-//         password: data.password,
-//       };
-//       await login(loginData, navigation, dispatch);
-//     } catch (error) {
-//       console.log('LOGIN ERROR:', error?.message);
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
-
-//   return (
-//     <KeyboardAvoidingView
-//       style={{flex: 1}}
-//       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-//       keyboardVerticalOffset={Platform.OS === 'ios' ? 40 : 0}>
-//       <View style={{flex: 1}}>
-//         <Background />
-//         <View style={styles.container}>
-//           <ScrollView
-//             style={styles.body}
-//             contentContainerStyle={{flexGrow: 1}}
-//             keyboardShouldPersistTaps="handled">
-//             <View style={{alignSelf: 'center'}}>
-//               <Image source={IMG_ISMUHUYAHYA_FUll} style={styles.img} />
-//             </View>
-//             <Gap height={50} />
-//             <View style={styles.viewContainer}>
-//               <View style={styles.context}>
-//                 <FormInput
-//                   control={control}
-//                   name="email"
-//                   autoCapitalize="none"
-//                   iconName="gmail"
-//                   keyboardType="email-address"
-//                   placeholder="contoh@email.com"
-//                   title="Email"
-//                   pattern={{
-//                     value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-//                     message: 'Email tidak valid',
-//                   }}
-//                 />
-//                 <FormInput
-//                   control={control}
-//                   name="password"
-//                   autoCapitalize="none"
-//                   iconName="lock"
-//                   placeholder="Kata sandi..."
-//                   title="Password"
-//                   secureText={true}
-//                 />
-//                 <Gap height={5} />
-//                 <ButtonAuth
-//                   title="Masuk"
-//                   onPress={handleSubmit(onSubmit)}
-//                   maxWidth={400}
-//                   priority="primary"
-//                   width={'70%'}
-//                   loading={loading}
-//                 />
-//                 <Gap height={20} />
-//                 <View style={styles.viewForgetPass}>
-//                   <ModalRecovery />
-//                 </View>
-//               </View>
-//             </View>
-//           </ScrollView>
-//         </View>
-//       </View>
-//     </KeyboardAvoidingView>
-//   );
-// }
-
-// const styles = StyleSheet.create({
-//   textTitle: {
-//     color: 'black',
-//     fontSize: 25,
-//     fontWeight: 'bold',
-//     textAlign: 'center',
-//   },
-//   viewContainer: {
-//     marginHorizontal: 15,
-//   },
-//   context: {
-//     backgroundColor: COLORS.white,
-//     padding: 15,
-//     elevation: 2,
-//     borderRadius: 10,
-//   },
-//   body: {
-//     padding: 5,
-//     marginTop: 25,
-//     alignSelf: 'center',
-//   },
-//   img: {
-//     height: height * 0.25,
-//     width: width * 0.9,
-//     resizeMode: 'contain',
-//   },
-//   viewForgetPass: {
-//     alignSelf: 'flex-end',
-//     flexDirection: 'row',
-//   },
-//   container: {
-//     flex: 1,
-//     justifyContent: 'center',
-//     width: '100%',
-//     alignSelf: 'center',
-//     maxWidth: 570,
-//   },
-// });
-
 import React, {useState} from 'react';
 import {useForm} from 'react-hook-form';
 import {
@@ -193,7 +48,7 @@ export default function SignIn({navigation}) {
       <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
         <View style={styles.container}>
           <StatusBar barStyle="default" backgroundColor={'transparent'} />
-          <Gap height={25} />
+          <Gap height={45} />
           <View style={{padding: 15}}>
             <Image source={IMG_LOGIN} style={styles.image} />
           </View>
@@ -201,15 +56,15 @@ export default function SignIn({navigation}) {
           <ScrollView
             style={styles.viewBody}
             contentContainerStyle={styles.scrollContainer}>
-            <View style={{padding: 15, height: '100%'}}>
+            <View style={styles.viewSignIn}>
               <Text style={styles.welcomeText}>Selamat Datang 👋</Text>
-              <Gap height={10} />
+              <Gap height={5} />
               <Text style={styles.descriptionText}>
                 Produktivitas dimulai di sini. {'\n'}Masuk untuk mengatur tugas
                 Anda.
               </Text>
-              <Gap height={15} />
-              <View style={{height: '43%'}}>
+              <Gap height={25} />
+              <View style={{height: '40%'}}>
                 <FormInput
                   control={control}
                   name="email"
@@ -233,7 +88,7 @@ export default function SignIn({navigation}) {
                   secureText={true}
                 />
               </View>
-              <Gap height={15} />
+              <Gap height={10} />
               <View style={{position: 'relative'}}>
                 <ButtonAuth
                   title="Masuk"
@@ -248,7 +103,7 @@ export default function SignIn({navigation}) {
               <View style={styles.forgotPassword}>
                 <Text style={styles.forgotPasswordText}>Lupa kata sandi?</Text>
                 <TouchableOpacity activeOpacity={0.7}>
-                  <Text style={styles.resetText}>Atur ulang Disini!</Text>
+                  <Text style={styles.resetText}> Atur ulang disini!</Text>
                 </TouchableOpacity>
               </View>
 
@@ -266,9 +121,13 @@ export default function SignIn({navigation}) {
 }
 
 const styles = StyleSheet.create({
+  viewSignIn: {
+    padding: 15,
+    height: '100%',
+  },
   viewCopyRight: {
     position: 'absolute',
-    bottom: 6,
+    bottom: 15,
     alignSelf: 'center',
   },
   textCopyRight: {
@@ -292,14 +151,13 @@ const styles = StyleSheet.create({
     height: 200,
   },
   welcomeText: {
-    fontSize: 33,
-    fontWeight: 'bold',
+    fontSize: 30,
+    fontWeight: '800',
     color: COLORS.black,
     textAlign: 'left',
-    alignSelf: 'flex-start',
   },
   descriptionText: {
-    fontSize: 13,
+    fontSize: 17,
     fontWeight: '400',
     color: COLORS.grey,
     textAlign: 'left',

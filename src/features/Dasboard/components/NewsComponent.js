@@ -14,11 +14,11 @@ export default function NewsComponent() {
 }
 
 const styles = StyleSheet.create({
-  ViewNews: {padding: 15},
+  ViewNews: {padding: 5},
   txtNews: {
     fontSize: 18,
     color: COLORS.black,
-    fontWeight: 'bold',
+    fontWeight: '600',
   },
   newsImage: {
     height: 200,

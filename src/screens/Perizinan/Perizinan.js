@@ -1,11 +1,118 @@
-import React from 'react';
-import {Image, StatusBar, StyleSheet, Text, View} from 'react-native';
-import {Background, Gap, HeaderTransparent} from '../../Component';
-import {IMG_BANNER_MASJID} from '../../assets';
-import {MenuItem, StatusButton} from '../../features/Perizinan';
+import React, {useEffect, useState} from 'react';
+import {
+  ActivityIndicator,
+  Button,
+  FlatList,
+  Image,
+  Modal,
+  RefreshControl,
+  StatusBar,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import {
+  Background,
+  FloatingButton,
+  Gap,
+  HeaderTransparent,
+  Line,
+} from '../../Component';
+import {IMG_NOTHING_DATA_HISTORY_PERIZINA} from '../../assets';
+import {getAllPerizinan} from '../../features/Perizinan';
 import {COLORS} from '../../utils';
 
 export default function Perizinan({navigation}) {
+  const [dataHistory, setDataHistory] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
+  const [tokenExpired, setTokenExpired] = useState(false);
+
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+      const response = await getAllPerizinan();
+      console.log('response data history:', response);
+
+      if (response?.message === 'Silahkan login terlebih dahulu') {
+        // Token Expired, tampilkan modal
+        setTokenExpired(true);
+      } else if (response?.data) {
+        setDataHistory(response.data);
+      } else {
+        setDataHistory([]);
+      }
+    } catch (error) {
+      console.error('Error fetching data: ', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await fetchData();
+    setRefreshing(false);
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const renderHistoryItem = ({item}) => (
+    <View style={styles.viewBodyHistory}>
+      <View style={styles.navbarOptions}>
+        <View
+          style={[
+            styles.buttonStatus,
+            {
+              backgroundColor:
+                item.category === 'Berlangsung'
+                  ? COLORS.greenBoy
+                  : item.category === 'Gagal'
+                  ? COLORS.red
+                  : COLORS.goldenOrange,
+            },
+          ]}>
+          <Text style={styles.timeButtonText}>{item.category}</Text>
+        </View>
+        <Text style={styles.date}>{item.start_date}</Text>
+        <View style={styles.optionsEditAndDelete}>
+          <TouchableOpacity
+            activeOpacity={0.7}
+            style={styles.iconButton}
+            onPress={() => {}}>
+            <Icon name="pencil-outline" size={24} color={COLORS.darkGray} />
+          </TouchableOpacity>
+          <Gap width={15} />
+          <TouchableOpacity
+            activeOpacity={0.7}
+            style={styles.iconButton}
+            onPress={() => {}}>
+            <Icon name="trash-can-outline" size={24} color={COLORS.red} />
+          </TouchableOpacity>
+        </View>
+      </View>
+      <Gap height={8} />
+      <Line />
+      <Gap height={15} />
+      <View style={styles.textRow}>
+        <Text style={styles.label}>Nama</Text>
+        <Text style={styles.value}>: {item.user_id}</Text>
+      </View>
+      <View style={styles.textRow}>
+        <Text style={styles.label}>Ttl Kembali</Text>
+        <Text style={styles.value}>: {item.end_date}</Text>
+      </View>
+      <View style={styles.textRow}>
+        <Text style={styles.label}>Keterangan</Text>
+        <Text style={styles.value}>: {item.necessity}</Text>
+      </View>
+    </View>
+  );
+
   return (
     <View style={{flex: 1}}>
       <StatusBar barStyle={'default'} backgroundColor={'transparent'} />
@@ -15,66 +122,219 @@ export default function Perizinan({navigation}) {
         icon="arrow-left-circle-outline"
         onPress={() => navigation.goBack()}
       />
-      <View style={styles.content}>
-        <Image source={IMG_BANNER_MASJID} style={styles.imgBannerMasjid} />
-      </View>
-      <Gap height={15} />
-      <View style={styles.body}>
-        <Text style={styles.txtBody}>Skor Izin</Text>
-        <View style={{flexDirection: 'row', justifyContent: 'space-evenly'}}>
-          <StatusButton
-            iconColor="tomato"
-            iconName="alert-outline"
-            label="0 Tidak Terpakai"
-          />
-          <StatusButton
-            iconColor="green"
-            iconName="checkbox-marked-circle-outline"
-            label="0 Dipakai"
-          />
+      <View style={{padding: 15, flex: 1}}>
+        <Text style={styles.txtTitlePerizinan}>Total dan cuti terpakai</Text>
+        <Gap height={5} />
+        <View style={styles.viewCuti}>
+          <View style={styles.viewContentCuti}>
+            <View style={styles.rowContent}>
+              <Text style={styles.txtLabel}>Total{'\n'}Nilai Cuti</Text>
+              <Icon
+                name="calendar-month-outline"
+                size={30}
+                color={COLORS.goldenOrange}
+              />
+            </View>
+            <Text style={styles.txtValueCount}>12 X</Text>
+          </View>
+
+          <View style={styles.viewContentCuti}>
+            <View style={styles.rowContent}>
+              <Text style={styles.txtLabel}>Total{'\n'}Nilai terpakai</Text>
+              <Icon name="history" size={30} color={COLORS.goldenOrange} />
+            </View>
+            <Text style={styles.txtValueCount}>8 X</Text>
+          </View>
         </View>
         <Gap height={15} />
-        <Text style={styles.txtMenu}>Menu Perizinan</Text>
-        <Gap height={10} />
-        <MenuItem
-          iconName="rocket-launch-outline"
-          iconColor={COLORS.primary}
-          label="Pengajuan Cuti"
-          onPress={() => navigation.navigate('FormulirCuti')}
-        />
-        <Gap height={20} />
-        <MenuItem
-          iconName="history"
-          iconColor={COLORS.primary}
-          label="History"
-          onPress={() => navigation.navigate('History')}
-        />
+
+        <Text style={styles.txtTitlePerizinan}>History</Text>
+        {loading ? (
+          <View style={styles.loadingContainer}>
+            <ActivityIndicator size="large" color={COLORS.black} />
+            <Text style={styles.loadingText}>Sedang memuat data...</Text>
+          </View>
+        ) : (
+          <FlatList
+            data={dataHistory}
+            keyExtractor={item => item.id.toString()}
+            renderItem={renderHistoryItem}
+            refreshControl={
+              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+            }
+            contentContainerStyle={styles.body}
+            ListEmptyComponent={
+              <View style={styles.emptyContainer}>
+                <Image
+                  source={IMG_NOTHING_DATA_HISTORY_PERIZINA}
+                  style={{height: 210, width: 180}}
+                />
+              </View>
+            }
+          />
+        )}
       </View>
+      <FloatingButton
+        iconName="plus-circle-outline"
+        onPress={() => navigation.navigate('CreateFormulirPerizinan')}
+      />
+
+      {/* Modal untuk Token Expired */}
+      <Modal
+        transparent={true}
+        visible={tokenExpired}
+        animationType="slide"
+        onRequestClose={() => setTokenExpired(false)}>
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalText}>
+              Sesi Anda telah berakhir. Silakan login ulang untuk memperbarui
+              data.
+            </Text>
+            <Button
+              title="Okey"
+              onPress={() => {
+                setTokenExpired(false);
+                navigation.navigate('SignIn');
+              }}
+            />
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  txtMenu: {
-    fontSize: 21,
-    color: COLORS.black,
-    fontWeight: '600',
-  },
-  body: {
-    padding: 15,
-  },
-  txtBody: {
-    fontSize: 21,
-    fontWeight: '600',
-    color: COLORS.black,
-  },
-  imgBannerMasjid: {
-    height: 170,
-    width: '90%',
-    borderRadius: 15,
-  },
-  content: {
+  modalContainer: {
+    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.5)',
+  },
+  modalContent: {
+    width: 300,
+    padding: 20,
+    backgroundColor: 'white',
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: 'center',
+    fontSize: 16,
+    color: COLORS.black,
+  },
+  emptyContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loadingContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    position: 'absolute',
+    flex: 1,
+    top: 400,
+    right: 50,
+    left: 50,
+  },
+  loadingText: {
+    fontStyle: 'italic',
+    color: COLORS.black,
+    marginTop: 10,
+  },
+  optionsEditAndDelete: {
+    flexDirection: 'row',
+  },
+  navbarOptions: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  body: {
+    padding: 3,
+  },
+  viewBodyHistory: {
+    backgroundColor: COLORS.white,
+    borderRadius: 15,
+    padding: 15,
+    marginBottom: 15,
+    elevation: 7,
+  },
+  textRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 5,
+  },
+  label: {
+    fontSize: 16,
+    fontWeight: '400',
+    color: COLORS.black,
+    width: 90,
+  },
+  value: {
+    fontSize: 16,
+    fontWeight: '400',
+    color: COLORS.black,
+    flex: 1,
+    textAlign: 'left',
+    maxHeight: 200,
+    maxWidth: 280,
+  },
+  buttonStatus: {
+    paddingVertical: 6,
+    paddingHorizontal: 10,
+    right: 0,
+    alignItems: 'center',
+    borderRadius: 7,
+    elevation: 5,
+    width: 90,
+    position: 'relative',
+  },
+  timeButtonText: {
+    fontSize: 13,
+    color: COLORS.white,
+    textAlign: 'center',
+  },
+  txtTitlePerizinan: {
+    textAlign: 'left',
+    color: COLORS.black,
+    fontSize: 20,
+    fontWeight: '600',
+    marginBottom: 5,
+  },
+  viewCuti: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  viewContentCuti: {
+    backgroundColor: COLORS.white,
+    flexDirection: 'column',
+    justifyContent: 'center',
+    borderRadius: 15,
+    elevation: 6,
+    padding: 20,
+    width: '47%',
+    height: 150,
+  },
+  rowContent: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    width: '100%',
+  },
+  txtLabel: {
+    color: COLORS.darkGray,
+    fontWeight: '600',
+    fontSize: 16,
+  },
+  txtValueCount: {
+    fontSize: 22,
+    fontWeight: '700',
+    color: COLORS.goldenOrange,
+    marginTop: 10,
+    alignSelf: 'flex-end',
   },
 });

@@ -2,7 +2,7 @@ import axios from 'axios';
 import EncryptedStorage from 'react-native-encrypted-storage';
 
 const api = axios.create({
-  baseURL: 'https://testing.simpondok.com/api',
+  baseURL: 'https://app.simpondok.com/api',
   // baseURL: 'https://dev.pondokdigital.pondokqu.id/api',
   // const host = 'https://pondokdigital.pondokqu.id/api';
 

@@ -1,13 +1,13 @@
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import React from 'react';
-import {FormulirCuti} from '../features/Perizinan';
+import {CreateFormulirPerizinan, FormulirCuti} from '../features/Perizinan';
 import {EditProfile} from '../features/Profile';
 import {
   AboutApplication,
+  ChangePassword,
   DetailNotification,
   FaceScaanPresence,
   HelpSetting,
-  History,
   LibDemo,
   OnBoarding,
   Perizinan,
@@ -44,7 +44,6 @@ export default function Navigator() {
       <Stack.Screen name="FaceScaanPresence" component={FaceScaanPresence} />
       <Stack.Screen name="Perizinan" component={Perizinan} />
       <Stack.Screen name="FormulirCuti" component={FormulirCuti} />
-      <Stack.Screen name="History" component={History} />
       <Stack.Screen name="DetailNotification" component={DetailNotification} />
       <Stack.Screen name="BottomTabs" component={BottomTabs} />
       <Stack.Screen name="Profile" component={Profile} />
@@ -52,6 +51,11 @@ export default function Navigator() {
       <Stack.Screen name="PrivasiSetting" component={PrivasiSetting} />
       <Stack.Screen name="AboutApplication" component={AboutApplication} />
       <Stack.Screen name="HelpSetting" component={HelpSetting} />
+      <Stack.Screen name="ChangePassword" component={ChangePassword} />
+      <Stack.Screen
+        name="CreateFormulirPerizinan"
+        component={CreateFormulirPerizinan}
+      />
     </Stack.Navigator>
   );
 }
