@@ -95,3 +95,33 @@ export const patchPerizinan = async (id, data) => {
     throw error;
   }
 };
+
+// Tambah data perizinan
+export const addPerizinan = async data => {
+  try {
+    // Ambil token dari EncryptedStorage
+    const token = await EncryptedStorage.getItem('token');
+    if (!token) {
+      throw new Error('Token expired, silahkan login terlebih dahulu');
+    }
+
+    const response = await api.post('lisences', data, {
+      headers: {
+        Authorization: `Bearer ${JSON.parse(token)}`,
+      },
+    });
+
+    if (response.data?.status === true) {
+      return response.data;
+    } else {
+      throw new Error(response.data?.message || 'Gagal menambahkan perizinan');
+    }
+  } catch (error) {
+    if (error.response) {
+      console.log(error.response?.data?.message || 'Terjadi kesalahan');
+    } else {
+      console.log(error.message);
+    }
+    throw error;
+  }
+};

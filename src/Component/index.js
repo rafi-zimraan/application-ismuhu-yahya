@@ -20,6 +20,7 @@ import ModalCustom from './screens/ModalCustom';
 import ModalLoading from './screens/ModalLoading';
 import SearchInput from './screens/SearchInput';
 
+// component
 export {
   HeaderSearch,
   AlertWarning,

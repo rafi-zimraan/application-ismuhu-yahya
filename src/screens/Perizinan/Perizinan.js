@@ -1,6 +1,8 @@
+import {useFocusEffect} from '@react-navigation/native';
 import React, {useEffect, useState} from 'react';
 import {
   ActivityIndicator,
+  Alert,
   Button,
   FlatList,
   Image,
@@ -30,18 +32,38 @@ export default function Perizinan({navigation}) {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [tokenExpired, setTokenExpired] = useState(false);
+  const [totalCuti, setTotalCuti] = useState(12); // Total nilai cuti default
+  const [terpakai, setTerpakai] = useState(0);
+  const [userDivisionId, setUserDivisionId] = useState('');
+  const [userDepartmentId, setUserDepartmentId] = useState('');
 
   const fetchData = async () => {
     try {
       setLoading(true);
       const response = await getAllPerizinan();
-      // console.log('response data history:', response);
 
       if (response?.message === 'Silahkan login terlebih dahulu') {
         // Token Expired, tampilkan modal
         setTokenExpired(true);
       } else if (response?.data) {
         setDataHistory(response.data);
+
+        // Ambil ID Divisi dan ID Departemen dari respons data pertama
+        if (response.data.length > 0) {
+          const firstEntry = response.data[0];
+          setUserDivisionId(firstEntry.division_id);
+          setUserDepartmentId(firstEntry.department_id);
+        }
+
+        // hitung total nilai yang terpakai
+        const categoryValues = Object.values(response?.category || {});
+        const totalTerpakai = categoryValues.reduce(
+          (sum, value) => sum + value,
+          0,
+        );
+
+        setTerpakai(totalTerpakai);
+        setTotalCuti(12 - totalTerpakai);
       } else {
         setDataHistory([]);
       }
@@ -62,11 +84,44 @@ export default function Perizinan({navigation}) {
     fetchData();
   }, []);
 
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchData();
+    }, []),
+  );
+
   const handleDelete = async id => {
-    const isDeleted = await deleteDataPerizinan(id);
-    if (isDeleted) {
-      setDataHistory(prevData => prevData.filter(item => item.id !== id));
-    }
+    Alert.alert(
+      'Konfirmasi Hapus',
+      'Apakah Anda yakin ingin menghapus cuti ini?',
+      [
+        {
+          text: 'Batal',
+          style: 'cancel',
+        },
+        {
+          text: 'Hapus',
+          onPress: async () => {
+            try {
+              const isDeleted = await deleteDataPerizinan(id);
+              if (isDeleted) {
+                setDataHistory(prevData =>
+                  prevData.filter(item => item.id !== id),
+                );
+                Alert.alert('Sukses', 'Data cuti berhasil dihapus.');
+              } else {
+                Alert.alert('Gagal', 'Gagal menghapus data.');
+              }
+            } catch (error) {
+              console.error('Error deleting data:', error);
+              Alert.alert('Error', 'Terjadi kesalahan saat menghapus data.');
+            }
+          },
+          style: 'destructive',
+        },
+      ],
+      {cancelable: true},
+    );
   };
 
   const renderHistoryItem = ({item}) => (
@@ -162,7 +217,13 @@ export default function Perizinan({navigation}) {
                 />
               </View>
             </View>
-            <Text style={styles.txtValueCount}>12 X</Text>
+            <Text style={styles.txtValueCount}>
+              {loading
+                ? 'Menghitung...'
+                : totalCuti
+                ? `${totalCuti} X`
+                : 'Tidak tersedia'}
+            </Text>
           </View>
 
           <View style={styles.viewContentCuti}>
@@ -172,7 +233,13 @@ export default function Perizinan({navigation}) {
                 <Icon name="history" size={30} color={COLORS.goldenOrange} />
               </View>
             </View>
-            <Text style={styles.txtValueCount}>8 X</Text>
+            <Text style={styles.txtValueCount}>
+              {loading
+                ? 'Menghitung...'
+                : terpakai
+                ? `${terpakai} X`
+                : 'Tidak tersedia'}
+            </Text>
           </View>
         </View>
         <Gap height={15} />
@@ -205,7 +272,12 @@ export default function Perizinan({navigation}) {
       </View>
       <FloatingButton
         iconName="plus-circle-outline"
-        onPress={() => navigation.navigate('CreateFormulirPerizinan')}
+        onPress={() =>
+          navigation.navigate('CreateFormulirPerizinan', {
+            division_id: userDivisionId,
+            department_id: userDepartmentId,
+          })
+        }
       />
 
       {/* Modal untuk Token Expired */}
@@ -235,6 +307,11 @@ export default function Perizinan({navigation}) {
 }
 
 const styles = StyleSheet.create({
+  activityIndicator: {
+    position: 'absolute',
+    right: 10,
+    bottom: 10,
+  },
   txtLabelTerpakai: {
     color: COLORS.darkGray,
     fontWeight: '600',
@@ -370,7 +447,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   txtValueCount: {
-    fontSize: 22,
+    fontSize: 18,
     fontWeight: '700',
     color: COLORS.goldenOrange,
     marginTop: 10,

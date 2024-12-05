@@ -1,13 +1,28 @@
 import React, {useEffect, useState} from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import {
+  ActivityIndicator,
+  Button,
+  Modal,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {Gap, HeaderSearch} from '../../../Component';
+import {getDepartmentDetail} from '../../../Component/Departmant/departmantApiSlice';
+import {getDivisionDetail} from '../../../Component/Divisi/divisiApiSlice';
+import {getAllPerizinan} from '../../../features/Perizinan';
 import {COLORS} from '../../../utils';
 
 export default function HeaderComponent({navigation}) {
   const [userName, setUserName] = useState('');
   const [welcomeText, setWelcomeText] = useState('');
+  const [divisionName, setDivisionName] = useState('');
+  const [departmentName, setDepartmentName] = useState('');
+  const [loadingDivision, setLoadingDivision] = useState(true);
+  const [loadingDepartment, setLoadingDepartment] = useState(true);
+  const [tokenExpired, setTokenExpired] = useState(false);
 
   useEffect(() => {
     const loadUserData = async () => {
@@ -17,8 +32,39 @@ export default function HeaderComponent({navigation}) {
           const user = JSON.parse(storedUser);
           setUserName(user.name);
         }
+
+        // Fetch data from getAllPerizinan
+        const perizinanResponse = await getAllPerizinan();
+        if (perizinanResponse?.message === 'Silahkan login terlebih dahulu') {
+          setTokenExpired(true);
+          return;
+        }
+
+        if (perizinanResponse?.data?.length > 0) {
+          const firstEntry = perizinanResponse.data[0];
+          const {division_id, department_id} = firstEntry;
+
+          // Fetch Division and Department details
+          if (division_id) {
+            setLoadingDivision(true);
+            const division = await getDivisionDetail(division_id);
+            setDivisionName(division.data?.name || 'Divisi tidak ditemukan');
+            setLoadingDivision(false);
+          }
+
+          if (department_id) {
+            setLoadingDepartment(true);
+            const department = await getDepartmentDetail(department_id);
+            setDepartmentName(
+              department.data?.name || 'Departemen tidak ditemukan',
+            );
+            setLoadingDepartment(false);
+          }
+        }
       } catch (error) {
-        console.log('Error fetching user data', error);
+        console.log('Error fetching data:', error);
+        setLoadingDivision(false);
+        setLoadingDepartment(false);
       }
     };
 
@@ -47,7 +93,6 @@ export default function HeaderComponent({navigation}) {
         <HeaderSearch
           placeholderTextColor={COLORS.black}
           placeholder="Search"
-          // onProfilePress={() => navigation.openDrawer()}
         />
         <View style={styles.bodyContentLayer}>
           <Text style={styles.txtContentLayer}>
@@ -61,9 +106,40 @@ export default function HeaderComponent({navigation}) {
         </View>
         <Gap height={5} />
         <View style={styles.buttonStatus}>
-          <Text style={styles.txtStatus}>Divisi/departman</Text>
+          {loadingDivision || loadingDepartment ? (
+            <ActivityIndicator size="small" color={COLORS.black} />
+          ) : (
+            <>
+              <Text style={styles.txtStatus}>{divisionName}</Text>
+              <Gap width={2} />
+              <Text style={styles.txtStatus}>/{departmentName}</Text>
+            </>
+          )}
         </View>
       </View>
+
+      {/* Modal untuk Token Expired */}
+      <Modal
+        transparent={true}
+        visible={tokenExpired}
+        animationType="slide"
+        onRequestClose={() => setTokenExpired(false)}>
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalText}>
+              Sesi Anda telah berakhir. Silakan login ulang untuk memperbarui
+              data.
+            </Text>
+            <Button
+              title="Okey"
+              onPress={() => {
+                setTokenExpired(false);
+                navigation.navigate('SignIn'); // Navigasi ke halaman login
+              }}
+            />
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }
@@ -72,18 +148,17 @@ const styles = StyleSheet.create({
   txtStatus: {
     color: COLORS.black,
     fontWeight: '500',
-    fontSize: 13,
+    fontSize: 11,
     textAlign: 'center',
   },
   buttonStatus: {
     backgroundColor: COLORS.white,
-    width: '40%',
+    width: '62%',
     borderRadius: 7,
     padding: 4,
-  },
-  txtContentLayerSecondry: {
-    color: COLORS.black,
-    fontSize: 20,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   containerlayerNavbar: {
     backgroundColor: COLORS.goldenOrange,
@@ -106,13 +181,27 @@ const styles = StyleSheet.create({
     fontSize: 23,
     fontWeight: '500',
   },
-  txtDesContentLayer: {
-    color: '#333',
-    fontSize: 12,
-  },
   txtDesContentLayerHighlight: {
     color: COLORS.black,
     fontSize: 14,
     fontWeight: '400',
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalContent: {
+    backgroundColor: COLORS.white,
+    padding: 20,
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+  modalText: {
+    fontSize: 16,
+    color: COLORS.black,
+    marginBottom: 20,
+    textAlign: 'center',
   },
 });

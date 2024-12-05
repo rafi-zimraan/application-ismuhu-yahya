@@ -1,6 +1,6 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
-  Button,
+  ActivityIndicator,
   Modal,
   SafeAreaView,
   ScrollView,
@@ -10,18 +10,20 @@ import {
   TextInput,
   View,
 } from 'react-native';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {
   Background,
   ButtonAction,
   Gap,
   HeaderTransparent,
 } from '../../../Component';
+import {getDepartmentDetail} from '../../../Component/Departmant/departmantApiSlice';
+import {getDivisionDetail} from '../../../Component/Divisi/divisiApiSlice';
 import {COLORS} from '../../../utils';
 import {patchPerizinan} from '../services/perizinanApiSlice';
 
 export default function EditFormulirPerizinan({navigation, route}) {
   const {id_lisences, initialData} = route.params;
-
   const [divisionId, setDivisionId] = useState(initialData.division_id || '');
   const [departmentId, setDepartmentId] = useState(
     initialData.department_id || '',
@@ -34,6 +36,35 @@ export default function EditFormulirPerizinan({navigation, route}) {
   const [totDay, setTotDay] = useState(initialData.tot_day || '');
   const [loading, setLoading] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
+  const [divisionName, setDivisionName] = useState('');
+  const [departmentName, setDepartmentName] = useState('');
+  const [loadingDivision, setLoadingDivision] = useState(false);
+  const [loadingDepartment, setLoadingDepartment] = useState(false);
+
+  useEffect(() => {
+    const fetchDivisionAndDepartment = async () => {
+      try {
+        if (divisionId) {
+          setLoadingDivision(true);
+          const division = await getDivisionDetail(divisionId);
+          setDivisionName(division.data?.name);
+        }
+
+        if (departmentId) {
+          setLoadingDepartment(true);
+          const department = await getDepartmentDetail(departmentId);
+          setDepartmentName(department.data?.name);
+        }
+      } catch (error) {
+        console.error('Error fetching division or department:', error);
+      } finally {
+        setLoadingDivision(false);
+        setLoadingDepartment(false);
+      }
+    };
+
+    fetchDivisionAndDepartment();
+  }, [divisionId, departmentId]);
 
   const handleUpdate = async () => {
     setLoading(true);
@@ -74,20 +105,54 @@ export default function EditFormulirPerizinan({navigation, route}) {
       />
       <ScrollView contentContainerStyle={styles.container}>
         <Text style={styles.label}>Division</Text>
-        <TextInput
-          style={styles.input}
-          value={divisionId}
-          onChangeText={setDivisionId}
-          placeholder="Masukkan Division ID"
-        />
+        <View style={{position: 'relative'}}>
+          <TextInput
+            style={styles.input}
+            value={divisionName}
+            onChangeText={text => {
+              setDivisionId('');
+              setDivisionName(text);
+            }}
+            placeholderTextColor={COLORS.black}
+          />
+          {loadingDivision && (
+            <ActivityIndicator
+              size="small"
+              color={COLORS.black}
+              style={{
+                position: 'absolute',
+                right: 10, // Posisi di sebelah kanan dalam TextInput
+                top: '50%', // Vertikal di tengah
+                transform: [{translateY: -10}],
+              }}
+            />
+          )}
+        </View>
 
         <Text style={styles.label}>Department</Text>
-        <TextInput
-          style={styles.input}
-          value={departmentId}
-          onChangeText={setDepartmentId}
-          placeholder="Masukkan Department ID"
-        />
+        <View style={{position: 'relative'}}>
+          <TextInput
+            style={styles.input}
+            value={departmentName}
+            onChangeText={text => {
+              setDepartmentId('');
+              setDepartmentName(text);
+            }}
+            placeholderTextColor={COLORS.black}
+          />
+          {loadingDepartment && (
+            <ActivityIndicator
+              size="small"
+              color={COLORS.black}
+              style={{
+                position: 'absolute',
+                right: 10, // Posisi di sebelah kanan dalam TextInput
+                top: '50%', // Vertikal di tengah
+                transform: [{translateY: -10}],
+              }}
+            />
+          )}
+        </View>
 
         <Text style={styles.label}>Perihal</Text>
         <TextInput
@@ -95,6 +160,7 @@ export default function EditFormulirPerizinan({navigation, route}) {
           value={regarding}
           onChangeText={setRegarding}
           placeholder="Perihal (cuti, dinas, lainnya)"
+          placeholderTextColor={COLORS.black}
         />
 
         <Text style={styles.label}>Keperluan</Text>
@@ -112,6 +178,7 @@ export default function EditFormulirPerizinan({navigation, route}) {
           value={category}
           onChangeText={setCategory}
           placeholder="Kategori (cuti, dinas, keluar, dll)"
+          placeholderTextColor={COLORS.black}
         />
 
         <Text style={styles.label}>Tanggal Mulai</Text>
@@ -120,6 +187,7 @@ export default function EditFormulirPerizinan({navigation, route}) {
           value={startDate}
           onChangeText={setStartDate}
           placeholder="Tanggal mulai izin (YYYY-MM-DD)"
+          placeholderTextColor={COLORS.black}
         />
 
         <Text style={styles.label}>Tanggal Berakhir</Text>
@@ -128,6 +196,7 @@ export default function EditFormulirPerizinan({navigation, route}) {
           value={endDate}
           onChangeText={setEndDate}
           placeholder="Tanggal batas terakhir izin (YYYY-MM-DD)"
+          placeholderTextColor={COLORS.black}
         />
 
         <Text style={styles.label}>Jumlah Hari</Text>
@@ -137,6 +206,7 @@ export default function EditFormulirPerizinan({navigation, route}) {
           onChangeText={setTotDay}
           placeholder="Jumlah hari untuk izin"
           keyboardType="numeric"
+          placeholderTextColor={COLORS.black}
         />
 
         <Gap height={20} />
@@ -161,8 +231,19 @@ export default function EditFormulirPerizinan({navigation, route}) {
         }}>
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
-            <Text>Data berhasil diperbarui!</Text>
-            <Button title="OK" onPress={() => setModalVisible(false)} />
+            <Icon
+              name="emoticon-happy-outline"
+              size={60}
+              color={COLORS.primary}
+            />
+            <Text style={styles.title}>Data berhasil diperbarui!</Text>
+            <ButtonAction
+              title="OK"
+              onPress={() => {
+                setModalVisible(false);
+                navigation.goBack();
+              }}
+            />
           </View>
         </View>
       </Modal>
@@ -171,6 +252,12 @@ export default function EditFormulirPerizinan({navigation, route}) {
 }
 
 const styles = StyleSheet.create({
+  title: {
+    fontSize: 17,
+    fontWeight: '500',
+    color: COLORS.black,
+    marginBottom: 10,
+  },
   container: {
     padding: 20,
   },
@@ -184,6 +271,7 @@ const styles = StyleSheet.create({
     borderWidth: 0.5,
     borderColor: COLORS.grey,
     padding: 10,
+    paddingRight: 35, // Tambahkan padding kanan untuk ruang ActivityIndicator
     borderRadius: 8,
     marginBottom: 15,
     backgroundColor: COLORS.champagne,
