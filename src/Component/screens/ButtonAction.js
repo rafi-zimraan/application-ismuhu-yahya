@@ -7,12 +7,13 @@ import {
   View,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import {COLORS} from '../../utils';
 
 export default function ButtonAction({
   title = 'Button',
   onPress,
   disabled,
-  backgroundColor = '#FFB200',
+  backgroundColor = COLORS.goldenOrange,
   color = 'white',
   loading = false,
   iconLeft,

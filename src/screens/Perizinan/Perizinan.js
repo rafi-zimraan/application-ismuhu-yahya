@@ -22,6 +22,7 @@ import {
 } from '../../Component';
 import {IMG_NOTHING_DATA_HISTORY_PERIZINA} from '../../assets';
 import {getAllPerizinan} from '../../features/Perizinan';
+import {deleteDataPerizinan} from '../../features/Perizinan/services/perizinanApiSlice';
 import {COLORS} from '../../utils';
 
 export default function Perizinan({navigation}) {
@@ -34,7 +35,7 @@ export default function Perizinan({navigation}) {
     try {
       setLoading(true);
       const response = await getAllPerizinan();
-      console.log('response data history:', response);
+      // console.log('response data history:', response);
 
       if (response?.message === 'Silahkan login terlebih dahulu') {
         // Token Expired, tampilkan modal
@@ -61,6 +62,13 @@ export default function Perizinan({navigation}) {
     fetchData();
   }, []);
 
+  const handleDelete = async id => {
+    const isDeleted = await deleteDataPerizinan(id);
+    if (isDeleted) {
+      setDataHistory(prevData => prevData.filter(item => item.id !== id));
+    }
+  };
+
   const renderHistoryItem = ({item}) => (
     <View style={styles.viewBodyHistory}>
       <View style={styles.navbarOptions}>
@@ -69,28 +77,41 @@ export default function Perizinan({navigation}) {
             styles.buttonStatus,
             {
               backgroundColor:
-                item.category === 'Berlangsung'
+                item.approve?.is_approve === null
+                  ? COLORS.goldenOrange
+                  : item.approve?.is_approve === '1'
                   ? COLORS.greenBoy
-                  : item.category === 'Gagal'
-                  ? COLORS.red
-                  : COLORS.goldenOrange,
+                  : COLORS.red,
             },
           ]}>
-          <Text style={styles.timeButtonText}>{item.category}</Text>
+          <Text style={styles.timeButtonText}>
+            {item.approve?.is_approve === null
+              ? 'Pending'
+              : item.approve?.is_approve === '1'
+              ? 'Diterima'
+              : 'Ditolak'}
+          </Text>
         </View>
         <Text style={styles.date}>{item.start_date}</Text>
         <View style={styles.optionsEditAndDelete}>
-          <TouchableOpacity
-            activeOpacity={0.7}
-            style={styles.iconButton}
-            onPress={() => {}}>
-            <Icon name="pencil-outline" size={24} color={COLORS.darkGray} />
-          </TouchableOpacity>
+          {item.approve?.is_approve === null && (
+            <TouchableOpacity
+              activeOpacity={0.7}
+              style={styles.iconButton}
+              onPress={() =>
+                navigation.navigate('EditFormulirPerizinan', {
+                  id_lisences: item.id,
+                  initialData: item,
+                })
+              }>
+              <Icon name="pencil-outline" size={24} color={COLORS.darkGray} />
+            </TouchableOpacity>
+          )}
           <Gap width={15} />
           <TouchableOpacity
             activeOpacity={0.7}
             style={styles.iconButton}
-            onPress={() => {}}>
+            onPress={() => handleDelete(item.id)}>
             <Icon name="trash-can-outline" size={24} color={COLORS.red} />
           </TouchableOpacity>
         </View>
@@ -99,8 +120,12 @@ export default function Perizinan({navigation}) {
       <Line />
       <Gap height={15} />
       <View style={styles.textRow}>
-        <Text style={styles.label}>Nama</Text>
-        <Text style={styles.value}>: {item.user_id}</Text>
+        <Text style={styles.label}>Total hari</Text>
+        <Text style={styles.value}>: {item.tot_day}</Text>
+      </View>
+      <View style={styles.textRow}>
+        <Text style={styles.label}>Perihal</Text>
+        <Text style={styles.value}>: {item.regarding}</Text>
       </View>
       <View style={styles.textRow}>
         <Text style={styles.label}>Ttl Kembali</Text>
@@ -129,11 +154,13 @@ export default function Perizinan({navigation}) {
           <View style={styles.viewContentCuti}>
             <View style={styles.rowContent}>
               <Text style={styles.txtLabel}>Total{'\n'}Nilai Cuti</Text>
-              <Icon
-                name="calendar-month-outline"
-                size={30}
-                color={COLORS.goldenOrange}
-              />
+              <View style={{bottom: 20}}>
+                <Icon
+                  name="calendar-month-outline"
+                  size={30}
+                  color={COLORS.goldenOrange}
+                />
+              </View>
             </View>
             <Text style={styles.txtValueCount}>12 X</Text>
           </View>
@@ -141,7 +168,9 @@ export default function Perizinan({navigation}) {
           <View style={styles.viewContentCuti}>
             <View style={styles.rowContent}>
               <Text style={styles.txtLabel}>Total{'\n'}Nilai terpakai</Text>
-              <Icon name="history" size={30} color={COLORS.goldenOrange} />
+              <View style={{bottom: 20}}>
+                <Icon name="history" size={30} color={COLORS.goldenOrange} />
+              </View>
             </View>
             <Text style={styles.txtValueCount}>8 X</Text>
           </View>
@@ -206,6 +235,16 @@ export default function Perizinan({navigation}) {
 }
 
 const styles = StyleSheet.create({
+  txtLabelTerpakai: {
+    color: COLORS.darkGray,
+    fontWeight: '600',
+    fontSize: 14,
+  },
+  date: {
+    fontSize: 12,
+    color: COLORS.black,
+    fontWeight: '500',
+  },
   modalContainer: {
     flex: 1,
     justifyContent: 'center',

@@ -30,7 +30,7 @@ export default function ButtonAuth({
         style={{
           ...styles.btnSubmit,
           backgroundColor:
-            priority === 'primary' ? COLORS.primary : COLORS.white,
+            priority === 'primary' ? COLORS.goldenOrange : COLORS.white,
           width,
           maxWidth,
           borderWidth,
@@ -64,7 +64,6 @@ const styles = StyleSheet.create({
   },
   btnSubmit: {
     height: 45,
-    backgroundColor: COLORS.primary,
     alignSelf: 'center',
     borderRadius: 10,
     elevation: 3,

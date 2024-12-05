@@ -1,6 +1,10 @@
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import React from 'react';
-import {CreateFormulirPerizinan, FormulirCuti} from '../features/Perizinan';
+import {
+  CreateFormulirPerizinan,
+  EditFormulirPerizinan,
+  FormulirCuti,
+} from '../features/Perizinan';
 import {EditProfile} from '../features/Profile';
 import {
   AboutApplication,
@@ -55,6 +59,10 @@ export default function Navigator() {
       <Stack.Screen
         name="CreateFormulirPerizinan"
         component={CreateFormulirPerizinan}
+      />
+      <Stack.Screen
+        name="EditFormulirPerizinan"
+        component={EditFormulirPerizinan}
       />
     </Stack.Navigator>
   );

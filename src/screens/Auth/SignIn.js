@@ -88,7 +88,7 @@ export default function SignIn({navigation}) {
                   secureText={true}
                 />
               </View>
-              <Gap height={10} />
+              <Gap height={15} />
               <View style={{position: 'relative'}}>
                 <ButtonAuth
                   title="Masuk"

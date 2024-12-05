@@ -36,7 +36,7 @@ export default function HeaderTransparent({
 
 const styles = StyleSheet.create({
   text: {
-    fontSize: 23,
+    fontSize: 20,
     color: 'black',
     fontWeight: '500',
   },
