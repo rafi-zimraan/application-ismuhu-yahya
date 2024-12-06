@@ -1,20 +1,17 @@
-import {BlurView} from '@react-native-community/blur';
 import NetInfo from '@react-native-community/netinfo';
 import {useIsFocused} from '@react-navigation/native';
 import moment from 'moment';
 import React, {useEffect, useState} from 'react';
 import {
-  Modal,
+  NativeModules,
   RefreshControl,
   ScrollView,
   StatusBar,
   StyleSheet,
-  Text,
   ToastAndroid,
-  TouchableOpacity,
   View,
 } from 'react-native';
-import {Gap} from '../../Component';
+import {Gap, ModalCustom} from '../../Component';
 import {
   ButtonMenu,
   ClockDasboard,
@@ -30,6 +27,7 @@ export default function Dashboard({navigation}) {
   const [isOffline, setIsOffline] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const isFocused = useIsFocused();
+  const {InternetSettings} = NativeModules;
 
   useEffect(() => {
     const Time = setInterval(() => {
@@ -60,6 +58,16 @@ export default function Dashboard({navigation}) {
     } else {
       setRefreshing(false);
       setShowModal(true);
+    }
+  };
+
+  // Fungsi untuk membuka pengaturan jaringan
+  const openNetworkSettings = () => {
+    if (InternetSettings && InternetSettings.open) {
+      // console.log('InternetSettings module is successfully linked');
+      InternetSettings.open();
+    } else {
+      ToastAndroid.show('Unable to open network settings', ToastAndroid.SHORT);
     }
   };
 
@@ -109,33 +117,17 @@ export default function Dashboard({navigation}) {
         </View>
         <NewsComponent />
       </ScrollView>
-      <Modal
-        animationType="slide"
-        transparent={true}
+
+      {/* Modal tidak ada internet */}
+      <ModalCustom
         visible={showModal}
-        onRequestClose={() => {
-          setShowModal(false);
-        }}>
-        <BlurView
-          style={StyleSheet.absoluteFill}
-          blurType="light"
-          blurAmount={20}
-          reducedTransparencyFallbackColor="white"
-        />
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalText}>
-              Tidak ada koneksi internet. Silakan periksa koneksi Anda dan
-              hidupkan kembali koneksi internet.
-            </Text>
-            <TouchableOpacity
-              style={styles.closeButton}
-              onPress={() => setShowModal(false)}>
-              <Text style={styles.closeButtonText}>Tutup</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
+        onRequestClose={() => setShowModal(false)}
+        iconModalName="wifi-off"
+        title="Tidak Ada Koneksi Internet"
+        description="Tidak ada koneksi internet. Silakan periksa koneksi Anda dan hidupkan kembali koneksi internet."
+        buttonSubmit={openNetworkSettings}
+        buttonTitle="Buka pengaturan"
+      />
     </View>
   );
 }

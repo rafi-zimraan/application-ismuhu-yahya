@@ -1,18 +1,10 @@
 import React, {useEffect, useState} from 'react';
-import {
-  ActivityIndicator,
-  Button,
-  Modal,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
+import {ActivityIndicator, StyleSheet, Text, View} from 'react-native';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {Gap, HeaderSearch} from '../../../Component';
-import {getDepartmentDetail} from '../../../Component/Departmant/departmantApiSlice';
-import {getDivisionDetail} from '../../../Component/Divisi/divisiApiSlice';
-import {getAllPerizinan} from '../../../features/Perizinan';
+import {Gap, HeaderSearch, ModalCustom} from '../../../Component';
+import {getAllDepartment} from '../../../Component/Departmant/departmantApiSlice';
+import {getAllDivisions} from '../../../Component/Divisi/divisiApiSlice';
 import {COLORS} from '../../../utils';
 
 export default function HeaderComponent({navigation}) {
@@ -33,34 +25,24 @@ export default function HeaderComponent({navigation}) {
           setUserName(user.name);
         }
 
-        // Fetch data from getAllPerizinan
-        const perizinanResponse = await getAllPerizinan();
-        if (perizinanResponse?.message === 'Silahkan login terlebih dahulu') {
-          setTokenExpired(true);
-          return;
+        // Fetch all divisions
+        setLoadingDivision(true);
+        const divisions = await getAllDivisions();
+        if (divisions?.data?.length > 0) {
+          setDivisionName(divisions.data[0].name || 'Divisi tidak ditemukan');
+          console.log('dasbors divisi', divisions.data[0].name);
         }
+        setLoadingDivision(false);
 
-        if (perizinanResponse?.data?.length > 0) {
-          const firstEntry = perizinanResponse.data[0];
-          const {division_id, department_id} = firstEntry;
-
-          // Fetch Division and Department details
-          if (division_id) {
-            setLoadingDivision(true);
-            const division = await getDivisionDetail(division_id);
-            setDivisionName(division.data?.name || 'Divisi tidak ditemukan');
-            setLoadingDivision(false);
-          }
-
-          if (department_id) {
-            setLoadingDepartment(true);
-            const department = await getDepartmentDetail(department_id);
-            setDepartmentName(
-              department.data?.name || 'Departemen tidak ditemukan',
-            );
-            setLoadingDepartment(false);
-          }
+        // Fetch all departments
+        setLoadingDepartment(true);
+        const departments = await getAllDepartment();
+        if (departments?.data?.length > 0) {
+          setDepartmentName(
+            departments.data[0].name || 'Departemen tidak ditemukan',
+          );
         }
+        setLoadingDepartment(false);
       } catch (error) {
         console.log('Error fetching data:', error);
         setLoadingDivision(false);
@@ -119,27 +101,18 @@ export default function HeaderComponent({navigation}) {
       </View>
 
       {/* Modal untuk Token Expired */}
-      <Modal
-        transparent={true}
+      <ModalCustom
         visible={tokenExpired}
-        animationType="slide"
-        onRequestClose={() => setTokenExpired(false)}>
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalText}>
-              Sesi Anda telah berakhir. Silakan login ulang untuk memperbarui
-              data.
-            </Text>
-            <Button
-              title="Okey"
-              onPress={() => {
-                setTokenExpired(false);
-                navigation.navigate('SignIn'); // Navigasi ke halaman login
-              }}
-            />
-          </View>
-        </View>
-      </Modal>
+        onRequestClose={() => setTokenExpired(false)}
+        iconModalName="lock-alert-outline"
+        title="Sesi Kedaluwarsa"
+        description="Sesi Anda telah berakhir. Silakan login ulang untuk memperbarui data Anda dan melanjutkan aktivitas."
+        buttonSubmit={() => {
+          setTokenExpired(false);
+          navigation.navigate('SignIn');
+        }}
+        buttonTitle="Login Ulang"
+      />
     </View>
   );
 }

@@ -2,7 +2,6 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import React, {useEffect, useState} from 'react';
 import {
   ActivityIndicator,
-  Modal,
   SafeAreaView,
   ScrollView,
   StatusBar,
@@ -12,15 +11,14 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {
   Background,
   ButtonAction,
-  Gap,
   HeaderTransparent,
+  ModalCustom,
 } from '../../../Component';
-import {getDepartmentDetail} from '../../../Component/Departmant/departmantApiSlice';
-import {getDivisionDetail} from '../../../Component/Divisi/divisiApiSlice';
+import {getAllDepartment} from '../../../Component/Departmant/departmantApiSlice';
+import {getAllDivisions} from '../../../Component/Divisi/divisiApiSlice';
 import {COLORS} from '../../../utils';
 import {addPerizinan} from '../services/perizinanApiSlice';
 
@@ -47,31 +45,28 @@ export default function CreateFormulirPerizinan({navigation, route}) {
   const [loading, setLoading] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
 
-  // Ambil data divisi dan departemen berdasarkan ID
   useEffect(() => {
-    const fetchDivisionAndDepartment = async () => {
+    const fetchDivisionsAndDepartments = async () => {
       try {
-        if (divisionId) {
-          setLoadingDivision(true);
-          const division = await getDivisionDetail(divisionId);
-          setDivisionName(division.data?.name || '');
-        }
+        setLoadingDivision(true);
+        const divisions = await getAllDivisions();
+        setDivisionName(divisions.data[0].name);
+        setDivisionId(divisions.data[0].id); // Menyimpan ID Divisi yang didapat ke state
 
-        if (departmentId) {
-          setLoadingDepartment(true);
-          const department = await getDepartmentDetail(departmentId);
-          setDepartmentName(department.data?.name || '');
-        }
+        setLoadingDepartment(true);
+        const departments = await getAllDepartment();
+        setDepartmentName(departments.data[0].name);
+        setDepartmentId(departments.data[0].id); // Menyimpan ID Departemen yang didapat ke state
       } catch (error) {
-        console.error('Error fetching division or department:', error);
+        console.error('Error fetching divisions or departments:', error);
       } finally {
         setLoadingDivision(false);
         setLoadingDepartment(false);
       }
     };
 
-    fetchDivisionAndDepartment();
-  }, [divisionId, departmentId]);
+    fetchDivisionsAndDepartments();
+  }, []);
 
   // Fungsi untuk mengirim data ke API
   const handleSubmit = async () => {
@@ -254,30 +249,19 @@ export default function CreateFormulirPerizinan({navigation, route}) {
       </ScrollView>
 
       {/* Modal untuk Sukses */}
-      <Modal visible={showSuccessModal} transparent animationType="fade">
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <Icon
-              name="check-circle-outline"
-              size={60}
-              color={COLORS.goldenOrange}
-            />
-            <Text style={styles.modalTitle}>Sukses!</Text>
-            <Gap height={10} />
-            <Text style={styles.modalText}>
-              Selamat melanjutkan aktivitas. Semoga dimudahkan! 😊
-            </Text>
-            <TouchableOpacity
-              style={styles.closeButton}
-              onPress={() => {
-                setShowSuccessModal(false);
-                navigation.goBack();
-              }}>
-              <Text style={styles.closeButtonText}>Kembali</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
+      <ModalCustom
+        visible={showSuccessModal}
+        onRequestClose={() => setShowSuccessModal(false)}
+        iconModalName="check-circle-outline"
+        title="Permintaan Berhasil"
+        description="Permintaan perizinan Anda telah berhasil dikirim. Selamat melanjutkan aktivitas dan semoga semua berjalan lancar. 😊"
+        buttonSubmit={() => {
+          setShowSuccessModal(false);
+          navigation.goBack();
+        }}
+        buttonTitle="Kembali"
+        buttonDisable={false}
+      />
     </SafeAreaView>
   );
 }

@@ -1,3 +1,4 @@
+import IMG_WARNING_DEVICE from '../assets//images/warningIlustratitonDevice.png';
 import IMG_BG_GREEN_WAVE_FRIST from '../assets/background/green-white-wave-1.jpg';
 import IMG_BG_GREEN_WAVE from '../assets/background/green-white-wave.jpg';
 import IMG_YELLOWWISH_FRIST from '../assets/background/yellowish-1.png';
@@ -23,13 +24,9 @@ import IMG_ISMUHUYAHYA_POTRAIT from '../assets/images/logo-ishmuhu-potrait.png';
 import IMG_NOTHING_DATA_HISTORY_PERIZINA from '../assets/images/nothingDataHistory.png';
 import IMG_PONDOK_DIGITAL_WHITE from '../assets/pondok-digital-logo/full-white.png';
 import IMG_PONDOK_DIGITAL from '../assets/pondok-digital-logo/full.png';
-import ICON_CUTLERY from '../assets/yaumi/cutlery.png';
-import ICON_HEART from '../assets/yaumi/heart.png';
-import ICON_NABAWI_MOSQUE from '../assets/yaumi/nabawi-mosque.png';
-import ICON_PRAYING from '../assets/yaumi/praying.png';
-import ICON_READING_QURAN from '../assets/yaumi/reading-quran.png';
 
 export {
+  IMG_WARNING_DEVICE,
   IMG_NOTHING_DATA_HISTORY_PERIZINA,
   IMG_LOGIN,
   IMG_ONBOARDING_TREESECONDRY,
@@ -54,10 +51,5 @@ export {
   ICON_YAUMI,
   ICON_PRESENCE_OUT,
   ICON_PRESENCE_RANDOM,
-  ICON_CUTLERY,
-  ICON_HEART,
-  ICON_NABAWI_MOSQUE,
-  ICON_PRAYING,
-  ICON_READING_QURAN,
   BG_APPLICATION,
 };

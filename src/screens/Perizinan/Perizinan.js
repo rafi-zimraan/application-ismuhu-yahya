@@ -2,11 +2,8 @@ import {useFocusEffect} from '@react-navigation/native';
 import React, {useEffect, useState} from 'react';
 import {
   ActivityIndicator,
-  Alert,
-  Button,
   FlatList,
   Image,
-  Modal,
   RefreshControl,
   StatusBar,
   StyleSheet,
@@ -21,6 +18,7 @@ import {
   Gap,
   HeaderTransparent,
   Line,
+  ModalCustom,
 } from '../../Component';
 import {IMG_NOTHING_DATA_HISTORY_PERIZINA} from '../../assets';
 import {getAllPerizinan} from '../../features/Perizinan';
@@ -32,15 +30,18 @@ export default function Perizinan({navigation}) {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [tokenExpired, setTokenExpired] = useState(false);
-  const [totalCuti, setTotalCuti] = useState(12); // Total nilai cuti default
+  const [totalCuti, setTotalCuti] = useState(12);
   const [terpakai, setTerpakai] = useState(0);
   const [userDivisionId, setUserDivisionId] = useState('');
   const [userDepartmentId, setUserDepartmentId] = useState('');
+  const [deleteModalVisible, setDeleteModalVisible] = useState(false);
+  const [selectedDeleteId, setSelectedDeleteId] = useState(null);
 
   const fetchData = async () => {
     try {
       setLoading(true);
       const response = await getAllPerizinan();
+      console.log('response', response);
 
       if (response?.message === 'Silahkan login terlebih dahulu') {
         // Token Expired, tampilkan modal
@@ -90,38 +91,21 @@ export default function Perizinan({navigation}) {
     }, []),
   );
 
-  const handleDelete = async id => {
-    Alert.alert(
-      'Konfirmasi Hapus',
-      'Apakah Anda yakin ingin menghapus cuti ini?',
-      [
-        {
-          text: 'Batal',
-          style: 'cancel',
-        },
-        {
-          text: 'Hapus',
-          onPress: async () => {
-            try {
-              const isDeleted = await deleteDataPerizinan(id);
-              if (isDeleted) {
-                setDataHistory(prevData =>
-                  prevData.filter(item => item.id !== id),
-                );
-                Alert.alert('Sukses', 'Data cuti berhasil dihapus.');
-              } else {
-                Alert.alert('Gagal', 'Gagal menghapus data.');
-              }
-            } catch (error) {
-              console.error('Error deleting data:', error);
-              Alert.alert('Error', 'Terjadi kesalahan saat menghapus data.');
-            }
-          },
-          style: 'destructive',
-        },
-      ],
-      {cancelable: true},
-    );
+  const handleDelete = async () => {
+    try {
+      const isDeleted = await deleteDataPerizinan(selectedDeleteId);
+      if (isDeleted) {
+        setDataHistory(prevData =>
+          prevData.filter(item => item.id !== selectedDeleteId),
+        );
+        setDeleteModalVisible(false);
+      } else {
+        Alert.alert('Gagal', 'Gagal menghapus data.');
+      }
+    } catch (error) {
+      console.error('Error deleting data:', error);
+      Alert.alert('Error', 'Terjadi kesalahan saat menghapus data.');
+    }
   };
 
   const renderHistoryItem = ({item}) => (
@@ -166,7 +150,10 @@ export default function Perizinan({navigation}) {
           <TouchableOpacity
             activeOpacity={0.7}
             style={styles.iconButton}
-            onPress={() => handleDelete(item.id)}>
+            onPress={() => {
+              setSelectedDeleteId(item.id);
+              setDeleteModalVisible(true);
+            }}>
             <Icon name="trash-can-outline" size={24} color={COLORS.red} />
           </TouchableOpacity>
         </View>
@@ -281,27 +268,28 @@ export default function Perizinan({navigation}) {
       />
 
       {/* Modal untuk Token Expired */}
-      <Modal
-        transparent={true}
+      <ModalCustom
         visible={tokenExpired}
-        animationType="slide"
-        onRequestClose={() => setTokenExpired(false)}>
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalText}>
-              Sesi Anda telah berakhir. Silakan login ulang untuk memperbarui
-              data.
-            </Text>
-            <Button
-              title="Okey"
-              onPress={() => {
-                setTokenExpired(false);
-                navigation.navigate('SignIn');
-              }}
-            />
-          </View>
-        </View>
-      </Modal>
+        onClose={() => setTokenExpired(false)}
+        iconModalName="alert-circle-outline"
+        title="Sesi Berakhir"
+        description="Sesi Anda telah berakhir. Silakan login ulang untuk memperbarui data."
+        buttonSubmit={() => {
+          setTokenExpired(false);
+          navigation.navigate('SignIn');
+        }}
+        buttonTitle="Login Ulang"
+      />
+
+      {/* Modal untuk Konfirmasi Delete */}
+      <ModalCustom
+        visible={deleteModalVisible}
+        onClose={() => setDeleteModalVisible(false)}
+        iconModalName="alert-circle-outline"
+        title="Hapus Perizinan spa"
+        description="Apakah Anda yakin ingin menghapus cuti ini?"
+        buttonSubmit={handleDelete}
+      />
     </View>
   );
 }
@@ -331,9 +319,17 @@ const styles = StyleSheet.create({
   modalContent: {
     width: 300,
     padding: 20,
-    backgroundColor: 'white',
+    backgroundColor: COLORS.w,
     borderRadius: 10,
     alignItems: 'center',
+  },
+  modalContentContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  modalConfirmText: {
+    fontSize: 16,
+    color: COLORS.black,
   },
   modalText: {
     marginBottom: 15,

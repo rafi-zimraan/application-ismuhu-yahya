@@ -76,6 +76,7 @@ export const getDivisionDetail = async id => {
         Authorization: `Bearer ${JSON.parse(token)}`,
       },
     });
+    console.log('response api', response);
 
     if (response.data) {
       return response.data;

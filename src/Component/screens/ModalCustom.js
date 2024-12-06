@@ -57,7 +57,7 @@ export default function ModalCustom({
               </View>
               <Text style={styles.title}>{title}</Text>
               <Text style={styles.description}>{description}</Text>
-              <Gap height={20} />
+              <Gap height={10} />
             </>
           )}
           {children}
@@ -100,7 +100,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   buttonText: {
-    color: 'black',
+    color: COLORS.black,
     fontWeight: 'bold',
   },
   headerContainer: {
@@ -109,13 +109,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   title: {
-    color: 'black',
+    color: COLORS.black,
     fontSize: 18,
     fontWeight: 'bold',
     marginTop: 10,
   },
   description: {
-    color: 'black',
+    color: COLORS.red,
     fontSize: 14,
     marginTop: 5,
     maxWidth: 280,
