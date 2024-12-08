@@ -79,7 +79,7 @@ export const deleteNotification = async id_notification => {
       },
     );
 
-    if (response.status === 200) {
+    if (response.data?.status === true) {
       console.log(response.data?.message || 'Notifikasi berhasil dihapus');
       return true;
     } else {
@@ -92,5 +92,39 @@ export const deleteNotification = async id_notification => {
       console.log(error.message);
     }
     return false;
+  }
+};
+
+// List notification per category
+export const getNotificationCategory = async category => {
+  try {
+    // take token from EncryptedStorage
+    const token = await EncryptedStorage.getItem('token');
+    if (!token) {
+      throw new Error('Token expired, Silahkan login terlebih dahulu');
+    }
+
+    const response = await api.post(
+      'notifications/category',
+      {category},
+      {
+        headers: {
+          Authorization: `Bearer ${JSON.parse(token)}`,
+        },
+      },
+    );
+
+    if (response.data) {
+      return response.data;
+    } else {
+      throw new Error('Data tidak ditemukan');
+    }
+  } catch (error) {
+    if (error.response) {
+      console.log(error.response?.data?.message || 'Terjadi kesalahan');
+    } else {
+      console.timeLog(error.message);
+    }
+    throw error;
   }
 };

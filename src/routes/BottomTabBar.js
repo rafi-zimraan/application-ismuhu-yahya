@@ -120,7 +120,7 @@ export default function BottomTabBar({state, descriptors, navigation}) {
               }}>
               <Icon
                 name={iconName}
-                size={isFocused ? 34 : 32} // Ukuran ikon lebih besar ketika aktif
+                size={isFocused ? 30 : 28} // Ukuran ikon lebih besar ketika aktif
                 color={isFocused ? iconColorActive : iconColorDefault}
               />
             </Animated.View>

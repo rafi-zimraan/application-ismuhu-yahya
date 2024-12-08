@@ -5,6 +5,7 @@ import DasboardMaster from './DasboardMaster/DasboardMaster';
 import DrawerContent from './DrawerContent/DrawerContent';
 import DetailNotification from './Notification/DetailNotification';
 import Notification from './Notification/Notification';
+import NotificationRead from './Notification/NotificationRead';
 import OnBoarding from './Onboarding/Onboarding';
 import Perizinan from './Perizinan/Perizinan';
 import FaceScaanPresence from './PresenceEmployee/FaceScaanPresence';
@@ -20,6 +21,7 @@ import SplashScreen from './SplashScreen/SplashScreen';
 import LibDemo from './__test__/LibDemo.test';
 
 export {
+  NotificationRead,
   ChangePassword,
   HelpSetting,
   AboutApplication,

@@ -1,4 +1,5 @@
-import React, {useEffect, useState} from 'react';
+import {useFocusEffect} from '@react-navigation/native';
+import React, {useState} from 'react';
 import {ActivityIndicator, StyleSheet, Text, View} from 'react-native';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -12,51 +13,60 @@ export default function HeaderComponent({navigation}) {
   const [welcomeText, setWelcomeText] = useState('');
   const [divisionName, setDivisionName] = useState('');
   const [departmentName, setDepartmentName] = useState('');
-  const [loadingDivision, setLoadingDivision] = useState(true);
-  const [loadingDepartment, setLoadingDepartment] = useState(true);
+  const [loading, setLoading] = useState(true);
   const [tokenExpired, setTokenExpired] = useState(false);
 
-  useEffect(() => {
-    const loadUserData = async () => {
-      try {
-        const storedUser = await EncryptedStorage.getItem('user_sesion');
-        if (storedUser) {
-          const user = JSON.parse(storedUser);
-          setUserName(user.name);
+  // Load data saat layar fokus
+  useFocusEffect(
+    React.useCallback(() => {
+      const loadData = async () => {
+        setLoading(true);
+        try {
+          const storedUser = await EncryptedStorage.getItem('user_sesion');
+          if (storedUser) {
+            const user = JSON.parse(storedUser);
+            setUserName(user.name);
+          }
+
+          const [divisions, departments] = await Promise.all([
+            getAllDivisions(),
+            getAllDepartment(),
+          ]);
+
+          // Handle Divisions
+          if (divisions?.message === 'Silahkan login terlebih dahulu') {
+            setTokenExpired(true);
+          } else {
+            setDivisionName(
+              divisions?.data?.[0]?.name || 'Divisi tidak ditemukan',
+            );
+          }
+
+          // Handle Departments
+          if (departments?.message === 'Silahkan login terlebih dahulu') {
+            setTokenExpired(true);
+          } else {
+            setDepartmentName(
+              departments?.data?.[0]?.name || 'Departemen tidak ditemukan',
+            );
+          }
+        } catch (error) {
+          console.error('Error fetching data:', error);
+        } finally {
+          setLoading(false);
         }
+      };
 
-        // Fetch all divisions
-        setLoadingDivision(true);
-        const divisions = await getAllDivisions();
-        if (divisions?.data?.length > 0) {
-          setDivisionName(divisions.data[0].name || 'Divisi tidak ditemukan');
-          console.log('dasbors divisi', divisions.data[0].name);
-        }
-        setLoadingDivision(false);
+      loadData();
+    }, []),
+  );
 
-        // Fetch all departments
-        setLoadingDepartment(true);
-        const departments = await getAllDepartment();
-        if (departments?.data?.length > 0) {
-          setDepartmentName(
-            departments.data[0].name || 'Departemen tidak ditemukan',
-          );
-        }
-        setLoadingDepartment(false);
-      } catch (error) {
-        console.log('Error fetching data:', error);
-        setLoadingDivision(false);
-        setLoadingDepartment(false);
-      }
-    };
-
-    loadUserData();
-  }, []);
-
-  useEffect(() => {
+  // Typing effect for welcome message
+  React.useEffect(() => {
     if (userName) {
       let index = 0;
       const welcomeMessage = `Selamat Datang, ${userName}`;
+      setWelcomeText(''); // Reset text for new animation
       const typingInterval = setInterval(() => {
         setWelcomeText(prev => prev + welcomeMessage[index]);
         index++;
@@ -65,7 +75,7 @@ export default function HeaderComponent({navigation}) {
         }
       }, 100);
 
-      return () => clearInterval(typingInterval);
+      return () => clearInterval(typingInterval); // Cleanup
     }
   }, [userName]);
 
@@ -88,7 +98,7 @@ export default function HeaderComponent({navigation}) {
         </View>
         <Gap height={5} />
         <View style={styles.buttonStatus}>
-          {loadingDivision || loadingDepartment ? (
+          {loading ? (
             <ActivityIndicator size="small" color={COLORS.black} />
           ) : (
             <>
@@ -158,23 +168,5 @@ const styles = StyleSheet.create({
     color: COLORS.black,
     fontSize: 14,
     fontWeight: '400',
-  },
-  modalContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-  },
-  modalContent: {
-    backgroundColor: COLORS.white,
-    padding: 20,
-    borderRadius: 10,
-    alignItems: 'center',
-  },
-  modalText: {
-    fontSize: 16,
-    color: COLORS.black,
-    marginBottom: 20,
-    textAlign: 'center',
   },
 });

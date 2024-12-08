@@ -13,6 +13,7 @@ import {
   FaceScaanPresence,
   HelpSetting,
   LibDemo,
+  NotificationRead,
   OnBoarding,
   Perizinan,
   PresenceFormulir,
@@ -64,6 +65,7 @@ export default function Navigator() {
         name="EditFormulirPerizinan"
         component={EditFormulirPerizinan}
       />
+      <Stack.Screen name="NotificationRead" component={NotificationRead} />
     </Stack.Navigator>
   );
 }
