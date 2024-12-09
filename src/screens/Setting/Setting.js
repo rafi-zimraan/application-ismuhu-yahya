@@ -19,16 +19,19 @@ export default function Settings({navigation}) {
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
 
   return (
-    <SafeAreaView style={{flex: 1}}>
+    <SafeAreaView style={{flex: 1, backgroundColor: COLORS.lightGray}}>
       <StatusBar barStyle={'dark-content'} backgroundColor={'transparent'} />
+      {/* Navbar */}
+      <View style={styles.navbar}>
+        <Text style={styles.navbarTitle}>Settings</Text>
+      </View>
       <Background />
       <ScrollView
-        stickyHeaderHiddenOnScroll
-        stickyHeaderIndices={[0]}
-        style={styles.container}>
-        <Gap height={35} />
-        {/* Bagian Profil */}
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}>
+        <Gap height={15} />
 
+        {/* Bagian Profil */}
         <Text style={styles.sectionHeader}>Profile</Text>
         <TouchableOpacity
           style={styles.section}
@@ -78,7 +81,7 @@ export default function Settings({navigation}) {
               Atur preferensi notifikasi
             </Text>
           </View>
-          <Gap width={80} />
+          <Gap width={50} />
           <Switch
             value={notificationsEnabled}
             onValueChange={setNotificationsEnabled}
@@ -86,24 +89,6 @@ export default function Settings({navigation}) {
             thumbColor={notificationsEnabled ? COLORS.primary : COLORS.gray}
           />
         </View>
-
-        {/* Pengaturan Aplikasi */}
-        {/* <Text style={styles.sectionHeader}>Pengaturan Aplikasi</Text>
-        <TouchableOpacity style={styles.section} activeOpacity={0.6}>
-          <Icon name="theme-light-dark" size={28} color={COLORS.goldenOrange} />
-          <View style={styles.sectionTextContainer}>
-            <Text style={styles.sectionTitle}>Tampilan</Text>
-            <Text style={styles.sectionSubtitle}>Tema, ukuran font, dll.</Text>
-          </View>
-        </TouchableOpacity> */}
-        {/* 
-        <TouchableOpacity style={styles.section} activeOpacity={0.6}>
-          <Icon name="earth" size={28} color={COLORS.goldenOrange} />
-          <View style={styles.sectionTextContainer}>
-            <Text style={styles.sectionTitle}>Bahasa</Text>
-            <Text style={styles.sectionSubtitle}>Ubah bahasa aplikasi</Text>
-          </View>
-        </TouchableOpacity> */}
 
         {/* Dukungan */}
         <Text style={styles.sectionHeader}>Bantuan & Dukungan</Text>
@@ -153,21 +138,38 @@ export default function Settings({navigation}) {
             </Text>
           </View>
         </TouchableOpacity>
+
+        {/* Tambahkan padding bottom untuk memastikan elemen terakhir tidak tertutupi */}
+        <Gap height={50} />
       </ScrollView>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
+  navbar: {
+    backgroundColor: COLORS.goldenOrange,
+    paddingVertical: 15,
+    alignItems: 'center',
+    justifyContent: 'center',
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    zIndex: 10,
+    height: '12%',
   },
-  titleText: {
-    fontSize: 24,
+  navbarTitle: {
+    position: 'absolute',
+    top: 40,
+    fontSize: 23,
     fontWeight: 'bold',
-    color: COLORS.black,
-    marginVertical: 8,
+    color: COLORS.white,
+  },
+  scrollContent: {
+    padding: 20,
+    paddingBottom: 50,
+    marginTop: 60,
   },
   sectionHeader: {
     fontSize: 18,

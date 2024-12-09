@@ -23,7 +23,7 @@ export default function HelpSetting({navigation}) {
     {
       title: 'Bagaimana cara melakukan logout?',
       description:
-        'Untuk melakukan logout, buka menu Pengaturan, gulir ke bawah, dan tekan tombol "Logout". Konfirmasi jika diminta.',
+        'Untuk melakukan logout, buka menu Setting, gulir ke bawah, dan tekan tombol "Logout". Konfirmasi jika diminta.',
     },
     {
       title: 'Bagaimana cara mengubah kata sandi?',

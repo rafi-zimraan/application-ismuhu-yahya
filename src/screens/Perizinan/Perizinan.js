@@ -13,11 +13,11 @@ import {
 import {
   Background,
   FloatingButton,
+  Gap,
   HeaderTransparent,
   ModalCustom,
 } from '../../Component';
-// import TotalCuti from './components/TotalCuti';
-// import HistoryItem from './components/HistoryItem';
+
 import {IMG_NOTHING_DATA_HISTORY_PERIZINA} from '../../assets';
 import {deleteDataPerizinan, getAllPerizinan} from '../../features/Perizinan';
 import HistoryItem from '../../features/Perizinan/components/HistoryItem';
@@ -34,6 +34,7 @@ export default function Perizinan({navigation}) {
   const [userDivisionId, setUserDivisionId] = useState('');
   const [userDepartmentId, setUserDepartmentId] = useState('');
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
+  const [isDelete, setIsDelete] = useState(false);
   const [selectedDeleteId, setSelectedDeleteId] = useState(null);
 
   const fetchData = async () => {
@@ -86,6 +87,9 @@ export default function Perizinan({navigation}) {
   );
 
   const handleDelete = async () => {
+    if (!selectedDeleteId) return;
+
+    setIsDelete(true);
     try {
       const isDeleted = await deleteDataPerizinan(selectedDeleteId);
       if (isDeleted) {
@@ -98,7 +102,8 @@ export default function Perizinan({navigation}) {
       }
     } catch (error) {
       console.error('Error deleting data:', error);
-      Alert.alert('Error', 'Terjadi kesalahan saat menghapus data.');
+    } finally {
+      setIsDelete(false);
     }
   };
 
@@ -119,7 +124,7 @@ export default function Perizinan({navigation}) {
           totalCuti={totalCuti}
           terpakai={terpakai}
         />
-
+        <Gap height={20} />
         <Text style={styles.txtTitlePerizinan}>History</Text>
         {loading ? (
           <View style={styles.loadingContainer}>
@@ -174,7 +179,7 @@ export default function Perizinan({navigation}) {
       {/* Modal untuk Token Expired */}
       <ModalCustom
         visible={tokenExpired}
-        onClose={() => setTokenExpired(false)}
+        onRequestClose={() => setTokenExpired(false)}
         iconModalName="alert-circle-outline"
         title="Sesi Berakhir"
         description="Sesi Anda telah berakhir. Silakan login ulang untuk memperbarui data."
@@ -188,8 +193,9 @@ export default function Perizinan({navigation}) {
       {/* Modal untuk Konfirmasi Delete */}
       <ModalCustom
         visible={deleteModalVisible}
-        onClose={() => setDeleteModalVisible(false)}
+        onRequestClose={() => setDeleteModalVisible(false)}
         iconModalName="alert-circle-outline"
+        buttonLoading={isDelete}
         title="Hapus Perizinan"
         description="Apakah Anda yakin ingin menghapus cuti ini?"
         buttonSubmit={handleDelete}

@@ -16,7 +16,7 @@ export const getAllNotifications = async () => {
       },
     });
 
-    if (response.data) {
+    if (response?.data) {
       return response.data;
     } else {
       throw new Error('Data tidak ditemukan');
@@ -46,7 +46,7 @@ export const getNotificationDetail = async id_notification => {
       },
     });
 
-    if (response.data) {
+    if (response?.data?.data) {
       return response.data;
     } else {
       throw new Error('Notifikasi tidak ditemukan');
@@ -114,7 +114,7 @@ export const getNotificationCategory = async category => {
       },
     );
 
-    if (response.data) {
+    if (response?.data) {
       return response.data;
     } else {
       throw new Error('Data tidak ditemukan');
@@ -124,6 +124,44 @@ export const getNotificationCategory = async category => {
       console.log(error.response?.data?.message || 'Terjadi kesalahan');
     } else {
       console.timeLog(error.message);
+    }
+    throw error;
+  }
+};
+
+// update status approval
+export const updateApprovalStatus = async (id_approval, status) => {
+  try {
+    // take token from encryptedStorage
+    const token = await EncryptedStorage.getItem('token');
+    if (!token) {
+      throw new Error('Token expired, silahkan login terlebih dahulu');
+    }
+
+    const response = await api.patch(
+      `approval/update-status/${id_approval}?status=${status}`,
+      null,
+      {
+        headers: {
+          Authorization: `Bearer ${JSON.parse(token)}`,
+        },
+      },
+    );
+
+    if (response.data?.status === true) {
+      console.log(
+        'data approval',
+        response.data?.message || 'Izin telah diterima',
+      );
+      return response.data;
+    } else {
+      throw new Error('Gagal memperbarui status approval');
+    }
+  } catch (error) {
+    if (error.response) {
+      console.log(error.response?.data?.message || 'Terjadi kesalahan');
+    } else {
+      console.log(error.message);
     }
     throw error;
   }

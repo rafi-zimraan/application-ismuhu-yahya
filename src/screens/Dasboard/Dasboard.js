@@ -27,6 +27,7 @@ export default function Dashboard({navigation}) {
   const [isOffline, setIsOffline] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const isFocused = useIsFocused();
+  const [buttonLoading, setButtonLoading] = useState(false);
   const {InternetSettings} = NativeModules;
 
   useEffect(() => {
@@ -62,15 +63,24 @@ export default function Dashboard({navigation}) {
   };
 
   // Fungsi untuk membuka pengaturan jaringan
-  const openNetworkSettings = () => {
-    if (InternetSettings && InternetSettings.open) {
-      // console.log('InternetSettings module is successfully linked');
-      InternetSettings.open();
-    } else {
-      ToastAndroid.show('Unable to open network settings', ToastAndroid.SHORT);
+  const openNetworkSettings = async () => {
+    setButtonLoading(true);
+    try {
+      if (InternetSettings && InternetSettings.open) {
+        InternetSettings.open();
+        ToastAndroid.show('Opening network settings...', ToastAndroid.SHORT);
+      } else {
+        ToastAndroid.show(
+          'Unable to open network settings',
+          ToastAndroid.SHORT,
+        );
+      }
+    } catch (error) {
+      ToastAndroid.show('Error opening network settings', ToastAndroid.SHORT);
+    } finally {
+      setButtonLoading(false);
     }
   };
-
   return (
     <View style={{flex: 1, backgroundColor: COLORS.white}}>
       <StatusBar barStyle={'default'} backgroundColor={'transparent'} />
@@ -92,7 +102,7 @@ export default function Dashboard({navigation}) {
             backgroundColor={COLORS.goldenOrange}
             onPress={() => navigation.navigate('Perizinan')}
           />
-          {/* <ButtonMenu
+          <ButtonMenu
             title="Presensi"
             iconName="line-scan"
             color={COLORS.white}
@@ -100,7 +110,7 @@ export default function Dashboard({navigation}) {
             iconSize={36}
             onPress={() => navigation.navigate('Presensi')}
           />
-          <ButtonMenu
+          {/* <ButtonMenu
             title="Aktivitas"
             iconName="format-list-checkbox"
             iconSize={36}
@@ -127,6 +137,7 @@ export default function Dashboard({navigation}) {
         description="Tidak ada koneksi internet. Silakan periksa koneksi Anda dan hidupkan kembali koneksi internet."
         buttonSubmit={openNetworkSettings}
         buttonTitle="Buka pengaturan"
+        buttonLoading={buttonLoading}
       />
     </View>
   );

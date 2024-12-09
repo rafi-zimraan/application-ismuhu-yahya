@@ -11,6 +11,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import {addPerizinan} from '..';
 import {
   Background,
   ButtonAction,
@@ -20,7 +21,6 @@ import {
 import {getAllDepartment} from '../../../Component/Departmant/departmantApiSlice';
 import {getAllDivisions} from '../../../Component/Divisi/divisiApiSlice';
 import {COLORS} from '../../../utils';
-import {addPerizinan} from '../services/perizinanApiSlice';
 
 export default function CreateFormulirPerizinan({navigation, route}) {
   const {division_id, department_id} = route.params;

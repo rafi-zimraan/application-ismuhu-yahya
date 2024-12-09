@@ -45,7 +45,7 @@ export const deleteDataPerizinan = async id => {
       },
     });
 
-    if (response.status === 200) {
+    if (response.data?.status === true) {
       const message = response.data?.message;
       console.log(message);
       return true;

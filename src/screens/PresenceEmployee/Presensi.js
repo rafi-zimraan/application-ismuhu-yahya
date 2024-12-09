@@ -31,43 +31,51 @@ export default function Presensi({navigation}) {
           <StatusPresensi
             iconColor="green"
             iconName="checkbox-marked-circle-outline"
-            label="0 Hadir"
+            label="0 Terlambat"
           />
           <StatusPresensi
             iconColor="blue"
             iconName="clock-outline"
-            label=" 0 Pulang"
+            label=" 0 Alfa"
           />
         </View>
+      </View>
 
-        {/* Row 2 */}
-        <View style={styles.row}>
-          <StatusPresensi
-            iconColor="orange"
-            iconName="alert-outline"
-            label="0 Izin"
-          />
-          <StatusPresensi
-            iconColor="purple"
-            iconName="calendar-remove-outline"
-            label="0 Cuti"
+      {/* Menu */}
+      <View style={styles.viewButtonMenuPresensi}>
+        <View style={styles.viewMenu}>
+          <Text style={styles.txtMenu}>Menu Presensi</Text>
+          <Text style={styles.txtDesPresensi}>
+            Silahkan Memilih Presensi yang ingin di gunakan
+          </Text>
+          <Gap height={17} />
+          <MenuItemPresensi
+            iconName="calendar-check-outline"
+            iconColor={COLORS.primary}
+            label="Presensi Now"
+            onPress={() => navigation.navigate('PresenceFormulir')}
           />
         </View>
-        <Gap height={15} />
-        <Text style={styles.txtMenu}>Menu Presensi</Text>
-        <Gap height={17} />
-        <MenuItemPresensi
-          iconName="calendar-check-outline"
-          iconColor={COLORS.primary}
-          label="Presensi Now"
-          onPress={() => navigation.navigate('PresenceFormulir')}
-        />
       </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
+  txtDesPresensi: {
+    color: COLORS.grey,
+    fontSize: 17,
+  },
+  viewMenu: {
+    marginTop: 15,
+    padding: 15,
+  },
+  viewButtonMenuPresensi: {
+    backgroundColor: COLORS.blue,
+    borderTopLeftRadius: 45,
+    borderTopEndRadius: 45,
+    flex: 1,
+  },
   row: {
     flexDirection: 'row',
     justifyContent: 'space-evenly',

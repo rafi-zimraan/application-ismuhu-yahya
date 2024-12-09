@@ -22,14 +22,14 @@ export default function ModalLoading({
       transparent
       visible={visible}
       onRequestClose={onRequestClose}>
-      <StatusBar backgroundColor={COLORS.blackDark} />
+      <StatusBar barStyle={'default'} backgroundColor={COLORS.blackDark} />
       <Pressable onPress={onOutContentPress} style={styles.pressable} />
       <View style={styles.alignment}>
         {children ? (
           children
         ) : (
           <View style={styles.container}>
-            <ActivityIndicator color={COLORS.primary_dark} size="large" />
+            <ActivityIndicator color={COLORS.gold} size="large" />
           </View>
         )}
       </View>

@@ -66,7 +66,7 @@ export default function HeaderComponent({navigation}) {
     if (userName) {
       let index = 0;
       const welcomeMessage = `Selamat Datang, ${userName}`;
-      setWelcomeText(''); // Reset text for new animation
+      setWelcomeText('');
       const typingInterval = setInterval(() => {
         setWelcomeText(prev => prev + welcomeMessage[index]);
         index++;
@@ -75,7 +75,7 @@ export default function HeaderComponent({navigation}) {
         }
       }, 100);
 
-      return () => clearInterval(typingInterval); // Cleanup
+      return () => clearInterval(typingInterval);
     }
   }, [userName]);
 

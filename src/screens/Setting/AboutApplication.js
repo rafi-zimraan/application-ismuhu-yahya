@@ -12,8 +12,8 @@ export default function AboutApplication({navigation}) {
         icon="arrow-left-circle-outline"
         onPress={() => navigation.goBack()}
       />
-      <View style={{padding: 20}}>
-        <Text style={styles.header}>informasi applikasi</Text>
+      <View style={{padding: 15}}>
+        <Text style={styles.header}>Informasi applikasi</Text>
         <Text style={styles.description}>
           Aplikasi ini dirancang untuk membantu pengelolaan pengaturan pengguna
           secara efisien.
@@ -38,7 +38,7 @@ const styles = StyleSheet.create({
   },
   description: {
     fontSize: 16,
-    color: COLORS.gray,
+    color: COLORS.black,
     marginBottom: 20,
     lineHeight: 24,
   },

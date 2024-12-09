@@ -96,12 +96,25 @@ const styles = StyleSheet.create({
   },
   textRow: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     marginBottom: 5,
   },
-  label: {fontSize: 16, fontWeight: '400', color: COLORS.black, width: 90},
-  value: {fontSize: 16, fontWeight: '400', color: COLORS.black},
-  date: {fontSize: 12, color: COLORS.black, fontWeight: '500'},
+  label: {
+    fontSize: 16,
+    fontWeight: '400',
+    color: COLORS.black,
+    width: 90,
+  },
+  value: {
+    fontSize: 16,
+    fontWeight: '400',
+    color: COLORS.black,
+    maxWidth: 223,
+  },
+  date: {
+    fontSize: 12,
+    color: COLORS.black,
+    fontWeight: '500',
+  },
   optionsEditAndDelete: {flexDirection: 'row'},
 });
 

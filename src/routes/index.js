@@ -3,17 +3,16 @@ import React from 'react';
 import {
   CreateFormulirPerizinan,
   EditFormulirPerizinan,
-  FormulirCuti,
 } from '../features/Perizinan';
 import {EditProfile} from '../features/Profile';
 import {
   AboutApplication,
   ChangePassword,
-  DetailNotification,
   FaceScaanPresence,
   HelpSetting,
   LibDemo,
-  NotificationRead,
+  NotificationDetail,
+  NotificationFromCategory,
   OnBoarding,
   Perizinan,
   PresenceFormulir,
@@ -48,8 +47,10 @@ export default function Navigator() {
       <Stack.Screen name="Presensi" component={Presensi} />
       <Stack.Screen name="FaceScaanPresence" component={FaceScaanPresence} />
       <Stack.Screen name="Perizinan" component={Perizinan} />
-      <Stack.Screen name="FormulirCuti" component={FormulirCuti} />
-      <Stack.Screen name="DetailNotification" component={DetailNotification} />
+      <Stack.Screen
+        name="NotificationFromCategory"
+        component={NotificationFromCategory}
+      />
       <Stack.Screen name="BottomTabs" component={BottomTabs} />
       <Stack.Screen name="Profile" component={Profile} />
       <Stack.Screen name="EditProfile" component={EditProfile} />
@@ -65,7 +66,7 @@ export default function Navigator() {
         name="EditFormulirPerizinan"
         component={EditFormulirPerizinan}
       />
-      <Stack.Screen name="NotificationRead" component={NotificationRead} />
+      <Stack.Screen name="NotificationDetail" component={NotificationDetail} />
     </Stack.Navigator>
   );
 }

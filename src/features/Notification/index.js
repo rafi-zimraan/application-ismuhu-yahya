@@ -1,5 +1,20 @@
 import DropdownPicker from './components/DropdonwPicker';
 import NavbarNotif from './components/NavbarNotif';
-import NotificationList from './components/NotificationList';
+import {
+  deleteNotification,
+  getAllNotifications,
+  getNotificationCategory,
+  getNotificationDetail,
+  updateApprovalStatus,
+} from './services/notificationApiSlice';
 
-export {DropdownPicker, NotificationList, NavbarNotif};
+// component
+export {DropdownPicker, NavbarNotif};
+// slice
+export {
+  getAllNotifications,
+  getNotificationDetail,
+  deleteNotification,
+  getNotificationCategory,
+  updateApprovalStatus,
+};

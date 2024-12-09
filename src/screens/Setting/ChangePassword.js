@@ -38,10 +38,8 @@ export default function ChangePassword({navigation}) {
         icon="arrow-left-circle-outline"
         onPress={() => navigation.goBack()}
       />
-      <View style={{height: '53%', padding: 20}}>
-        <Text style={styles.title}>
-          Sudah siap? Masukkan password lama Anda
-        </Text>
+      <View style={{height: '53%', padding: 15}}>
+        <Text style={styles.title}>Masukkan password lama Anda</Text>
         <FormInput
           control={control}
           name="oldPassword"

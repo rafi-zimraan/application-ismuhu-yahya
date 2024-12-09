@@ -11,6 +11,7 @@ import {
   View,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import {patchPerizinan} from '..';
 import {
   Background,
   ButtonAction,
@@ -20,7 +21,6 @@ import {
 import {getDepartmentDetail} from '../../../Component/Departmant/departmantApiSlice';
 import {getDivisionDetail} from '../../../Component/Divisi/divisiApiSlice';
 import {COLORS} from '../../../utils';
-import {patchPerizinan} from '../services/perizinanApiSlice';
 
 export default function EditFormulirPerizinan({navigation, route}) {
   const {id_lisences, initialData} = route.params;

@@ -105,11 +105,13 @@
 
 import React from 'react';
 import {StyleSheet, Text, View} from 'react-native';
+import {ModalLoading} from '../../Component';
 
 export default function LibDemo() {
   return (
     <View style={{flex: 1}}>
       <Text>LibDemo</Text>
+      <ModalLoading />
     </View>
   );
 }

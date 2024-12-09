@@ -3,9 +3,9 @@ import SignUp from './Auth/SignUp';
 import Dashboard from './Dasboard/Dasboard';
 import DasboardMaster from './DasboardMaster/DasboardMaster';
 import DrawerContent from './DrawerContent/DrawerContent';
-import DetailNotification from './Notification/DetailNotification';
 import Notification from './Notification/Notification';
-import NotificationRead from './Notification/NotificationRead';
+import NotificationDetail from './Notification/NotificationDetail';
+import NotificationFromCategory from './Notification/NotificationFromCategory';
 import OnBoarding from './Onboarding/Onboarding';
 import Perizinan from './Perizinan/Perizinan';
 import FaceScaanPresence from './PresenceEmployee/FaceScaanPresence';
@@ -21,14 +21,14 @@ import SplashScreen from './SplashScreen/SplashScreen';
 import LibDemo from './__test__/LibDemo.test';
 
 export {
-  NotificationRead,
+  NotificationDetail,
   ChangePassword,
   HelpSetting,
   AboutApplication,
   PrivasiSetting,
   OnBoarding,
   Profile,
-  DetailNotification,
+  NotificationFromCategory,
   Perizinan,
   Notification,
   Settings,

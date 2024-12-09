@@ -1,6 +1,7 @@
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import React, {useEffect, useState} from 'react';
-import {getAllNotifications} from '../features/Notification/services/notificationApiSlice';
+import {useFocusEffect} from '@react-navigation/native';
+import React, {useCallback, useEffect, useState} from 'react';
+import {getAllNotifications} from '../features/Notification';
 import {Dashboard, Notification, Settings} from '../screens';
 import BottomTabBar from './BottomTabBar';
 
@@ -47,14 +48,16 @@ export default function BottomTabs({navigation}) {
   }, []);
 
   // Update unread count when the Notification tab is focused
-  useEffect(() => {
-    const unsubscribe = navigation.addListener('focus', async () => {
-      const count = await fetchUnreadCount();
-      setUnreadCount(count);
-    });
+  useFocusEffect(
+    useCallback(() => {
+      const updateUnreadCount = async () => {
+        const count = await fetchUnreadCount();
+        setUnreadCount(count);
+      };
 
-    return unsubscribe;
-  }, [navigation]);
+      updateUnreadCount();
+    }, []),
+  );
 
   return (
     <Tab.Navigator
