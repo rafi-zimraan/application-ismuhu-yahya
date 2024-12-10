@@ -73,56 +73,32 @@ export const createFinger = async (finger, user_id) => {
   }
 };
 
-// Get user data based on division and department
-export const getUserFromDepartment = async (id_division, id_department) => {
+// Fungsi untuk menangani presensi dengan QR Code
+export const qrCodePresence = async (id_user, qrCodeValue) => {
   try {
-    const response = await api.get(
-      `/user/division/${id_division}/department/${id_department}`,
-    );
-    return response.data?.data;
-  } catch (error) {
-    if (error.response) {
-      ToastAndroid.show(error.response.data, ToastAndroid.SHORT);
-    } else {
-      ToastAndroid.show(error.message, ToastAndroid.SHORT);
-    }
-  }
-};
+    const response = await api.post(`/api/presences/qrcode/${id_user}`, {
+      qr_code: qrCodeValue,
+    });
 
-// Data Divisi
-export const getAllDivision = async () => {
-  try {
-    const response = await api.get('/data-division');
-    const division = response.data?.data;
-    if (division) {
-      return division;
+    console.log('RESPONSE QR CODE:', response.data);
+
+    if (response.data?.status) {
+      ToastAndroid.show(response.data?.message, ToastAndroid.SHORT);
+    } else if (
+      response.data?.message.includes('Data Anda Telah Berhasil Tersimpan')
+    ) {
+      // Menampilkan pesan spesifik untuk presensi sebelumnya
+      ToastAndroid.show(response.data?.message, ToastAndroid.SHORT);
     } else {
-      throw new Error('Data division tidak ditemukan');
+      throw new Error(response.data?.message || 'Error QR Code Presence!');
     }
   } catch (error) {
     if (error.response) {
-      ToastAndroid.show(error.response.data, ToastAndroid.SHORT);
+      const errorMessage = error.response?.data?.message || 'Terjadi kesalahan';
+      ToastAndroid.show(errorMessage, ToastAndroid.SHORT);
+      console.log('ERROR MESSAGE:', errorMessage);
     } else {
-      ToastAndroid.show(error.message, ToastAndroid.SHORT);
-    }
-  }
-};
-
-// Get data department by id_division
-export const getDepartmentByDivision = async id_division => {
-  try {
-    const response = await api.get(`/data-department/${id_division}`);
-    const departement = response.data?.data;
-
-    if (departement) {
-      return departement;
-    } else {
-      throw new Error('Data Department tidak ditemukan');
-    }
-  } catch (error) {
-    if (error.response) {
-      ToastAndroid.show(error.response.data, ToastAndroid.SHORT);
-    } else {
+      console.log('ERROR CODE:', error.message);
       ToastAndroid.show(error.message, ToastAndroid.SHORT);
     }
   }

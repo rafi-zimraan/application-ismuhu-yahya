@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {
   ActivityIndicator,
-  Modal,
   SafeAreaView,
   ScrollView,
   StatusBar,
@@ -10,20 +9,22 @@ import {
   TextInput,
   View,
 } from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {patchPerizinan} from '..';
 import {
   Background,
   ButtonAction,
   Gap,
   HeaderTransparent,
+  ModalCustom,
 } from '../../../Component';
-import {getDepartmentDetail} from '../../../Component/Departmant/departmantApiSlice';
-import {getDivisionDetail} from '../../../Component/Divisi/divisiApiSlice';
 import {COLORS} from '../../../utils';
+import {getDepartmentDetail} from '../../Departmant';
+import {getDivisionDetail} from '../../Divisi';
 
 export default function EditFormulirPerizinan({navigation, route}) {
   const {id_lisences, initialData} = route.params;
+  console.log('data edit', initialData);
+
   const [divisionId, setDivisionId] = useState(initialData.division_id || '');
   const [departmentId, setDepartmentId] = useState(
     initialData.department_id || '',
@@ -31,8 +32,8 @@ export default function EditFormulirPerizinan({navigation, route}) {
   const [regarding, setRegarding] = useState(initialData.regarding || '');
   const [necessity, setNecessity] = useState(initialData.necessity || '');
   const [category, setCategory] = useState(initialData.category || '');
-  const [startDate, setStartDate] = useState(initialData.start_date || '');
-  const [endDate, setEndDate] = useState(initialData.end_date || '');
+  const [outTime, setOutTime] = useState(initialData.out || '');
+  const [intTime, setIntTime] = useState(initialData.in || '');
   const [totDay, setTotDay] = useState(initialData.tot_day || '');
   const [loading, setLoading] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
@@ -40,6 +41,7 @@ export default function EditFormulirPerizinan({navigation, route}) {
   const [departmentName, setDepartmentName] = useState('');
   const [loadingDivision, setLoadingDivision] = useState(false);
   const [loadingDepartment, setLoadingDepartment] = useState(false);
+  const [tokenExpired, setTokenExpired] = useState(false);
 
   useEffect(() => {
     const fetchDivisionAndDepartment = async () => {
@@ -66,8 +68,21 @@ export default function EditFormulirPerizinan({navigation, route}) {
     fetchDivisionAndDepartment();
   }, [divisionId, departmentId]);
 
+  const validateTimeFormat = time => {
+    const timeFormat = /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]$/;
+    return timeFormat.test(time);
+  };
+
   const handleUpdate = async () => {
     setLoading(true);
+    if (!validateTimeFormat(outTime) || !validateTimeFormat(intTime)) {
+      alert(
+        'Format waktu tidak valid. Harap gunakan format HH:mm:ss, Contoh (12:00:00).',
+      );
+      setLoading(false);
+      return;
+    }
+
     try {
       const response = await patchPerizinan(id_lisences, {
         division_id: divisionId,
@@ -75,16 +90,23 @@ export default function EditFormulirPerizinan({navigation, route}) {
         regarding,
         necessity,
         category,
-        start_date: startDate,
-        end_date: endDate,
+        out: outTime,
+        in: intTime,
         tot_day: totDay,
       });
-      console.log('data update formulir', response);
+      console.log('Response server:', response.data);
+
+      if (response?.message === 'Silahkan login terlebih dahulu') {
+        setTokenExpired(true);
+        return;
+      }
 
       if (response && response.status === true) {
+        console.log('Update berhasil:', response.message);
         setModalVisible(true);
       } else {
-        console.log('Gagal merubah data:', response);
+        console.log('Gagal merubah data:', response.message);
+        alert('Gagal merubah data: ' + response.message);
       }
     } catch (error) {
       console.error('Error updating perizinan:', error);
@@ -113,7 +135,7 @@ export default function EditFormulirPerizinan({navigation, route}) {
               setDivisionId('');
               setDivisionName(text);
             }}
-            placeholderTextColor={COLORS.black}
+            placeholderTextColor={COLORS.grey}
           />
           {loadingDivision && (
             <ActivityIndicator
@@ -121,8 +143,8 @@ export default function EditFormulirPerizinan({navigation, route}) {
               color={COLORS.black}
               style={{
                 position: 'absolute',
-                right: 10, // Posisi di sebelah kanan dalam TextInput
-                top: '50%', // Vertikal di tengah
+                right: 10,
+                top: '50%',
                 transform: [{translateY: -10}],
               }}
             />
@@ -138,7 +160,7 @@ export default function EditFormulirPerizinan({navigation, route}) {
               setDepartmentId('');
               setDepartmentName(text);
             }}
-            placeholderTextColor={COLORS.black}
+            placeholderTextColor={COLORS.grey}
           />
           {loadingDepartment && (
             <ActivityIndicator
@@ -146,8 +168,8 @@ export default function EditFormulirPerizinan({navigation, route}) {
               color={COLORS.black}
               style={{
                 position: 'absolute',
-                right: 10, // Posisi di sebelah kanan dalam TextInput
-                top: '50%', // Vertikal di tengah
+                right: 10,
+                top: '50%',
                 transform: [{translateY: -10}],
               }}
             />
@@ -160,7 +182,7 @@ export default function EditFormulirPerizinan({navigation, route}) {
           value={regarding}
           onChangeText={setRegarding}
           placeholder="Perihal (cuti, dinas, lainnya)"
-          placeholderTextColor={COLORS.black}
+          placeholderTextColor={COLORS.grey}
         />
 
         <Text style={styles.label}>Keperluan</Text>
@@ -169,7 +191,7 @@ export default function EditFormulirPerizinan({navigation, route}) {
           value={necessity}
           onChangeText={setNecessity}
           placeholder="Masukkan keperluan"
-          placeholderTextColor={COLORS.black}
+          placeholderTextColor={COLORS.grey}
         />
 
         <Text style={styles.label}>Kategori</Text>
@@ -178,35 +200,40 @@ export default function EditFormulirPerizinan({navigation, route}) {
           value={category}
           onChangeText={setCategory}
           placeholder="Kategori (cuti, dinas, keluar, dll)"
-          placeholderTextColor={COLORS.black}
+          placeholderTextColor={COLORS.grey}
         />
 
-        <Text style={styles.label}>Tanggal Mulai</Text>
+        <Text style={styles.label}>Jam Keluar</Text>
         <TextInput
           style={styles.input}
-          value={startDate}
-          onChangeText={setStartDate}
-          placeholder="Tanggal mulai izin (YYYY-MM-DD)"
-          placeholderTextColor={COLORS.black}
+          value={outTime}
+          onChangeText={setOutTime}
+          placeholder="Jam keluar Contoh(12:00:00)"
+          placeholderTextColor={COLORS.grey}
+          keyboardType="default"
+          maxLength={8}
         />
 
-        <Text style={styles.label}>Tanggal Berakhir</Text>
+        <Text style={styles.label}>Jam Kembali</Text>
         <TextInput
           style={styles.input}
-          value={endDate}
-          onChangeText={setEndDate}
-          placeholder="Tanggal batas terakhir izin (YYYY-MM-DD)"
-          placeholderTextColor={COLORS.black}
+          value={intTime}
+          onChangeText={setIntTime}
+          placeholder="Jam kembali Contoh(12:00:00)"
+          placeholderTextColor={COLORS.grey}
+          keyboardType="default"
+          maxLength={8}
         />
 
-        <Text style={styles.label}>Jumlah Hari</Text>
+        <Text style={styles.label}>Durasi Jam</Text>
         <TextInput
           style={styles.input}
           value={totDay}
           onChangeText={setTotDay}
-          placeholder="Jumlah hari untuk izin"
-          keyboardType="numeric"
-          placeholderTextColor={COLORS.black}
+          placeholder="Durasi izin (jam:menit:detik)"
+          placeholderTextColor={COLORS.grey}
+          maxLength={8}
+          keyboardType="default"
         />
 
         <Gap height={20} />
@@ -222,31 +249,35 @@ export default function EditFormulirPerizinan({navigation, route}) {
       </ScrollView>
 
       {/* Modal untuk notifikasi berhasil update */}
-      <Modal
-        animationType="slide"
-        transparent={true}
+      <ModalCustom
         visible={modalVisible}
-        onRequestClose={() => {
-          setModalVisible(!modalVisible);
-        }}>
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <Icon
-              name="emoticon-happy-outline"
-              size={60}
-              color={COLORS.primary}
-            />
-            <Text style={styles.title}>Data berhasil diperbarui!</Text>
-            <ButtonAction
-              title="OK"
-              onPress={() => {
-                setModalVisible(false);
-                navigation.goBack();
-              }}
-            />
-          </View>
-        </View>
-      </Modal>
+        onRequestClose={() => setModalVisible(false)}
+        iconModalName="check-circle-outline"
+        title="Data Diperbarui"
+        description="Data Anda telah berhasil diperbarui."
+        buttonSubmit={() => {
+          setModalVisible(false);
+          navigation.goBack();
+        }}
+        buttonTitle="OK"
+        ColorIcon={COLORS.primary}
+        BackgroundButtonAction={COLORS.primary}
+        TextColorButton={COLORS.white}
+      />
+
+      {/* Modal untuk Token Expired */}
+      <ModalCustom
+        visible={tokenExpired}
+        onRequestClose={() => setTokenExpired(false)}
+        iconModalName="alert-circle-outline"
+        title="Sesi Berakhir"
+        description="Sesi Anda telah berakhir. Silakan login ulang untuk memperbarui data."
+        buttonSubmit={() => {
+          setTokenExpired(false);
+          navigation.navigate('SignIn');
+        }}
+        buttonTitle="Login Ulang"
+      />
     </SafeAreaView>
   );
 }
@@ -276,18 +307,5 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     backgroundColor: COLORS.champagne,
     color: COLORS.black,
-  },
-  modalContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-  },
-  modalContent: {
-    width: 300,
-    padding: 20,
-    backgroundColor: 'white',
-    borderRadius: 10,
-    alignItems: 'center',
   },
 });

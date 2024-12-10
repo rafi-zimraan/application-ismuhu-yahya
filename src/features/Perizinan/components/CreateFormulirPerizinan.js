@@ -1,14 +1,13 @@
-import DateTimePicker from '@react-native-community/datetimepicker';
 import React, {useEffect, useState} from 'react';
 import {
   ActivityIndicator,
+  Alert,
   SafeAreaView,
   ScrollView,
   StatusBar,
   StyleSheet,
   Text,
   TextInput,
-  TouchableOpacity,
   View,
 } from 'react-native';
 import {addPerizinan} from '..';
@@ -18,29 +17,25 @@ import {
   HeaderTransparent,
   ModalCustom,
 } from '../../../Component';
-import {getAllDepartment} from '../../../Component/Departmant/departmantApiSlice';
-import {getAllDivisions} from '../../../Component/Divisi/divisiApiSlice';
 import {COLORS} from '../../../utils';
+import {getAllDepartment} from '../../Departmant';
+import {getAllDivisions} from '../../Divisi';
 
 export default function CreateFormulirPerizinan({navigation, route}) {
   const {division_id, department_id} = route.params;
 
-  // State untuk Divisi dan Departemen
   const [divisionName, setDivisionName] = useState('');
   const [departmentName, setDepartmentName] = useState('');
   const [loadingDivision, setLoadingDivision] = useState(false);
   const [loadingDepartment, setLoadingDepartment] = useState(false);
 
-  // State untuk formulir
   const [divisionId, setDivisionId] = useState(division_id || '');
   const [departmentId, setDepartmentId] = useState(department_id || '');
   const [regarding, setRegarding] = useState('');
   const [necessity, setNecessity] = useState('');
   const [category, setCategory] = useState('');
-  const [startDate, setStartDate] = useState('');
-  const [endDate, setEndDate] = useState('');
-  const [showStartDatePicker, setShowStartDatePicker] = useState(false);
-  const [showEndDatePicker, setShowEndDatePicker] = useState(false);
+  const [outTime, setOutTime] = useState('');
+  const [intTime, setIntTime] = useState('');
   const [totDay, setTotDay] = useState('');
   const [loading, setLoading] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
@@ -51,12 +46,12 @@ export default function CreateFormulirPerizinan({navigation, route}) {
         setLoadingDivision(true);
         const divisions = await getAllDivisions();
         setDivisionName(divisions.data[0].name);
-        setDivisionId(divisions.data[0].id); // Menyimpan ID Divisi yang didapat ke state
+        setDivisionId(divisions.data[0].id);
 
         setLoadingDepartment(true);
         const departments = await getAllDepartment();
         setDepartmentName(departments.data[0].name);
-        setDepartmentId(departments.data[0].id); // Menyimpan ID Departemen yang didapat ke state
+        setDepartmentId(departments.data[0].id);
       } catch (error) {
         console.error('Error fetching divisions or departments:', error);
       } finally {
@@ -68,9 +63,22 @@ export default function CreateFormulirPerizinan({navigation, route}) {
     fetchDivisionsAndDepartments();
   }, []);
 
-  // Fungsi untuk mengirim data ke API
+  const validateTimeFormat = time => {
+    const timeFormat = /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]$/;
+    return timeFormat.test(time);
+  };
+
   const handleSubmit = async () => {
     setLoading(true);
+    if (!validateTimeFormat(outTime) || !validateTimeFormat(intTime)) {
+      Alert.alert(
+        'Format waktu tidak valid',
+        'Pastikan format waktu HH:mm:ss, contoh 12:00:00.',
+      );
+      setLoading(false);
+      return;
+    }
+
     try {
       const data = {
         division_id: divisionId,
@@ -78,14 +86,16 @@ export default function CreateFormulirPerizinan({navigation, route}) {
         regarding,
         necessity,
         category,
-        start_date: startDate,
-        end_date: endDate,
+        out: outTime,
+        in: intTime,
         tot_day: totDay,
       };
 
       const response = await addPerizinan(data);
       if (response?.status === true) {
-        setShowSuccessModal(true); // Tampilkan modal sukses
+        setShowSuccessModal(true);
+      } else {
+        Alert.alert('Gagal', response?.message || 'Gagal menambahkan data.');
       }
     } catch (error) {
       Alert.alert(
@@ -94,20 +104,6 @@ export default function CreateFormulirPerizinan({navigation, route}) {
       );
     } finally {
       setLoading(false);
-    }
-  };
-
-  const handleStartDateChange = (event, selectedDate) => {
-    setShowStartDatePicker(false);
-    if (selectedDate) {
-      setStartDate(selectedDate.toISOString().split('T')[0]); // Format: YYYY-MM-DD
-    }
-  };
-
-  const handleEndDateChange = (event, selectedDate) => {
-    setShowEndDatePicker(false);
-    if (selectedDate) {
-      setEndDate(selectedDate.toISOString().split('T')[0]); // Format: YYYY-MM-DD
     }
   };
 
@@ -122,13 +118,12 @@ export default function CreateFormulirPerizinan({navigation, route}) {
       />
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         <View style={styles.container}>
-          {/* Input Divisi */}
           <Text style={styles.label}>Division</Text>
           <View style={{position: 'relative'}}>
             <TextInput
               style={styles.input}
               value={divisionName}
-              editable={false} // Non-editable
+              editable={false}
               placeholder="Masukkan ID Divisi"
               placeholderTextColor={COLORS.grey}
             />
@@ -141,13 +136,12 @@ export default function CreateFormulirPerizinan({navigation, route}) {
             )}
           </View>
 
-          {/* Input Departemen */}
           <Text style={styles.label}>Department</Text>
           <View style={{position: 'relative'}}>
             <TextInput
               style={styles.input}
               value={departmentName}
-              editable={false} // Non-editable
+              editable={false}
               placeholder="Masukkan ID Departemen"
               placeholderTextColor={COLORS.grey}
             />
@@ -160,7 +154,6 @@ export default function CreateFormulirPerizinan({navigation, route}) {
             )}
           </View>
 
-          {/* Formulir lainnya */}
           <Text style={styles.label}>Perihal</Text>
           <TextInput
             style={styles.input}
@@ -188,51 +181,35 @@ export default function CreateFormulirPerizinan({navigation, route}) {
             placeholderTextColor={COLORS.grey}
           />
 
-          {/* Tanggal Mulai */}
-          <Text style={styles.label}>Tanggal Mulai</Text>
-          <TouchableOpacity
-            activeOpacity={0.6}
+          <Text style={styles.label}>Jam Keluar</Text>
+          <TextInput
             style={styles.input}
-            onPress={() => setShowStartDatePicker(true)}>
-            <Text style={{color: startDate ? COLORS.black : COLORS.grey}}>
-              {startDate || 'Pilih Tanggal Mulai'}
-            </Text>
-          </TouchableOpacity>
-          {showStartDatePicker && (
-            <DateTimePicker
-              value={startDate ? new Date(startDate) : new Date()}
-              mode="date"
-              display="default"
-              onChange={handleStartDateChange}
-            />
-          )}
+            value={outTime}
+            onChangeText={setOutTime}
+            placeholder="Jam keluar (HH:mm:ss)"
+            placeholderTextColor={COLORS.grey}
+            keyboardType="default"
+            maxLength={8}
+          />
 
-          {/* Tanggal Berakhir */}
-          <Text style={styles.label}>Tanggal Berakhir</Text>
-          <TouchableOpacity
-            activeOpacity={0.6}
+          <Text style={styles.label}>Jam Kembali</Text>
+          <TextInput
             style={styles.input}
-            onPress={() => setShowEndDatePicker(true)}>
-            <Text style={{color: endDate ? COLORS.black : COLORS.grey}}>
-              {endDate || 'Pilih Tanggal Berakhir'}
-            </Text>
-          </TouchableOpacity>
-          {showEndDatePicker && (
-            <DateTimePicker
-              value={endDate ? new Date(endDate) : new Date()}
-              mode="date"
-              display="default"
-              onChange={handleEndDateChange}
-            />
-          )}
+            value={intTime}
+            onChangeText={setIntTime}
+            placeholder="Jam kembali (HH:mm:ss)"
+            placeholderTextColor={COLORS.grey}
+            keyboardType="default"
+            maxLength={8}
+          />
 
-          <Text style={styles.label}>Jumlah Hari</Text>
+          <Text style={styles.label}>Durasi Jam</Text>
           <TextInput
             style={styles.input}
             value={totDay}
             onChangeText={setTotDay}
-            placeholder="Jumlah hari untuk izin"
-            keyboardType="numeric"
+            placeholder="Durasi izin (jam:menit:detik)"
+            keyboardType="default"
             placeholderTextColor={COLORS.grey}
           />
 
@@ -248,13 +225,12 @@ export default function CreateFormulirPerizinan({navigation, route}) {
         </View>
       </ScrollView>
 
-      {/* Modal untuk Sukses */}
       <ModalCustom
         visible={showSuccessModal}
         onRequestClose={() => setShowSuccessModal(false)}
         iconModalName="check-circle-outline"
         title="Permintaan Berhasil"
-        description="Permintaan perizinan Anda telah berhasil dikirim. Selamat melanjutkan aktivitas dan semoga semua berjalan lancar. 😊"
+        description="Permintaan perizinan Anda telah berhasil dikirim."
         buttonSubmit={() => {
           setShowSuccessModal(false);
           navigation.goBack();
@@ -293,42 +269,5 @@ const styles = StyleSheet.create({
     right: 10,
     top: '50%',
     transform: [{translateY: -10}],
-  },
-  modalContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0,0,0,0.5)',
-  },
-  modalContent: {
-    backgroundColor: COLORS.white,
-    padding: 20,
-    borderRadius: 10,
-    alignItems: 'center',
-    width: '80%',
-  },
-  modalTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: COLORS.black,
-    marginTop: 10,
-  },
-  modalText: {
-    fontSize: 16,
-    color: COLORS.black,
-    textAlign: 'center',
-  },
-  closeButton: {
-    backgroundColor: COLORS.primary,
-    padding: 10,
-    borderRadius: 5,
-    width: '100%',
-    alignItems: 'center',
-    marginTop: 20,
-  },
-  closeButtonText: {
-    color: COLORS.white,
-    fontWeight: 'bold',
-    fontSize: 16,
   },
 });

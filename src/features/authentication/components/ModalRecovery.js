@@ -11,10 +11,9 @@ import {
   View,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {ButtonAuth, FormInput} from '..';
+import {ButtonAuth, FormInput, passwordRecovery} from '..';
 import {AlertPopUp, Gap} from '../../../Component';
 import {COLORS} from '../../../utils';
-import {passwordRecovery} from '../services/authApiSlice';
 
 export default function ModalRecovery() {
   const {control, handleSubmit, reset} = useForm();

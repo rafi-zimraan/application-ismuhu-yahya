@@ -4,9 +4,9 @@ import {ActivityIndicator, StyleSheet, Text, View} from 'react-native';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {Gap, HeaderSearch, ModalCustom} from '../../../Component';
-import {getAllDepartment} from '../../../Component/Departmant/departmantApiSlice';
-import {getAllDivisions} from '../../../Component/Divisi/divisiApiSlice';
 import {COLORS} from '../../../utils';
+import {getAllDepartment} from '../../Departmant';
+import {getAllDivisions} from '../../Divisi';
 
 export default function HeaderComponent({navigation}) {
   const [userName, setUserName] = useState('');

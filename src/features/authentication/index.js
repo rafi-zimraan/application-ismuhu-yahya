@@ -1,7 +1,7 @@
 import ButtonAuth from './components/ButtonAuth';
 import FormInput from './components/FormInput';
 import ModalRecovery from './components/ModalRecovery';
-import {logout} from './services/authApiSlice';
+import {login, logout, passwordRecovery} from './services/authApiSlice';
 import {
   setDepartments,
   setDivisions,
@@ -14,4 +14,4 @@ export {setToken, setDepartments, setDivisions, setUserSession};
 // auth component
 export {FormInput, ModalRecovery, ButtonAuth};
 // api
-export {logout};
+export {logout, login, passwordRecovery};

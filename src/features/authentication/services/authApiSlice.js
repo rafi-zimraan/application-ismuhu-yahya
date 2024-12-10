@@ -65,47 +65,6 @@ export const login = async (data, navigation, dispatch) => {
   }
 };
 
-// register
-export const register = async data => {
-  try {
-    const response = await api.post('/register', data);
-    return response.data;
-  } catch (error) {
-    console.log('REGISTER ERROR:', error);
-    ToastAndroid.show(error?.message, ToastAndroid.SHORT);
-  }
-};
-
-// divisions
-export const getDivisions = async () => {
-  try {
-    const response = await api.get('/getAllDivision');
-    return response.data;
-  } catch (error) {
-    console.log('DIVISIONS ERROR:', error);
-  }
-};
-
-// department berdasarkan divisionId
-export const getDepartment = async divisionId => {
-  try {
-    const response = await api.get(`/getDepartment/${divisionId}`);
-    return response.data;
-  } catch (error) {
-    console.log('DEPARTMENT ERROR:', error);
-  }
-};
-
-// branch
-export const getBranches = async () => {
-  try {
-    const response = await api.get('/branches');
-    return response.data;
-  } catch (error) {
-    console.log('BRANCHES ERROR', error);
-  }
-};
-
 // recovery password
 export const passwordRecovery = async email => {
   try {

@@ -5,6 +5,37 @@ import {Gap, Line} from '../../../Component';
 import {COLORS} from '../../../utils';
 
 const HistoryItem = ({item, onEditPress, onDeletePress}) => {
+  const calculateDuration = (start, end) => {
+    // Pastikan waktu tersedia
+    if (!start || !end) return '0 Jam 0 Menit';
+
+    // Pisahkan waktu menjadi jam, menit, dan detik
+    const [startHours, startMinutes, startSeconds] = start
+      .split(':')
+      .map(Number);
+    const [endHours, endMinutes, endSeconds] = end.split(':').map(Number);
+
+    // Konversi ke total menit dari awal hari
+    const startTotalMinutes =
+      startHours * 60 + startMinutes + (startSeconds || 0) / 60;
+    const endTotalMinutes = endHours * 60 + endMinutes + (endSeconds || 0) / 60;
+
+    // Hitung selisih waktu dalam menit
+    let diffMinutes = endTotalMinutes - startTotalMinutes;
+
+    // Jika negatif (lintas hari), tambahkan 24 jam
+    if (diffMinutes < 0) {
+      diffMinutes += 24 * 60; // 24 jam dikonversi ke menit
+    }
+
+    // Konversi ke jam dan menit
+    const hours = Math.floor(diffMinutes / 60);
+    const minutes = Math.floor(diffMinutes % 60);
+
+    // Kembalikan hasil
+    return `${hours} Jam ${minutes} Menit`;
+  };
+
   return (
     <View style={styles.viewBodyHistory}>
       <View style={styles.navbarOptions}>
@@ -50,18 +81,30 @@ const HistoryItem = ({item, onEditPress, onDeletePress}) => {
       <Gap height={8} />
       <Line />
       <Gap height={15} />
+
       <View style={styles.textRow}>
-        <Text style={styles.label}>Total hari</Text>
-        <Text style={styles.value}>: {item.tot_day}</Text>
+        <Text style={styles.label}>Categori</Text>
+        <Text style={styles.value}>: {item.category}</Text>
       </View>
       <View style={styles.textRow}>
         <Text style={styles.label}>Perihal</Text>
         <Text style={styles.value}>: {item.regarding}</Text>
       </View>
       <View style={styles.textRow}>
-        <Text style={styles.label}>Ttl Kembali</Text>
-        <Text style={styles.value}>: {item.end_date}</Text>
+        <Text style={styles.label}>Jam Keluar</Text>
+        <Text style={styles.value}>: {item.out}</Text>
       </View>
+      <View style={styles.textRow}>
+        <Text style={styles.label}>Jam Kembali</Text>
+        <Text style={styles.value}>: {item.in}</Text>
+      </View>
+      <View style={styles.textRow}>
+        <Text style={styles.label}>Durasi Jam</Text>
+        <Text style={styles.value}>
+          : {calculateDuration(item.out, item.in)}
+        </Text>
+      </View>
+
       <View style={styles.textRow}>
         <Text style={styles.label}>Keterangan</Text>
         <Text style={styles.value}>: {item.necessity}</Text>
@@ -102,13 +145,13 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '400',
     color: COLORS.black,
-    width: 90,
+    width: 100,
   },
   value: {
     fontSize: 16,
     fontWeight: '400',
     color: COLORS.black,
-    maxWidth: 223,
+    maxWidth: 205,
   },
   date: {
     fontSize: 12,

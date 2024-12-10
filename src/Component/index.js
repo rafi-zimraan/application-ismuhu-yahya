@@ -16,12 +16,14 @@ import Header from './screens/Header';
 import HeaderSearch from './screens/HeaderSearch';
 import HeaderTransparent from './screens/HeaderTransparent';
 import Line from './screens/Line';
+import ModalComponent from './screens/ModalComponent';
 import ModalCustom from './screens/ModalCustom';
 import ModalLoading from './screens/ModalLoading';
 import SearchInput from './screens/SearchInput';
 
 // component
 export {
+  ModalComponent,
   HeaderSearch,
   AlertWarning,
   AlertPopUp,

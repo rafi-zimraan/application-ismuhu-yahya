@@ -14,13 +14,13 @@ import {
   ButtonAction,
   Gap,
   HeaderTransparent,
-} from '../../Component';
-import {ICON_PRESENCE} from '../../assets';
-import {COLORS} from '../../utils';
+} from '../../../Component';
+import {ICON_PRESENCE} from '../../../assets';
+import {COLORS} from '../../../utils';
 
 const {width, height} = Dimensions.get('window');
 
-export default function PresenceFormulir({navigation}) {
+export default function CategoryPresence({navigation}) {
   const [selectedStatus, setSelectedStatus] = useState('');
   const [showAlert, setShowAlert] = useState(false);
 
@@ -30,33 +30,32 @@ export default function PresenceFormulir({navigation}) {
       return;
     }
     console.log('Absensi sekarang:', selectedStatus);
-    navigation.navigate('FaceScaanPresence');
+    navigation.navigate('QrCodePresense');
   };
 
   return (
     <SafeAreaView style={{flex: 1}}>
       <Background />
       <HeaderTransparent
-        title="Formulir Presensi"
+        title="Categori Presensi"
         icon="arrow-left-circle-outline"
         onPress={() => navigation.goBack()}
       />
       <View style={styles.container}>
         <Image
           source={ICON_PRESENCE}
-          style={[styles.img, {width: width - 10, height: width - 60}]}
+          style={[styles.img, {width: width - 10, height: width - 70}]}
           resizeMode="contain"
         />
       </View>
-      <Gap height={50} />
+      <Gap height={30} />
       <View style={styles.containerFormulir}>
         <View style={styles.content}>
           <Text style={styles.txtTitleAbensi}>Absensi Spa</Text>
-          <Gap height={10} />
+          <Gap height={15} />
 
           {/* Status Absensi */}
           <View style={styles.bodyBottomStatus}>
-            {/* Tombol Hadir */}
             <TouchableOpacity
               activeOpacity={0.6}
               style={[
@@ -105,14 +104,14 @@ export default function PresenceFormulir({navigation}) {
             </TouchableOpacity>
           </View>
 
-          <Gap height={17} />
+          <Gap height={20} />
           <Text style={styles.txtDec}>
-            Pilih kotak menu di atas {'\n'}untuk keterangan absensi anda 😀
+            Pilih kotak menu di atas yaa.. {'\n'}untuk keterangan absensi anda
+            😀
           </Text>
-          <Gap height={65} />
-          {/* Tombol Absensi */}
+          <Gap height={25} />
           <ButtonAction
-            backgroundColor={selectedStatus ? COLORS.goldenOrange : '#333'}
+            backgroundColor={selectedStatus ? COLORS.goldenOrange : 'grey'}
             title="Absensi Sekarang"
             style={styles.btnSubmit}
             onPress={handleSubmit}
@@ -159,7 +158,7 @@ const styles = StyleSheet.create({
     padding: 15,
   },
   txtTitleAbensi: {
-    fontSize: 22,
+    fontSize: 25,
     color: COLORS.black,
     fontWeight: '500',
     textAlign: 'left',

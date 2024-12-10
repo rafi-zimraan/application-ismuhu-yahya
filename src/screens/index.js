@@ -8,9 +8,11 @@ import NotificationDetail from './Notification/NotificationDetail';
 import NotificationFromCategory from './Notification/NotificationFromCategory';
 import OnBoarding from './Onboarding/Onboarding';
 import Perizinan from './Perizinan/Perizinan';
+import PerizinanByCategory from './Perizinan/PerizinanByCategory';
+import PerizinanLongTerm from './Perizinan/PerizinanLongTerm';
 import FaceScaanPresence from './PresenceEmployee/FaceScaanPresence';
-import PresenceFormulir from './PresenceEmployee/PresenceFormulir';
 import Presensi from './PresenceEmployee/Presensi';
+import QrCodePresense from './PresenceEmployee/QrCodePresense';
 import AboutApplication from './Setting/AboutApplication';
 import ChangePassword from './Setting/ChangePassword';
 import HelpSetting from './Setting/HelpSetting';
@@ -21,6 +23,9 @@ import SplashScreen from './SplashScreen/SplashScreen';
 import LibDemo from './__test__/LibDemo.test';
 
 export {
+  PerizinanLongTerm,
+  PerizinanByCategory,
+  QrCodePresense,
   NotificationDetail,
   ChangePassword,
   HelpSetting,
@@ -34,7 +39,6 @@ export {
   Settings,
   FaceScaanPresence,
   Presensi,
-  PresenceFormulir,
   DrawerContent,
   DasboardMaster,
   SignUp,

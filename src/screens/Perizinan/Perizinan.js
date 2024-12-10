@@ -2,6 +2,7 @@ import {useFocusEffect} from '@react-navigation/native';
 import React, {useEffect, useState} from 'react';
 import {
   ActivityIndicator,
+  Alert,
   FlatList,
   Image,
   RefreshControl,
@@ -17,7 +18,6 @@ import {
   HeaderTransparent,
   ModalCustom,
 } from '../../Component';
-
 import {IMG_NOTHING_DATA_HISTORY_PERIZINA} from '../../assets';
 import {deleteDataPerizinan, getAllPerizinan} from '../../features/Perizinan';
 import HistoryItem from '../../features/Perizinan/components/HistoryItem';
@@ -45,9 +45,16 @@ export default function Perizinan({navigation}) {
       if (response?.message === 'Silahkan login terlebih dahulu') {
         setTokenExpired(true);
       } else if (response?.data) {
-        setDataHistory(response.data);
-        if (response.data.length > 0) {
-          const firstEntry = response.data[0];
+        const sortedData = response.data.sort((a, b) => {
+          const dateA = new Date(a.created_at);
+          const dateB = new Date(b.created_at);
+          return dateB - dateA; // Sort by newest first
+        });
+
+        setDataHistory(sortedData.slice(0, 10)); // Show only the top 10 newest entries
+
+        if (sortedData.length > 0) {
+          const firstEntry = sortedData[0];
           setUserDivisionId(firstEntry.division_id);
           setUserDepartmentId(firstEntry.department_id);
         }
@@ -94,7 +101,7 @@ export default function Perizinan({navigation}) {
       const isDeleted = await deleteDataPerizinan(selectedDeleteId);
       if (isDeleted) {
         setDataHistory(prevData =>
-          prevData.filter(item => item.id !== selectedDeleteId),
+          prevData.filter(item => item?.id !== selectedDeleteId),
         );
         setDeleteModalVisible(false);
       } else {
@@ -112,7 +119,7 @@ export default function Perizinan({navigation}) {
       <StatusBar barStyle={'default'} backgroundColor={'transparent'} />
       <Background />
       <HeaderTransparent
-        title="Perizinan"
+        title="Perizinan Kecil"
         icon="arrow-left-circle-outline"
         onPress={() => navigation.goBack()}
       />
@@ -218,11 +225,7 @@ const styles = StyleSheet.create({
   loadingContainer: {
     alignItems: 'center',
     justifyContent: 'center',
-    position: 'absolute',
     flex: 1,
-    top: 400,
-    right: 50,
-    left: 50,
   },
   loadingText: {
     fontStyle: 'italic',

@@ -52,15 +52,14 @@ export default function Presensi({navigation}) {
           <MenuItemPresensi
             iconName="qrcode-scan"
             iconColor={COLORS.primary}
-            label="QR-COde"
-            onPress={() => navigation.navigate('PresenceFormulir')}
+            label="QR-Code"
+            onPress={() => navigation.navigate('CategoryPresence')}
           />
           <Gap height={17} />
           <MenuItemPresensi
             iconName="face-recognition"
             iconColor={COLORS.primary}
             label="Face Recognition"
-            onPress={() => navigation.navigate('PresenceFormulir')}
           />
         </View>
       </View>

@@ -4,6 +4,7 @@ import {
   CreateFormulirPerizinan,
   EditFormulirPerizinan,
 } from '../features/Perizinan';
+import CategoryPresence from '../features/PresenceEmployee/components/CategoryPresence';
 import {EditProfile} from '../features/Profile';
 import {
   AboutApplication,
@@ -15,10 +16,12 @@ import {
   NotificationFromCategory,
   OnBoarding,
   Perizinan,
-  PresenceFormulir,
+  PerizinanByCategory,
+  PerizinanLongTerm,
   Presensi,
   PrivasiSetting,
   Profile,
+  QrCodePresense,
   SignIn,
   SignUp,
   SplashScreen,
@@ -43,7 +46,7 @@ export default function Navigator() {
       <Stack.Screen name="SignIn" component={SignIn} />
       <Stack.Screen name="SignUp" component={SignUp} />
       <Stack.Screen name="Dasboard" component={DrawerNavigation} />
-      <Stack.Screen name="PresenceFormulir" component={PresenceFormulir} />
+      <Stack.Screen name="CategoryPresence" component={CategoryPresence} />
       <Stack.Screen name="Presensi" component={Presensi} />
       <Stack.Screen name="FaceScaanPresence" component={FaceScaanPresence} />
       <Stack.Screen name="Perizinan" component={Perizinan} />
@@ -67,6 +70,12 @@ export default function Navigator() {
         component={EditFormulirPerizinan}
       />
       <Stack.Screen name="NotificationDetail" component={NotificationDetail} />
+      <Stack.Screen name="QrCodePresense" component={QrCodePresense} />
+      <Stack.Screen
+        name="PerizinanByCategory"
+        component={PerizinanByCategory}
+      />
+      <Stack.Screen name="PerizinanLongTerm" component={PerizinanLongTerm} />
     </Stack.Navigator>
   );
 }

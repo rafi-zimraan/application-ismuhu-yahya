@@ -100,7 +100,7 @@ export default function Dashboard({navigation}) {
             iconSize={36}
             color={COLORS.white}
             backgroundColor={COLORS.goldenOrange}
-            onPress={() => navigation.navigate('Perizinan')}
+            onPress={() => navigation.navigate('PerizinanByCategory')}
           />
           <ButtonMenu
             title="Presensi"

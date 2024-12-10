@@ -17,8 +17,7 @@ import {
 import {useDispatch} from 'react-redux';
 import {Gap} from '../../Component';
 import {IMG_LOGIN} from '../../assets';
-import {ButtonAuth, FormInput} from '../../features/authentication';
-import {login} from '../../features/authentication/services/authApiSlice';
+import {ButtonAuth, FormInput, login} from '../../features/authentication';
 import {COLORS} from '../../utils';
 
 export default function SignIn({navigation}) {

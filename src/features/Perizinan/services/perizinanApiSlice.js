@@ -82,7 +82,7 @@ export const patchPerizinan = async (id, data) => {
     if (response.data?.status === true) {
       const message = response.data?.message;
       console.log(message);
-      return response.data; // Tambahkan return response.data di sini
+      return response.data;
     } else {
       throw new Error('Gagal edit perizinan');
     }
