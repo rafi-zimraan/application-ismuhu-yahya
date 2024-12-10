@@ -11,12 +11,23 @@ import {
   View,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {Background, Gap} from '../../Component';
+import {useDispatch} from 'react-redux';
+import {Background, Gap, ModalCustom} from '../../Component';
 import {IMG_PROFILE_FAKE} from '../../assets';
+import {logout} from '../../features/authentication';
 import {COLORS} from '../../utils';
 
 export default function Settings({navigation}) {
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
+  const [logoutModalVisible, setLogoutModalVisible] = useState(false);
+
+  const dispatch = useDispatch();
+
+  const handleLogout = async () => {
+    setLogoutModalVisible(false);
+    await logout(navigation, dispatch);
+    console.log('logout', logout);
+  };
 
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: COLORS.lightGray}}>
@@ -128,9 +139,7 @@ export default function Settings({navigation}) {
         <TouchableOpacity
           style={[styles.section, {backgroundColor: '#f66'}]}
           activeOpacity={0.8}
-          onPress={() => {
-            console.log('User logged out');
-          }}>
+          onPress={() => setLogoutModalVisible(true)}>
           <Icon name="logout" size={28} color={COLORS.white} />
           <View style={styles.sectionTextContainer}>
             <Text style={[styles.sectionTitle, {color: COLORS.white}]}>
@@ -139,9 +148,23 @@ export default function Settings({navigation}) {
           </View>
         </TouchableOpacity>
 
-        {/* Tambahkan padding bottom untuk memastikan elemen terakhir tidak tertutupi */}
         <Gap height={50} />
       </ScrollView>
+
+      {/* Modal untuk konfirmasi logout */}
+      <ModalCustom
+        visible={logoutModalVisible}
+        onRequestClose={() => setLogoutModalVisible(false)}
+        ColorIcon={COLORS.red}
+        title="Konfirmasi Logout"
+        BackgroundButtonAction={COLORS.red}
+        description="Apakah Anda yakin ingin keluar dari aplikasi?"
+        buttonSubmit={handleLogout}
+        buttonTitle="Keluar"
+        iconModalName="logout"
+        TextColorButton={COLORS.white}
+        backgroundColorStatusBar="rgba(0, 0, 0, 0.5)"
+      />
     </SafeAreaView>
   );
 }

@@ -130,7 +130,7 @@ export default function CreateFormulirPerizinan({navigation, route}) {
               value={divisionName}
               editable={false} // Non-editable
               placeholder="Masukkan ID Divisi"
-              placeholderTextColor={COLORS.black}
+              placeholderTextColor={COLORS.grey}
             />
             {loadingDivision && (
               <ActivityIndicator
@@ -149,7 +149,7 @@ export default function CreateFormulirPerizinan({navigation, route}) {
               value={departmentName}
               editable={false} // Non-editable
               placeholder="Masukkan ID Departemen"
-              placeholderTextColor={COLORS.black}
+              placeholderTextColor={COLORS.grey}
             />
             {loadingDepartment && (
               <ActivityIndicator
@@ -167,7 +167,7 @@ export default function CreateFormulirPerizinan({navigation, route}) {
             value={regarding}
             onChangeText={setRegarding}
             placeholder="Perihal (cuti, dinas, lainnya)"
-            placeholderTextColor={COLORS.black}
+            placeholderTextColor={COLORS.grey}
           />
 
           <Text style={styles.label}>Keperluan</Text>
@@ -176,7 +176,7 @@ export default function CreateFormulirPerizinan({navigation, route}) {
             value={necessity}
             onChangeText={setNecessity}
             placeholder="Masukkan keperluan"
-            placeholderTextColor={COLORS.black}
+            placeholderTextColor={COLORS.grey}
           />
 
           <Text style={styles.label}>Kategori</Text>
@@ -185,7 +185,7 @@ export default function CreateFormulirPerizinan({navigation, route}) {
             value={category}
             onChangeText={setCategory}
             placeholder="Kategori (cuti, dinas, keluar, dll)"
-            placeholderTextColor={COLORS.black}
+            placeholderTextColor={COLORS.grey}
           />
 
           {/* Tanggal Mulai */}
@@ -233,7 +233,7 @@ export default function CreateFormulirPerizinan({navigation, route}) {
             onChangeText={setTotDay}
             placeholder="Jumlah hari untuk izin"
             keyboardType="numeric"
-            placeholderTextColor={COLORS.black}
+            placeholderTextColor={COLORS.grey}
           />
 
           <View style={{marginTop: 20, alignItems: 'center'}}>

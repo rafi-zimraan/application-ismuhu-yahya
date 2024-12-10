@@ -1,6 +1,6 @@
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {useFocusEffect} from '@react-navigation/native';
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useState} from 'react';
 import {getAllNotifications} from '../features/Notification';
 import {Dashboard, Notification, Settings} from '../screens';
 import BottomTabBar from './BottomTabBar';
@@ -10,14 +10,11 @@ const Tab = createBottomTabNavigator();
 export default function BottomTabs({navigation}) {
   const [unreadCount, setUnreadCount] = useState(0);
 
-  // Fetch unread notifications count
+  // Fungsi untuk mendapatkan jumlah notifikasi yang belum dibaca
   const fetchUnreadCount = async () => {
     try {
       const response = await getAllNotifications();
-      console.log('Fetched Notifications:', response.data); // Debugging respons API
-
       if (response?.data) {
-        // Combine all notifications and filter unread items
         const lisences = Array.isArray(response.data.lisences)
           ? response.data.lisences
           : [];
@@ -36,23 +33,12 @@ export default function BottomTabs({navigation}) {
     }
   };
 
-  // Fetch unread count when component mounts
-  useEffect(() => {
-    const updateUnreadCount = async () => {
-      const count = await fetchUnreadCount();
-      console.log('Unread Notifications Count:', count); // Debugging jumlah notifikasi
-      setUnreadCount(count);
-    };
-
-    updateUnreadCount();
-  }, []);
-
-  // Update unread count when the Notification tab is focused
+  // Gunakan useFocusEffect untuk memperbarui jumlah badge saat layar fokus
   useFocusEffect(
     useCallback(() => {
       const updateUnreadCount = async () => {
         const count = await fetchUnreadCount();
-        setUnreadCount(count);
+        setUnreadCount(count); // Perbarui state
       };
 
       updateUnreadCount();

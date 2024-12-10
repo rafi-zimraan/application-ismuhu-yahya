@@ -77,6 +77,12 @@ export default function OnBoarding({navigation}) {
         </View>
       )}
 
+      {currentScreen === 0 && (
+        <View style={styles.centerTextContainer}>
+          <Text style={styles.simPondokText}>SimPondok</Text>
+        </View>
+      )}
+
       {screens[currentScreen].showImage && (
         <View style={styles.secondaryContent}>
           {/* Tombol Skip */}
@@ -155,6 +161,22 @@ export default function OnBoarding({navigation}) {
 }
 
 const styles = StyleSheet.create({
+  centerTextContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'absolute',
+    top: 300,
+    left: 10,
+    right: 10,
+  },
+  simPondokText: {
+    fontSize: 30,
+    fontWeight: '400',
+    color: COLORS.white,
+    textAlign: 'center',
+    fontStyle: 'italic',
+  },
   imgBoardingSecondry: {height: 250, width: '90%'},
   viewBodyTextOnboard: {
     alignItems: 'center',

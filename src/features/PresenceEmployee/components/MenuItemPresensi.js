@@ -16,7 +16,7 @@ export default function MenuItemPresensi({
       style={styles.contentMenu}
       onPress={onPress}>
       <View style={styles.bodyRequest}>
-        <Icon name={iconName} color={iconColor} size={26} />
+        <Icon name={iconName} color={iconColor} size={22} />
       </View>
       <Gap width={10} />
       <Text style={styles.label}>{label}</Text>

@@ -115,3 +115,48 @@ export const passwordRecovery = async email => {
     console.log('RECOVERY ERROR', error);
   }
 };
+
+// logout
+export const logout = async (navigation, dispatch) => {
+  try {
+    // Cek koneksi internet
+    const netInfo = await NetInfo.fetch();
+    if (!netInfo.isConnected) {
+      ToastAndroid.show('Tidak ada koneksi internet', ToastAndroid.SHORT);
+      return;
+    }
+
+    // Kirim request logout
+    const response = await api.post('/mobile/logout');
+    console.log('RESPONSE logout:', response.data);
+
+    // Cek jika logout berhasil
+    if (response.data.status === true) {
+      // Hapus data dari EncryptedStorage
+      await EncryptedStorage.removeItem('token');
+      await EncryptedStorage.removeItem('user_sesion');
+
+      // Reset state user session
+      dispatch(
+        setUserSession({
+          token: null,
+          name: null,
+          email: null,
+        }),
+      );
+
+      ToastAndroid.show('Berhasil logout', ToastAndroid.SHORT);
+      navigation.navigate('SignIn'); // Navigasi ke halaman login
+    } else {
+      const errorMessage =
+        response.data.message || 'Gagal logout, silakan coba lagi';
+      ToastAndroid.show(errorMessage, ToastAndroid.SHORT);
+    }
+  } catch (error) {
+    console.log('LOGOUT ERROR:', error.message);
+    ToastAndroid.show(
+      'Terjadi Kesalahan, silahkan coba lagi',
+      ToastAndroid.SHORT,
+    );
+  }
+};

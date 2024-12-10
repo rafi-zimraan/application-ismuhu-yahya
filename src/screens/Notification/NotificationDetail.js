@@ -10,7 +10,12 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import {Background, HeaderTransparent, ModalCustom} from '../../Component';
+import {
+  Background,
+  HeaderTransparent,
+  ModalCustom,
+  ModalLoading,
+} from '../../Component';
 import {updateApprovalStatus} from '../../features/Notification';
 import {COLORS} from '../../utils';
 
@@ -23,6 +28,7 @@ export default function NotificationDetail({route, navigation}) {
   const [successModalVisible, setSuccessModalVisible] = useState(false);
   const [loading, setLoading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
+  const [loadingModalVisible, setLoadingModalVisible] = useState(false);
 
   const fetchNotificationDetail = async () => {
     try {
@@ -60,6 +66,7 @@ export default function NotificationDetail({route, navigation}) {
   const confirmApproval = async status => {
     try {
       setModalVisible(false);
+      setLoadingModalVisible(true); // Tampilkan ModalLoading
       const approvalStatus = status === 'approve' ? 1 : 0;
 
       const response = await updateApprovalStatus(
@@ -87,6 +94,8 @@ export default function NotificationDetail({route, navigation}) {
           'Terjadi kesalahan saat memperbarui status approval.',
       });
       setModalVisible(true);
+    } finally {
+      setLoadingModalVisible(false);
     }
   };
 
@@ -201,6 +210,12 @@ export default function NotificationDetail({route, navigation}) {
           navigation.goBack();
         }}
         buttonTitle="Kembali"
+      />
+
+      {/* Loading Modal */}
+      <ModalLoading
+        visible={loadingModalVisible}
+        onRequestClose={() => setLoadingModalVisible(false)}
       />
     </View>
   );

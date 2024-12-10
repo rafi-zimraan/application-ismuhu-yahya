@@ -46,13 +46,20 @@ export default function Presensi({navigation}) {
         <View style={styles.viewMenu}>
           <Text style={styles.txtMenu}>Menu Presensi</Text>
           <Text style={styles.txtDesPresensi}>
-            Silahkan Memilih Presensi yang ingin di gunakan
+            Silahkan memilih presensi yang ingin di gunakan
           </Text>
           <Gap height={17} />
           <MenuItemPresensi
-            iconName="calendar-check-outline"
+            iconName="qrcode-scan"
             iconColor={COLORS.primary}
-            label="Presensi Now"
+            label="QR-COde"
+            onPress={() => navigation.navigate('PresenceFormulir')}
+          />
+          <Gap height={17} />
+          <MenuItemPresensi
+            iconName="face-recognition"
+            iconColor={COLORS.primary}
+            label="Face Recognition"
             onPress={() => navigation.navigate('PresenceFormulir')}
           />
         </View>
@@ -64,16 +71,18 @@ export default function Presensi({navigation}) {
 const styles = StyleSheet.create({
   txtDesPresensi: {
     color: COLORS.grey,
-    fontSize: 17,
+    fontSize: 14,
+    fontWeight: '400',
   },
   viewMenu: {
     marginTop: 15,
     padding: 15,
   },
   viewButtonMenuPresensi: {
-    backgroundColor: COLORS.blue,
+    backgroundColor: COLORS.white,
     borderTopLeftRadius: 45,
     borderTopEndRadius: 45,
+    borderWidth: 0.3,
     flex: 1,
   },
   row: {
@@ -82,7 +91,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   txtMenu: {
-    fontSize: 20,
+    fontSize: 23,
     color: COLORS.black,
     fontWeight: '600',
   },

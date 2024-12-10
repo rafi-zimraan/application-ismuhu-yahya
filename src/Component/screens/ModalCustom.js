@@ -30,6 +30,9 @@ export default function ModalCustom({
   buttonDisable,
   buttonLoading,
   buttonTitle = 'Confirm',
+  ColorIcon = COLORS.greenBoy,
+  BackgroundButtonAction = COLORS.primary,
+  TextColorButton = COLORS.black,
 }) {
   return (
     <Modal
@@ -50,7 +53,7 @@ export default function ModalCustom({
           {showHeader && (
             <>
               <View style={styles.headerContainer}>
-                <Icon name={iconModalName} size={45} color={COLORS.greenBoy} />
+                <Icon name={iconModalName} size={45} color={ColorIcon} />
                 <TouchableOpacity onPress={onRequestClose}>
                   <Icon name="close-circle-outline" size={25} color={'black'} />
                 </TouchableOpacity>
@@ -65,11 +68,17 @@ export default function ModalCustom({
             useForeground
             onPress={buttonSubmit}
             disabled={buttonDisable}>
-            <View style={styles.buttonAction}>
+            <View
+              style={{
+                ...styles.buttonAction,
+                backgroundColor: BackgroundButtonAction,
+              }}>
               {buttonLoading ? (
                 <ActivityIndicator color={'black'} />
               ) : (
-                <Text style={styles.buttonText}>{buttonTitle}</Text>
+                <Text style={{...styles.buttonText, color: TextColorButton}}>
+                  {buttonTitle}
+                </Text>
               )}
             </View>
           </TouchableNativeFeedback>
@@ -88,7 +97,6 @@ const styles = StyleSheet.create({
   },
   buttonAction: {
     overflow: 'hidden',
-    backgroundColor: COLORS.primary,
     width: '100%',
     maxWidth: 200,
     height: 45,
@@ -100,7 +108,6 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   buttonText: {
-    color: COLORS.black,
     fontWeight: 'bold',
   },
   headerContainer: {
@@ -115,7 +122,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   description: {
-    color: COLORS.red,
+    color: COLORS.grey,
     fontSize: 14,
     marginTop: 5,
     maxWidth: 280,
