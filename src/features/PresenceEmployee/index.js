@@ -1,5 +1,7 @@
+import AbsenceView from './components/AbsenceView';
 import CameraPresence from './components/CameraPresensce';
-import CategoryPresence from './components/CategoryPresence';
+import ItemPerizinanAdmin from './components/ItemPerizinanAdmin';
+import ItemQrCodePresence from './components/ItemQrCodePresence';
 import MenuItemPresensi from './components/MenuItemPresensi';
 import ModalPermission from './components/ModalPermission';
 import ModalSucces from './components/ModalSucces';
@@ -13,9 +15,11 @@ export {
   ModalSucces,
   StatusPresensi,
   MenuItemPresensi,
-  CategoryPresence,
+  ItemQrCodePresence,
   ModalPermission,
   CameraPresence,
+  ItemPerizinanAdmin,
+  AbsenceView,
 };
 // presence api
 export {createFinger, fingerPresence};

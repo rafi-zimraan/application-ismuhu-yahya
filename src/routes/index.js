@@ -4,7 +4,8 @@ import {
   CreateFormulirPerizinan,
   EditFormulirPerizinan,
 } from '../features/Perizinan';
-import CategoryPresence from '../features/PresenceEmployee/components/CategoryPresence';
+
+import {ItemQrCodePresence} from '../features/PresenceEmployee';
 import {EditProfile} from '../features/Profile';
 import {
   AboutApplication,
@@ -46,7 +47,7 @@ export default function Navigator() {
       <Stack.Screen name="SignIn" component={SignIn} />
       <Stack.Screen name="SignUp" component={SignUp} />
       <Stack.Screen name="Dasboard" component={DrawerNavigation} />
-      <Stack.Screen name="CategoryPresence" component={CategoryPresence} />
+      <Stack.Screen name="ItemQrCodePresence" component={ItemQrCodePresence} />
       <Stack.Screen name="Presensi" component={Presensi} />
       <Stack.Screen name="FaceScaanPresence" component={FaceScaanPresence} />
       <Stack.Screen name="Perizinan" component={Perizinan} />

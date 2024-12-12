@@ -4,10 +4,8 @@ import IMG_BG_GREEN_WAVE from '../assets/background/green-white-wave.jpg';
 import IMG_YELLOWWISH_FRIST from '../assets/background/yellowish-1.png';
 import IMG_YELLOWWISH from '../assets/background/yellowish.png';
 import BG_APPLICATION from '../assets/backgroundApp.png';
+import ICON_ILUSTRATION_SCAAN_QR_CODE from '../assets/icons/IlustrationsScannQr-Code.png';
 import ICON_PRESENCE from '../assets/icons/presence-icon.png';
-import ICON_PRESENCE_IN from '../assets/icons/presence-in.png';
-import ICON_PRESENCE_OUT from '../assets/icons/presence-out.png';
-import ICON_PRESENCE_RANDOM from '../assets/icons/presence-random.png';
 import ICON_YAUMI from '../assets/icons/yaumi.png';
 import IMG_NEWS from '../assets/images/IMGNEWS.png';
 import IMG_PROFILE_FAKE from '../assets/images/ImageFake.png';
@@ -47,9 +45,7 @@ export {
   IMG_PONDOK_DIGITAL_WHITE,
   IMG_PONDOK_DIGITAL,
   ICON_PRESENCE,
-  ICON_PRESENCE_IN,
   ICON_YAUMI,
-  ICON_PRESENCE_OUT,
-  ICON_PRESENCE_RANDOM,
+  ICON_ILUSTRATION_SCAAN_QR_CODE,
   BG_APPLICATION,
 };

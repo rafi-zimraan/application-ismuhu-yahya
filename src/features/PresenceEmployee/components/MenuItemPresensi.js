@@ -12,6 +12,7 @@ export default function MenuItemPresensi({
 }) {
   return (
     <TouchableOpacity
+      useForeground
       activeOpacity={0.7}
       style={styles.contentMenu}
       onPress={onPress}>
@@ -28,7 +29,7 @@ const styles = {
   contentMenu: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: COLORS.white,
+    backgroundColor: COLORS.ripple,
     elevation: 5,
     height: 69,
     borderRadius: 10,

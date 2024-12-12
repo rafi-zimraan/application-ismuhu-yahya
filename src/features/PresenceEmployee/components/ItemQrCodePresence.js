@@ -20,7 +20,7 @@ import {COLORS} from '../../../utils';
 
 const {width, height} = Dimensions.get('window');
 
-export default function CategoryPresence({navigation}) {
+export default function ItemQrCodePresence({navigation}) {
   const [selectedStatus, setSelectedStatus] = useState('');
   const [showAlert, setShowAlert] = useState(false);
 
