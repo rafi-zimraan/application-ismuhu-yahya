@@ -4,6 +4,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 // import {COLORS} from '../../../utils';
 import {Gap} from '../../../Component';
 import {COLORS} from '../../../utils';
+import {DIMENS} from '../../../utils/dimens';
 
 const AbsenceView = ({navigation}) => {
   return (
@@ -22,21 +23,22 @@ const AbsenceView = ({navigation}) => {
       <Gap height={10} />
       <View style={styles.BottomMenuPresensi}>
         <TouchableOpacity
+          activeOpacity={0.7}
           style={styles.qrButton}
-          onPress={() => navigation.navigate('QRCodeScanner')}>
+          onPress={() => navigation.navigate('QrCodeAdmin')}>
           <View style={styles.qrButtonBackground}>
             <Icon name="qrcode" size={32} color="white" />
             <Text style={styles.qrButtonText}>QR Code</Text>
           </View>
         </TouchableOpacity>
-        <TouchableOpacity
+        {/* <TouchableOpacity
           style={styles.faceButton}
           onPress={() => navigation.navigate('FaceRecognitionAbsence')}>
           <View style={styles.faceButtonBackground}>
             <Icon name="camera" size={32} color="white" />
             <Text style={styles.faceButtonText}>Absensi Wajah</Text>
           </View>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
     </View>
   );
@@ -49,11 +51,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#fbe9e7',
     borderTopLeftRadius: 45,
     borderTopRightRadius: 45,
+    borderWidth: 0.3,
     elevation: 5,
-    paddingTop: 20,
+    padding: 20,
   },
   title: {
-    fontSize: 20,
+    fontSize: DIMENS.xxl,
     fontWeight: 'bold',
     marginBottom: 20,
     color: COLORS.black,
@@ -68,7 +71,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#d3e3e8',
   },
   infoText: {
-    fontSize: 14,
+    fontSize: DIMENS.m,
     color: COLORS.black,
     marginLeft: 10,
     textAlign: 'center',
@@ -92,7 +95,7 @@ const styles = StyleSheet.create({
   },
   qrButtonText: {
     color: 'white',
-    fontSize: 16,
+    fontSize: DIMENS.l,
     marginLeft: 10,
     fontWeight: 'bold',
   },
@@ -110,7 +113,7 @@ const styles = StyleSheet.create({
   },
   faceButtonText: {
     color: 'white',
-    fontSize: 16,
+    fontSize: DIMENS.l,
     marginLeft: 10,
     fontWeight: 'bold',
   },

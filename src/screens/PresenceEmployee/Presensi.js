@@ -1,131 +1,8 @@
-// import React from 'react';
-// import {Image, StatusBar, StyleSheet, Text, View} from 'react-native';
-// import {useSelector} from 'react-redux';
-// import {Background, Gap, HeaderTransparent} from '../../Component';
-// import {IMG_BANNER_MASJID} from '../../assets';
-// import {
-//   MenuItemPresensi,
-//   StatusPresensi,
-// } from '../../features/PresenceEmployee';
-// import {COLORS} from '../../utils';
-
-// export default function Presensi({navigation}) {
-//   const permissions = useSelector(state => state.auth.permissions);
-//   console.log('data redux', permissions);
-
-//   const hasAdminPermission =
-//     permissions.includes('admin_kode_q_r') &&
-//     permissions.includes('admin_scan_wajah');
-
-//   console.log('hasAdminPermission', hasAdminPermission);
-
-//   return (
-//     <View style={{flex: 1}}>
-//       <StatusBar barStyle={'default'} backgroundColor={'transparent'} />
-//       <Background />
-//       <HeaderTransparent
-//         title="Presensi"
-//         icon="arrow-left-circle-outline"
-//         onPress={() => navigation.goBack()}
-//       />
-//       <View style={styles.content}>
-//         <Image source={IMG_BANNER_MASJID} style={styles.imgBannerMasjid} />
-//       </View>
-//       <Gap height={15} />
-//       <View style={styles.body}>
-//         <Text style={styles.txtSkor}>Jumlah total presensi</Text>
-//         <Gap height={17} />
-
-//         {/* Row 1 */}
-//         <View style={styles.row}>
-//           <StatusPresensi
-//             iconColor="green"
-//             iconName="checkbox-marked-circle-outline"
-//             label="0 Terlambat"
-//           />
-//           <StatusPresensi
-//             iconColor="blue"
-//             iconName="clock-outline"
-//             label=" 0 Alfa"
-//           />
-//         </View>
-//       </View>
-
-//       {/* Menu */}
-//       <View style={styles.viewButtonMenuPresensi}>
-//         <View style={styles.viewMenu}>
-//           <Text style={styles.txtMenu}>Menu Presensi</Text>
-//           <Text style={styles.txtDesPresensi}>
-//             Silahkan memilih presensi yang ingin di gunakan
-//           </Text>
-//           <Gap height={17} />
-//           <MenuItemPresensi
-//             iconName="qrcode-scan"
-//             iconColor={COLORS.primary}
-//             label="QR-Code"
-//             onPress={() => navigation.navigate('ItemQrCodePresence')}
-//           />
-//           <Gap height={17} />
-//           <MenuItemPresensi
-//             iconName="face-recognition"
-//             iconColor={COLORS.primary}
-//             label="Face Recognition"
-//           />
-//         </View>
-//       </View>
-//     </View>
-//   );
-// }
-
-// const styles = StyleSheet.create({
-//   txtDesPresensi: {
-//     color: COLORS.grey,
-//     fontSize: 14,
-//     fontWeight: '400',
-//   },
-//   viewMenu: {
-//     marginTop: 15,
-//     padding: 15,
-//   },
-//   viewButtonMenuPresensi: {
-//     backgroundColor: COLORS.white,
-//     borderTopLeftRadius: 45,
-//     borderTopEndRadius: 45,
-//     borderWidth: 0.3,
-//     flex: 1,
-//   },
-//   row: {
-//     flexDirection: 'row',
-//     justifyContent: 'space-evenly',
-//     marginBottom: 10,
-//   },
-//   txtMenu: {
-//     fontSize: 23,
-//     color: COLORS.black,
-//     fontWeight: '600',
-//   },
-//   body: {
-//     padding: 15,
-//   },
-//   txtSkor: {
-//     fontSize: 20,
-//     fontWeight: '600',
-//     color: COLORS.black,
-//   },
-//   imgBannerMasjid: {
-//     height: 170,
-//     width: '90%',
-//     borderRadius: 15,
-//   },
-//   content: {
-//     justifyContent: 'center',
-//     alignItems: 'center',
-//   },
-// });
-
-import React, {useEffect} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {
   Image,
+  RefreshControl,
+  ScrollView,
   StatusBar,
   StyleSheet,
   Text,
@@ -135,8 +12,8 @@ import {
 import EncryptedStorage from 'react-native-encrypted-storage';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useDispatch, useSelector} from 'react-redux';
-import {Background, Gap, HeaderTransparent} from '../../Component';
-import {IMG_BANNER_MASJID} from '../../assets';
+import {Gap, HeaderTransparent} from '../../Component';
+import {ICON_DASBOARD_PERIZINAN} from '../../assets';
 import {
   AbsenceView,
   ItemPerizinanAdmin,
@@ -145,10 +22,11 @@ import {
 } from '../../features/PresenceEmployee';
 import {setUserSession} from '../../features/authentication';
 import {COLORS} from '../../utils';
+import {DIMENS} from '../../utils/dimens';
 
 export default function Perizinan({navigation}) {
+  const [refreshing, setRefreshing] = useState(false); // State untuk RefreshControl
   const permissions = useSelector(state => state.auth.permissions);
-  console.log('data redux permission', permissions);
   const dispatch = useDispatch();
 
   // Pulihkan permissions dari EncryptedStorage saat komponen dimuat
@@ -193,95 +71,125 @@ export default function Perizinan({navigation}) {
     }
   }, [permissions]);
 
+  // Logika refresh
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    const reloadPermissions = async () => {
+      try {
+        const savedPermissions = await EncryptedStorage.getItem('permissions');
+        if (savedPermissions) {
+          const parsedPermissions = JSON.parse(savedPermissions);
+          console.log('Permissions refreshed:', parsedPermissions);
+          dispatch(setUserSession({permissions: parsedPermissions}));
+        }
+      } catch (error) {
+        console.log('Error refreshing permissions:', error);
+      } finally {
+        setRefreshing(false); // Hentikan animasi penyegaran
+      }
+    };
+
+    reloadPermissions();
+  }, [dispatch]);
+
   // Validasi permissions
   const hasAdminPermissions =
-    permissions.includes('admin_kode_q_r') &&
+    permissions.includes('admin_qr_code') &&
     permissions.includes('admin_scan_wajah');
 
-  if (hasAdminPermissions) {
-    return (
-      <View style={styles.container}>
-        <StatusBar barStyle={'default'} backgroundColor={'transparent'} />
-        <View style={styles.headerWrapper}>
-          <HeaderTransparent
-            title="Absensi"
-            icon="arrow-left-circle-outline"
-            onPress={() => navigation.goBack()}
-            rightIcon="information-outline"
-          />
-          <View style={styles.additionalIconWrapper}>
-            <TouchableOpacity
-              onPress={() => navigation.navigate('FaceRecognitionRegistration')}
-              style={styles.additionalIconButton}>
-              <Icon name="face-recognition" size={17} color="white" />
-            </TouchableOpacity>
-            <Text style={styles.additionalIconText}>Daftar</Text>
+  return (
+    <ScrollView
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+      }
+      contentContainerStyle={{flexGrow: 1}}>
+      <StatusBar barStyle={'default'} backgroundColor={'transparent'} />
+      {hasAdminPermissions ? (
+        <View style={styles.container}>
+          <View style={styles.headerWrapper}>
+            <HeaderTransparent
+              title="Absensi"
+              icon="arrow-left-circle-outline"
+              onPress={() => navigation.goBack()}
+              rightIcon="information-outline"
+            />
+            <View style={styles.additionalIconWrapper}>
+              <TouchableOpacity
+                onPress={() =>
+                  navigation.navigate('FaceRecognitionRegistration')
+                }
+                style={styles.additionalIconButton}>
+                <Icon name="face-recognition" size={17} color="white" />
+              </TouchableOpacity>
+              <Text style={styles.additionalIconText}>Daftar</Text>
+            </View>
+          </View>
+          <ItemPerizinanAdmin />
+          <AbsenceView navigation={navigation} />
+        </View>
+      ) : (
+        <View style={{flex: 1}}>
+          <View style={styles.headerWrapper}>
+            <HeaderTransparent
+              title="Presensi"
+              icon="arrow-left-circle-outline"
+              onPress={() => navigation.goBack()}
+            />
+          </View>
+          <View style={styles.content}>
+            <Gap height={15} />
+            <Image
+              source={ICON_DASBOARD_PERIZINAN}
+              style={styles.imgBannerMasjid}
+            />
+          </View>
+          <Gap height={5} />
+          <View style={styles.body}>
+            <Text style={styles.txtSkor}>Jumlah total presensi</Text>
+            <Gap height={17} />
+
+            {/* Row 1 */}
+            <View style={styles.row}>
+              <StatusPresensi
+                iconColor="green"
+                iconName="checkbox-marked-circle-outline"
+                label="0 Terlambat"
+              />
+              <StatusPresensi
+                iconColor="blue"
+                iconName="clock-outline"
+                label=" 0 Alfa"
+              />
+            </View>
+          </View>
+          {/* Menu */}
+          <View style={styles.viewButtonMenuPresensi}>
+            <Gap height={5} />
+            <View style={styles.viewMenu}>
+              <Text style={styles.txtMenu}>Menu Presensi</Text>
+              <Text style={styles.txtDesPresensi}>
+                Silahkan memilih presensi yang ingin di gunakan
+              </Text>
+              <Gap height={24} />
+              <MenuItemPresensi
+                iconName="qrcode-scan"
+                iconColor={COLORS.primary}
+                label="Scanner QR-Code"
+                onPress={() =>
+                  navigation.navigate('ScannerQrCodeByCategoryAbsensi')
+                }
+              />
+              <Gap height={25} />
+              <MenuItemPresensi
+                iconName="face-recognition"
+                iconColor={COLORS.primary}
+                label="Face Recognition"
+              />
+            </View>
           </View>
         </View>
-        {/* Dashboard Section */}
-        <ItemPerizinanAdmin />
-
-        {/* Absence Menu Section */}
-        <AbsenceView navigation={navigation} />
-      </View>
-    );
-  }
-
-  // Jika tidak memiliki izin admin
-  return (
-    <View style={{flex: 1}}>
-      <StatusBar barStyle={'default'} backgroundColor={'transparent'} />
-      <Background />
-      <HeaderTransparent
-        title="Presensi"
-        icon="arrow-left-circle-outline"
-        onPress={() => navigation.goBack()}
-      />
-      <View style={styles.content}>
-        <Image source={IMG_BANNER_MASJID} style={styles.imgBannerMasjid} />
-      </View>
-      <Gap height={15} />
-      <View style={styles.body}>
-        <Text style={styles.txtSkor}>Jumlah total presensi</Text>
-        <Gap height={17} />
-
-        {/* Row 1 */}
-        <View style={styles.row}>
-          <StatusPresensi
-            iconColor="green"
-            iconName="checkbox-marked-circle-outline"
-            label="0 Terlambat"
-          />
-          <StatusPresensi
-            iconColor="blue"
-            iconName="clock-outline"
-            label=" 0 Alfa"
-          />
-        </View>
-      </View>
-      {/* Menu */}
-      <View style={styles.viewButtonMenuPresensi}>
-        <View style={styles.viewMenu}>
-          <Text style={styles.txtMenu}>Menu Presensi</Text>
-          <Text style={styles.txtDesPresensi}>
-            Silahkan memilih presensi yang ingin di gunakan
-          </Text>
-          <Gap height={17} />
-          <MenuItemPresensi
-            iconName="qrcode-scan"
-            iconColor={COLORS.primary}
-            label="QR-Code"
-            onPress={() => navigation.navigate('ItemQrCodePresence')}
-          />
-          <Gap height={25} />
-          <MenuItemPresensi
-            iconName="face-recognition"
-            iconColor={COLORS.primary}
-            label="Face Recognition"
-          />
-        </View>
-      </View>
-    </View>
+      )}
+    </ScrollView>
   );
 }
 
@@ -301,7 +209,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
   },
   additionalIconText: {
-    fontSize: 12,
+    fontSize: DIMENS.s,
     color: COLORS.black,
     textAlign: 'center',
     position: 'absolute',
@@ -318,7 +226,7 @@ const styles = StyleSheet.create({
   },
   txtDesPresensi: {
     color: COLORS.grey,
-    fontSize: 14,
+    fontSize: DIMENS.m,
     fontWeight: '400',
   },
   viewMenu: {
@@ -326,10 +234,9 @@ const styles = StyleSheet.create({
     padding: 15,
   },
   viewButtonMenuPresensi: {
-    backgroundColor: COLORS.white,
+    backgroundColor: '#fbe9e7',
     borderTopLeftRadius: 45,
     borderTopEndRadius: 45,
-    borderWidth: 0.3,
     flex: 1,
   },
   row: {
@@ -338,7 +245,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   txtMenu: {
-    fontSize: 23,
+    fontSize: DIMENS.xxxl,
     color: COLORS.black,
     fontWeight: '600',
   },
@@ -346,13 +253,13 @@ const styles = StyleSheet.create({
     padding: 15,
   },
   txtSkor: {
-    fontSize: 20,
+    fontSize: DIMENS.xxl,
     fontWeight: '600',
     color: COLORS.black,
   },
   imgBannerMasjid: {
     height: 170,
-    width: '90%',
+    width: '78%',
     borderRadius: 15,
   },
   content: {

@@ -3,36 +3,30 @@ import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {Gap, Line} from '../../../Component';
 import {COLORS} from '../../../utils';
+import {DIMENS} from '../../../utils/dimens';
 
 const HistoryItem = ({item, onEditPress, onDeletePress}) => {
   const calculateDuration = (start, end) => {
-    // Pastikan waktu tersedia
     if (!start || !end) return '0 Jam 0 Menit';
 
-    // Pisahkan waktu menjadi jam, menit, dan detik
     const [startHours, startMinutes, startSeconds] = start
       .split(':')
       .map(Number);
     const [endHours, endMinutes, endSeconds] = end.split(':').map(Number);
 
-    // Konversi ke total menit dari awal hari
     const startTotalMinutes =
       startHours * 60 + startMinutes + (startSeconds || 0) / 60;
     const endTotalMinutes = endHours * 60 + endMinutes + (endSeconds || 0) / 60;
 
-    // Hitung selisih waktu dalam menit
     let diffMinutes = endTotalMinutes - startTotalMinutes;
 
-    // Jika negatif (lintas hari), tambahkan 24 jam
     if (diffMinutes < 0) {
-      diffMinutes += 24 * 60; // 24 jam dikonversi ke menit
+      diffMinutes += 24 * 60;
     }
 
-    // Konversi ke jam dan menit
     const hours = Math.floor(diffMinutes / 60);
     const minutes = Math.floor(diffMinutes % 60);
 
-    // Kembalikan hasil
     return `${hours} Jam ${minutes} Menit`;
   };
 
@@ -133,7 +127,7 @@ const styles = StyleSheet.create({
     width: 90,
   },
   timeButtonText: {
-    fontSize: 13,
+    fontSize: DIMENS.m,
     color: COLORS.white,
     textAlign: 'center',
   },
@@ -142,19 +136,19 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   label: {
-    fontSize: 16,
+    fontSize: DIMENS.l,
     fontWeight: '400',
     color: COLORS.black,
     width: 100,
   },
   value: {
-    fontSize: 16,
+    fontSize: DIMENS.l,
     fontWeight: '400',
     color: COLORS.black,
     maxWidth: 205,
   },
   date: {
-    fontSize: 12,
+    fontSize: DIMENS.s,
     color: COLORS.black,
     fontWeight: '500',
   },

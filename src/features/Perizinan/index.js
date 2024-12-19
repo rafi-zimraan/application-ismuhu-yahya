@@ -1,4 +1,5 @@
 import CreateFormulirPerizinan from './components/CreateFormulirPerizinan';
+import CreateFormulirPerizinanExit from './components/CreateFormulirPerizinanExit';
 import EditFormulirPerizinan from './components/EditFormulirPerizinan';
 import {
   addPerizinan,
@@ -8,6 +9,10 @@ import {
 } from './services/perizinanApiSlice';
 
 // component
-export {CreateFormulirPerizinan, EditFormulirPerizinan};
+export {
+  CreateFormulirPerizinan,
+  EditFormulirPerizinan,
+  CreateFormulirPerizinanExit,
+};
 // slice
 export {getAllPerizinan, deleteDataPerizinan, patchPerizinan, addPerizinan};

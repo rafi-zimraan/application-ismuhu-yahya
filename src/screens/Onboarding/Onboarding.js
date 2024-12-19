@@ -77,12 +77,6 @@ export default function OnBoarding({navigation}) {
         </View>
       )}
 
-      {currentScreen === 0 && (
-        <View style={styles.centerTextContainer}>
-          <Text style={styles.simPondokText}>SimPondok</Text>
-        </View>
-      )}
-
       {screens[currentScreen].showImage && (
         <View style={styles.secondaryContent}>
           {/* Tombol Skip */}
@@ -95,7 +89,7 @@ export default function OnBoarding({navigation}) {
             </TouchableOpacity>
           )}
 
-          <Gap height={45} />
+          {/* <Gap height={35} /> */}
           {currentScreen === 1 ? (
             <Image
               source={IMG_ONBOARDING_SECONDRY}
@@ -161,27 +155,14 @@ export default function OnBoarding({navigation}) {
 }
 
 const styles = StyleSheet.create({
-  centerTextContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    position: 'absolute',
-    top: 300,
-    left: 10,
-    right: 10,
+  imgBoardingSecondry: {
+    height: 330,
+    width: 330,
   },
-  simPondokText: {
-    fontSize: 30,
-    fontWeight: '400',
-    color: COLORS.white,
-    textAlign: 'center',
-    fontStyle: 'italic',
-  },
-  imgBoardingSecondry: {height: 250, width: '90%'},
   viewBodyTextOnboard: {
     alignItems: 'center',
     justifyContent: 'center',
-    top: 128,
+    top: 60,
     padding: 15,
   },
   txtDesScreenSecondry: {

@@ -1,9 +1,15 @@
 import React, {useEffect, useState} from 'react';
-import {ActivityIndicator, Image, StyleSheet, View} from 'react-native';
+import {
+  ActivityIndicator,
+  Image,
+  SafeAreaView,
+  StatusBar,
+  StyleSheet,
+  View,
+} from 'react-native';
 import EncryptedStorage from 'react-native-encrypted-storage';
-import LinearGradient from 'react-native-linear-gradient';
-import {AppVersion, Gap} from '../../Component';
-import {IMG_ISMUHUYAHYA_POTRAIT} from '../../assets';
+import {AppVersion} from '../../Component';
+import {ICON_SPLASS} from '../../assets';
 import {COLORS} from '../../utils';
 
 export default function SplashScreen({navigation}) {
@@ -35,33 +41,27 @@ export default function SplashScreen({navigation}) {
   }, [navigation]);
 
   return (
-    // <ImageBackground
-    //   source={IMG_YELLOWWISH_FRIST}
-    //   style={styles.background}
-    //   resizeMode="cover">
-    // </ImageBackground>
-
-    <LinearGradient colors={['#FFFFFF', '#F8F8F8']} style={styles.background}>
+    <SafeAreaView style={styles.background}>
+      <StatusBar barStyle={'dark-content'} backgroundColor={'transparent'} />
       <View style={styles.container}>
-        <Image source={IMG_ISMUHUYAHYA_POTRAIT} style={styles.img} />
-        <Gap height={25} />
-        <ActivityIndicator
-          size={'large'}
-          animating={loading}
-          color={COLORS.gold}
-        />
+        <Image source={ICON_SPLASS} style={styles.img} />
+        <View style={{bottom: 100}}>
+          <ActivityIndicator
+            size={'large'}
+            animating={true}
+            color={COLORS.gold}
+          />
+        </View>
       </View>
       <AppVersion />
-    </LinearGradient>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   background: {
     flex: 1,
-    width: '100%',
-    height: '100%',
-    backgroundColor: '#F5F5F5',
+    backgroundColor: COLORS.white,
   },
   container: {
     flex: 1,
@@ -69,7 +69,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   img: {
-    width: 380,
-    height: 260,
+    top: 60,
+    width: '100%',
+    height: '56%',
   },
 });

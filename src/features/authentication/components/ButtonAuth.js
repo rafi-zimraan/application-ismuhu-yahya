@@ -7,6 +7,7 @@ import {
   View,
 } from 'react-native';
 import {COLORS} from '../../../utils';
+import {DIMENS} from '../../../utils/dimens';
 
 export default function ButtonAuth({
   onPress,
@@ -55,7 +56,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     textAlignVertical: 'center',
     fontWeight: 'bold',
-    fontSize: 17,
+    fontSize: DIMENS.l,
     textShadowRadius: 5,
     textShadowOffset: {
       height: 1,

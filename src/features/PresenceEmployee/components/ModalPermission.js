@@ -16,7 +16,6 @@ import {COLORS} from '../../../utils';
 export default function ModalPermission() {
   const navigation = useNavigation();
   const {hasPermission, requestPermission} = useCameraPermission();
-
   const [permissionStatus, setPermissionStatus] = useState('checking');
 
   const modalMessage =

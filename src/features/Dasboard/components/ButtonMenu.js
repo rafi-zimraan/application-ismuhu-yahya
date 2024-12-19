@@ -15,7 +15,7 @@ export default function ButtonMenu({
   iconSize,
   title,
   image,
-  color = COLORS.gold,
+  color = COLORS.white,
   backgroundColor = '#FFF',
 }) {
   return (

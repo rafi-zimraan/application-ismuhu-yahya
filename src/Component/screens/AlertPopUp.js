@@ -54,20 +54,6 @@ export default function AlertPopUp({
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  input: {
-    width: '80%',
-    fontSize: 18,
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    marginBottom: 10,
-  },
   alert: {
     position: 'absolute',
     top: 0,
@@ -76,8 +62,8 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   msg: {
-    margin: 10,
-    marginHorizontal: 20,
+    textAlign: 'center',
+    bottom: 15,
     color: '#fff',
   },
 });

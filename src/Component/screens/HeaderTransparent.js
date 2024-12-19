@@ -7,6 +7,7 @@ import {
   View,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import {DIMENS} from '../../utils/dimens';
 
 export default function HeaderTransparent({
   title = '',
@@ -36,7 +37,7 @@ export default function HeaderTransparent({
 
 const styles = StyleSheet.create({
   text: {
-    fontSize: 20,
+    fontSize: DIMENS.xxl,
     color: 'black',
     fontWeight: '500',
   },
@@ -47,7 +48,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   view: {
-    // height: 50,
     alignItems: 'center',
     flexDirection: 'row',
     marginTop: StatusBar.currentHeight,

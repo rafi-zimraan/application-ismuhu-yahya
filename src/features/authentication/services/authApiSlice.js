@@ -14,7 +14,6 @@ export const login = async (data, navigation, dispatch) => {
       return;
     }
 
-    console.log('DATA YANG DIKIRIM:', data);
     const response = await api.post('/mobile/login', data);
     console.log('RESPONSE login:', response.data);
 
@@ -27,32 +26,44 @@ export const login = async (data, navigation, dispatch) => {
     }
 
     const token = response.data?.token;
+    const id = response.data?.id;
     const responseData = response.data;
-    // console.log('Data login user', responseData);
 
-    if (token && responseData.name && responseData.email) {
+    if (token && id && responseData.name && responseData.email) {
       dispatch(
         setUserSession({
           token: token,
+          id: id,
           name: responseData.name,
           email: responseData.email,
-          ...responseData, // save all data to state
+          ...responseData,
         }),
       );
 
       // Save data to EncryptedStorage
       await EncryptedStorage.setItem('token', JSON.stringify(token));
+      await EncryptedStorage.setItem('idUser', JSON.stringify(id));
       await EncryptedStorage.setItem(
         'user_sesion',
         JSON.stringify(responseData),
       );
+      // Simpan url_photo jika tersedia
+      if (responseData.url_photo) {
+        await EncryptedStorage.setItem(
+          'url_photo',
+          responseData.url_photo, // Simpan langsung URL
+        );
+      } else {
+        // Jika tidak ada `url_photo`, hapus dari EncryptedStorage jika sebelumnya ada
+        await EncryptedStorage.removeItem('url_photo');
+      }
 
       // successfuly load data
       ToastAndroid.show(
         `Selamat Datang ${responseData.name}`,
         ToastAndroid.SHORT,
       );
-      navigation.navigate('Dasboard');
+      navigation.replace('Dasboard');
     } else {
       throw new Error('Token atau user tidak ditemukan');
     }
@@ -105,7 +116,7 @@ export const logout = async (navigation, dispatch) => {
       );
 
       ToastAndroid.show('Berhasil logout', ToastAndroid.SHORT);
-      navigation.navigate('SignIn'); // Navigasi ke halaman login
+      navigation.replace('SignIn'); // Navigasi ke halaman login
     } else {
       const errorMessage =
         response.data.message || 'Gagal logout, silakan coba lagi';

@@ -16,17 +16,24 @@ import {Background, Gap, ModalCustom} from '../../Component';
 import {IMG_PROFILE_FAKE} from '../../assets';
 import {logout} from '../../features/authentication';
 import {COLORS} from '../../utils';
+import {DIMENS} from '../../utils/dimens';
 
 export default function Settings({navigation}) {
+  const dispatch = useDispatch();
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
   const [logoutModalVisible, setLogoutModalVisible] = useState(false);
-
-  const dispatch = useDispatch();
+  const [loadingLogout, setLoadingLogout] = useState(false);
 
   const handleLogout = async () => {
-    setLogoutModalVisible(false);
-    await logout(navigation, dispatch);
-    console.log('logout', logout);
+    setLoadingLogout(true); // Set loading to true
+    try {
+      await logout(navigation, dispatch);
+    } catch (error) {
+      console.error('Error during logout:', error);
+    } finally {
+      setLoadingLogout(false); // Set loading to false
+      setLogoutModalVisible(false); // Close modal
+    }
   };
 
   return (
@@ -156,14 +163,18 @@ export default function Settings({navigation}) {
         visible={logoutModalVisible}
         onRequestClose={() => setLogoutModalVisible(false)}
         ColorIcon={COLORS.red}
-        title="Konfirmasi Logout"
+        title={'Konfirmasi Logout'}
         BackgroundButtonAction={COLORS.red}
-        description="Apakah Anda yakin ingin keluar dari aplikasi?"
+        description={
+          loadingLogout
+            ? 'Harap tunggu, sedang memproses logout...'
+            : 'Apakah Anda yakin ingin keluar dari aplikasi?'
+        }
         buttonSubmit={handleLogout}
-        buttonTitle="Keluar"
-        iconModalName="logout"
+        buttonTitle={'Keluar'}
+        iconModalName={'logout'}
         TextColorButton={COLORS.white}
-        backgroundColorStatusBar="rgba(0, 0, 0, 0.5)"
+        buttonLoading={loadingLogout}
       />
     </SafeAreaView>
   );
@@ -185,7 +196,7 @@ const styles = StyleSheet.create({
   navbarTitle: {
     position: 'absolute',
     top: 40,
-    fontSize: 23,
+    fontSize: DIMENS.xxxl,
     fontWeight: 'bold',
     color: COLORS.white,
   },
@@ -195,7 +206,7 @@ const styles = StyleSheet.create({
     marginTop: 60,
   },
   sectionHeader: {
-    fontSize: 18,
+    fontSize: DIMENS.xl,
     fontWeight: 'bold',
     color: COLORS.darkGray,
     marginVertical: 8,
@@ -216,11 +227,11 @@ const styles = StyleSheet.create({
     marginLeft: 15,
   },
   sectionTitle: {
-    fontSize: 16,
+    fontSize: DIMENS.l,
     color: '#333',
   },
   sectionSubtitle: {
-    fontSize: 14,
+    fontSize: DIMENS.m,
     color: '#888',
   },
 });

@@ -74,32 +74,62 @@ export const createFinger = async (finger, user_id) => {
 };
 
 // Fungsi untuk menangani presensi dengan QR Code
-export const qrCodePresence = async (id_user, qrCodeValue) => {
+export const qrCodePresence = async (
+  id_user,
+  qrCodeValue,
+  longitude,
+  latitude,
+  status,
+) => {
   try {
-    const response = await api.post(`/api/presences/qrcode/${id_user}`, {
+    const response = await api.post(`mobile/presences/qrcode/${id_user}`, {
       qr_code: qrCodeValue,
+      longitude: longitude,
+      latitude: latitude,
+      status: status,
     });
-
     console.log('RESPONSE QR CODE:', response.data);
 
     if (response.data?.status) {
-      ToastAndroid.show(response.data?.message, ToastAndroid.SHORT);
-    } else if (
-      response.data?.message.includes('Data Anda Telah Berhasil Tersimpan')
-    ) {
-      // Menampilkan pesan spesifik untuk presensi sebelumnya
-      ToastAndroid.show(response.data?.message, ToastAndroid.SHORT);
+      const succesMessage =
+        status === 'Pulang'
+          ? 'Presensi Pulang berhasil diperbarui'
+          : 'Presensi Hadir berhasil diperbarui';
+      ToastAndroid.show(succesMessage, ToastAndroid.SHORT);
+      console.log('dari fecth', response.data?.message);
+      return response.data;
     } else {
       throw new Error(response.data?.message || 'Error QR Code Presence!');
     }
   } catch (error) {
     if (error.response) {
-      const errorMessage = error.response?.data?.message || 'Terjadi kesalahan';
-      ToastAndroid.show(errorMessage, ToastAndroid.SHORT);
-      console.log('ERROR MESSAGE:', errorMessage);
+      console.log(error.response?.data?.message || 'Terjadi kesalahan');
     } else {
-      console.log('ERROR CODE:', error.message);
-      ToastAndroid.show(error.message, ToastAndroid.SHORT);
+      console.log(error.message, 'error message');
     }
+    throw error;
+  }
+};
+
+// lokasi pengambilan lokasi
+export const getActiveLocation = async () => {
+  try {
+    const response = await api.get('setting-location/location-active');
+
+    if (response.data?.status) {
+      const locationData = response.data?.data || {};
+      return locationData;
+    } else {
+      throw new Error(
+        response.data?.message || 'Gagal mengambil data lokasi aktif',
+      );
+    }
+  } catch (error) {
+    if (error.response) {
+      console.log(error.response?.data?.message || 'Terjadi kesalahan');
+    } else {
+      console.log(error.message, 'error message');
+    }
+    throw error;
   }
 };

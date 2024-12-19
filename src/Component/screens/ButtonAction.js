@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {COLORS} from '../../utils';
+import {DIMENS} from '../../utils/dimens';
 
 export default function ButtonAction({
   title = 'Button',
@@ -53,7 +54,7 @@ const styles = StyleSheet.create({
   },
   textTitle: {
     textAlignVertical: 'center',
-    fontSize: 17,
+    fontSize: DIMENS.l,
     fontWeight: '500',
     marginHorizontal: 5,
   },

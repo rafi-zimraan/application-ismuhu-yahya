@@ -2,6 +2,7 @@ import React from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {COLORS} from '../../../utils';
+import {DIMENS} from '../../../utils/dimens';
 
 const TotalCuti = ({loading, totalCuti, terpakai}) => (
   <View style={styles.viewCuti}>
@@ -56,9 +57,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: '100%',
   },
-  txtLabel: {color: COLORS.darkGray, fontWeight: '600', fontSize: 16},
+  txtLabel: {color: COLORS.darkGray, fontWeight: '600', fontSize: DIMENS.l},
   txtValueCount: {
-    fontSize: 18,
+    fontSize: DIMENS.xl,
     fontWeight: '700',
     color: COLORS.goldenOrange,
     marginTop: 10,

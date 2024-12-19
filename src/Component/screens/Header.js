@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {COLORS} from '../../utils';
+import {DIMENS} from '../../utils/dimens';
 
 const Header = ({
   onPressLeft,
@@ -67,7 +68,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 15,
     color: 'black',
     fontWeight: 'bold',
-    fontSize: 15,
+    fontSize: DIMENS.l,
     flex: 1,
   },
   headerButton: {

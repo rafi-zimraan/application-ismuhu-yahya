@@ -3,6 +3,7 @@ import {Text, TouchableOpacity, View} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {Gap} from '../../../Component';
 import {COLORS} from '../../../utils';
+import {DIMENS} from '../../../utils/dimens';
 
 export default function MenuItemPresensi({
   iconName,
@@ -29,7 +30,7 @@ const styles = {
   contentMenu: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: COLORS.ripple,
+    backgroundColor: COLORS.white,
     elevation: 5,
     height: 69,
     borderRadius: 10,
@@ -45,7 +46,7 @@ const styles = {
     elevation: 5,
   },
   label: {
-    fontSize: 15,
+    fontSize: DIMENS.l,
     color: COLORS.black,
     fontWeight: '500',
   },

@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {useForm} from 'react-hook-form';
 import {
   Image,
@@ -13,17 +13,36 @@ import {
   TouchableWithoutFeedback,
   View,
 } from 'react-native';
-
+import EncryptedStorage from 'react-native-encrypted-storage';
 import {useDispatch} from 'react-redux';
 import {Gap} from '../../Component';
 import {IMG_LOGIN} from '../../assets';
 import {ButtonAuth, FormInput, login} from '../../features/authentication';
 import {COLORS} from '../../utils';
+import {DIMENS} from '../../utils/dimens';
 
 export default function SignIn({navigation}) {
-  const {control, handleSubmit} = useForm();
+  const {control, handleSubmit, setValue} = useForm();
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    const loadUserLogin = async () => {
+      try {
+        const savedLogin = await EncryptedStorage.getItem('userLogin');
+        if (savedLogin) {
+          const {email, password} = JSON.parse(savedLogin);
+          // Isi form dengan nilai yang tersimpan
+          setValue('email', email);
+          setValue('password', password);
+        }
+      } catch (error) {
+        console.log('LOAD LOGIN ERROR:', error?.message);
+      }
+    };
+
+    loadUserLogin();
+  }, [setValue]);
 
   const onSubmit = async data => {
     setLoading(true);
@@ -32,6 +51,8 @@ export default function SignIn({navigation}) {
         email: data.email,
         password: data.password,
       };
+
+      await EncryptedStorage.setItem('userLogin', JSON.stringify(loginData));
       await login(loginData, navigation, dispatch);
     } catch (error) {
       console.log('LOGIN ERROR:', error?.message);
@@ -108,7 +129,7 @@ export default function SignIn({navigation}) {
 
               <View style={styles.viewCopyRight}>
                 <Text style={styles.textCopyRight}>
-                  Copyright@2024 Ismuhu Yahya
+                  Copyright@2024IsmuhuYahya
                 </Text>
               </View>
             </View>
@@ -130,7 +151,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   textCopyRight: {
-    fontSize: 13,
+    fontSize: DIMENS.s,
     fontWeight: '400',
     color: COLORS.grey,
     alignSelf: 'center',
@@ -150,13 +171,13 @@ const styles = StyleSheet.create({
     height: 200,
   },
   welcomeText: {
-    fontSize: 30,
-    fontWeight: '800',
+    fontSize: 33,
+    fontWeight: '600',
     color: COLORS.black,
     textAlign: 'left',
   },
   descriptionText: {
-    fontSize: 17,
+    fontSize: DIMENS.l,
     fontWeight: '400',
     color: COLORS.grey,
     textAlign: 'left',
@@ -168,7 +189,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   forgotPasswordText: {
-    fontSize: 14,
+    fontSize: DIMENS.m,
     color: COLORS.black,
     textAlign: 'center',
   },

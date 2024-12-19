@@ -2,10 +2,13 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import React from 'react';
 import {
   CreateFormulirPerizinan,
+  CreateFormulirPerizinanExit,
   EditFormulirPerizinan,
 } from '../features/Perizinan';
-
-import {ItemQrCodePresence} from '../features/PresenceEmployee';
+import {
+  QrCodeAdmin,
+  ScannerQrCodeByCategoryAbsensi,
+} from '../features/PresenceEmployee';
 import {EditProfile} from '../features/Profile';
 import {
   AboutApplication,
@@ -17,8 +20,6 @@ import {
   NotificationFromCategory,
   OnBoarding,
   Perizinan,
-  PerizinanByCategory,
-  PerizinanLongTerm,
   Presensi,
   PrivasiSetting,
   Profile,
@@ -47,7 +48,10 @@ export default function Navigator() {
       <Stack.Screen name="SignIn" component={SignIn} />
       <Stack.Screen name="SignUp" component={SignUp} />
       <Stack.Screen name="Dasboard" component={DrawerNavigation} />
-      <Stack.Screen name="ItemQrCodePresence" component={ItemQrCodePresence} />
+      <Stack.Screen
+        name="ScannerQrCodeByCategoryAbsensi"
+        component={ScannerQrCodeByCategoryAbsensi}
+      />
       <Stack.Screen name="Presensi" component={Presensi} />
       <Stack.Screen name="FaceScaanPresence" component={FaceScaanPresence} />
       <Stack.Screen name="Perizinan" component={Perizinan} />
@@ -67,16 +71,17 @@ export default function Navigator() {
         component={CreateFormulirPerizinan}
       />
       <Stack.Screen
+        name="CreateFormulirPerizinanExit"
+        component={CreateFormulirPerizinanExit}
+      />
+      <Stack.Screen
         name="EditFormulirPerizinan"
         component={EditFormulirPerizinan}
       />
+
       <Stack.Screen name="NotificationDetail" component={NotificationDetail} />
       <Stack.Screen name="QrCodePresense" component={QrCodePresense} />
-      <Stack.Screen
-        name="PerizinanByCategory"
-        component={PerizinanByCategory}
-      />
-      <Stack.Screen name="PerizinanLongTerm" component={PerizinanLongTerm} />
+      <Stack.Screen name="QrCodeAdmin" component={QrCodeAdmin} />
     </Stack.Navigator>
   );
 }

@@ -1,27 +1,37 @@
 import React from 'react';
-import {Image, StyleSheet, Text, View} from 'react-native';
+import {Image, ScrollView, StyleSheet, Text, View} from 'react-native';
 import {IMG_NEWS} from '../../../assets';
 import {COLORS} from '../../../utils';
+import {DIMENS} from '../../../utils/dimens';
 
 export default function NewsComponent() {
   return (
-    <View style={styles.ViewNews}>
-      <Text style={styles.txtNews}>Berita Harian</Text>
-      <Image source={IMG_NEWS} style={styles.newsImage} />
-      <Image source={IMG_NEWS} style={styles.newsImage} />
+    <View>
+      <Text style={styles.Title}>Berita Harian</Text>
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        stickyHeaderHiddenOnScroll>
+        <Image source={IMG_NEWS} style={styles.newsImage} />
+        <Image source={IMG_NEWS} style={styles.newsImage} />
+        <Image source={IMG_NEWS} style={styles.newsImage} />
+      </ScrollView>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  ViewNews: {padding: 5},
-  txtNews: {
-    fontSize: 18,
+  Title: {
+    fontSize: DIMENS.xl,
     color: COLORS.black,
     fontWeight: '600',
   },
+  ViewNews: {
+    padding: 5,
+  },
   newsImage: {
-    height: 200,
-    width: '100%',
+    height: 180,
+    width: 300,
+    marginRight: 8,
   },
 });

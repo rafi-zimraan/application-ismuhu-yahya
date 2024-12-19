@@ -1,13 +1,15 @@
+import DateTimePicker from '@react-native-community/datetimepicker';
 import React, {useEffect, useState} from 'react';
 import {
   ActivityIndicator,
-  Alert,
   SafeAreaView,
   ScrollView,
   StatusBar,
   StyleSheet,
   Text,
   TextInput,
+  ToastAndroid,
+  TouchableOpacity,
   View,
 } from 'react-native';
 import {addPerizinan} from '..';
@@ -18,12 +20,12 @@ import {
   ModalCustom,
 } from '../../../Component';
 import {COLORS} from '../../../utils';
+import {DIMENS} from '../../../utils/dimens';
 import {getAllDepartment} from '../../Departmant';
 import {getAllDivisions} from '../../Divisi';
 
 export default function CreateFormulirPerizinan({navigation, route}) {
   const {division_id, department_id} = route.params;
-
   const [divisionName, setDivisionName] = useState('');
   const [departmentName, setDepartmentName] = useState('');
   const [loadingDivision, setLoadingDivision] = useState(false);
@@ -34,24 +36,25 @@ export default function CreateFormulirPerizinan({navigation, route}) {
   const [regarding, setRegarding] = useState('');
   const [necessity, setNecessity] = useState('');
   const [category, setCategory] = useState('');
-  const [outTime, setOutTime] = useState('');
-  const [intTime, setIntTime] = useState('');
-  const [totDay, setTotDay] = useState('');
+  const [startDate, setStartDate] = useState(new Date());
+  const [endDate, setEndDate] = useState(new Date());
+  const [showStartDatePicker, setShowStartDatePicker] = useState(false);
+  const [showEndDatePicker, setShowEndDatePicker] = useState(false);
   const [loading, setLoading] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [totalDays, setTotalDays] = useState(0);
 
   useEffect(() => {
     const fetchDivisionsAndDepartments = async () => {
       try {
         setLoadingDivision(true);
         const divisions = await getAllDivisions();
-        setDivisionName(divisions.data[0].name);
-        setDivisionId(divisions.data[0].id);
-
+        setDivisionName(divisions?.data?.data?.[0]?.name);
+        setDivisionId(divisions?.data?.data?.[0]?.id);
         setLoadingDepartment(true);
         const departments = await getAllDepartment();
-        setDepartmentName(departments.data[0].name);
-        setDepartmentId(departments.data[0].id);
+        setDepartmentName(departments?.data?.data?.[0]?.name);
+        setDepartmentId(departments?.data?.data?.[0]?.id);
       } catch (error) {
         console.error('Error fetching divisions or departments:', error);
       } finally {
@@ -63,21 +66,15 @@ export default function CreateFormulirPerizinan({navigation, route}) {
     fetchDivisionsAndDepartments();
   }, []);
 
-  const validateTimeFormat = time => {
-    const timeFormat = /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]$/;
-    return timeFormat.test(time);
-  };
+  useEffect(() => {
+    // Calculate total days whenever startDate or endDate changes
+    const diffTime = Math.abs(endDate - startDate);
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    setTotalDays(diffDays);
+  }, [startDate, endDate]);
 
   const handleSubmit = async () => {
     setLoading(true);
-    if (!validateTimeFormat(outTime) || !validateTimeFormat(intTime)) {
-      Alert.alert(
-        'Format waktu tidak valid',
-        'Pastikan format waktu HH:mm:ss, contoh 12:00:00.',
-      );
-      setLoading(false);
-      return;
-    }
 
     try {
       const data = {
@@ -86,22 +83,33 @@ export default function CreateFormulirPerizinan({navigation, route}) {
         regarding,
         necessity,
         category,
-        out: outTime,
-        in: intTime,
-        tot_day: totDay,
+        start_date: startDate.toISOString().split('T')[0],
+        end_date: endDate.toISOString().split('T')[0],
+        tot_day: totalDays,
       };
 
       const response = await addPerizinan(data);
+      console.log('response', response);
       if (response?.status === true) {
         setShowSuccessModal(true);
       } else {
-        Alert.alert('Gagal', response?.message || 'Gagal menambahkan data.');
+        if (
+          response?.message?.includes('Request failed with status code 500')
+        ) {
+          ToastAndroid.show(
+            'Terdapat kesalahan pada server',
+            ToastAndroid.SHORT,
+          );
+        } else {
+          ToastAndroid.show(response?.message, ToastAndroid.SHORT);
+        }
       }
     } catch (error) {
-      Alert.alert(
-        'Error',
-        error.message || 'Terjadi kesalahan saat menambahkan data',
-      );
+      if (error.message?.includes('Request failed with status code 500')) {
+        ToastAndroid.show('Terdapat kesalahan pada server', ToastAndroid.SHORT);
+      } else {
+        ToastAndroid.show(error.message, ToastAndroid.SHORT);
+      }
     } finally {
       setLoading(false);
     }
@@ -112,7 +120,7 @@ export default function CreateFormulirPerizinan({navigation, route}) {
       <StatusBar barStyle={'default'} backgroundColor={'transparent'} />
       <Background />
       <HeaderTransparent
-        title="Membuat formulir perizinan"
+        title="Perizinan Cuti"
         icon="arrow-left-circle-outline"
         onPress={() => navigation.goBack()}
       />
@@ -120,13 +128,9 @@ export default function CreateFormulirPerizinan({navigation, route}) {
         <View style={styles.container}>
           <Text style={styles.label}>Division</Text>
           <View style={{position: 'relative'}}>
-            <TextInput
-              style={styles.input}
-              value={divisionName}
-              editable={false}
-              placeholder="Masukkan ID Divisi"
-              placeholderTextColor={COLORS.grey}
-            />
+            <Text style={styles.input}>
+              {loadingDivision ? 'Memuat...' : divisionName}
+            </Text>
             {loadingDivision && (
               <ActivityIndicator
                 size="small"
@@ -138,13 +142,9 @@ export default function CreateFormulirPerizinan({navigation, route}) {
 
           <Text style={styles.label}>Department</Text>
           <View style={{position: 'relative'}}>
-            <TextInput
-              style={styles.input}
-              value={departmentName}
-              editable={false}
-              placeholder="Masukkan ID Departemen"
-              placeholderTextColor={COLORS.grey}
-            />
+            <Text style={styles.input}>
+              {loadingDepartment ? 'Memuat...' : departmentName}
+            </Text>
             {loadingDepartment && (
               <ActivityIndicator
                 size="small"
@@ -159,7 +159,7 @@ export default function CreateFormulirPerizinan({navigation, route}) {
             style={styles.input}
             value={regarding}
             onChangeText={setRegarding}
-            placeholder="Perihal (cuti, dinas, lainnya)"
+            placeholder="Perihal (cuti, lainnya)"
             placeholderTextColor={COLORS.grey}
           />
 
@@ -177,47 +177,62 @@ export default function CreateFormulirPerizinan({navigation, route}) {
             style={styles.input}
             value={category}
             onChangeText={setCategory}
-            placeholder="Kategori (cuti, dinas, keluar, dll)"
+            placeholder="Kategori (cuti, lainnya)"
             placeholderTextColor={COLORS.grey}
           />
 
-          <Text style={styles.label}>Jam Keluar</Text>
-          <TextInput
-            style={styles.input}
-            value={outTime}
-            onChangeText={setOutTime}
-            placeholder="Jam keluar (HH:mm:ss)"
-            placeholderTextColor={COLORS.grey}
-            keyboardType="default"
-            maxLength={8}
-          />
+          <Text style={styles.label}>Tanggal Awal Cuti</Text>
+          <TouchableOpacity
+            onPress={() => setShowStartDatePicker(true)}
+            style={styles.dateInput}>
+            <Text style={styles.textDate}>
+              {startDate.toISOString().split('T')[0]}
+            </Text>
+          </TouchableOpacity>
+          {showStartDatePicker && (
+            <DateTimePicker
+              value={startDate}
+              mode="date"
+              display="default"
+              onChange={(event, selectedDate) => {
+                setShowStartDatePicker(false);
+                if (selectedDate) {
+                  setStartDate(selectedDate);
+                }
+              }}
+            />
+          )}
 
-          <Text style={styles.label}>Jam Kembali</Text>
-          <TextInput
-            style={styles.input}
-            value={intTime}
-            onChangeText={setIntTime}
-            placeholder="Jam kembali (HH:mm:ss)"
-            placeholderTextColor={COLORS.grey}
-            keyboardType="default"
-            maxLength={8}
-          />
+          <Text style={styles.label}>Tanggal Kembali Cuti</Text>
+          <TouchableOpacity
+            onPress={() => setShowEndDatePicker(true)}
+            style={styles.dateInput}>
+            <Text style={styles.textDate}>
+              {endDate.toISOString().split('T')[0]}
+            </Text>
+          </TouchableOpacity>
+          {showEndDatePicker && (
+            <DateTimePicker
+              value={endDate}
+              mode="date"
+              display="default"
+              onChange={(event, selectedDate) => {
+                setShowEndDatePicker(false);
+                if (selectedDate) {
+                  setEndDate(selectedDate);
+                }
+              }}
+            />
+          )}
 
-          <Text style={styles.label}>Durasi Jam</Text>
-          <TextInput
-            style={styles.input}
-            value={totDay}
-            onChangeText={setTotDay}
-            placeholder="Durasi izin (jam:menit:detik)"
-            keyboardType="default"
-            placeholderTextColor={COLORS.grey}
-          />
+          <Text style={styles.label}>Jumlah Hari</Text>
+          <Text style={styles.input}>{totalDays} hari</Text>
 
           <View style={{marginTop: 20, alignItems: 'center'}}>
             <ButtonAction
               title={loading ? 'Loading...' : 'Kirim'}
               onPress={handleSubmit}
-              backgroundColor={COLORS.primary}
+              backgroundColor={COLORS.goldenOrange}
               color={COLORS.white}
               loading={loading}
             />
@@ -236,6 +251,7 @@ export default function CreateFormulirPerizinan({navigation, route}) {
           navigation.goBack();
         }}
         buttonTitle="Kembali"
+        TextColorButton="white"
         buttonDisable={false}
       />
     </SafeAreaView>
@@ -243,6 +259,10 @@ export default function CreateFormulirPerizinan({navigation, route}) {
 }
 
 const styles = StyleSheet.create({
+  textDate: {
+    color: COLORS.grey,
+    fontSize: DIMENS.l,
+  },
   scrollContainer: {
     paddingBottom: 20,
   },
@@ -250,7 +270,7 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   label: {
-    fontSize: 16,
+    fontSize: DIMENS.l,
     fontWeight: '600',
     color: COLORS.black,
     marginBottom: 5,
@@ -263,6 +283,15 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     backgroundColor: COLORS.champagne,
     color: COLORS.black,
+  },
+  dateInput: {
+    borderWidth: 0.5,
+    borderColor: COLORS.grey,
+    padding: 10,
+    borderRadius: 8,
+    marginBottom: 15,
+    backgroundColor: COLORS.champagne,
+    justifyContent: 'center',
   },
   activityIndicator: {
     position: 'absolute',

@@ -2,6 +2,7 @@ import {createSlice} from '@reduxjs/toolkit';
 
 const initialState = {
   token: '',
+  id: '',
   name: '',
   email: '',
   category: '',
@@ -20,6 +21,7 @@ const authSlice = createSlice({
   reducers: {
     setUserSession(state, {payload}) {
       state.token = payload.token;
+      state.id = payload.id;
       state.name = payload.name;
       state.email = payload.email;
       state.category = payload.category;

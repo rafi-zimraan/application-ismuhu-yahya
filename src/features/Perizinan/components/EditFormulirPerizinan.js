@@ -18,6 +18,7 @@ import {
   ModalCustom,
 } from '../../../Component';
 import {COLORS} from '../../../utils';
+import {DIMENS} from '../../../utils/dimens';
 import {getDepartmentDetail} from '../../Departmant';
 import {getDivisionDetail} from '../../Divisi';
 
@@ -284,7 +285,7 @@ export default function EditFormulirPerizinan({navigation, route}) {
 
 const styles = StyleSheet.create({
   title: {
-    fontSize: 17,
+    fontSize: DIMENS.l,
     fontWeight: '500',
     color: COLORS.black,
     marginBottom: 10,
@@ -293,7 +294,7 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   label: {
-    fontSize: 16,
+    fontSize: DIMENS.l,
     fontWeight: '600',
     color: COLORS.black,
     marginBottom: 5,

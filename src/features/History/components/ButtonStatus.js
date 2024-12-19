@@ -1,6 +1,7 @@
 import React from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 import {COLORS} from '../../../utils';
+import {DIMENS} from '../../../utils/dimens';
 
 export default function ButtonStatus({status}) {
   const getStatusHistory = () => {
@@ -52,7 +53,7 @@ const styles = StyleSheet.create({
     borderColor: COLORS.red,
   },
   txtStatus: {
-    fontSize: 14,
+    fontSize: DIMENS.m,
     fontWeight: '500',
   },
   containerStatus: {

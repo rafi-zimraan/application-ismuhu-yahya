@@ -1,6 +1,7 @@
 import React from 'react';
 import {Animated, StyleSheet, Text} from 'react-native';
 import {COLORS} from '../../utils';
+import {DIMENS} from '../../utils/dimens';
 
 const AlertWarning = ({show, message, paddingTop = 30, duration = 5000}) => {
   const [fadeAnim] = React.useState(new Animated.Value(0)); // Untuk fade in/out animasi
@@ -52,7 +53,7 @@ const styles = StyleSheet.create({
   },
   alertText: {
     color: COLORS.white, // Warna teks alert
-    fontSize: 16,
+    fontSize: DIMENS.l,
     textAlign: 'center',
   },
 });

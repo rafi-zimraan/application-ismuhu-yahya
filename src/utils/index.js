@@ -1,4 +1,4 @@
 import {COLORS} from './colors';
-import {dimens} from './dimens';
+import {DIMENS} from './dimens';
 
-export {COLORS, dimens};
+export {COLORS, DIMENS};

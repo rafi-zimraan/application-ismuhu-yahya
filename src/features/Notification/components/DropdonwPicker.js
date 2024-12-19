@@ -3,6 +3,7 @@ import React from 'react';
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {COLORS} from '../../../utils';
+import {DIMENS} from '../../../utils/dimens';
 
 export default function DropdownPicker({
   title = 'select item',
@@ -58,7 +59,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 5,
   },
   filterText: {
-    fontSize: 14,
+    fontSize: DIMENS.m,
     color: COLORS.black,
     fontWeight: '500',
   },

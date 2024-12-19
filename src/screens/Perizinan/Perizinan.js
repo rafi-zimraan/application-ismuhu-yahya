@@ -119,19 +119,20 @@ export default function Perizinan({navigation}) {
       <StatusBar barStyle={'default'} backgroundColor={'transparent'} />
       <Background />
       <HeaderTransparent
-        title="Perizinan Kecil"
+        title="Perizinan "
         icon="arrow-left-circle-outline"
         onPress={() => navigation.goBack()}
       />
 
       <View style={{padding: 15, flex: 1}}>
         <Text style={styles.txtTitlePerizinan}>Total dan cuti terpakai</Text>
+        <Gap height={5} />
         <TotalCuti
           loading={loading}
           totalCuti={totalCuti}
           terpakai={terpakai}
         />
-        <Gap height={20} />
+        <Gap height={15} />
         <Text style={styles.txtTitlePerizinan}>History</Text>
         {loading ? (
           <View style={styles.loadingContainer}>
@@ -173,8 +174,25 @@ export default function Perizinan({navigation}) {
         )}
       </View>
 
+      {/* Perinan Keluar / tidak lama */}
       <FloatingButton
-        iconName="plus-circle-outline"
+        iconName="exit-to-app"
+        label={'Keluar'}
+        style={{bottom: 110, right: 20}}
+        backgroundColor={COLORS.blue}
+        onPress={() =>
+          navigation.navigate('CreateFormulirPerizinanExit', {
+            division_id: userDivisionId,
+            department_id: userDepartmentId,
+          })
+        }
+      />
+
+      {/* Perinan cuti / dalam jangan waktu yang lama */}
+      <FloatingButton
+        iconName="calendar-check"
+        label={'Cuti'}
+        style={{bottom: 10, right: 20}}
         onPress={() =>
           navigation.navigate('CreateFormulirPerizinan', {
             division_id: userDivisionId,
@@ -182,7 +200,6 @@ export default function Perizinan({navigation}) {
           })
         }
       />
-
       {/* Modal untuk Token Expired */}
       <ModalCustom
         visible={tokenExpired}

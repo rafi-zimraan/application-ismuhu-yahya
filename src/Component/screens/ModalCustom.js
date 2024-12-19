@@ -13,6 +13,7 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {COLORS} from '../../utils';
+import {DIMENS} from '../../utils/dimens';
 import Gap from './Gap';
 
 export default function ModalCustom({
@@ -41,11 +42,7 @@ export default function ModalCustom({
       visible={visible}
       onRequestClose={onRequestClose}>
       <StatusBar backgroundColor={backgroundColorStatusBar} animated />
-
-      {/* Blur background */}
       <BlurView style={styles.absolute} blurType="light" blurAmount={10} />
-
-      {/* Overlay di atas blur background */}
       <Pressable onPress={onOutContentPress} style={styles.pressable} />
 
       <View style={styles.alignment}>
@@ -74,7 +71,7 @@ export default function ModalCustom({
                 backgroundColor: BackgroundButtonAction,
               }}>
               {buttonLoading ? (
-                <ActivityIndicator color={'black'} />
+                <ActivityIndicator color={'white'} size={20} />
               ) : (
                 <Text style={{...styles.buttonText, color: TextColorButton}}>
                   {buttonTitle}
@@ -117,13 +114,13 @@ const styles = StyleSheet.create({
   },
   title: {
     color: COLORS.black,
-    fontSize: 18,
+    fontSize: DIMENS.xl,
     fontWeight: 'bold',
     marginTop: 10,
   },
   description: {
     color: COLORS.grey,
-    fontSize: 14,
+    fontSize: DIMENS.m,
     marginTop: 5,
     maxWidth: 280,
   },

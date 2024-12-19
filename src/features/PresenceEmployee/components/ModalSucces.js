@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {COLORS} from '../../../utils';
+import {DIMENS} from '../../../utils/dimens';
 import {ButtonAuth} from '../../authentication';
 
 export default function ModalSucces() {
@@ -113,14 +114,14 @@ const styles = StyleSheet.create({
     height: '100%',
   },
   successText: {
-    fontSize: 20,
+    fontSize: DIMENS.xxl,
     fontWeight: 'bold',
     color: 'green',
     marginTop: 10,
     textAlign: 'center',
   },
   descriptionText: {
-    fontSize: 16,
+    fontSize: DIMENS.l,
     color: 'black',
     textAlign: 'center',
     marginBottom: 20,

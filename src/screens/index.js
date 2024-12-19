@@ -8,8 +8,6 @@ import NotificationDetail from './Notification/NotificationDetail';
 import NotificationFromCategory from './Notification/NotificationFromCategory';
 import OnBoarding from './Onboarding/Onboarding';
 import Perizinan from './Perizinan/Perizinan';
-import PerizinanByCategory from './Perizinan/PerizinanByCategory';
-import PerizinanLongTerm from './Perizinan/PerizinanLongTerm';
 import FaceScaanPresence from './PresenceEmployee/FaceScaanPresence';
 import Presensi from './PresenceEmployee/Presensi';
 import QrCodePresense from './PresenceEmployee/QrCodePresense';
@@ -23,8 +21,6 @@ import SplashScreen from './SplashScreen/SplashScreen';
 import LibDemo from './__test__/LibDemo.test';
 
 export {
-  PerizinanLongTerm,
-  PerizinanByCategory,
   QrCodePresense,
   NotificationDetail,
   ChangePassword,

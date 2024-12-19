@@ -209,6 +209,7 @@ import {
   View,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import {DIMENS} from '../../utils/dimens';
 
 export default function FormInputComponent({
   mode = 'text',
@@ -437,7 +438,7 @@ const styles = StyleSheet.create({
     textAlign: 'right',
     color: 'tomato',
     fontWeight: '500',
-    fontSize: 13,
+    fontSize: DIMENS.m,
   },
   viewInput: {
     flexDirection: 'row',

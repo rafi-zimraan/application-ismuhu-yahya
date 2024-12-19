@@ -1,6 +1,7 @@
 import React from 'react';
 import {Image, StyleSheet, Text, View} from 'react-native';
 import {ICON_ILUSTRATION_SCAAN_QR_CODE} from '../../../assets';
+import {DIMENS} from '../../../utils/dimens';
 
 export default function ItemPerizinanAdmin() {
   return (
@@ -35,7 +36,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   profileDescription: {
-    fontSize: 16,
+    fontSize: DIMENS.l,
     color: '#6c757d',
     textAlign: 'center',
     marginHorizontal: 20,

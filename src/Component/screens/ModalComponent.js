@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {Gap} from '..';
+import {DIMENS} from '../../utils/dimens';
 
 export default function ModalComponent({
   visible = false,
@@ -77,7 +78,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     textAlignVertical: 'center',
     fontWeight: 'bold',
-    fontSize: 17,
+    fontSize: DIMENS.xl,
     textShadowRadius: 5,
     textShadowOffset: {
       height: 1,
