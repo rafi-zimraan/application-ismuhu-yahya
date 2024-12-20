@@ -1,5 +1,5 @@
 import EncryptedStorage from 'react-native-encrypted-storage';
-import api from '../../utils/axiosInstance';
+import api from '../../../utils/axiosInstance';
 
 // Ambil semua data divisi
 export const getAllDivisions = async () => {

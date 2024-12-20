@@ -9,11 +9,13 @@ const TotalCuti = ({loading, totalCuti, terpakai}) => (
     <View style={styles.viewContentCuti}>
       <View style={styles.rowContent}>
         <Text style={styles.txtLabel}>Total{'\n'}Nilai Cuti</Text>
-        <Icon
-          name="calendar-month-outline"
-          size={30}
-          color={COLORS.goldenOrange}
-        />
+        <View style={{bottom: 15}}>
+          <Icon
+            name="calendar-month-outline"
+            size={30}
+            color={COLORS.goldenOrange}
+          />
+        </View>
       </View>
       <Text style={styles.txtValueCount}>
         {loading
@@ -26,7 +28,9 @@ const TotalCuti = ({loading, totalCuti, terpakai}) => (
     <View style={styles.viewContentCuti}>
       <View style={styles.rowContent}>
         <Text style={styles.txtLabel}>Total{'\n'}Nilai terpakai</Text>
-        <Icon name="history" size={30} color={COLORS.goldenOrange} />
+        <View style={{bottom: 15}}>
+          <Icon name="history" size={30} color={COLORS.goldenOrange} />
+        </View>
       </View>
       <Text style={styles.txtValueCount}>
         {loading
@@ -46,20 +50,24 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'center',
     borderRadius: 15,
-    elevation: 6,
-    padding: 20,
+    elevation: 5,
+    padding: 15,
     width: '47%',
-    height: 150,
+    height: 130,
   },
   rowContent: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
     width: '100%',
   },
-  txtLabel: {color: COLORS.darkGray, fontWeight: '600', fontSize: DIMENS.l},
+  txtLabel: {
+    color: COLORS.darkGray,
+    bottom: 5,
+    fontWeight: '600',
+    fontSize: DIMENS.l,
+  },
   txtValueCount: {
-    fontSize: DIMENS.xl,
+    fontSize: DIMENS.l,
     fontWeight: '700',
     color: COLORS.goldenOrange,
     marginTop: 10,

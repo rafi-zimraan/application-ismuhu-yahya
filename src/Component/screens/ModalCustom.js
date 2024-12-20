@@ -34,6 +34,7 @@ export default function ModalCustom({
   ColorIcon = COLORS.greenBoy,
   BackgroundButtonAction = COLORS.primary,
   TextColorButton = COLORS.black,
+  TextDescription = COLORS.grey,
 }) {
   return (
     <Modal
@@ -56,7 +57,9 @@ export default function ModalCustom({
                 </TouchableOpacity>
               </View>
               <Text style={styles.title}>{title}</Text>
-              <Text style={styles.description}>{description}</Text>
+              <Text style={{...styles.description, color: TextDescription}}>
+                {description}
+              </Text>
               <Gap height={10} />
             </>
           )}
@@ -119,7 +122,6 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   description: {
-    color: COLORS.grey,
     fontSize: DIMENS.m,
     marginTop: 5,
     maxWidth: 280,

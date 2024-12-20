@@ -20,7 +20,7 @@ import {
 import {COLORS} from '../../../utils';
 import {DIMENS} from '../../../utils/dimens';
 import {getAllDepartment} from '../../Departmant';
-import {getAllDivisions} from '../../Divisi';
+import {getAllDivisions} from '../../History/Divisi';
 
 export default function CreateFormulirPerizinanExit({navigation, route}) {
   const {division_id, department_id} = route.params;

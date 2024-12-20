@@ -22,7 +22,7 @@ import {
 import {COLORS} from '../../../utils';
 import {DIMENS} from '../../../utils/dimens';
 import {getAllDepartment} from '../../Departmant';
-import {getAllDivisions} from '../../Divisi';
+import {getAllDivisions} from '../../History/Divisi';
 
 export default function CreateFormulirPerizinan({navigation, route}) {
   const {division_id, department_id} = route.params;
@@ -260,7 +260,7 @@ export default function CreateFormulirPerizinan({navigation, route}) {
 
 const styles = StyleSheet.create({
   textDate: {
-    color: COLORS.grey,
+    color: COLORS.black,
     fontSize: DIMENS.l,
   },
   scrollContainer: {

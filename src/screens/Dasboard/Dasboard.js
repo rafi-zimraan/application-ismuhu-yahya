@@ -218,7 +218,7 @@ import {
 } from '../../features/Dasboard';
 import DataSpaComponent from '../../features/Dasboard/components/DataSpaAndSantri';
 import {getAllDepartment} from '../../features/Departmant';
-import {getAllDivisions} from '../../features/Divisi';
+import {getAllDivisions} from '../../features/History/Divisi';
 import {COLORS} from '../../utils';
 
 const {height} = Dimensions.get('window');
@@ -424,10 +424,9 @@ export default function Dasboard({navigation}) {
           ) : (
             <AyatComponent ayat={ayat} styles={styles} />
           )}
-
-          {/* Clock */}
+          <Gap height={35} />
           <ClockDasboard formatTime={formatTime} />
-          <Gap height={75} />
+          <Gap height={35} />
 
           {/* Modal untuk Token Expired */}
           <ModalCustom
@@ -464,6 +463,8 @@ export default function Dasboard({navigation}) {
             totalSpa={0}
           />
 
+          <Gap height={20} />
+
           <View style={styles.menu}>
             <ButtonMenu
               title="Perizinan"
@@ -499,7 +500,6 @@ const styles = StyleSheet.create({
   menu: {
     flexDirection: 'row',
     justifyContent: 'flex-start',
-    marginTop: 15,
   },
   imageContainer: {
     height: height * 1,

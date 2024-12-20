@@ -20,7 +20,7 @@ import {
 import {COLORS} from '../../../utils';
 import {DIMENS} from '../../../utils/dimens';
 import {getDepartmentDetail} from '../../Departmant';
-import {getDivisionDetail} from '../../Divisi';
+import {getDivisionDetail} from '../../History/Divisi';
 
 export default function EditFormulirPerizinan({navigation, route}) {
   const {id_lisences, initialData} = route.params;

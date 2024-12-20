@@ -11,7 +11,7 @@ export default function ClockDasboard({formatTime}) {
       <View style={styles.bodyClock}>
         <View style={styles.viewBody}>
           <Image source={ICON_APPLIKASI} style={styles.imgLogoClock} />
-          <Gap width={15} />
+          <Gap width={10} />
           <Text style={styles.txtClock}>{formatTime}</Text>
         </View>
       </View>
@@ -21,17 +21,14 @@ export default function ClockDasboard({formatTime}) {
 
 const styles = StyleSheet.create({
   bodyClockWrapper: {
-    position: 'absolute',
-    top: 245,
-    left: 13,
-    alignItems: 'center',
+    position: 'relative',
+    alignItems: 'flex-start',
     zIndex: 10,
   },
   bodyClock: {
     backgroundColor: COLORS.white,
     elevation: 2,
     height: 35,
-    width: '90%',
     padding: 10,
     borderRadius: 13,
   },

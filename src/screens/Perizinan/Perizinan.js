@@ -9,6 +9,7 @@ import {
   StatusBar,
   StyleSheet,
   Text,
+  TouchableOpacity,
   View,
 } from 'react-native';
 import {
@@ -22,7 +23,7 @@ import {IMG_NOTHING_DATA_HISTORY_PERIZINA} from '../../assets';
 import {deleteDataPerizinan, getAllPerizinan} from '../../features/Perizinan';
 import HistoryItem from '../../features/Perizinan/components/HistoryItem';
 import TotalCuti from '../../features/Perizinan/components/TotalCuti';
-import {COLORS} from '../../utils';
+import {COLORS, DIMENS} from '../../utils';
 
 export default function Perizinan({navigation}) {
   const [dataHistory, setDataHistory] = useState([]);
@@ -133,7 +134,12 @@ export default function Perizinan({navigation}) {
           terpakai={terpakai}
         />
         <Gap height={15} />
-        <Text style={styles.txtTitlePerizinan}>History</Text>
+        <View style={styles.viewTitle}>
+          <Text style={styles.txtTitlePerizinan}>History</Text>
+          <TouchableOpacity activeOpacity={0.5}>
+            <Text style={styles.txtHistorycal}>Selengkapnya</Text>
+          </TouchableOpacity>
+        </View>
         {loading ? (
           <View style={styles.loadingContainer}>
             <ActivityIndicator size="large" color={COLORS.black} />
@@ -179,7 +185,7 @@ export default function Perizinan({navigation}) {
         iconName="exit-to-app"
         label={'Keluar'}
         style={{bottom: 110, right: 20}}
-        backgroundColor={COLORS.blue}
+        backgroundColor={'#005F73'}
         onPress={() =>
           navigation.navigate('CreateFormulirPerizinanExit', {
             division_id: userDivisionId,
@@ -193,6 +199,7 @@ export default function Perizinan({navigation}) {
         iconName="calendar-check"
         label={'Cuti'}
         style={{bottom: 10, right: 20}}
+        backgroundColor="#FF8C00"
         onPress={() =>
           navigation.navigate('CreateFormulirPerizinan', {
             division_id: userDivisionId,
@@ -200,6 +207,7 @@ export default function Perizinan({navigation}) {
           })
         }
       />
+
       {/* Modal untuk Token Expired */}
       <ModalCustom
         visible={tokenExpired}
@@ -218,10 +226,12 @@ export default function Perizinan({navigation}) {
       <ModalCustom
         visible={deleteModalVisible}
         onRequestClose={() => setDeleteModalVisible(false)}
-        iconModalName="alert-circle-outline"
+        iconModalName="delete-forever"
         buttonLoading={isDelete}
         title="Hapus Perizinan"
-        description="Apakah Anda yakin ingin menghapus cuti ini?"
+        description="Apakah Anda yakin inginmenghapus history ini?"
+        TextDescription={COLORS.red}
+        ColorIcon={COLORS.red}
         buttonSubmit={handleDelete}
       />
     </View>
@@ -229,10 +239,17 @@ export default function Perizinan({navigation}) {
 }
 
 const styles = StyleSheet.create({
-  txtTitlePerizinan: {
-    textAlign: 'left',
+  viewTitle: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  txtHistorycal: {
     color: COLORS.black,
-    fontSize: 20,
+    fontSize: DIMENS.s,
+  },
+  txtTitlePerizinan: {
+    color: COLORS.black,
+    fontSize: DIMENS.xxl,
     fontWeight: '600',
     marginBottom: 5,
   },
