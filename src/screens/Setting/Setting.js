@@ -173,7 +173,6 @@ export default function Settings({navigation}) {
         buttonSubmit={handleLogout}
         buttonTitle={'Keluar'}
         iconModalName={'logout'}
-        TextColorButton={COLORS.white}
         buttonLoading={loadingLogout}
       />
     </SafeAreaView>

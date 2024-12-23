@@ -16,9 +16,8 @@ export default function HeaderComponent({
       {urlPhoto ? (
         <Image source={{uri: urlPhoto}} style={styles.profileImage} />
       ) : (
-        <Icon name="account-circle" size={65} color={COLORS.white} />
+        <Icon name="account-circle" size={48} color={COLORS.white} />
       )}
-      <Gap width={10} />
       <View style={styles.textWrapper}>
         <Icon name="hand-wave" size={25} color={COLORS.primary} />
         <Text style={styles.welcomeText}>{welcomeText}</Text>
@@ -55,7 +54,7 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
-    bottom: 15,
+    bottom: 13,
   },
   welcomeText: {
     marginLeft: 6,
@@ -72,8 +71,8 @@ const styles = StyleSheet.create({
   buttonStatus: {
     backgroundColor: COLORS.white,
     position: 'absolute',
-    top: 35,
-    left: 75,
+    top: 30,
+    left: 52,
     width: '53%',
     borderRadius: 5,
     padding: 3,

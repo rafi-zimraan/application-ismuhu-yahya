@@ -12,17 +12,16 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import {addPerizinan} from '..';
 import {
   Background,
   ButtonAction,
   HeaderTransparent,
   ModalCustom,
 } from '../../../Component';
-import {COLORS} from '../../../utils';
-import {DIMENS} from '../../../utils/dimens';
+import {COLORS, DIMENS} from '../../../utils';
 import {getAllDepartment} from '../../Departmant';
-import {getAllDivisions} from '../../History/Divisi';
+import {getAllDivisions} from '../../Divisi';
+import {addCutiPerizinan} from '../services/perizinanApiSlice';
 
 export default function CreateFormulirPerizinan({navigation, route}) {
   const {division_id, department_id} = route.params;
@@ -30,7 +29,6 @@ export default function CreateFormulirPerizinan({navigation, route}) {
   const [departmentName, setDepartmentName] = useState('');
   const [loadingDivision, setLoadingDivision] = useState(false);
   const [loadingDepartment, setLoadingDepartment] = useState(false);
-
   const [divisionId, setDivisionId] = useState(division_id || '');
   const [departmentId, setDepartmentId] = useState(department_id || '');
   const [regarding, setRegarding] = useState('');
@@ -43,6 +41,7 @@ export default function CreateFormulirPerizinan({navigation, route}) {
   const [loading, setLoading] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [totalDays, setTotalDays] = useState(0);
+  const [tokenExpired, setTokenExpired] = useState(false);
 
   useEffect(() => {
     const fetchDivisionsAndDepartments = async () => {
@@ -67,7 +66,6 @@ export default function CreateFormulirPerizinan({navigation, route}) {
   }, []);
 
   useEffect(() => {
-    // Calculate total days whenever startDate or endDate changes
     const diffTime = Math.abs(endDate - startDate);
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
     setTotalDays(diffDays);
@@ -88,10 +86,12 @@ export default function CreateFormulirPerizinan({navigation, route}) {
         tot_day: totalDays,
       };
 
-      const response = await addPerizinan(data);
-      console.log('response', response);
+      const response = await addCutiPerizinan(data);
+
       if (response?.status === true) {
         setShowSuccessModal(true);
+      } else if (response?.message === 'Silahkan login terlebih dahulu') {
+        setTokenExpired(true);
       } else {
         if (
           response?.message?.includes('Request failed with status code 500')
@@ -251,8 +251,20 @@ export default function CreateFormulirPerizinan({navigation, route}) {
           navigation.goBack();
         }}
         buttonTitle="Kembali"
-        TextColorButton="white"
         buttonDisable={false}
+      />
+
+      <ModalCustom
+        visible={tokenExpired}
+        onRequestClose={() => setTokenExpired(false)}
+        iconModalName="alert-circle-outline"
+        title="Sesi Berakhir"
+        description="Sesi Anda telah berakhir. Silakan login ulang untuk memperbarui data."
+        buttonSubmit={() => {
+          setTokenExpired(false);
+          navigation.navigate('SignIn');
+        }}
+        buttonTitle="Login Ulang"
       />
     </SafeAreaView>
   );

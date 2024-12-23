@@ -1,6 +1,8 @@
 import CreateFormulirPerizinan from './components/CreateFormulirPerizinan';
 import CreateFormulirPerizinanExit from './components/CreateFormulirPerizinanExit';
 import EditFormulirPerizinan from './components/EditFormulirPerizinan';
+import HistoryCuti from './components/HistoryCuti';
+import HistoryKeluar from './components/HistoryKeluar';
 import {
   addPerizinan,
   deleteDataPerizinan,
@@ -12,6 +14,8 @@ import {
 export {
   CreateFormulirPerizinan,
   EditFormulirPerizinan,
+  HistoryKeluar,
+  HistoryCuti,
   CreateFormulirPerizinanExit,
 };
 // slice

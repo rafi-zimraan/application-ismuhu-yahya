@@ -8,8 +8,8 @@ import {
   View,
 } from 'react-native';
 import EncryptedStorage from 'react-native-encrypted-storage';
-import {AppVersion} from '../../Component';
-import {ICON_SPLASS} from '../../assets';
+import {AppVersion, Gap} from '../../Component';
+import {IMG_ISMUHUYAHYA_POTRAIT} from '../../assets';
 import {COLORS} from '../../utils';
 
 export default function SplashScreen({navigation}) {
@@ -44,14 +44,13 @@ export default function SplashScreen({navigation}) {
     <SafeAreaView style={styles.background}>
       <StatusBar barStyle={'dark-content'} backgroundColor={'transparent'} />
       <View style={styles.container}>
-        <Image source={ICON_SPLASS} style={styles.img} />
-        <View style={{bottom: 100}}>
-          <ActivityIndicator
-            size={'large'}
-            animating={true}
-            color={COLORS.gold}
-          />
-        </View>
+        <Image source={IMG_ISMUHUYAHYA_POTRAIT} style={styles.img} />
+        <Gap height={15} />
+        <ActivityIndicator
+          size={'large'}
+          animating={true}
+          color={COLORS.goldenOrange}
+        />
       </View>
       <AppVersion />
     </SafeAreaView>
@@ -64,13 +63,14 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.white,
   },
   container: {
-    flex: 1,
+    position: 'absolute',
+    top: 230,
+    left: 20,
     justifyContent: 'center',
     alignItems: 'center',
   },
   img: {
-    top: 60,
-    width: '100%',
-    height: '56%',
+    width: 320,
+    height: 230,
   },
 });

@@ -58,7 +58,7 @@ export default function OnBoarding({navigation}) {
       await EncryptedStorage.setItem('is_boarding', 'true');
       navigation.replace('SignIn');
     } catch (error) {
-      console.log('error  saving onboarding status', error);
+      console.log('error saving onboarding status', error);
     }
   };
 
@@ -77,9 +77,18 @@ export default function OnBoarding({navigation}) {
         </View>
       )}
 
+      {/* Image in the center of the screen */}
+      {/* {currentScreen === 0 && (
+        <View style={styles.centerImageContainer}>
+          <Image
+            source={IMG_SIMPONDOK_LANDSCAPE_WHITE}
+            style={styles.centerImage}
+          />
+        </View>
+      )} */}
+
       {screens[currentScreen].showImage && (
         <View style={styles.secondaryContent}>
-          {/* Tombol Skip */}
           {currentScreen === 1 && (
             <TouchableOpacity
               style={styles.skipButton}
@@ -88,8 +97,6 @@ export default function OnBoarding({navigation}) {
               <Text style={styles.skipText}>Skip</Text>
             </TouchableOpacity>
           )}
-
-          {/* <Gap height={35} /> */}
           {currentScreen === 1 ? (
             <Image
               source={IMG_ONBOARDING_SECONDRY}
@@ -123,7 +130,6 @@ export default function OnBoarding({navigation}) {
         </View>
       )}
 
-      {/* Pagination */}
       <View style={styles.viewPagination}>
         <View style={styles.paginationWrapper}>
           {screens.map((_, index) => (
@@ -138,7 +144,6 @@ export default function OnBoarding({navigation}) {
         </View>
       </View>
 
-      {/* Button */}
       <TouchableOpacity
         activeOpacity={0.6}
         style={styles.button}
@@ -155,6 +160,19 @@ export default function OnBoarding({navigation}) {
 }
 
 const styles = StyleSheet.create({
+  centerImageContainer: {
+    // flex: 1,
+    position: 'absolute',
+    top: 300,
+    left: 80,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  centerImage: {
+    width: 200,
+    height: 100,
+    resizeMode: 'contain',
+  },
   imgBoardingSecondry: {
     height: 330,
     width: 330,

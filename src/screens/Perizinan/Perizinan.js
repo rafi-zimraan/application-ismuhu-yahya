@@ -27,6 +27,7 @@ import {COLORS, DIMENS} from '../../utils';
 
 export default function Perizinan({navigation}) {
   const [dataHistory, setDataHistory] = useState([]);
+  console.log('data history', dataHistory);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [tokenExpired, setTokenExpired] = useState(false);
@@ -49,10 +50,10 @@ export default function Perizinan({navigation}) {
         const sortedData = response.data.sort((a, b) => {
           const dateA = new Date(a.created_at);
           const dateB = new Date(b.created_at);
-          return dateB - dateA; // Sort by newest first
+          return dateB - dateA;
         });
 
-        setDataHistory(sortedData.slice(0, 10)); // Show only the top 10 newest entries
+        setDataHistory(sortedData.slice(0, 10));
 
         if (sortedData.length > 0) {
           const firstEntry = sortedData[0];
@@ -104,6 +105,7 @@ export default function Perizinan({navigation}) {
         setDataHistory(prevData =>
           prevData.filter(item => item?.id !== selectedDeleteId),
         );
+
         setDeleteModalVisible(false);
       } else {
         Alert.alert('Gagal', 'Gagal menghapus data.');
@@ -124,7 +126,6 @@ export default function Perizinan({navigation}) {
         icon="arrow-left-circle-outline"
         onPress={() => navigation.goBack()}
       />
-
       <View style={{padding: 15, flex: 1}}>
         <Text style={styles.txtTitlePerizinan}>Total dan cuti terpakai</Text>
         <Gap height={5} />
@@ -136,7 +137,24 @@ export default function Perizinan({navigation}) {
         <Gap height={15} />
         <View style={styles.viewTitle}>
           <Text style={styles.txtTitlePerizinan}>History</Text>
-          <TouchableOpacity activeOpacity={0.5}>
+          <TouchableOpacity
+            activeOpacity={0.3}
+            onPress={() =>
+              navigation.navigate('TopTabBar', {
+                dataHistory: dataHistory,
+                onEditPress: item =>
+                  navigation.navigate('EditFormulirPerizinan', {
+                    id_lisences: item.id,
+                    initialData: item,
+                  }),
+                onDeletePress: async item => {
+                  setSelectedDeleteId(item.id);
+                  setDeleteModalVisible(true);
+                },
+                onRefresh: onRefresh,
+                refreshing: refreshing,
+              })
+            }>
             <Text style={styles.txtHistorycal}>Selengkapnya</Text>
           </TouchableOpacity>
         </View>

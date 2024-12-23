@@ -1,4 +1,5 @@
 const DIMENS = {
+  x: 5,
   xs: 9,
   s: 12,
   m: 14,

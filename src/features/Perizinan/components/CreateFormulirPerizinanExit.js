@@ -1,3 +1,4 @@
+import DateTimePicker from '@react-native-community/datetimepicker';
 import React, {useEffect, useState} from 'react';
 import {
   ActivityIndicator,
@@ -8,6 +9,7 @@ import {
   StyleSheet,
   Text,
   TextInput,
+  TouchableOpacity,
   View,
 } from 'react-native';
 import {addPerizinan} from '..';
@@ -20,7 +22,7 @@ import {
 import {COLORS} from '../../../utils';
 import {DIMENS} from '../../../utils/dimens';
 import {getAllDepartment} from '../../Departmant';
-import {getAllDivisions} from '../../History/Divisi';
+import {getAllDivisions} from '../../Divisi';
 
 export default function CreateFormulirPerizinanExit({navigation, route}) {
   const {division_id, department_id} = route.params;
@@ -28,9 +30,10 @@ export default function CreateFormulirPerizinanExit({navigation, route}) {
   const [departmentName, setDepartmentName] = useState('');
   const [loadingDivision, setLoadingDivision] = useState(false);
   const [loadingDepartment, setLoadingDepartment] = useState(false);
-
   const [divisionId, setDivisionId] = useState(division_id || '');
   const [departmentId, setDepartmentId] = useState(department_id || '');
+  const [showOutPicker, setShowOutPicker] = useState(false);
+  const [showIntPicker, setShowIntPicker] = useState(false);
   const [regarding, setRegarding] = useState('');
   const [necessity, setNecessity] = useState('');
   const [category, setCategory] = useState('');
@@ -39,6 +42,7 @@ export default function CreateFormulirPerizinanExit({navigation, route}) {
   const [totalTime, setTotalTime] = useState('');
   const [loading, setLoading] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [tokenExpired, setTokenExpired] = useState(false);
 
   useEffect(() => {
     const fetchDivisionsAndDepartments = async () => {
@@ -64,24 +68,21 @@ export default function CreateFormulirPerizinanExit({navigation, route}) {
 
   useEffect(() => {
     if (outTime && intTime) {
-      const [outHours, outMinutes, outSeconds] = outTime.split(':').map(Number);
-      const [inHours, inMinutes, inSeconds] = intTime.split(':').map(Number);
+      const [outHours, outMinutes] = outTime.split(':').map(Number);
+      const [inHours, inMinutes] = intTime.split(':').map(Number);
+      const outDate = new Date(0, 0, 0, outHours, outMinutes);
+      const inDate = new Date(0, 0, 0, inHours, inMinutes);
 
-      const outDate = new Date(0, 0, 0, outHours, outMinutes, outSeconds);
-      const inDate = new Date(0, 0, 0, inHours, inMinutes, inSeconds);
-
-      let diff = (inDate - outDate) / 1000; // Difference in seconds
+      let diff = (inDate - outDate) / 1000;
 
       if (diff < 0) {
-        diff += 24 * 60 * 60; // Handle case where inTime is past midnight
+        diff += 24 * 60 * 60;
       }
 
       const hours = Math.floor(diff / 3600);
-      diff %= 3600;
-      const minutes = Math.floor(diff / 60);
-      const seconds = diff % 60;
+      const minutes = Math.floor((diff % 3600) / 60);
 
-      setTotalTime(`${hours} jam ${minutes} menit ${seconds} detik`);
+      setTotalTime(`${hours} jam ${minutes} menit`);
     } else {
       setTotalTime('');
     }
@@ -103,9 +104,11 @@ export default function CreateFormulirPerizinanExit({navigation, route}) {
       };
 
       const response = await addPerizinan(data);
-      console.log('response', response);
+
       if (response?.status === true) {
         setShowSuccessModal(true);
+      } else if (response?.message === 'Silahkan login terlebih dahulu') {
+        setTokenExpired(true);
       } else {
         Alert.alert('Gagal', response?.message || 'Gagal menambahkan data.');
       }
@@ -124,7 +127,7 @@ export default function CreateFormulirPerizinanExit({navigation, route}) {
       <StatusBar barStyle={'default'} backgroundColor={'transparent'} />
       <Background />
       <HeaderTransparent
-        title="Perizinan keluar"
+        title="Perizinan Keluar"
         icon="arrow-left-circle-outline"
         onPress={() => navigation.goBack()}
       />
@@ -132,13 +135,7 @@ export default function CreateFormulirPerizinanExit({navigation, route}) {
         <View style={styles.container}>
           <Text style={styles.label}>Division</Text>
           <View style={{position: 'relative'}}>
-            <TextInput
-              style={styles.input}
-              value={divisionName}
-              editable={false}
-              placeholder="Masukkan ID Divisi"
-              placeholderTextColor={COLORS.grey}
-            />
+            <Text style={styles.input}>{divisionName || 'Memuat...'}</Text>
             {loadingDivision && (
               <ActivityIndicator
                 size="small"
@@ -150,13 +147,7 @@ export default function CreateFormulirPerizinanExit({navigation, route}) {
 
           <Text style={styles.label}>Department</Text>
           <View style={{position: 'relative'}}>
-            <TextInput
-              style={styles.input}
-              value={departmentName}
-              editable={false}
-              placeholder="Masukkan ID Departemen"
-              placeholderTextColor={COLORS.grey}
-            />
+            <Text style={styles.input}>{departmentName || 'Memuat...'}</Text>
             {loadingDepartment && (
               <ActivityIndicator
                 size="small"
@@ -172,7 +163,7 @@ export default function CreateFormulirPerizinanExit({navigation, route}) {
             value={regarding}
             onChangeText={setRegarding}
             placeholder="Perihal (cuti, dinas, lainnya)"
-            placeholderTextColor={COLORS.grey}
+            placeholderTextColor={COLORS.black}
           />
 
           <Text style={styles.label}>Keperluan</Text>
@@ -181,7 +172,7 @@ export default function CreateFormulirPerizinanExit({navigation, route}) {
             value={necessity}
             onChangeText={setNecessity}
             placeholder="Masukkan keperluan"
-            placeholderTextColor={COLORS.grey}
+            placeholderTextColor={COLORS.black}
           />
 
           <Text style={styles.label}>Kategori</Text>
@@ -189,31 +180,71 @@ export default function CreateFormulirPerizinanExit({navigation, route}) {
             style={styles.input}
             value={category}
             onChangeText={setCategory}
-            placeholder="Kategori (cuti, dinas, keluar, dll)"
-            placeholderTextColor={COLORS.grey}
+            placeholder="Kategori (cuti, dinas, lainnya)"
+            placeholderTextColor={COLORS.black}
           />
 
           <Text style={styles.label}>Jam Keluar</Text>
-          <TextInput
-            style={styles.input}
-            value={outTime}
-            onChangeText={setOutTime}
-            placeholder="Jam keluar (12:00:00)"
-            placeholderTextColor={COLORS.grey}
-            keyboardType="default"
-            maxLength={8}
-          />
+          <TouchableOpacity
+            onPress={() => setShowOutPicker(true)}
+            style={styles.input}>
+            <Text style={styles.clockText}>
+              {outTime || 'Pilih Jam Keluar'}
+            </Text>
+          </TouchableOpacity>
+          {showOutPicker && (
+            <DateTimePicker
+              value={new Date()}
+              mode="time"
+              is24Hour={true}
+              display="default"
+              onChange={(event, selectedDate) => {
+                setShowOutPicker(false);
+                if (selectedDate) {
+                  const hours = selectedDate
+                    .getHours()
+                    .toString()
+                    .padStart(2, '0');
+                  const minutes = selectedDate
+                    .getMinutes()
+                    .toString()
+                    .padStart(2, '0');
+                  setOutTime(`${hours}:${minutes}`);
+                }
+              }}
+            />
+          )}
 
           <Text style={styles.label}>Jam Kembali</Text>
-          <TextInput
-            style={styles.input}
-            value={intTime}
-            onChangeText={setIntTime}
-            placeholder="Jam kembali (13:00:00)"
-            placeholderTextColor={COLORS.grey}
-            keyboardType="default"
-            maxLength={8}
-          />
+          <TouchableOpacity
+            onPress={() => setShowIntPicker(true)}
+            style={styles.input}>
+            <Text style={styles.clockText}>
+              {intTime || 'Pilih Jam Kembali'}
+            </Text>
+          </TouchableOpacity>
+          {showIntPicker && (
+            <DateTimePicker
+              value={new Date()}
+              mode="time"
+              is24Hour={true}
+              display="default"
+              onChange={(event, selectedDate) => {
+                setShowIntPicker(false);
+                if (selectedDate) {
+                  const hours = selectedDate
+                    .getHours()
+                    .toString()
+                    .padStart(2, '0');
+                  const minutes = selectedDate
+                    .getMinutes()
+                    .toString()
+                    .padStart(2, '0');
+                  setIntTime(`${hours}:${minutes}`);
+                }
+              }}
+            />
+          )}
 
           <Text style={styles.label}>Durasi Waktu</Text>
           <Text style={styles.input}>
@@ -231,7 +262,6 @@ export default function CreateFormulirPerizinanExit({navigation, route}) {
           </View>
         </View>
       </ScrollView>
-
       <ModalCustom
         visible={showSuccessModal}
         onRequestClose={() => setShowSuccessModal(false)}
@@ -242,15 +272,32 @@ export default function CreateFormulirPerizinanExit({navigation, route}) {
           setShowSuccessModal(false);
           navigation.goBack();
         }}
-        TextColorButton="white"
         buttonTitle="Kembali"
         buttonDisable={false}
+      />
+
+      <ModalCustom
+        visible={tokenExpired}
+        onRequestClose={() => setTokenExpired(false)}
+        iconModalName="alert-circle-outline"
+        title="Sesi Berakhir"
+        description="Sesi Anda telah berakhir. Silakan login ulang untuk memperbarui data."
+        buttonSubmit={() => {
+          setTokenExpired(false);
+          navigation.navigate('SignIn');
+        }}
+        buttonTitle="Login Ulang"
       />
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  clockText: {
+    color: COLORS.black,
+    fontSize: DIMENS.m,
+    fontWeight: '400',
+  },
   scrollContainer: {
     paddingBottom: 20,
   },
@@ -265,12 +312,12 @@ const styles = StyleSheet.create({
   },
   input: {
     borderWidth: 0.5,
-    borderColor: COLORS.grey,
+    color: COLORS.black,
     padding: 10,
     borderRadius: 8,
     marginBottom: 15,
     backgroundColor: COLORS.champagne,
-    color: COLORS.black,
+    justifyContent: 'center',
   },
   activityIndicator: {
     position: 'absolute',

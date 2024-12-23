@@ -29,6 +29,7 @@ import {
   SplashScreen,
 } from '../screens';
 import BottomTabs from './BottomTabs';
+import TopTapBar from './TopTapBar';
 import DrawerNavigation from './drawer';
 
 const Stack = createNativeStackNavigator();
@@ -82,6 +83,7 @@ export default function Navigator() {
       <Stack.Screen name="NotificationDetail" component={NotificationDetail} />
       <Stack.Screen name="QrCodePresense" component={QrCodePresense} />
       <Stack.Screen name="QrCodeAdmin" component={QrCodeAdmin} />
+      <Stack.Screen name="TopTabBar" component={TopTapBar} />
     </Stack.Navigator>
   );
 }

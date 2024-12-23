@@ -1,12 +1,13 @@
+import DateTimePicker from '@react-native-community/datetimepicker';
 import React, {useEffect, useState} from 'react';
 import {
-  ActivityIndicator,
   SafeAreaView,
   ScrollView,
   StatusBar,
   StyleSheet,
   Text,
   TextInput,
+  TouchableOpacity,
   View,
 } from 'react-native';
 import {patchPerizinan} from '..';
@@ -16,86 +17,86 @@ import {
   Gap,
   HeaderTransparent,
   ModalCustom,
+  ModalLoading,
 } from '../../../Component';
-import {COLORS} from '../../../utils';
-import {DIMENS} from '../../../utils/dimens';
+import {COLORS, DIMENS} from '../../../utils';
 import {getDepartmentDetail} from '../../Departmant';
-import {getDivisionDetail} from '../../History/Divisi';
+import {getDivisionDetail} from '../../Divisi';
 
 export default function EditFormulirPerizinan({navigation, route}) {
   const {id_lisences, initialData} = route.params;
-  console.log('data edit', initialData);
-
+  const isExitPermit = initialData.is_exit_permit === '1';
   const [divisionId, setDivisionId] = useState(initialData.division_id || '');
   const [departmentId, setDepartmentId] = useState(
     initialData.department_id || '',
   );
   const [regarding, setRegarding] = useState(initialData.regarding || '');
   const [necessity, setNecessity] = useState(initialData.necessity || '');
+  const [showOutPicker, setShowOutPicker] = useState(false);
+  const [showIntPicker, setShowIntPicker] = useState(false);
   const [category, setCategory] = useState(initialData.category || '');
   const [outTime, setOutTime] = useState(initialData.out || '');
   const [intTime, setIntTime] = useState(initialData.in || '');
-  const [totDay, setTotDay] = useState(initialData.tot_day || '');
+  const [startDate, setStartDate] = useState(new Date());
+  const [endDate, setEndDate] = useState(new Date());
+  const [showStartDatePicker, setShowStartDatePicker] = useState(false);
+  const [showEndDatePicker, setShowEndDatePicker] = useState(false);
   const [loading, setLoading] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [divisionName, setDivisionName] = useState('');
   const [departmentName, setDepartmentName] = useState('');
-  const [loadingDivision, setLoadingDivision] = useState(false);
-  const [loadingDepartment, setLoadingDepartment] = useState(false);
   const [tokenExpired, setTokenExpired] = useState(false);
+  const [totalTime, setTotalTime] = useState('');
+  const [totalDays, setTotalDays] = useState(0);
 
   useEffect(() => {
     const fetchDivisionAndDepartment = async () => {
       try {
+        setLoading(true);
         if (divisionId) {
-          setLoadingDivision(true);
           const division = await getDivisionDetail(divisionId);
+          if (division?.message === 'Silahkan login terlebih dahulu') {
+            setTokenExpired(true);
+            return;
+          }
           setDivisionName(division.data?.name);
+          console.log('divisi', division.data?.name);
         }
 
         if (departmentId) {
-          setLoadingDepartment(true);
           const department = await getDepartmentDetail(departmentId);
+          if (department?.message === 'Silahkan login terlebih dahulu') {
+            setTokenExpired(true);
+            return;
+          }
           setDepartmentName(department.data?.name);
+          console.log('department', department.data?.name);
         }
       } catch (error) {
         console.error('Error fetching division or department:', error);
       } finally {
-        setLoadingDivision(false);
-        setLoadingDepartment(false);
+        setLoading(false);
       }
     };
 
     fetchDivisionAndDepartment();
   }, [divisionId, departmentId]);
 
-  const validateTimeFormat = time => {
-    const timeFormat = /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]$/;
-    return timeFormat.test(time);
-  };
-
   const handleUpdate = async () => {
     setLoading(true);
-    if (!validateTimeFormat(outTime) || !validateTimeFormat(intTime)) {
-      alert(
-        'Format waktu tidak valid. Harap gunakan format HH:mm:ss, Contoh (12:00:00).',
-      );
-      setLoading(false);
-      return;
-    }
-
     try {
-      const response = await patchPerizinan(id_lisences, {
+      const payload = {
         division_id: divisionId,
         department_id: departmentId,
         regarding,
         necessity,
         category,
-        out: outTime,
-        in: intTime,
-        tot_day: totDay,
-      });
-      console.log('Response server:', response.data);
+        ...(isExitPermit
+          ? {out: outTime, in: intTime, tot_day: totalTime}
+          : {start_date: startDate, end_date: endDate, tot_day: totalDays}),
+      };
+
+      const response = await patchPerizinan(id_lisences, payload);
 
       if (response?.message === 'Silahkan login terlebih dahulu') {
         setTokenExpired(true);
@@ -106,7 +107,6 @@ export default function EditFormulirPerizinan({navigation, route}) {
         console.log('Update berhasil:', response.message);
         setModalVisible(true);
       } else {
-        console.log('Gagal merubah data:', response.message);
         alert('Gagal merubah data: ' + response.message);
       }
     } catch (error) {
@@ -116,6 +116,34 @@ export default function EditFormulirPerizinan({navigation, route}) {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (outTime && intTime) {
+      const [outHours, outMinutes] = outTime.split(':').map(Number);
+      const [inHours, inMinutes] = intTime.split(':').map(Number);
+      const outDate = new Date(0, 0, 0, outHours, outMinutes);
+      const inDate = new Date(0, 0, 0, inHours, inMinutes);
+
+      let diff = (inDate - outDate) / 1000;
+
+      if (diff < 0) {
+        diff += 24 * 60 * 60;
+      }
+
+      const hours = Math.floor(diff / 3600);
+      const minutes = Math.floor((diff % 3600) / 60);
+
+      setTotalTime(`${hours} jam ${minutes} menit`);
+    } else {
+      setTotalTime('');
+    }
+  }, [outTime, intTime]);
+
+  useEffect(() => {
+    const diffTime = Math.abs(endDate - startDate);
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    setTotalDays(diffDays);
+  }, [startDate, endDate]);
 
   return (
     <SafeAreaView style={{flex: 1}}>
@@ -128,54 +156,26 @@ export default function EditFormulirPerizinan({navigation, route}) {
       />
       <ScrollView contentContainerStyle={styles.container}>
         <Text style={styles.label}>Division</Text>
-        <View style={{position: 'relative'}}>
-          <TextInput
-            style={styles.input}
-            value={divisionName}
-            onChangeText={text => {
-              setDivisionId('');
-              setDivisionName(text);
-            }}
-            placeholderTextColor={COLORS.grey}
-          />
-          {loadingDivision && (
-            <ActivityIndicator
-              size="small"
-              color={COLORS.black}
-              style={{
-                position: 'absolute',
-                right: 10,
-                top: '50%',
-                transform: [{translateY: -10}],
-              }}
-            />
-          )}
-        </View>
+        <TextInput
+          style={styles.input}
+          value={divisionName}
+          onChangeText={text => {
+            setDivisionId('');
+            setDivisionName(text);
+          }}
+          placeholderTextColor={COLORS.black}
+        />
 
         <Text style={styles.label}>Department</Text>
-        <View style={{position: 'relative'}}>
-          <TextInput
-            style={styles.input}
-            value={departmentName}
-            onChangeText={text => {
-              setDepartmentId('');
-              setDepartmentName(text);
-            }}
-            placeholderTextColor={COLORS.grey}
-          />
-          {loadingDepartment && (
-            <ActivityIndicator
-              size="small"
-              color={COLORS.black}
-              style={{
-                position: 'absolute',
-                right: 10,
-                top: '50%',
-                transform: [{translateY: -10}],
-              }}
-            />
-          )}
-        </View>
+        <TextInput
+          style={styles.input}
+          value={departmentName}
+          onChangeText={text => {
+            setDepartmentId('');
+            setDepartmentName(text);
+          }}
+          placeholderTextColor={COLORS.black}
+        />
 
         <Text style={styles.label}>Perihal</Text>
         <TextInput
@@ -183,7 +183,7 @@ export default function EditFormulirPerizinan({navigation, route}) {
           value={regarding}
           onChangeText={setRegarding}
           placeholder="Perihal (cuti, dinas, lainnya)"
-          placeholderTextColor={COLORS.grey}
+          placeholderTextColor={COLORS.black}
         />
 
         <Text style={styles.label}>Keperluan</Text>
@@ -192,50 +192,128 @@ export default function EditFormulirPerizinan({navigation, route}) {
           value={necessity}
           onChangeText={setNecessity}
           placeholder="Masukkan keperluan"
-          placeholderTextColor={COLORS.grey}
+          placeholderTextColor={COLORS.black}
         />
 
-        <Text style={styles.label}>Kategori</Text>
-        <TextInput
-          style={styles.input}
-          value={category}
-          onChangeText={setCategory}
-          placeholder="Kategori (cuti, dinas, keluar, dll)"
-          placeholderTextColor={COLORS.grey}
-        />
+        {isExitPermit ? (
+          <>
+            <Text style={styles.label}>Jam Keluar</Text>
+            <TouchableOpacity
+              onPress={() => setShowOutPicker(true)}
+              style={styles.input}>
+              <Text style={styles.clockText}>
+                {outTime || 'Pilih Jam keluar'}
+              </Text>
+            </TouchableOpacity>
+            {showOutPicker && (
+              <DateTimePicker
+                value={new Date()}
+                mode="time"
+                is24Hour={true}
+                display="default"
+                onChange={(event, selectedClock) => {
+                  setShowOutPicker(false);
+                  if (selectedClock) {
+                    const hours = selectedClock
+                      .getHours()
+                      .toString()
+                      .padStart(2, '0');
+                    const minutes = selectedClock
+                      .getMinutes()
+                      .toString()
+                      .padStart(2, '0');
+                    setOutTime(`${hours}:${minutes}`);
+                  }
+                }}
+              />
+            )}
 
-        <Text style={styles.label}>Jam Keluar</Text>
-        <TextInput
-          style={styles.input}
-          value={outTime}
-          onChangeText={setOutTime}
-          placeholder="Jam keluar Contoh(12:00:00)"
-          placeholderTextColor={COLORS.grey}
-          keyboardType="default"
-          maxLength={8}
-        />
+            <Text style={styles.label}>Jam Kembali</Text>
+            <TouchableOpacity
+              onPress={() => setShowIntPicker(true)}
+              style={styles.input}>
+              <Text style={styles.clockText}>
+                {intTime || 'Pilih Jam kembali'}
+              </Text>
+            </TouchableOpacity>
+            {showIntPicker && (
+              <DateTimePicker
+                value={new Date()}
+                mode="time"
+                is24Hour={true}
+                display="default"
+                onChange={(event, selectedClock) => {
+                  setShowIntPicker(false);
+                  if (selectedClock) {
+                    const hours = selectedClock
+                      .getHours()
+                      .toString()
+                      .padStart(2, '0');
+                    const minutes = selectedClock
+                      .getMinutes()
+                      .toString()
+                      .padStart(2, '0');
+                    setIntTime(`${hours}:${minutes}`);
+                  }
+                }}
+              />
+            )}
 
-        <Text style={styles.label}>Jam Kembali</Text>
-        <TextInput
-          style={styles.input}
-          value={intTime}
-          onChangeText={setIntTime}
-          placeholder="Jam kembali Contoh(12:00:00)"
-          placeholderTextColor={COLORS.grey}
-          keyboardType="default"
-          maxLength={8}
-        />
+            <Text style={styles.label}>Durasi</Text>
+            <Text style={styles.input}>
+              {totalTime || 'Durasi belum dihitung'}
+            </Text>
+          </>
+        ) : (
+          <>
+            <Text style={styles.label}>Tanggal Mulai</Text>
+            <TouchableOpacity
+              onPress={() => setShowStartDatePicker(true)}
+              style={styles.dateInput}>
+              <Text style={styles.textDate}>
+                {startDate.toISOString().split('T')[0]}
+              </Text>
+            </TouchableOpacity>
+            {showStartDatePicker && (
+              <DateTimePicker
+                value={startDate}
+                mode="date"
+                display="default"
+                onChange={(event, selectedDate) => {
+                  setShowStartDatePicker(false);
+                  if (selectedDate) {
+                    setStartDate(selectedDate);
+                  }
+                }}
+              />
+            )}
 
-        <Text style={styles.label}>Durasi Jam</Text>
-        <TextInput
-          style={styles.input}
-          value={totDay}
-          onChangeText={setTotDay}
-          placeholder="Durasi izin (jam:menit:detik)"
-          placeholderTextColor={COLORS.grey}
-          maxLength={8}
-          keyboardType="default"
-        />
+            <Text style={styles.label}>Tanggal Berakhir</Text>
+            <TouchableOpacity
+              onPress={() => setShowEndDatePicker(true)}
+              style={styles.dateInput}>
+              <Text style={styles.textDate}>
+                {endDate.toISOString().split('T')[0]}
+              </Text>
+            </TouchableOpacity>
+            {showEndDatePicker && (
+              <DateTimePicker
+                value={endDate}
+                mode="date"
+                display="default"
+                onChange={(event, selectedDate) => {
+                  setShowEndDatePicker(false);
+                  if (selectedDate) {
+                    setEndDate(selectedDate);
+                  }
+                }}
+              />
+            )}
+
+            <Text style={styles.label}>Jumlah Hari</Text>
+            <Text style={styles.input}>{totalDays} hari</Text>
+          </>
+        )}
 
         <Gap height={20} />
         <View style={{alignItems: 'center'}}>
@@ -244,29 +322,26 @@ export default function EditFormulirPerizinan({navigation, route}) {
             onPress={handleUpdate}
             backgroundColor={COLORS.primary}
             color={'white'}
-            loading={loading}
           />
         </View>
       </ScrollView>
 
-      {/* Modal untuk notifikasi berhasil update */}
+      {/* Modal Loading */}
+      <ModalLoading visible={loading} />
+
+      {/* Modal Sukses */}
       <ModalCustom
         visible={modalVisible}
         onRequestClose={() => setModalVisible(false)}
-        iconModalName="check-circle-outline"
         title="Data Diperbarui"
-        description="Data Anda telah berhasil diperbarui."
+        description="Data berhasil diperbarui."
         buttonSubmit={() => {
           setModalVisible(false);
           navigation.goBack();
         }}
         buttonTitle="OK"
-        ColorIcon={COLORS.primary}
-        BackgroundButtonAction={COLORS.primary}
-        TextColorButton={COLORS.white}
       />
 
-      {/* Modal untuk Token Expired */}
       <ModalCustom
         visible={tokenExpired}
         onRequestClose={() => setTokenExpired(false)}
@@ -284,11 +359,23 @@ export default function EditFormulirPerizinan({navigation, route}) {
 }
 
 const styles = StyleSheet.create({
-  title: {
-    fontSize: DIMENS.l,
-    fontWeight: '500',
+  clockText: {
     color: COLORS.black,
-    marginBottom: 10,
+    fontSize: DIMENS.m,
+    fontWeight: '400',
+  },
+  textDate: {
+    color: COLORS.black,
+    fontSize: DIMENS.l,
+  },
+  dateInput: {
+    borderWidth: 0.5,
+    borderColor: COLORS.grey,
+    padding: 10,
+    borderRadius: 8,
+    marginBottom: 15,
+    backgroundColor: COLORS.champagne,
+    justifyContent: 'center',
   },
   container: {
     padding: 20,
@@ -303,7 +390,6 @@ const styles = StyleSheet.create({
     borderWidth: 0.5,
     borderColor: COLORS.grey,
     padding: 10,
-    paddingRight: 35, // Tambahkan padding kanan untuk ruang ActivityIndicator
     borderRadius: 8,
     marginBottom: 15,
     backgroundColor: COLORS.champagne,

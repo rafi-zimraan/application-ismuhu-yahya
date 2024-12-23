@@ -1,7 +1,6 @@
 import React from 'react';
 import {Image, StyleSheet, Text, View} from 'react-native';
-import {Gap} from '../../../Component';
-import {ICON_APPLIKASI} from '../../../assets';
+import {IMG_LOGO} from '../../../assets';
 import {COLORS} from '../../../utils';
 import {DIMENS} from '../../../utils/dimens';
 
@@ -10,8 +9,7 @@ export default function ClockDasboard({formatTime}) {
     <View style={styles.bodyClockWrapper}>
       <View style={styles.bodyClock}>
         <View style={styles.viewBody}>
-          <Image source={ICON_APPLIKASI} style={styles.imgLogoClock} />
-          <Gap width={10} />
+          <Image source={IMG_LOGO} style={styles.imgLogoClock} />
           <Text style={styles.txtClock}>{formatTime}</Text>
         </View>
       </View>
@@ -29,7 +27,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.white,
     elevation: 2,
     height: 35,
-    padding: 10,
+    padding: 5,
     borderRadius: 13,
   },
   viewBody: {
@@ -39,8 +37,8 @@ const styles = StyleSheet.create({
     bottom: 10,
   },
   imgLogoClock: {
-    width: 35,
-    height: 35,
+    width: 45,
+    height: 45,
   },
   txtClock: {
     textAlign: 'center',

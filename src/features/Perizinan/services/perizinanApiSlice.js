@@ -81,7 +81,7 @@ export const patchPerizinan = async (id, data) => {
 
     if (response.data?.status === true) {
       const message = response.data?.message;
-      console.log(message);
+      console.log('data api edit', response.data.message);
       return response.data;
     } else {
       throw new Error('Gagal edit perizinan');
@@ -117,6 +117,42 @@ export const addPerizinan = async data => {
       throw new Error(response.data?.message || 'Gagal menambahkan perizinan');
     }
   } catch (error) {
+    if (error.response) {
+      console.log(error.response?.data?.message || 'Terjadi kesalahan');
+    } else {
+      console.log(error.message);
+    }
+    throw error;
+  }
+};
+
+// Tambah data perizinan cuti
+export const addCutiPerizinan = async data => {
+  try {
+    // Ambil token dari EncryptedStorage
+    const token = await EncryptedStorage.getItem('token');
+    if (!token) {
+      throw new Error('Token expired, silahkan login terlebih dahulu');
+    }
+
+    // Kirim request ke endpoint lisences-cuti dengan method POST
+    const response = await api.post('lisences-cuti', data, {
+      headers: {
+        Authorization: `Bearer ${JSON.parse(token)}`,
+      },
+    });
+
+    // Periksa apakah response menunjukkan keberhasilan
+    if (response.data?.status === true) {
+      console.log('Data berhasil ditambahkan:', response.data?.message);
+      return response.data;
+    } else {
+      throw new Error(
+        response.data?.message || 'Gagal menambahkan data izin cuti',
+      );
+    }
+  } catch (error) {
+    // Tangani error
     if (error.response) {
       console.log(error.response?.data?.message || 'Terjadi kesalahan');
     } else {
