@@ -1,4 +1,4 @@
-import {createDrawerNavigator} from '@react-navigation/drawer';
+import {DrawerContent, createDrawerNavigator} from '@react-navigation/drawer';
 import {DasboardMaster} from '../screens';
 import BottomTabs from './BottomTabs';
 
@@ -11,8 +11,7 @@ export default function DrawerNavigation({route}) {
     <Drawer.Navigator
       screenOptions={{headerShown: false, drawerPosition: 'right'}}
       initialRouteName={initialRouteName}
-      // drawerContent={props => <DrawerContent {...props} />}
-    >
+      drawerContent={props => <DrawerContent {...props} />}>
       <Drawer.Screen name="DasboardPublic" component={BottomTabs} />
       <Drawer.Screen name="DasboardMaster" component={DasboardMaster} />
     </Drawer.Navigator>

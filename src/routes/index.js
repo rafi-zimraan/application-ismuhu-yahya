@@ -1,5 +1,6 @@
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import React from 'react';
+import {DetailNewInformation} from '../features/Dasboard';
 import {
   CreateFormulirPerizinan,
   CreateFormulirPerizinanExit,
@@ -30,7 +31,6 @@ import {
 } from '../screens';
 import BottomTabs from './BottomTabs';
 import TopTapBar from './TopTapBar';
-import DrawerNavigation from './drawer';
 
 const Stack = createNativeStackNavigator();
 
@@ -48,7 +48,7 @@ export default function Navigator() {
       <Stack.Screen name="SplashScreen" component={SplashScreen} />
       <Stack.Screen name="SignIn" component={SignIn} />
       <Stack.Screen name="SignUp" component={SignUp} />
-      <Stack.Screen name="Dasboard" component={DrawerNavigation} />
+      <Stack.Screen name="Dasboard" component={BottomTabs} />
       <Stack.Screen
         name="ScannerQrCodeByCategoryAbsensi"
         component={ScannerQrCodeByCategoryAbsensi}
@@ -84,6 +84,10 @@ export default function Navigator() {
       <Stack.Screen name="QrCodePresense" component={QrCodePresense} />
       <Stack.Screen name="QrCodeAdmin" component={QrCodeAdmin} />
       <Stack.Screen name="TopTabBar" component={TopTapBar} />
+      <Stack.Screen
+        name="DetailNewInformation"
+        component={DetailNewInformation}
+      />
     </Stack.Navigator>
   );
 }

@@ -57,6 +57,7 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
     position: 'absolute',
-    backgroundColor: COLORS.blackDark,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    // backgroundColor: COLORS.blackDark,
   },
 });

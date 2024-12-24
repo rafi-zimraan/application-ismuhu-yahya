@@ -1,6 +1,7 @@
 import AyatComponent from './components/AyatComponent';
 import ButtonMenu from './components/ButtonMenu';
 import ClockDasboard from './components/ClockDasboard';
+import DetailNewInformation from './components/DetailNewInformation';
 import HeaderComponent from './components/HeaderComponent';
 import NewsComponent from './components/NewsComponent';
 import fetchAyat, {fetchDailyAyah} from './services/DasboardApiSlice';
@@ -12,6 +13,7 @@ export {
   HeaderComponent,
   NewsComponent,
   AyatComponent,
+  DetailNewInformation,
 };
 // slice api
 export {fetchAyat, fetchDailyAyah};

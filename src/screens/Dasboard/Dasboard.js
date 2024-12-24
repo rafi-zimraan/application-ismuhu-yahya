@@ -309,7 +309,7 @@ export default function Dasboard({navigation}) {
               onPress={() => navigation.navigate('Presensi')}
             />
           </View>
-          <Gap height={20} />
+          <Gap height={15} />
           <NewsComponent />
         </ImageBackground>
       </ScrollView>
