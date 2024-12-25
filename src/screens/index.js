@@ -3,6 +3,7 @@ import SignUp from './Auth/SignUp';
 import Dashboard from './Dasboard/Dasboard';
 import DasboardMaster from './DasboardMaster/DasboardMaster';
 import DrawerContent from './DrawerContent/DrawerContent';
+import ForgotPassword from './ForgotPassword/ForgotPassword';
 import Notification from './Notification/Notification';
 import NotificationDetail from './Notification/NotificationDetail';
 import NotificationFromCategory from './Notification/NotificationFromCategory';
@@ -21,6 +22,7 @@ import SplashScreen from './SplashScreen/SplashScreen';
 import LibDemo from './__test__/LibDemo.test';
 
 export {
+  ForgotPassword,
   QrCodePresense,
   NotificationDetail,
   ChangePassword,

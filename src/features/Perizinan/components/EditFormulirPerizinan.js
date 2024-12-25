@@ -37,8 +37,12 @@ export default function EditFormulirPerizinan({navigation, route}) {
   const [category, setCategory] = useState(initialData.category || '');
   const [outTime, setOutTime] = useState(initialData.out || '');
   const [intTime, setIntTime] = useState(initialData.in || '');
-  const [startDate, setStartDate] = useState(new Date());
-  const [endDate, setEndDate] = useState(new Date());
+  const [startDate, setStartDate] = useState(
+    new Date(initialData.start_date) || new Date(),
+  );
+  const [endDate, setEndDate] = useState(
+    new Date(initialData.end_date) || new Date(),
+  );
   const [showStartDatePicker, setShowStartDatePicker] = useState(false);
   const [showEndDatePicker, setShowEndDatePicker] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -105,6 +109,7 @@ export default function EditFormulirPerizinan({navigation, route}) {
 
       if (response && response.status === true) {
         console.log('Update berhasil:', response.message);
+
         setModalVisible(true);
       } else {
         alert('Gagal merubah data: ' + response.message);

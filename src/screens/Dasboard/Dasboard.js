@@ -135,7 +135,7 @@ export default function Dasboard({navigation}) {
 
   useEffect(() => {
     let index = 0;
-    const welcomeMessage = "Assalamu'alaikum,";
+    const welcomeMessage = "Assalamu'alaikum, ";
     const message = [
       'Orang Baik',
       'Orang Kaya',
@@ -231,7 +231,7 @@ export default function Dasboard({navigation}) {
           source={backgroundImage}
           style={styles.imageContainer}
           resizeMode="cover">
-          <Gap height={20} />
+          <Gap height={28} />
 
           {/* Header Component */}
           <HeaderComponent

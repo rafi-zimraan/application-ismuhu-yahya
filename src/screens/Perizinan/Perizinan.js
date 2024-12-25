@@ -27,7 +27,6 @@ import {COLORS, DIMENS} from '../../utils';
 
 export default function Perizinan({navigation}) {
   const [dataHistory, setDataHistory] = useState([]);
-  console.log('data history', dataHistory);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [tokenExpired, setTokenExpired] = useState(false);
@@ -141,6 +140,15 @@ export default function Perizinan({navigation}) {
             activeOpacity={0.3}
             onPress={() =>
               navigation.navigate('TopTabBar', {
+                dataHistory: [...dataHistory], // Kirim data yang serializable
+              })
+            }>
+            <Text style={styles.txtHistorycal}>Selengkapnya</Text>
+          </TouchableOpacity>
+          {/* <TouchableOpacity
+            activeOpacity={0.3}
+            onPress={() =>
+              navigation.navigate('TopTabBar', {
                 dataHistory: dataHistory,
                 onEditPress: item =>
                   navigation.navigate('EditFormulirPerizinan', {
@@ -156,7 +164,7 @@ export default function Perizinan({navigation}) {
               })
             }>
             <Text style={styles.txtHistorycal}>Selengkapnya</Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </View>
         {loading ? (
           <View style={styles.loadingContainer}>

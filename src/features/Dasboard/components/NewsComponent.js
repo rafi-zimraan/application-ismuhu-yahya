@@ -72,7 +72,7 @@ export default function NewsComponent() {
                     <Image
                       source={{uri: `https://app.simpondok.com/${item.thumb}`}}
                       style={styles.newsImage}
-                      resizeMode="contain"
+                      resizeMode="cover"
                     />
                   ) : (
                     <View style={styles.notFoundContainer}>
@@ -116,8 +116,8 @@ const styles = StyleSheet.create({
     marginRight: 8,
   },
   newsImage: {
-    height: '100%',
-    width: 550,
+    height: '80%',
+    width: 200,
     marginRight: 15,
     borderRadius: 15,
     aspectRatio: 16 / 9,

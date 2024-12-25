@@ -16,12 +16,13 @@ export default function HeaderComponent({
       {urlPhoto ? (
         <Image source={{uri: urlPhoto}} style={styles.profileImage} />
       ) : (
-        <Icon name="account-circle" size={48} color={COLORS.white} />
+        <Icon name="account-circle" size={41} color={COLORS.white} />
       )}
       <View style={styles.textWrapper}>
-        <Icon name="hand-wave" size={25} color={COLORS.primary} />
+        <Icon name="hand-wave" size={23} color={COLORS.primary} />
         <Text style={styles.welcomeText}>{welcomeText}</Text>
       </View>
+
       <View style={styles.buttonStatus}>
         {loading ? (
           <ActivityIndicator size="small" color={COLORS.black} />
@@ -71,8 +72,8 @@ const styles = StyleSheet.create({
   buttonStatus: {
     backgroundColor: COLORS.white,
     position: 'absolute',
-    top: 30,
-    left: 52,
+    top: 35,
+    left: 45,
     width: '53%',
     borderRadius: 5,
     padding: 3,

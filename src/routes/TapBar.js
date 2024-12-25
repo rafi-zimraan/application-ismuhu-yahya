@@ -87,7 +87,7 @@ function TabBar({state, descriptors, navigation, position}) {
 const styles = StyleSheet.create({
   tabContainer: {
     flexDirection: 'row',
-    borderBottomWidth: 1,
+    borderBottomWidth: 0.4,
     borderBottomColor: COLORS.grey,
     backgroundColor: COLORS.white,
   },
