@@ -1,23 +1,10 @@
-import EncryptedStorage from 'react-native-encrypted-storage';
 import api from '../../../utils/axiosInstance';
 
 export const sendVerificationEmail = async email => {
   try {
-    // Ambil token dari EncryptedStorage
-    const token = await EncryptedStorage.getItem('token');
-    if (!token) {
-      throw new Error('Token expired, silahkan login terlebih dahulu');
-    }
-
-    const response = await api.post(
-      '/api/mobile/forgot-password/send-email',
-      {email},
-      {
-        headers: {
-          Authorization: `Bearer ${JSON.parse(token)}`,
-        },
-      },
-    );
+    const response = await api.post('mobile/forgot-password/send-email', {
+      email,
+    });
 
     console.log('RESPONSE SEND EMAIL:', response.data);
 
@@ -43,24 +30,10 @@ export const sendVerificationEmail = async email => {
 // Verifikasi Kode OTP
 export const verifyOtpCode = async (email, code) => {
   try {
-    // Ambil token dari EncryptedStorage
-    const token = await EncryptedStorage.getItem('token');
-    if (!token) {
-      throw new Error('Token expired, silahkan login terlebih dahulu');
-    }
-
-    const response = await api.post(
-      '/api/mobile/forgot-password/verify-otp',
-      {
-        email,
-        code,
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${JSON.parse(token)}`,
-        },
-      },
-    );
+    const response = await api.post('mobile/forgot-password/verify-otp', {
+      email,
+      code,
+    });
 
     console.log('RESPONSE VERIFY OTP:', response.data);
 

@@ -77,11 +77,7 @@ export const patchPerizinan = async (id, data) => {
       },
     });
 
-    console.log('response api', response);
-
     if (response.data?.status === true) {
-      const message = response.data?.message;
-      console.log('data api edit', response.data.message);
       return response.data;
     } else {
       throw new Error('Gagal edit perizinan');

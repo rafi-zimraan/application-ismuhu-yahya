@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import HTMLView from 'react-native-htmlview'; // Ubah ini
 import Share from 'react-native-share';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {HeaderTransparent, ModalLoading} from '../../../Component';
@@ -128,7 +129,8 @@ export default function DetailNewInformation({route, navigation}) {
 
           {/* Description */}
           <View style={styles.descriptionContainer}>
-            <Text style={styles.description}>{description}</Text>
+            {/* <Text style={styles.description}>{description}</Text> */}
+            <HTMLView value={description} stylesheet={htmlStyles} />
           </View>
         </View>
       </ScrollView>
@@ -225,8 +227,12 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 8,
   },
-  description: {
+});
+
+const htmlStyles = StyleSheet.create({
+  p: {
     fontSize: DIMENS.s,
     color: COLORS.darkGray,
+    marginVertical: 4,
   },
 });
