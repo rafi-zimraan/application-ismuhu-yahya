@@ -18,8 +18,7 @@ import {useDispatch} from 'react-redux';
 import {Gap} from '../../Component';
 import {IMG_LOGIN} from '../../assets';
 import {ButtonAuth, FormInput, login} from '../../features/authentication';
-import {COLORS} from '../../utils';
-import {DIMENS} from '../../utils/dimens';
+import {COLORS, DIMENS} from '../../utils';
 
 export default function SignIn({navigation}) {
   const {control, handleSubmit, setValue} = useForm();
@@ -122,7 +121,9 @@ export default function SignIn({navigation}) {
               <Gap height={15} />
               <View style={styles.forgotPassword}>
                 <Text style={styles.forgotPasswordText}>Lupa kata sandi?</Text>
-                <TouchableOpacity activeOpacity={0.7}>
+                <TouchableOpacity
+                  activeOpacity={0.7}
+                  onPress={() => navigation.navigate('ForgotPassword')}>
                   <Text style={styles.resetText}> Atur ulang disini!</Text>
                 </TouchableOpacity>
               </View>

@@ -41,11 +41,13 @@ export default function HelpSetting({navigation}) {
     <SafeAreaView style={{flex: 1}}>
       <StatusBar barStyle={'dark-content'} backgroundColor={'transparent'} />
       <Background />
-      <HeaderTransparent
-        title="Pusat Bantuan"
-        icon="arrow-left-circle-outline"
-        onPress={() => navigation.goBack()}
-      />
+      <View style={styles.headerWrapper}>
+        <HeaderTransparent
+          title="Pusat Bantuan"
+          icon="arrow-left-circle-outline"
+          onPress={() => navigation.goBack()}
+        />
+      </View>
       <ScrollView style={styles.container}>
         {helpData.map((item, index) => (
           <View key={index}>
@@ -80,6 +82,14 @@ export default function HelpSetting({navigation}) {
 }
 
 const styles = StyleSheet.create({
+  headerWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 10,
+    backgroundColor: '#fff',
+    elevation: 3,
+  },
   container: {
     flex: 1,
     padding: 20,

@@ -42,16 +42,16 @@ const HistoryItem = ({item, onEditPress, onDeletePress}) => {
 
   const renderDateButtons = () => (
     <View style={styles.dateButtonsRow}>
-      {item.is_exit_permit === '1' ? (
-        <>
-          <View style={[styles.dateButton, {backgroundColor: COLORS.greenBoy}]}>
-            <Text style={styles.dateButtonText}>{item.out}</Text>
-          </View>
-          <View style={[styles.dateButton, {backgroundColor: COLORS.red}]}>
-            <Text style={styles.dateButtonText}>{item.in}</Text>
-          </View>
-        </>
-      ) : (
+      {/* {item.is_exit_permit === '1' ? ( */}
+      <>
+        <View style={[styles.dateButton, {backgroundColor: COLORS.greenBoy}]}>
+          <Text style={styles.dateButtonText}>{item.out}</Text>
+        </View>
+        <View style={[styles.dateButton, {backgroundColor: COLORS.red}]}>
+          <Text style={styles.dateButtonText}>{item.in}</Text>
+        </View>
+      </>
+      {/* ) : (
         <>
           <View style={[styles.viewDate, {backgroundColor: COLORS.greenBoy}]}>
             <Text style={styles.dateButtonText}>
@@ -65,32 +65,32 @@ const HistoryItem = ({item, onEditPress, onDeletePress}) => {
             </Text>
           </View>
         </>
-      )}
+      )} */}
     </View>
   );
 
   const renderPermitContent = () => {
-    if (item.is_exit_permit === '1') {
-      return (
-        <>
-          <View style={styles.textRow}>
-            <Text style={styles.label}>Durasi Jam</Text>
-            <Text style={styles.value}>
-              : {calculateDuration(item.out, item.in)}
-            </Text>
-          </View>
-        </>
-      );
-    } else {
-      return (
-        <>
-          <View style={styles.textRow}>
-            <Text style={styles.label}>Jumlah Hari</Text>
-            <Text style={styles.value}>: {item.tot_day} Hari</Text>
-          </View>
-        </>
-      );
-    }
+    // if (item.is_exit_permit === '1') {
+    return (
+      <>
+        <View style={styles.textRow}>
+          <Text style={styles.label}>Durasi Jam</Text>
+          <Text style={styles.value}>
+            : {calculateDuration(item.out, item.in)}
+          </Text>
+        </View>
+      </>
+    );
+    // } else {
+    //   return (
+    //     <>
+    //       <View style={styles.textRow}>
+    //         <Text style={styles.label}>Jumlah Hari</Text>
+    //         <Text style={styles.value}>: {item.tot_day} Hari</Text>
+    //       </View>
+    //     </>
+    //   );
+    // }
   };
 
   return (

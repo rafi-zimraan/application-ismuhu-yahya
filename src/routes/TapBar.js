@@ -6,20 +6,21 @@ function TabBar({state, descriptors, navigation, position}) {
   const opacityAnim = useRef(new Animated.Value(1)).current;
 
   useEffect(() => {
-    // Efek fade-in/out saat tab berubah
-    Animated.sequence([
-      Animated.timing(opacityAnim, {
-        toValue: 0.5, // Redupkan
-        duration: 150,
-        useNativeDriver: true,
-      }),
-      Animated.timing(opacityAnim, {
-        toValue: 1, // Kembali normal
-        duration: 150,
-        useNativeDriver: true,
-      }),
-    ]).start();
-  }, [state.index]);
+    if (state.routes.length > 1) {
+      Animated.sequence([
+        Animated.timing(opacityAnim, {
+          toValue: 0.5,
+          duration: 150,
+          useNativeDriver: true,
+        }),
+        Animated.timing(opacityAnim, {
+          toValue: 1,
+          duration: 150,
+          useNativeDriver: true,
+        }),
+      ]).start();
+    }
+  }, [state.index, state.routes.length]);
 
   return (
     <Animated.View style={[styles.tabContainer, {opacity: opacityAnim}]}>
@@ -53,11 +54,13 @@ function TabBar({state, descriptors, navigation, position}) {
           });
         };
 
-        const inputRange = state.routes.map((_, i) => i);
-        const opacity = position.interpolate({
-          inputRange,
-          outputRange: inputRange.map(i => (i === index ? 1 : 0.5)),
-        });
+        const opacity =
+          state.routes.length > 1
+            ? position.interpolate({
+                inputRange: state.routes.map((_, i) => i),
+                outputRange: state.routes.map(i => (i === index ? 1 : 0.5)),
+              })
+            : 1;
 
         return (
           <TouchableOpacity

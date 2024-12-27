@@ -157,14 +157,14 @@ export default function CreateFormulirPerizinanExit({navigation, route}) {
             )}
           </View>
 
-          <Text style={styles.label}>Perihal</Text>
+          {/* <Text style={styles.label}>Perihal</Text>
           <TextInput
             style={styles.input}
             value={regarding}
             onChangeText={setRegarding}
             placeholder="Perihal (cuti, dinas, lainnya)"
             placeholderTextColor={COLORS.black}
-          />
+          /> */}
 
           <Text style={styles.label}>Keperluan</Text>
           <TextInput
@@ -174,7 +174,7 @@ export default function CreateFormulirPerizinanExit({navigation, route}) {
             placeholder="Masukkan keperluan"
             placeholderTextColor={COLORS.black}
           />
-
+          {/* 
           <Text style={styles.label}>Kategori</Text>
           <TextInput
             style={styles.input}
@@ -182,7 +182,7 @@ export default function CreateFormulirPerizinanExit({navigation, route}) {
             onChangeText={setCategory}
             placeholder="Kategori (cuti, dinas, lainnya)"
             placeholderTextColor={COLORS.black}
-          />
+          /> */}
 
           <Text style={styles.label}>Jam Keluar</Text>
           <TouchableOpacity

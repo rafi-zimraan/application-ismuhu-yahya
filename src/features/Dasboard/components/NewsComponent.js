@@ -27,6 +27,7 @@ export default function NewsComponent() {
       setLoading(true);
       try {
         const response = await getAllImageInformation();
+        console.log('response information', response);
         setNewsData(response);
       } catch (error) {
         console.log('Error fetching news data:', error.message);
@@ -62,26 +63,17 @@ export default function NewsComponent() {
             showsHorizontalScrollIndicator={false}
             stickyHeaderHiddenOnScroll
             stickyHeaderIndices={[0]}
-            style={{flex: 1}}>
-            {newsData && newsData.length > 0 ? (
+            style={{flex: 1, alignSelf: 'center'}}>
+            {newsData.length > 0 ? (
               newsData.map((item, index) => (
                 <TouchableOpacity
                   key={index}
                   onPress={() => handleOnPress(item.id)}>
-                  {item.thumb ? (
-                    <Image
-                      source={{uri: `https://app.simpondok.com/${item.thumb}`}}
-                      style={styles.newsImage}
-                      resizeMode="cover"
-                    />
-                  ) : (
-                    <View style={styles.notFoundContainer}>
-                      <Image
-                        source={ICON_NOTFOUND_DATA}
-                        style={styles.newsImageNotFound}
-                      />
-                    </View>
-                  )}
+                  <Image
+                    source={{uri: `https://app.simpondok.com/${item.thumb}`}}
+                    style={styles.newsImage}
+                    resizeMode="cover"
+                  />
                 </TouchableOpacity>
               ))
             ) : (

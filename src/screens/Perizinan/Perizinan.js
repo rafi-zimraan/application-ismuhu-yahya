@@ -27,6 +27,7 @@ import {COLORS, DIMENS} from '../../utils';
 
 export default function Perizinan({navigation}) {
   const [dataHistory, setDataHistory] = useState([]);
+  console.log('dataHistory', dataHistory);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [tokenExpired, setTokenExpired] = useState(false);
@@ -140,31 +141,11 @@ export default function Perizinan({navigation}) {
             activeOpacity={0.3}
             onPress={() =>
               navigation.navigate('TopTabBar', {
-                dataHistory: [...dataHistory], // Kirim data yang serializable
+                dataHistory: [...dataHistory],
               })
             }>
             <Text style={styles.txtHistorycal}>Selengkapnya</Text>
           </TouchableOpacity>
-          {/* <TouchableOpacity
-            activeOpacity={0.3}
-            onPress={() =>
-              navigation.navigate('TopTabBar', {
-                dataHistory: dataHistory,
-                onEditPress: item =>
-                  navigation.navigate('EditFormulirPerizinan', {
-                    id_lisences: item.id,
-                    initialData: item,
-                  }),
-                onDeletePress: async item => {
-                  setSelectedDeleteId(item.id);
-                  setDeleteModalVisible(true);
-                },
-                onRefresh: onRefresh,
-                refreshing: refreshing,
-              })
-            }>
-            <Text style={styles.txtHistorycal}>Selengkapnya</Text>
-          </TouchableOpacity> */}
         </View>
         {loading ? (
           <View style={styles.loadingContainer}>
@@ -210,8 +191,6 @@ export default function Perizinan({navigation}) {
       <FloatingButton
         iconName="exit-to-app"
         label={'Keluar'}
-        style={{bottom: 110, right: 20}}
-        backgroundColor={'#005F73'}
         onPress={() =>
           navigation.navigate('CreateFormulirPerizinanExit', {
             division_id: userDivisionId,
@@ -221,7 +200,7 @@ export default function Perizinan({navigation}) {
       />
 
       {/* Perinan cuti / dalam jangan waktu yang lama */}
-      <FloatingButton
+      {/* <FloatingButton
         iconName="calendar-check"
         label={'Cuti'}
         style={{bottom: 10, right: 20}}
@@ -232,7 +211,7 @@ export default function Perizinan({navigation}) {
             department_id: userDepartmentId,
           })
         }
-      />
+      /> */}
 
       {/* Modal untuk Token Expired */}
       <ModalCustom

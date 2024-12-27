@@ -7,6 +7,7 @@ import {
   StyleSheet,
   Text,
   TextInput,
+  ToastAndroid,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -109,6 +110,13 @@ export default function EditFormulirPerizinan({navigation, route}) {
 
       if (response && response.status === true) {
         console.log('Update berhasil:', response.message);
+        ToastAndroid.show(response?.message, ToastAndroid.SHORT);
+
+        const {onSave} = route.params || {};
+
+        if (onSave) {
+          onSave({...initialData, ...payload});
+        }
 
         setModalVisible(true);
       } else {
@@ -331,15 +339,13 @@ export default function EditFormulirPerizinan({navigation, route}) {
         </View>
       </ScrollView>
 
-      {/* Modal Loading */}
       <ModalLoading visible={loading} />
-
-      {/* Modal Sukses */}
       <ModalCustom
         visible={modalVisible}
         onRequestClose={() => setModalVisible(false)}
         title="Data Diperbarui"
         description="Data berhasil diperbarui."
+        iconModalName="check-circle"
         buttonSubmit={() => {
           setModalVisible(false);
           navigation.goBack();

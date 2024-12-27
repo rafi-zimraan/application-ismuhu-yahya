@@ -132,150 +132,163 @@
 //   },
 // });
 
-import React, {useEffect, useRef, useState} from 'react';
-import {
-  Alert,
-  Image,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
-import {Camera, useCameraDevices} from 'react-native-vision-camera';
+// import React, {useEffect, useRef, useState} from 'react';
+// import {
+//   Alert,
+//   Image,
+//   StyleSheet,
+//   Text,
+//   TouchableOpacity,
+//   View,
+// } from 'react-native';
+// import {Camera, useCameraDevices} from 'react-native-vision-camera';
 
-export default function RegistrationWithCamera() {
-  const cameraRef = useRef(null);
-  const [hasPermission, setHasPermission] = useState(false);
-  const [photo, setPhoto] = useState(null);
-  const devices = useCameraDevices();
-  const device = devices.back;
+// export default function RegistrationWithCamera() {
+//   const cameraRef = useRef(null);
+//   const [hasPermission, setHasPermission] = useState(false);
+//   const [photo, setPhoto] = useState(null);
+//   const devices = useCameraDevices();
+//   const device = devices.back;
 
-  useEffect(() => {
-    const requestPermission = async () => {
-      const permission = await Camera.getCameraPermissionStatus();
-      if (permission !== 'authorized') {
-        const newPermission = await Camera.requestCameraPermission();
-        setHasPermission(newPermission === 'authorized');
-      } else {
-        setHasPermission(true);
-      }
-    };
-    requestPermission();
-  }, []);
+//   useEffect(() => {
+//     const requestPermission = async () => {
+//       const permission = await Camera.getCameraPermissionStatus();
+//       if (permission !== 'authorized') {
+//         const newPermission = await Camera.requestCameraPermission();
+//         setHasPermission(newPermission === 'authorized');
+//       } else {
+//         setHasPermission(true);
+//       }
+//     };
+//     requestPermission();
+//   }, []);
 
-  const takePhoto = async () => {
-    if (cameraRef.current) {
-      try {
-        const snapshot = await cameraRef.current.takePhoto({
-          quality: 0.8,
-        });
-        setPhoto(snapshot.path);
-      } catch (error) {
-        Alert.alert('Error', 'Failed to take photo: ' + error.message);
-      }
-    }
-  };
+//   const takePhoto = async () => {
+//     if (cameraRef.current) {
+//       try {
+//         const snapshot = await cameraRef.current.takePhoto({
+//           quality: 0.8,
+//         });
+//         setPhoto(snapshot.path);
+//       } catch (error) {
+//         Alert.alert('Error', 'Failed to take photo: ' + error.message);
+//       }
+//     }
+//   };
 
-  const retakePhoto = () => {
-    setPhoto(null);
-  };
+//   const retakePhoto = () => {
+//     setPhoto(null);
+//   };
 
-  if (!device) return <Text>Loading camera...</Text>;
+//   if (!device) return <Text>Loading camera...</Text>;
 
+//   return (
+//     <View style={styles.container}>
+//       {!photo ? (
+//         <Camera
+//           ref={cameraRef}
+//           style={styles.camera}
+//           device={device}
+//           isActive={true}
+//           photo={true}>
+//           <View style={styles.cameraOverlay}>
+//             <TouchableOpacity style={styles.captureButton} onPress={takePhoto}>
+//               <View style={styles.innerCircle} />
+//             </TouchableOpacity>
+//           </View>
+//         </Camera>
+//       ) : (
+//         <View style={styles.previewContainer}>
+//           <Image source={{uri: `file://${photo}`}} style={styles.preview} />
+//           <View style={styles.actionButtons}>
+//             <TouchableOpacity style={styles.retakeButton} onPress={retakePhoto}>
+//               <Text style={styles.buttonText}>Retake</Text>
+//             </TouchableOpacity>
+//             <TouchableOpacity
+//               style={styles.saveButton}
+//               onPress={() => Alert.alert('Success', 'Photo has been saved.')}>
+//               <Text style={styles.buttonText}>Save</Text>
+//             </TouchableOpacity>
+//           </View>
+//         </View>
+//       )}
+//     </View>
+//   );
+// }
+
+// const styles = StyleSheet.create({
+//   container: {
+//     flex: 1,
+//     backgroundColor: '#000',
+//   },
+//   camera: {
+//     flex: 1,
+//   },
+//   cameraOverlay: {
+//     position: 'absolute',
+//     bottom: 30,
+//     width: '100%',
+//     alignItems: 'center',
+//   },
+//   captureButton: {
+//     width: 80,
+//     height: 80,
+//     borderRadius: 40,
+//     backgroundColor: '#fff',
+//     justifyContent: 'center',
+//     alignItems: 'center',
+//   },
+//   innerCircle: {
+//     width: 60,
+//     height: 60,
+//     borderRadius: 30,
+//     backgroundColor: '#FF4C4C',
+//   },
+//   previewContainer: {
+//     flex: 1,
+//     justifyContent: 'center',
+//     alignItems: 'center',
+//     backgroundColor: '#000',
+//   },
+//   preview: {
+//     width: '90%',
+//     height: '70%',
+//     borderRadius: 10,
+//     marginBottom: 20,
+//   },
+//   actionButtons: {
+//     flexDirection: 'row',
+//     justifyContent: 'space-between',
+//     width: '80%',
+//   },
+//   retakeButton: {
+//     backgroundColor: '#FF4C4C',
+//     paddingVertical: 10,
+//     paddingHorizontal: 20,
+//     borderRadius: 5,
+//   },
+//   saveButton: {
+//     backgroundColor: '#4CAF50',
+//     paddingVertical: 10,
+//     paddingHorizontal: 20,
+//     borderRadius: 5,
+//   },
+//   buttonText: {
+//     color: '#fff',
+//     fontSize: 16,
+//     fontWeight: 'bold',
+//   },
+// });
+
+import React from 'react';
+import {StyleSheet, Text, View} from 'react-native';
+
+export default function LibDemo() {
   return (
-    <View style={styles.container}>
-      {!photo ? (
-        <Camera
-          ref={cameraRef}
-          style={styles.camera}
-          device={device}
-          isActive={true}
-          photo={true}>
-          <View style={styles.cameraOverlay}>
-            <TouchableOpacity style={styles.captureButton} onPress={takePhoto}>
-              <View style={styles.innerCircle} />
-            </TouchableOpacity>
-          </View>
-        </Camera>
-      ) : (
-        <View style={styles.previewContainer}>
-          <Image source={{uri: `file://${photo}`}} style={styles.preview} />
-          <View style={styles.actionButtons}>
-            <TouchableOpacity style={styles.retakeButton} onPress={retakePhoto}>
-              <Text style={styles.buttonText}>Retake</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.saveButton}
-              onPress={() => Alert.alert('Success', 'Photo has been saved.')}>
-              <Text style={styles.buttonText}>Save</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      )}
+    <View>
+      <Text>LibDemo</Text>
     </View>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#000',
-  },
-  camera: {
-    flex: 1,
-  },
-  cameraOverlay: {
-    position: 'absolute',
-    bottom: 30,
-    width: '100%',
-    alignItems: 'center',
-  },
-  captureButton: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    backgroundColor: '#fff',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  innerCircle: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    backgroundColor: '#FF4C4C',
-  },
-  previewContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#000',
-  },
-  preview: {
-    width: '90%',
-    height: '70%',
-    borderRadius: 10,
-    marginBottom: 20,
-  },
-  actionButtons: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    width: '80%',
-  },
-  retakeButton: {
-    backgroundColor: '#FF4C4C',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 5,
-  },
-  saveButton: {
-    backgroundColor: '#4CAF50',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 5,
-  },
-  buttonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-});
+const styles = StyleSheet.create({});

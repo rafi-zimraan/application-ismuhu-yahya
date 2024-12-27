@@ -1,6 +1,7 @@
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import React from 'react';
 import {DetailNewInformation} from '../features/Dasboard';
+import {CheckOtpEmail, OtpForgotPassword} from '../features/ForgotPassword';
 import {
   CreateFormulirPerizinan,
   CreateFormulirPerizinanExit,
@@ -15,6 +16,7 @@ import {
   AboutApplication,
   ChangePassword,
   FaceScaanPresence,
+  ForgotPassword,
   HelpSetting,
   LibDemo,
   NotificationDetail,
@@ -88,6 +90,9 @@ export default function Navigator() {
         name="DetailNewInformation"
         component={DetailNewInformation}
       />
+      <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
+      <Stack.Screen name="CheckOtpEmail" component={CheckOtpEmail} />
+      <Stack.Screen name="OtpForgotPassword" component={OtpForgotPassword} />
     </Stack.Navigator>
   );
 }

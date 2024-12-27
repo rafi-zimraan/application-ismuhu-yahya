@@ -7,11 +7,13 @@ export default function AboutApplication({navigation}) {
   return (
     <SafeAreaView style={styles.container}>
       <Background />
-      <HeaderTransparent
-        title="Tentang Aplikasi"
-        icon="arrow-left-circle-outline"
-        onPress={() => navigation.goBack()}
-      />
+      <View style={styles.headerWrapper}>
+        <HeaderTransparent
+          title="Tentang Aplikasi"
+          icon="arrow-left-circle-outline"
+          onPress={() => navigation.goBack()}
+        />
+      </View>
       <View style={{padding: 15}}>
         <Text style={styles.header}>Informasi applikasi</Text>
         <Text style={styles.description}>
@@ -28,6 +30,14 @@ export default function AboutApplication({navigation}) {
 }
 
 const styles = StyleSheet.create({
+  headerWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 10,
+    backgroundColor: '#fff',
+    elevation: 3,
+  },
   container: {
     flex: 1,
   },

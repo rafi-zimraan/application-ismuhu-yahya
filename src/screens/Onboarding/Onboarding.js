@@ -17,7 +17,7 @@ import {
   IMG_PONDOK_DIGITAL,
 } from '../../assets';
 import {BGOnBoarding} from '../../features/OnBoarding';
-import {COLORS} from '../../utils';
+import {COLORS, DIMENS} from '../../utils';
 
 export default function OnBoarding({navigation}) {
   const [currentScreen, setCurrentScreen] = useState(0);
@@ -77,23 +77,10 @@ export default function OnBoarding({navigation}) {
         </View>
       )}
 
-      {/* Image in the center of the screen */}
-      {/* {currentScreen === 0 && (
-        <View style={styles.centerImageContainer}>
-          <Image
-            source={IMG_SIMPONDOK_LANDSCAPE_WHITE}
-            style={styles.centerImage}
-          />
-        </View>
-      )} */}
-
       {screens[currentScreen].showImage && (
         <View style={styles.secondaryContent}>
           {currentScreen === 1 && (
-            <TouchableOpacity
-              style={styles.skipButton}
-              activeOpacity={0.5}
-              onPress={handleSkip}>
+            <TouchableOpacity style={styles.skipButton} onPress={handleSkip}>
               <Text style={styles.skipText}>Skip</Text>
             </TouchableOpacity>
           )}
@@ -161,7 +148,6 @@ export default function OnBoarding({navigation}) {
 
 const styles = StyleSheet.create({
   centerImageContainer: {
-    // flex: 1,
     position: 'absolute',
     top: 300,
     left: 80,
@@ -174,7 +160,7 @@ const styles = StyleSheet.create({
     resizeMode: 'contain',
   },
   imgBoardingSecondry: {
-    height: 330,
+    height: 300,
     width: 330,
   },
   viewBodyTextOnboard: {
@@ -200,20 +186,21 @@ const styles = StyleSheet.create({
     color: COLORS.black,
   },
   skipButton: {
-    position: 'absolute',
+    position: 'relative',
+    backgroundColor: COLORS.goldenOrange,
+    borderRadius: 10,
+    padding: 7,
     top: 0,
-    right: 15,
-    paddingVertical: 5,
-    paddingHorizontal: 15,
+    left: 130,
   },
   skipText: {
     color: COLORS.black,
-    fontSize: 16,
+    fontSize: DIMENS.xl,
     fontWeight: '500',
   },
   txtDes: {
     color: COLORS.white,
-    fontSize: 24,
+    fontSize: DIMENS.xxxl,
     fontWeight: '400',
     textAlign: 'left',
   },
@@ -275,7 +262,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: COLORS.white,
-    fontSize: 18,
+    fontSize: DIMENS.xl,
     marginRight: 10,
   },
 });
