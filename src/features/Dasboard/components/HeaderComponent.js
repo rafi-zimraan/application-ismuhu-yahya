@@ -1,7 +1,6 @@
 import React from 'react';
-import {ActivityIndicator, Image, StyleSheet, Text, View} from 'react-native';
+import {Image, StyleSheet, Text, View} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {Gap} from '../../../Component';
 import {COLORS, DIMENS} from '../../../utils';
 
 export default function HeaderComponent({
@@ -19,10 +18,10 @@ export default function HeaderComponent({
         <Icon name="account-circle" size={41} color={COLORS.white} />
       )}
       <View style={styles.textWrapper}>
-        <Icon name="hand-wave" size={23} color={COLORS.primary} />
+        <Icon name="hand-wave" size={25} color={COLORS.primary} />
         <Text style={styles.welcomeText}>{welcomeText}</Text>
       </View>
-
+      {/* 
       <View style={styles.buttonStatus}>
         {loading ? (
           <ActivityIndicator size="small" color={COLORS.black} />
@@ -33,7 +32,7 @@ export default function HeaderComponent({
             <Text style={styles.txtStatus}>/{departmentName}</Text>
           </>
         )}
-      </View>
+      </View> */}
     </View>
   );
 }
@@ -55,7 +54,8 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
-    bottom: 13,
+    marginHorizontal: 3,
+    bottom: 2,
   },
   welcomeText: {
     marginLeft: 6,

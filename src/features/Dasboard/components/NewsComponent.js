@@ -50,7 +50,7 @@ export default function NewsComponent() {
 
   return (
     <View style={{flex: 1}}>
-      <Text style={styles.Title}>Berita Harian</Text>
+      <Text style={styles.Title}>Berita Terkini</Text>
       {loading ? (
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color={COLORS.goldenOrange} />
@@ -108,8 +108,8 @@ const styles = StyleSheet.create({
     marginRight: 8,
   },
   newsImage: {
-    height: '80%',
-    width: 200,
+    height: 130,
+    width: 400,
     marginRight: 15,
     borderRadius: 15,
     aspectRatio: 16 / 9,

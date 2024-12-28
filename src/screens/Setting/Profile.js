@@ -1,4 +1,5 @@
-import React from 'react';
+import {useFocusEffect} from '@react-navigation/native';
+import React, {useState} from 'react';
 import {Animated, ScrollView, StyleSheet, Text, View} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -9,8 +10,50 @@ import {
   HeaderTransparent,
 } from '../../Component';
 import {IMG_PROFILE_FAKE} from '../../assets';
+import {getAllDepartment} from '../../features/Departmant';
+import {getAllDivisions} from '../../features/Divisi';
 
 export default function Profile({navigation}) {
+  const [divisionName, setDivisionName] = useState('');
+  const [departmentName, setDepartmentName] = useState('');
+  const [loading, setLoading] = useState(true);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      const loadData = async () => {
+        setLoading(true);
+        try {
+          const [divisions, departments] = await Promise.all([
+            getAllDivisions(),
+            getAllDepartment(),
+          ]);
+          // Handle Divisions
+          if (divisions?.message === 'Silahkan login terlebih dahulu') {
+            setTokenExpired(true);
+          } else {
+            setDivisionName(
+              divisions?.data?.data?.[0]?.name || 'Terjadi kesalahan',
+            );
+          }
+          // Handle Departments
+          if (departments?.message === 'Silahkan login terlebih dahulu') {
+            setTokenExpired(true);
+          } else {
+            setDepartmentName(
+              departments?.data?.data?.[0]?.name || 'Terjadi kesalahan',
+            );
+          }
+        } catch (error) {
+          console.error('Error fetching data:', error);
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      loadData();
+    }, []),
+  );
+
   const scrollY = new Animated.Value(0);
 
   const profileImageSize = scrollY.interpolate({
@@ -73,8 +116,8 @@ export default function Profile({navigation}) {
         {/* Info Section */}
         <View style={styles.infoContainer}>
           <Text style={styles.name}>John Doe</Text>
-          <Text style={styles.division}>Software Engineer</Text>
-          <Text style={styles.department}>IT Department</Text>
+          <Text style={styles.division}>{divisionName}</Text>
+          <Text style={styles.department}>{departmentName}</Text>
         </View>
 
         {/* Details Section */}

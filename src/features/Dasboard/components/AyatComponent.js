@@ -22,7 +22,7 @@ export default function AyatComponent({ayat}) {
 const styles = StyleSheet.create({
   ayatContainer: {
     alignItems: 'flex-start',
-    marginTop: 25,
+    marginTop: 35,
     paddingHorizontal: 10,
   },
   arabText: {

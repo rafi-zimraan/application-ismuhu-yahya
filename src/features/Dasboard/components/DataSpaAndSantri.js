@@ -1,6 +1,6 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import {Gap, Line} from '../../../Component';
+import {Gap, Line, ModalCustom} from '../../../Component';
 import {COLORS} from '../../../utils';
 
 export default function DataSpaComponent({
@@ -8,9 +8,19 @@ export default function DataSpaComponent({
   totalSantri,
   totalSpa,
 }) {
+  const [modalVisible, setModalVisible] = useState(false);
+
+  const handlePressDashboard = () => {
+    setModalVisible(true);
+  };
+
+  const closeModal = () => {
+    setModalVisible(false);
+  };
+
   return (
     <View style={styles.bodyDataSpa}>
-      <TouchableOpacity activeOpacity={0.8}>
+      <TouchableOpacity activeOpacity={0.8} onPress={handlePressDashboard}>
         <Image source={iconDashboard} style={styles.imgDasboard} />
         <Text style={styles.title}>Dasboard</Text>
       </TouchableOpacity>
@@ -34,6 +44,18 @@ export default function DataSpaComponent({
         <Text style={styles.titleSpa}>Total Spa</Text>
         <Text style={styles.amountSpa}>{totalSpa}</Text>
       </View>
+
+      {/* ModalCustom */}
+      <ModalCustom
+        visible={modalVisible}
+        onRequestClose={closeModal}
+        onOutContentPress={closeModal}
+        iconModalName="hammer-wrench"
+        title="Dalam Tahap Pengembangan"
+        description="Doakan agar cepat selesai 😊"
+        buttonTitle="Tutup"
+        buttonSubmit={closeModal}
+      />
     </View>
   );
 }

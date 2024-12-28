@@ -46,7 +46,7 @@ export default function ForgotPassword({navigation}) {
 
   return (
     <View style={styles.container}>
-      <StatusBar backgroundColor={'transparent'} barStyle={'dark-content'} />
+      <StatusBar backgroundColor={'transparent'} barStyle={'default'} />
       <View style={styles.body}>
         <HeaderTransparent
           title="Atur Ulang Email"

@@ -1,10 +1,18 @@
 import AyatComponent from './components/AyatComponent';
 import ButtonMenu from './components/ButtonMenu';
 import ClockDasboard from './components/ClockDasboard';
+import DataSpaComponent from './components/DataSpaAndSantri';
 import DetailNewInformation from './components/DetailNewInformation';
 import HeaderComponent from './components/HeaderComponent';
+import NetworkModal from './components/NetworkModal';
 import NewsComponent from './components/NewsComponent';
-import fetchAyat, {fetchDailyAyah} from './services/DasboardApiSlice';
+import TokenExpiredModal from './components/TokenExpiredModal';
+import fetchAyat, {fetchDailyAyah} from './services/Al-QuranApiSlice';
+import {useBackgroundImage} from './services/useBackgroundImage';
+import {useFetchAyat} from './services/useFetchAyat';
+import {useNetworkStatus} from './services/useNetwrokStatus';
+import {useTime} from './services/useTime';
+import {useWelcomeMessage} from './services/useWelcomeMessage';
 
 // component
 export {
@@ -14,6 +22,17 @@ export {
   NewsComponent,
   AyatComponent,
   DetailNewInformation,
+  TokenExpiredModal,
+  NetworkModal,
+  DataSpaComponent,
 };
 // slice api
-export {fetchAyat, fetchDailyAyah};
+export {
+  useNetworkStatus,
+  fetchAyat,
+  fetchDailyAyah,
+  useFetchAyat,
+  useWelcomeMessage,
+  useTime,
+  useBackgroundImage,
+};

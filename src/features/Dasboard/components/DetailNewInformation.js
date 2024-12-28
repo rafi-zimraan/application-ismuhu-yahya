@@ -12,7 +12,7 @@ import {
 import HTMLView from 'react-native-htmlview'; // Ubah ini
 import Share from 'react-native-share';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {HeaderTransparent, ModalLoading} from '../../../Component';
+import {Gap, HeaderTransparent, ModalLoading} from '../../../Component';
 import {COLORS, DIMENS} from '../../../utils';
 
 const {width} = Dimensions.get('window');
@@ -38,6 +38,7 @@ export default function DetailNewInformation({route, navigation}) {
 
   const title = data.title || 'Judul tidak tersedia';
   const description = data.desc || 'Deskripsi tidak ada';
+  console.log('description', description);
   const startPublishedAt = data.start_published_at || 'Tanggal tidak tersedia';
   const uploaderName = data.uploader?.name || 'Tidak diketahui';
 
@@ -66,10 +67,9 @@ export default function DetailNewInformation({route, navigation}) {
           rightIcon="information-outline"
         />
       </View>
-
+      <Gap height={10} />
       <ScrollView>
         <View style={styles.body}>
-          {/* Gambar dan ScrollView */}
           <ScrollView
             horizontal
             pagingEnabled
@@ -90,6 +90,8 @@ export default function DetailNewInformation({route, navigation}) {
               />
             ))}
           </ScrollView>
+
+          <Gap height={15} />
 
           {/* Pagination */}
           <View style={styles.paginationContainer}>
@@ -118,16 +120,10 @@ export default function DetailNewInformation({route, navigation}) {
               <Text style={styles.shareText}>Share</Text>
             </TouchableOpacity>
           </View>
-
-          {/* Start Published At */}
           <View style={styles.publishedDateContainer}>
             <Text style={styles.publishedDateText}>{startPublishedAt}</Text>
           </View>
-
-          {/* Title */}
           <Text style={styles.title}>{title}</Text>
-
-          {/* Description */}
           <View style={styles.descriptionContainer}>
             {/* <Text style={styles.description}>{description}</Text> */}
             <HTMLView value={description} stylesheet={htmlStyles} />
@@ -153,8 +149,9 @@ const styles = StyleSheet.create({
   },
   image: {
     width: width,
-    height: 250,
-    borderRadius: 15,
+    borderRadius: 25,
+    height: 180,
+    width: 320,
   },
   paginationContainer: {
     flexDirection: 'row',
@@ -233,6 +230,15 @@ const htmlStyles = StyleSheet.create({
   p: {
     fontSize: DIMENS.s,
     color: COLORS.darkGray,
-    marginVertical: 4,
+    marginVertical: 2,
+  },
+  ol: {
+    fontSize: DIMENS.s,
+    color: COLORS.darkGray,
+  },
+  li: {
+    fontSize: DIMENS.s,
+    color: COLORS.darkGray,
+    marginVertical: 2,
   },
 });

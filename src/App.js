@@ -264,6 +264,7 @@ import {
   BackHandler,
   StyleSheet,
   Text,
+  ToastAndroid,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -271,7 +272,6 @@ import BootSplash from 'react-native-bootsplash';
 import Modal from 'react-native-modal';
 import {Provider} from 'react-redux';
 import {Gap} from './Component';
-import {logout} from './features/authentication';
 import {store} from './redux';
 import Navigator from './routes';
 import {COLORS, DIMENS} from './utils';
@@ -281,11 +281,45 @@ const navigationRef = createNavigationContainerRef();
 export default function App() {
   const [isModalVisible, setModalVisible] = useState(false);
   const [loadingLogout, setLoadingLogout] = useState(false);
+  const [lastBackPressed, setLastBackPressed] = useState(null);
 
   useEffect(() => {
     const backAction = () => {
-      setModalVisible(true); // Tampilkan modal saat tombol back ditekan
-      return true; // Mencegah aksi default tombol back
+      if (navigationRef.isReady()) {
+        const currentRoute = navigationRef.getCurrentRoute()?.name;
+
+        if (['Beranda', 'bell-outline', 'Setting'].includes(currentRoute)) {
+          const now = Date.now();
+          if (lastBackPressed && now - lastBackPressed < 2000) {
+            setModalVisible(true);
+            return true;
+          }
+          setLastBackPressed(now);
+          ToastAndroid.show(
+            'Klik tombol kembali sekali lagi untuk keluar dari aplikasi',
+            ToastAndroid.SHORT,
+          );
+          return true;
+        }
+
+        if (navigationRef.canGoBack()) {
+          navigationRef.goBack();
+          return true;
+        }
+
+        const now = Date.now();
+        if (lastBackPressed && now - lastBackPressed < 2000) {
+          setModalVisible(true);
+          return true;
+        }
+        setLastBackPressed(now);
+        ToastAndroid.show(
+          'Klik tombol kembali sekali lagi untuk keluar dari aplikasi',
+          ToastAndroid.SHORT,
+        );
+        return true;
+      }
+      return false;
     };
 
     const backHandler = BackHandler.addEventListener(
@@ -293,14 +327,13 @@ export default function App() {
       backAction,
     );
 
-    return () => backHandler.remove(); // Bersihkan listener saat unmount
-  }, []);
+    return () => backHandler.remove();
+  }, [lastBackPressed]);
 
-  // Handle Logout dengan Loading
   const handleLogout = async () => {
     setLoadingLogout(true);
     try {
-      await logout(navigationRef);
+      BackHandler.exitApp();
       setModalVisible(false);
     } catch (error) {
       console.error('Error during logout:', error);

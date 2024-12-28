@@ -35,11 +35,20 @@ export default function HelpSetting({navigation}) {
       description:
         'Pergi ke menu Pengaturan > Pengaturan Aplikasi. Aktifkan atau nonaktifkan notifikasi sesuai preferensi Anda.',
     },
+    {
+      title: 'Bagaimana cara menggunakan fitur notifikasi?',
+      description:
+        '1. Notifikasi akan muncul di halaman Notifikasi berdasarkan kategori (Perizinan, Slip Gaji).\n' +
+        '2. Anda dapat menyegarkan notifikasi dengan menarik layar ke bawah.\n' +
+        '3. Klik salah satu notifikasi untuk melihat detailnya.\n' +
+        '4. Anda dapat menghapus notifikasi dengan menekan tombol "Delete".\n' +
+        '5. Jika sesi Anda berakhir, login ulang untuk memuat ulang notifikasi.',
+    },
   ];
 
   return (
     <SafeAreaView style={{flex: 1}}>
-      <StatusBar barStyle={'dark-content'} backgroundColor={'transparent'} />
+      <StatusBar barStyle={'default'} backgroundColor={'transparent'} />
       <Background />
       <View style={styles.headerWrapper}>
         <HeaderTransparent
@@ -122,9 +131,9 @@ const styles = StyleSheet.create({
     color: COLORS.darkGray,
   },
   descriptionContainer: {
-    backgroundColor: COLORS.beige, // Warna background untuk deskripsi
+    backgroundColor: COLORS.beige,
     padding: 15,
-    marginTop: -10, // Supaya terlihat rapi
+    marginTop: -10,
     marginBottom: 10,
     borderRadius: 10,
     shadowColor: '#000',

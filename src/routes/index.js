@@ -19,6 +19,7 @@ import {
   ForgotPassword,
   HelpSetting,
   LibDemo,
+  Notification,
   NotificationDetail,
   NotificationFromCategory,
   OnBoarding,
@@ -27,6 +28,7 @@ import {
   PrivasiSetting,
   Profile,
   QrCodePresense,
+  Settings,
   SignIn,
   SignUp,
   SplashScreen,
@@ -44,7 +46,7 @@ export default function Navigator() {
         statusBarColor: 'transparent',
         statusBarTranslucent: true,
       }}
-      initialRouteName={'SplashScreen'}>
+      initialRouteName={'LibDemo'}>
       <Stack.Screen name="LibDemo" component={LibDemo} />
       <Stack.Screen name="Onboarding" component={OnBoarding} />
       <Stack.Screen name="SplashScreen" component={SplashScreen} />
@@ -62,6 +64,8 @@ export default function Navigator() {
         name="NotificationFromCategory"
         component={NotificationFromCategory}
       />
+      <Stack.Screen name="Settings" component={Settings} />
+      <Stack.Screen name="Notification" component={Notification} />
       <Stack.Screen name="BottomTabs" component={BottomTabs} />
       <Stack.Screen name="Profile" component={Profile} />
       <Stack.Screen name="EditProfile" component={EditProfile} />

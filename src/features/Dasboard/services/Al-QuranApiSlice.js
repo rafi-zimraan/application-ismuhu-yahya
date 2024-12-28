@@ -21,7 +21,7 @@ const fetchAyat = async (surahNumber, ayahNumber) => {
       juz: ayah.juz,
     };
   } catch (error) {
-    console.error('Error fetching ayah:', error);
+    // console.error('Error fetching ayah:', error);
     throw error;
   }
 };
