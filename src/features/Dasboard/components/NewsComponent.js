@@ -72,7 +72,7 @@ export default function NewsComponent() {
                   <Image
                     source={{uri: `https://app.simpondok.com/${item.thumb}`}}
                     style={styles.newsImage}
-                    resizeMode="cover"
+                    resizeMode="stretch"
                   />
                 </TouchableOpacity>
               ))
@@ -108,8 +108,7 @@ const styles = StyleSheet.create({
     marginRight: 8,
   },
   newsImage: {
-    height: 130,
-    width: 400,
+    height: 140,
     marginRight: 15,
     borderRadius: 15,
     aspectRatio: 16 / 9,

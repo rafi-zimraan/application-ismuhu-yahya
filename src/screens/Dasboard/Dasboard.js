@@ -1,7 +1,8 @@
 import {useIsFocused} from '@react-navigation/native';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   ActivityIndicator,
+  Alert,
   ImageBackground,
   RefreshControl,
   SafeAreaView,
@@ -28,6 +29,7 @@ import {
   useTime,
   useWelcomeMessage,
 } from '../../features/Dasboard';
+import {FecthMe} from '../../features/authentication';
 import {COLORS} from '../../utils';
 
 export default function Dasboard({navigation}) {
@@ -53,6 +55,23 @@ export default function Dasboard({navigation}) {
     setTimeout(() => setRefreshing(false), 2000);
   };
 
+  const fetchUserSession = async () => {
+    try {
+      const response = await FecthMe();
+      if (response.message === 'Silahkan login terlebih dahulu') {
+        setTokenExpired(true);
+      }
+    } catch (e) {
+      console.log('error checking session', e);
+      setTokenExpired(false);
+    }
+  };
+
+  useEffect(() => {
+    if (isFocused) {
+      fetchUserSession();
+    }
+  }, [isFocused]);
   return (
     <SafeAreaView style={{flex: 1}}>
       <StatusBar barStyle="default" backgroundColor="transparent" />
@@ -116,6 +135,25 @@ export default function Dasboard({navigation}) {
               iconSize={36}
               onPress={() => navigation.navigate('Presensi')}
             />
+            <ButtonMenu
+              title="Sewa Mobil"
+              iconName="car"
+              color={COLORS.white}
+              backgroundColor={COLORS.goldenOrange}
+              iconSize={36}
+              onPress={() =>
+                Alert.alert('Nantikan Fitur Terlengkapnya, Mohon Doa nya')
+              }
+            />
+
+            {/* <Gap width={56} />
+            <ButtonMenu
+              title="More"
+              iconName="apps"
+              color={COLORS.white}
+              backgroundColor={COLORS.goldenOrange}
+              iconSize={36}
+            /> */}
           </View>
           <Gap height={15} />
           <NewsComponent />

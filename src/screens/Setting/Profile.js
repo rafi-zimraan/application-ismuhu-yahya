@@ -1,64 +1,120 @@
 import {useFocusEffect} from '@react-navigation/native';
 import React, {useState} from 'react';
-import {Animated, ScrollView, StyleSheet, Text, View} from 'react-native';
+import {
+  Animated,
+  RefreshControl,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import EncryptedStorage from 'react-native-encrypted-storage';
 import LinearGradient from 'react-native-linear-gradient';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {
   Background,
-  FloatingButton,
   Gap,
   HeaderTransparent,
+  ModalCustom,
+  ModalLoading,
 } from '../../Component';
-import {IMG_PROFILE_FAKE} from '../../assets';
 import {getAllDepartment} from '../../features/Departmant';
 import {getAllDivisions} from '../../features/Divisi';
+import {getCoupleData} from '../../features/Profile';
+import {COLORS, DIMENS} from '../../utils';
 
 export default function Profile({navigation}) {
   const [divisionName, setDivisionName] = useState('');
   const [departmentName, setDepartmentName] = useState('');
   const [loading, setLoading] = useState(true);
+  const [tokenExpired, setTokenExpired] = useState(false);
+  const [coupleData, setCoupleData] = useState([]);
+  const [userName, setUserName] = useState('');
+  const [email, setEmail] = useState('');
+  const [photo, setPhoto] = useState(null);
+  const [refreshing, setRefreshing] = useState(false);
+  const [modalLoadingVisible, setModalLoadingVisible] = useState(true);
+
+  const loadData = async () => {
+    setLoading(true);
+    setModalLoadingVisible(true);
+    try {
+      const userId = JSON.parse(await EncryptedStorage.getItem('idUser'));
+      const userSession = JSON.parse(
+        await EncryptedStorage.getItem('user_sesion'),
+      );
+
+      if (userSession?.name) {
+        setUserName(userSession.name);
+      }
+
+      const [divisions, departments, coupleDataResponse] = await Promise.all([
+        getAllDivisions(),
+        getAllDepartment(),
+        getCoupleData(userId),
+      ]);
+      console.log('data', coupleDataResponse);
+
+      if (divisions?.message === 'Silahkan login terlebih dahulu') {
+        setTokenExpired(true);
+      } else {
+        setDivisionName(
+          divisions?.data?.data?.[0]?.name || 'Terjadi kesalahan',
+        );
+      }
+      if (departments?.message === 'Silahkan login terlebih dahulu') {
+        setTokenExpired(true);
+      } else {
+        setDepartmentName(
+          departments?.data?.data?.[0]?.name || 'Terjadi kesalahan',
+        );
+      }
+
+      if (coupleDataResponse?.status && coupleDataResponse?.data) {
+        const {user, couples, photo: userPhoto} = coupleDataResponse.data;
+        console.log('couples', couples);
+        setEmail(user?.email || 'N/A');
+        setPhoto(userPhoto);
+
+        if (Array.isArray(couples)) {
+          setCoupleData(couples);
+        } else {
+          setCoupleData([]);
+        }
+      } else {
+        setCoupleData([]);
+      }
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    } finally {
+      setLoading(false);
+      setModalLoadingVisible(false);
+    }
+  };
 
   useFocusEffect(
     React.useCallback(() => {
-      const loadData = async () => {
-        setLoading(true);
-        try {
-          const [divisions, departments] = await Promise.all([
-            getAllDivisions(),
-            getAllDepartment(),
-          ]);
-          // Handle Divisions
-          if (divisions?.message === 'Silahkan login terlebih dahulu') {
-            setTokenExpired(true);
-          } else {
-            setDivisionName(
-              divisions?.data?.data?.[0]?.name || 'Terjadi kesalahan',
-            );
-          }
-          // Handle Departments
-          if (departments?.message === 'Silahkan login terlebih dahulu') {
-            setTokenExpired(true);
-          } else {
-            setDepartmentName(
-              departments?.data?.data?.[0]?.name || 'Terjadi kesalahan',
-            );
-          }
-        } catch (error) {
-          console.error('Error fetching data:', error);
-        } finally {
-          setLoading(false);
-        }
-      };
-
       loadData();
     }, []),
   );
 
+  const onRefresh = async () => {
+    setRefreshing(true);
+    try {
+      await loadData();
+    } catch (error) {
+      console.error('Error during refresh:', error);
+    } finally {
+      setRefreshing(false);
+    }
+  };
+
   const scrollY = new Animated.Value(0);
 
   const profileImageSize = scrollY.interpolate({
-    inputRange: [10, 180],
-    outputRange: [130, 190],
+    inputRange: [10, 160],
+    outputRange: [110, 140],
     extrapolate: 'clamp',
   });
 
@@ -76,8 +132,11 @@ export default function Profile({navigation}) {
 
   return (
     <View style={styles.container}>
+      <ModalLoading
+        visible={modalLoadingVisible}
+        onRequestClose={() => setModalLoadingVisible(false)}
+      />
       <Background />
-      {/* Header dengan tinggi tetap */}
       <View style={styles.header}>
         <Animated.View
           style={[
@@ -85,7 +144,7 @@ export default function Profile({navigation}) {
             {top: headerTransparentTop, height: headerTransparentHeight},
           ]}>
           <HeaderTransparent
-            title="profile "
+            title="Profile"
             icon="arrow-left-circle-outline"
             onPress={() => navigation.goBack()}
           />
@@ -96,73 +155,170 @@ export default function Profile({navigation}) {
           end={{x: 1, y: 1}}
           style={styles.gradientBackground}
         />
-        <Gap height={35} />
-        <Animated.Image
-          source={IMG_PROFILE_FAKE}
-          style={[
-            styles.profileImage,
-            {width: profileImageSize, height: profileImageSize},
-          ]}
-        />
+        <Gap height={55} />
+        {photo ? (
+          <Animated.Image
+            source={{uri: photo}}
+            style={[
+              styles.profileImage,
+              {width: profileImageSize, height: profileImageSize},
+            ]}
+          />
+        ) : (
+          <Icon name="account-circle" size={85} color={'#999'} />
+        )}
+        <Text style={styles.name}>{coupleData[0]?.name_couple || ' - '}</Text>
+        <Text style={styles.division}>{divisionName}</Text>
+        <Text style={styles.department}>{departmentName}</Text>
       </View>
-
       <ScrollView
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            colors={['#ffd700']}
+          />
+        }
+        stickyHeaderHiddenOnScroll
         contentContainerStyle={styles.scrollContainer}
         onScroll={Animated.event(
           [{nativeEvent: {contentOffset: {y: scrollY}}}],
           {useNativeDriver: false},
         )}
-        scrollEventThrottle={16}>
-        {/* Info Section */}
-        <View style={styles.infoContainer}>
-          <Text style={styles.name}>John Doe</Text>
-          <Text style={styles.division}>{divisionName}</Text>
-          <Text style={styles.department}>{departmentName}</Text>
-        </View>
-
-        {/* Details Section */}
-        <View style={styles.detailsContainer}>
-          <View style={styles.detailRow}>
-            <Icon name="map-marker" size={24} color="#666" />
-            <View style={styles.detailTextContainer}>
-              <Text style={styles.detailsLabel}>Address</Text>
-              <Text style={styles.detailsText}>123 Main St, Springfield</Text>
+        scrollEventThrottle={15}>
+        {/* Data Pribadi */}
+        <TouchableOpacity
+          activeOpacity={0.9}
+          style={styles.contentCouple}
+          onPress={() => {
+            if (coupleData.length > 0) {
+              navigation.navigate('DetailDataPribadi', {
+                data: coupleData[0],
+                email: email,
+              });
+            }
+          }}>
+          <Text style={styles.sectionHeader}>Data Pribadi</Text>
+          {coupleData.length > 0 ? (
+            coupleData.map((couple, index) => (
+              <View key={index}>
+                <View style={styles.section}>
+                  <Icon name="email" size={24} color="#666" />
+                  <View style={styles.viewContainerText}>
+                    <Text style={styles.textLabels}>Email</Text>
+                    <Text style={styles.TextDatas}>{email}</Text>
+                  </View>
+                </View>
+                <View style={styles.section}>
+                  <Icon name="account" size={24} color="#666" />
+                  <View style={styles.sectionTextContainer}>
+                    <Text style={styles.textLabels}>Username</Text>
+                    <Text style={styles.sectionTitle}>
+                      {couple.name_couple || 'N/A'}
+                    </Text>
+                  </View>
+                </View>
+                <View style={styles.section}>
+                  <Icon name="map-marker" size={24} color="#666" />
+                  <View style={styles.sectionTextContainer}>
+                    <Text style={styles.textLabels}>Domisili</Text>
+                    <Text style={styles.sectionTitle}>
+                      {couple.couple_domisili || 'N/A'}
+                    </Text>
+                  </View>
+                </View>
+              </View>
+            ))
+          ) : (
+            <View>
+              <Text style={styles.sectionSubtitle}>
+                Data pribadi tidak tersedia.
+              </Text>
+              <TouchableOpacity
+                style={styles.createButton}
+                activeOpacity={0.7}
+                onPress={() => navigation.navigate('CreateProfile')}>
+                <Icon name="plus-circle" size={25} color={COLORS.black} />
+              </TouchableOpacity>
             </View>
-          </View>
-          <View style={styles.detailRow}>
-            <Icon name="phone" size={24} color="#666" />
-            <View style={styles.detailTextContainer}>
-              <Text style={styles.detailsLabel}>Phone Number</Text>
-              <Text style={styles.detailsText}>+123 456 7890</Text>
-            </View>
-          </View>
-          <View style={styles.detailRow}>
-            <Icon name="email" size={24} color="#666" />
-            <View style={styles.detailTextContainer}>
-              <Text style={styles.detailsLabel}>Email</Text>
-              <Text style={styles.detailsText}>johndoe@example.com</Text>
-            </View>
-          </View>
-        </View>
+          )}
+        </TouchableOpacity>
       </ScrollView>
 
-      {/* Floating Edit Button */}
-      <FloatingButton
-        iconName="pencil"
-        onPress={() => navigation.navigate('EditProfile')}
+      <ModalCustom
+        visible={tokenExpired}
+        onRequestClose={() => setTokenExpired(false)}
+        iconModalName="lock-alert-outline"
+        title="Sesi Kedaluwarsa"
+        description="Sesi Anda telah berakhir. Silakan login ulang untuk memperbarui data Anda dan melanjutkan aktivitas."
+        buttonSubmit={() => {
+          setTokenExpired(false);
+          navigation.navigate('SignIn');
+        }}
+        buttonTitle="Login Ulang"
       />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
+  createButton: {
+    marginTop: 3,
+    padding: 5,
+    backgroundColor: COLORS.primary,
+    borderRadius: 10,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {width: 0, height: 2},
+    shadowOpacity: 0.2,
+    elevation: 1,
+  },
+  createButtonText: {
+    color: COLORS.white,
+    fontSize: DIMENS.l,
+    fontWeight: 'bold',
+  },
+  profileIcon: {
+    alignSelf: 'center',
+    marginTop: 30,
+  },
+  contentCouple: {
+    backgroundColor: COLORS.white,
+    borderRadius: 15,
+    padding: 15,
+    shadowColor: '#000',
+    shadowOffset: {width: 0, height: 2},
+    shadowOpacity: 0.1,
+    elevation: 2,
+    marginTop: 5,
+  },
+  sectionTextContainer: {
+    marginLeft: 15,
+  },
+  sectionTitle: {
+    fontSize: DIMENS.l,
+    color: '#333',
+  },
+  sectionSubtitle: {
+    fontSize: DIMENS.m,
+    color: '#888',
+  },
+  sectionHeader: {
+    fontSize: DIMENS.xl,
+    fontWeight: '600',
+    color: COLORS.darkGray,
+  },
+  section: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 5,
+  },
   container: {
     flex: 1,
   },
   header: {
     backgroundColor: '#ffd700',
     justifyContent: 'center',
-
     alignItems: 'center',
     overflow: 'hidden',
     borderBottomLeftRadius: 30,
@@ -192,57 +348,47 @@ const styles = StyleSheet.create({
   },
   scrollContainer: {
     padding: 20,
-    paddingTop: 30,
-  },
-  infoContainer: {
-    alignItems: 'center',
-    marginBottom: 20,
-    backgroundColor: '#fff',
-    borderRadius: 15,
-    padding: 20,
-    shadowColor: '#000',
-    shadowOffset: {width: 0, height: 2},
-    shadowOpacity: 0.2,
-    elevation: 5,
   },
   name: {
-    fontSize: 28,
+    fontSize: DIMENS.xxxl,
     fontWeight: 'bold',
     color: '#333',
+    marginVertical: 5,
   },
   division: {
-    fontSize: 18,
+    fontSize: DIMENS.l,
     color: '#666',
-    marginBottom: 4,
+    fontWeight: '500',
   },
   department: {
-    fontSize: 16,
-    color: '#888',
+    fontSize: DIMENS.m,
+    fontWeight: '500',
+    color: '#666',
   },
   detailsContainer: {
-    marginTop: 15,
+    marginTop: 3,
     backgroundColor: '#fff',
     borderRadius: 15,
-    padding: 20,
+    padding: 15,
     shadowColor: '#000',
     shadowOffset: {width: 0, height: 2},
     shadowOpacity: 0.2,
-    elevation: 5,
+    elevation: 3,
   },
   detailRow: {
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 15,
   },
-  detailTextContainer: {
+  viewContainerText: {
     marginLeft: 15,
   },
-  detailsLabel: {
-    fontSize: 14,
+  textLabels: {
+    fontSize: DIMENS.m,
     color: '#999',
   },
-  detailsText: {
-    fontSize: 16,
+  TextDatas: {
+    fontSize: DIMENS.l,
     color: '#333',
   },
 });

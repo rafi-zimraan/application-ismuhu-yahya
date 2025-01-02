@@ -11,7 +11,7 @@ import {
   QrCodeAdmin,
   ScannerQrCodeByCategoryAbsensi,
 } from '../features/PresenceEmployee';
-import {EditProfile} from '../features/Profile';
+import {CreateProfile, DetailDataPribadi} from '../features/Profile';
 import {
   AboutApplication,
   ChangePassword,
@@ -46,7 +46,7 @@ export default function Navigator() {
         statusBarColor: 'transparent',
         statusBarTranslucent: true,
       }}
-      initialRouteName={'LibDemo'}>
+      initialRouteName={'SplashScreen'}>
       <Stack.Screen name="LibDemo" component={LibDemo} />
       <Stack.Screen name="Onboarding" component={OnBoarding} />
       <Stack.Screen name="SplashScreen" component={SplashScreen} />
@@ -68,7 +68,8 @@ export default function Navigator() {
       <Stack.Screen name="Notification" component={Notification} />
       <Stack.Screen name="BottomTabs" component={BottomTabs} />
       <Stack.Screen name="Profile" component={Profile} />
-      <Stack.Screen name="EditProfile" component={EditProfile} />
+      <Stack.Screen name="CreateProfile" component={CreateProfile} />
+      <Stack.Screen name="DetailDataPribadi" component={DetailDataPribadi} />
       <Stack.Screen name="PrivasiSetting" component={PrivasiSetting} />
       <Stack.Screen name="AboutApplication" component={AboutApplication} />
       <Stack.Screen name="HelpSetting" component={HelpSetting} />

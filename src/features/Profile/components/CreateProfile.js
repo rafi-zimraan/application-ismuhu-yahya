@@ -8,11 +8,14 @@ import {
   StyleSheet,
   Text,
   TextInput,
+  ToastAndroid,
   TouchableOpacity,
   View,
 } from 'react-native';
+import EncryptedStorage from 'react-native-encrypted-storage';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import {addCouple} from '..';
 import {
   Background,
   ButtonAction,
@@ -22,13 +25,11 @@ import {
 } from '../../../Component';
 import {COLORS} from '../../../utils';
 
-export default function EditProfile({navigation}) {
+export default function CreateProfile({navigation}) {
   const {control, handleSubmit} = useForm();
-  const [name, setName] = useState('John Doe');
-  const [email, setEmail] = useState('johndoe@example.com');
-  const [department, setDepartment] = useState('IT Department');
-  const [division, setDivision] = useState('Software Engineer');
-  const [address, setAddress] = useState('123 Main St, Springfield');
+  const [nameCouple, setNameCouple] = useState('');
+  const [coupleDomisili, setCoupleDomisili] = useState('');
+  const [children, setChildren] = useState('');
   const [selectedImage, setSelectedImage] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -66,42 +67,37 @@ export default function EditProfile({navigation}) {
     );
   }
 
-  // api fake
   const handleAPI = async data => {
     setIsLoading(true);
     try {
-      const response = await fetch(
-        'https://jsonplaceholder.typicode.com/posts',
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(data),
-        },
-      );
+      const userId = await EncryptedStorage.getItem('idUser');
+      const response = await addCouple(userId, data);
 
-      if (response.ok) {
+      console.log('response', response);
+      if (response) {
         setModalVisible(true);
-      } else {
-        console.error('Failed to submit form');
       }
     } catch (error) {
-      console.error('Error:', error);
+      console.log('error', error.message);
+      ToastAndroid.show(error.response?.data?.message, ToastAndroid.SHORT);
     } finally {
       setIsLoading(false);
     }
   };
 
-  const onSubmit = data => {
+  const onSubmit = () => {
+    const data = {
+      name_couple: nameCouple,
+      couple_domisili: coupleDomisili,
+      children: parseInt(children),
+    };
     handleAPI(data);
   };
-
   return (
     <View style={{flex: 1}}>
       <Background />
       <HeaderTransparent
-        title="edit profile"
+        title="Create Profile"
         icon="arrow-left-circle-outline"
         onPress={() => navigation.goBack()}
       />
@@ -132,54 +128,42 @@ export default function EditProfile({navigation}) {
 
           <View style={styles.inputContainer}>
             <View style={styles.inputFieldContainer}>
-              <Text style={styles.inputLabel}>Name</Text>
+              <Text style={styles.inputLabel}>Nama </Text>
               <TextInput
                 style={styles.input}
-                value={name}
-                onChangeText={setName}
+                value={nameCouple}
+                onChangeText={setNameCouple}
+                placeholderTextColor={COLORS.grey}
+                placeholder="nama"
               />
             </View>
 
             <View style={styles.inputFieldContainer}>
-              <Text style={styles.inputLabel}>Email</Text>
+              <Text style={styles.inputLabel}>Domisili</Text>
               <TextInput
                 style={styles.input}
-                value={email}
-                onChangeText={setEmail}
-                keyboardType="email-address"
+                value={coupleDomisili}
+                onChangeText={setCoupleDomisili}
+                placeholderTextColor={COLORS.grey}
+                placeholder="Domisili"
               />
             </View>
 
             <View style={styles.inputFieldContainer}>
-              <Text style={styles.inputLabel}>Department</Text>
+              <Text style={styles.inputLabel}>Jumlah Anak</Text>
               <TextInput
                 style={styles.input}
-                value={department}
-                onChangeText={setDepartment}
-              />
-            </View>
-
-            <View style={styles.inputFieldContainer}>
-              <Text style={styles.inputLabel}>Division</Text>
-              <TextInput
-                style={styles.input}
-                value={division}
-                onChangeText={setDivision}
-              />
-            </View>
-
-            <View style={styles.inputFieldContainer}>
-              <Text style={styles.inputLabel}>Address</Text>
-              <TextInput
-                style={styles.input}
-                value={address}
-                onChangeText={setAddress}
+                value={children}
+                onChangeText={setChildren}
+                keyboardType="numeric"
+                placeholderTextColor={COLORS.grey}
+                placeholder="berapa anak anda"
               />
             </View>
           </View>
           <Gap height={15} />
           <ButtonAction
-            title="save"
+            title="Save"
             backgroundColor={COLORS.goldenOrange}
             loading={isLoading}
             color={COLORS.white}
@@ -188,12 +172,11 @@ export default function EditProfile({navigation}) {
         </ScrollView>
       </View>
 
-      {/* Modal untuk menampilkan status success */}
       <ModalCustom
         visible={modalVisible}
         onRequestClose={() => setModalVisible(false)}
         iconModalName="check-decagram-outline"
-        title="Edit profile Successfuly"
+        title="Create profile Successfuly"
         description="Selamat melanjutkan aktivitas anda.. semoga di permudah aktivitasnya yaa 😆"
         buttonSubmit={() => navigation.goBack()}
       />

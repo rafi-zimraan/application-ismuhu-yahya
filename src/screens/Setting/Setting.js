@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   Image,
   SafeAreaView,
@@ -10,10 +10,11 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import EncryptedStorage from 'react-native-encrypted-storage';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useDispatch} from 'react-redux';
 import {Background, Gap, ModalCustom} from '../../Component';
-import {IMG_PROFILE_FAKE} from '../../assets';
+import {getCoupleData} from '../../features/Profile';
 import {logout} from '../../features/authentication';
 import {COLORS} from '../../utils';
 import {DIMENS} from '../../utils/dimens';
@@ -23,18 +24,41 @@ export default function Settings({navigation}) {
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
   const [logoutModalVisible, setLogoutModalVisible] = useState(false);
   const [loadingLogout, setLoadingLogout] = useState(false);
+  const [userName, setUserName] = useState('');
+  const [email, setEmail] = useState('');
+  const [photo, setPhoto] = useState(null);
 
   const handleLogout = async () => {
-    setLoadingLogout(true); // Set loading to true
+    setLoadingLogout(true);
     try {
       await logout(navigation, dispatch);
     } catch (error) {
       console.error('Error during logout:', error);
     } finally {
-      setLoadingLogout(false); // Set loading to false
-      setLogoutModalVisible(false); // Close modal
+      setLoadingLogout(false);
+      setLogoutModalVisible(false);
     }
   };
+
+  useEffect(() => {
+    const fetchProfileData = async () => {
+      try {
+        const userId = JSON.parse(await EncryptedStorage.getItem('idUser'));
+        const coupleDataResponse = await getCoupleData(userId);
+
+        if (coupleDataResponse?.status && coupleDataResponse?.data) {
+          const {user, couples, photo: userPhoto} = coupleDataResponse.data;
+          setUserName(couples?.[0]?.name_couple);
+          setEmail(user?.email);
+          setPhoto(userPhoto);
+        }
+      } catch (error) {
+        console.error('Error fetching profile data:', error);
+      }
+    };
+
+    fetchProfileData();
+  }, []);
 
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: COLORS.lightGray}}>
@@ -55,6 +79,26 @@ export default function Settings({navigation}) {
           style={styles.section}
           activeOpacity={0.6}
           onPress={() => navigation.navigate('Profile')}>
+          {photo ? (
+            <Image
+              source={{uri: photo}}
+              style={{height: 55, width: 55, borderRadius: 27.5}}
+            />
+          ) : (
+            <Icon name="account-circle" size={55} color={'#999'} />
+          )}
+          <View style={styles.sectionTextContainer}>
+            <Text style={styles.sectionTitle}>
+              {userName || 'Nama tidak tersedia'}
+            </Text>
+            <Text style={styles.sectionSubtitle}>{email || ' - '}</Text>
+          </View>
+        </TouchableOpacity>
+        {/* <Text style={styles.sectionHeader}>Profile</Text>
+        <TouchableOpacity
+          style={styles.section}
+          activeOpacity={0.6}
+          onPress={() => navigation.navigate('Profile')}>
           <Image source={IMG_PROFILE_FAKE} style={{height: 55, width: 55}} />
           <View style={styles.sectionTextContainer}>
             <Text style={styles.sectionTitle}>Fulan Bin Fulanah</Text>
@@ -62,7 +106,7 @@ export default function Settings({navigation}) {
               fulanahbinfulan@gmail.com
             </Text>
           </View>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
 
         {/* Pengaturan Akun */}
         <Text style={styles.sectionHeader}>Pengaturan Akun</Text>

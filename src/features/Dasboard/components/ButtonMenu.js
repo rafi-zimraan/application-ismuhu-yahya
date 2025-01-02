@@ -7,7 +7,7 @@ import {
   View,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {COLORS} from '../../../utils';
+import {COLORS, DIMENS} from '../../../utils';
 
 export default function ButtonMenu({
   onPress,
@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
     marginBottom: 5,
-    marginHorizontal: 12,
+    marginHorizontal: 5,
   },
   image: {
     width: 47.5,
@@ -60,7 +60,10 @@ const styles = StyleSheet.create({
   textTitle: {
     fontWeight: '500',
     color: 'black',
+    fontSize: DIMENS.s,
     top: 2,
     textAlign: 'center',
+    flexWrap: 'wrap',
+    maxWidth: 100,
   },
 });

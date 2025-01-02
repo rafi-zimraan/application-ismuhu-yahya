@@ -9,17 +9,17 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import HTMLView from 'react-native-htmlview'; // Ubah ini
+import HTMLView from 'react-native-htmlview';
 import Share from 'react-native-share';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {Gap, HeaderTransparent, ModalLoading} from '../../../Component';
+import {ICON_NOTFOUND_DATA} from '../../../assets';
 import {COLORS, DIMENS} from '../../../utils';
 
 const {width} = Dimensions.get('window');
 
 export default function DetailNewInformation({route, navigation}) {
   const {detailData} = route.params;
-  console.log('data detail', detailData);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [loading, setLoading] = useState(true);
   const data = detailData.data;
@@ -34,11 +34,10 @@ export default function DetailNewInformation({route, navigation}) {
       ? data.images
       : data.thumb
       ? [{path: data.thumb}]
-      : [{path: 'ICON_NOTFOUND_DATA'}];
+      : [{path: null}];
 
-  const title = data.title || 'Judul tidak tersedia';
-  const description = data.desc || 'Deskripsi tidak ada';
-  console.log('description', description);
+  const title = data.title;
+  const description = data.desc;
   const startPublishedAt = data.start_published_at || 'Tanggal tidak tersedia';
   const uploaderName = data.uploader?.name || 'Tidak diketahui';
 
@@ -84,7 +83,12 @@ export default function DetailNewInformation({route, navigation}) {
             {images.map((image, index) => (
               <Image
                 key={index}
-                source={{uri: `https://app.simpondok.com/${image.path}`}}
+                source={
+                  image.path
+                    ? {uri: `https://app.simpondok.com/${image.path}`}
+                    : ICON_NOTFOUND_DATA
+                }
+                // source={{uri: `https://app.simpondok.com/${image.path}`}}
                 style={styles.image}
                 resizeMode="contain"
               />
@@ -111,7 +115,11 @@ export default function DetailNewInformation({route, navigation}) {
           <View style={styles.profileShareRow}>
             <View style={styles.profileContainer}>
               <Icon name="account" size={20} color={COLORS.grey} />
-              <Text style={styles.publisherText}>{uploaderName}</Text>
+              {data.title ? (
+                <Text style={styles.publisherText}>{uploaderName}</Text>
+              ) : (
+                <Text style={styles.publisherText}>Judul tidak tersedia</Text>
+              )}
             </View>
             <TouchableOpacity
               style={styles.shareContainer}
@@ -125,8 +133,11 @@ export default function DetailNewInformation({route, navigation}) {
           </View>
           <Text style={styles.title}>{title}</Text>
           <View style={styles.descriptionContainer}>
-            {/* <Text style={styles.description}>{description}</Text> */}
-            <HTMLView value={description} stylesheet={htmlStyles} />
+            {data.desc ? (
+              <HTMLView value={description} stylesheet={htmlStyles} />
+            ) : (
+              <Text style={styles.description}>Deskripsi tidak ada</Text>
+            )}
           </View>
         </View>
       </ScrollView>
@@ -135,6 +146,11 @@ export default function DetailNewInformation({route, navigation}) {
 }
 
 const styles = StyleSheet.create({
+  description: {
+    color: COLORS.grey,
+    fontSize: DIMENS.l,
+    fontWeight: '400',
+  },
   headerWrapper: {
     flexDirection: 'row',
     alignItems: 'center',

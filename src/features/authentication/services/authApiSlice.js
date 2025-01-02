@@ -110,3 +110,13 @@ export const logout = async (navigation, dispatch) => {
     );
   }
 };
+
+// Fetch user data (/ME)
+export const FecthMe = async () => {
+  try {
+    const response = await api.get('/me');
+    return response.data;
+  } catch (error) {
+    console.log('/ME ERROR:', error);
+  }
+};

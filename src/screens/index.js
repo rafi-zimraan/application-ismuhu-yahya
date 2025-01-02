@@ -1,7 +1,6 @@
 import SignIn from './Auth/SignIn';
 import SignUp from './Auth/SignUp';
 import Dashboard from './Dasboard/Dasboard';
-import DasboardMaster from './DasboardMaster/DasboardMaster';
 import DrawerContent from './DrawerContent/DrawerContent';
 import ForgotPassword from './ForgotPassword/ForgotPassword';
 import Notification from './Notification/Notification';
@@ -38,7 +37,6 @@ export {
   FaceScaanPresence,
   Presensi,
   DrawerContent,
-  DasboardMaster,
   SignUp,
   SignIn,
   LibDemo,
