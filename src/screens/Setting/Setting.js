@@ -94,19 +94,6 @@ export default function Settings({navigation}) {
             <Text style={styles.sectionSubtitle}>{email || ' - '}</Text>
           </View>
         </TouchableOpacity>
-        {/* <Text style={styles.sectionHeader}>Profile</Text>
-        <TouchableOpacity
-          style={styles.section}
-          activeOpacity={0.6}
-          onPress={() => navigation.navigate('Profile')}>
-          <Image source={IMG_PROFILE_FAKE} style={{height: 55, width: 55}} />
-          <View style={styles.sectionTextContainer}>
-            <Text style={styles.sectionTitle}>Fulan Bin Fulanah</Text>
-            <Text style={styles.sectionSubtitle}>
-              fulanahbinfulan@gmail.com
-            </Text>
-          </View>
-        </TouchableOpacity> */}
 
         {/* Pengaturan Akun */}
         <Text style={styles.sectionHeader}>Pengaturan Akun</Text>

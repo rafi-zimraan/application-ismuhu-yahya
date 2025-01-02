@@ -12,7 +12,7 @@ import {
   View,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {deleteCouple, updateCouple} from '..';
+import {deleteTraining, updateTraining} from '..';
 import {
   Background,
   Gap,
@@ -22,8 +22,8 @@ import {
 import {ICON_NOTFOUND_DATA} from '../../../assets';
 import {COLORS, DIMENS} from '../../../utils';
 
-export default function DetailDataPribadi({route, navigation}) {
-  const {data, email} = route.params;
+export default function DetailTraining({route, navigation}) {
+  const {data} = route.params;
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -31,20 +31,20 @@ export default function DetailDataPribadi({route, navigation}) {
   const [isDeleted, setIsDeleted] = useState(false);
 
   const [editedData, setEditedData] = useState({
-    name_couple: data.name_couple,
-    couple_domisili: data.couple_domisili,
-    children: data.children,
+    title: data.title,
+    date: data.date,
+    category: data.category,
+    desc: data.desc,
   });
 
   const handleUpdate = async () => {
     setIsLoading(true);
     try {
-      await updateCouple(data.id, editedData);
-      console.log('Data updated successfully');
+      await updateTraining(data.id, editedData);
       ToastAndroid.show('Data berhasil diperbarui!', ToastAndroid.SHORT);
       setEditModalVisible(false);
     } catch (error) {
-      console.error('Error updating data:', error.message);
+      console.error('Error updating training:', error.message);
     } finally {
       setIsLoading(false);
     }
@@ -53,11 +53,11 @@ export default function DetailDataPribadi({route, navigation}) {
   const handleDelete = async () => {
     setIsLoading(true);
     try {
-      await deleteCouple(data.id);
+      await deleteTraining(data.id);
       setIsDeleted(true);
       setDeleteModalVisible(false);
     } catch (error) {
-      console.error('Error deleting data:', error.message);
+      console.error('Error deleting training:', error.message);
     } finally {
       setIsLoading(false);
     }
@@ -79,7 +79,7 @@ export default function DetailDataPribadi({route, navigation}) {
       <StatusBar barStyle="default" backgroundColor="transparent" />
       <Background />
       <HeaderTransparent
-        title="Detail Data Pribadi"
+        title="Detail Training"
         icon="arrow-left-circle-outline"
         onPress={() => navigation.goBack()}
       />
@@ -96,39 +96,35 @@ export default function DetailDataPribadi({route, navigation}) {
           {!isDeleted ? (
             <>
               <View style={styles.content}>
-                <Text style={styles.title}>Data Pribadi</Text>
+                <Text style={styles.title}>Detail Training</Text>
                 <View style={styles.section}>
-                  <Icon name="account" size={24} color="#666" />
+                  <Icon name="book" size={24} color="#666" />
                   <View style={styles.viewContentText}>
-                    <Text style={styles.textTitle}>Nama</Text>
+                    <Text style={styles.textTitle}>Title</Text>
+                    <Text style={styles.label}>{editedData.title || '-'}</Text>
+                  </View>
+                </View>
+                <View style={styles.section}>
+                  <Icon name="calendar" size={24} color="#666" />
+                  <View style={styles.viewContentText}>
+                    <Text style={styles.textTitle}>Date</Text>
+                    <Text style={styles.label}>{editedData.date || '-'}</Text>
+                  </View>
+                </View>
+                <View style={styles.section}>
+                  <Icon name="tag" size={24} color="#666" />
+                  <View style={styles.viewContentText}>
+                    <Text style={styles.textTitle}>Category</Text>
                     <Text style={styles.label}>
-                      {editedData.name_couple || '-'}
+                      {editedData.category || '-'}
                     </Text>
                   </View>
                 </View>
                 <View style={styles.section}>
-                  <Icon name="email" size={24} color="#666" />
+                  <Icon name="information-outline" size={24} color="#666" />
                   <View style={styles.viewContentText}>
-                    <Text style={styles.textTitle}>Email</Text>
-                    <Text style={styles.label}>{email || '-'}</Text>
-                  </View>
-                </View>
-                <View style={styles.section}>
-                  <Icon name="account-child" size={24} color="#666" />
-                  <View style={styles.viewContentText}>
-                    <Text style={styles.textTitle}>Jumlah Anak</Text>
-                    <Text style={styles.label}>
-                      {editedData.children || '-'}
-                    </Text>
-                  </View>
-                </View>
-                <View style={styles.section}>
-                  <Icon name="map-marker" size={24} color="#666" />
-                  <View style={styles.viewContentText}>
-                    <Text style={styles.textTitle}>Domisili</Text>
-                    <Text style={styles.label}>
-                      {editedData.couple_domisili || '-'}
-                    </Text>
+                    <Text style={styles.textTitle}>Description</Text>
+                    <Text style={styles.label}>{editedData.desc || '-'}</Text>
                   </View>
                 </View>
               </View>
@@ -153,11 +149,10 @@ export default function DetailDataPribadi({route, navigation}) {
         </View>
       </ScrollView>
 
-      {/* Modal Edit */}
       <ModalCustom
         visible={editModalVisible}
         onRequestClose={() => setEditModalVisible(false)}
-        title="Edit Data"
+        title="Edit Training"
         description="Silakan ubah data di bawah ini:"
         buttonSubmit={handleUpdate}
         buttonDisable={isLoading}
@@ -168,39 +163,43 @@ export default function DetailDataPribadi({route, navigation}) {
         BackgroundButtonAction={COLORS.goldenOrange}
         TextColorButton={COLORS.white}>
         <View>
-          <Text style={styles.inputLabel}>Nama</Text>
+          <Text style={styles.inputLabel}>Title</Text>
           <Gap height={5} />
           <TextInput
             style={styles.input}
-            value={editedData.name_couple}
-            placeholder="nama"
+            value={editedData.title}
+            placeholder="Title"
+            placeholderTextColor={COLORS.grey}
+            onChangeText={text => setEditedData({...editedData, title: text})}
+          />
+          <Text style={styles.inputLabel}>Date</Text>
+          <Gap height={5} />
+          <TextInput
+            style={styles.input}
+            value={editedData.date}
+            placeholder="Date"
+            placeholderTextColor={COLORS.grey}
+            onChangeText={text => setEditedData({...editedData, date: text})}
+          />
+          <Text style={styles.inputLabel}>Category</Text>
+          <Gap height={5} />
+          <TextInput
+            style={styles.input}
+            value={editedData.category}
+            placeholder="Category"
             placeholderTextColor={COLORS.grey}
             onChangeText={text =>
-              setEditedData({...editedData, name_couple: text})
+              setEditedData({...editedData, category: text})
             }
           />
-          <Text style={styles.inputLabel}>Domisili</Text>
+          <Text style={styles.inputLabel}>Description</Text>
           <Gap height={5} />
           <TextInput
             style={styles.input}
-            value={editedData.couple_domisili}
+            value={editedData.desc}
+            placeholder="Description"
             placeholderTextColor={COLORS.grey}
-            placeholder="Domisili"
-            onChangeText={text =>
-              setEditedData({...editedData, couple_domisili: text})
-            }
-          />
-          <Text style={styles.inputLabel}>Jumlah Anak</Text>
-          <Gap height={5} />
-          <TextInput
-            style={styles.input}
-            keyboardType="numeric"
-            value={editedData.children}
-            placeholder="Jumlah anak"
-            placeholderTextColor={COLORS.grey}
-            onChangeText={text =>
-              setEditedData({...editedData, children: text})
-            }
+            onChangeText={text => setEditedData({...editedData, desc: text})}
           />
         </View>
       </ModalCustom>
@@ -209,7 +208,7 @@ export default function DetailDataPribadi({route, navigation}) {
         visible={deleteModalVisible}
         onRequestClose={() => setDeleteModalVisible(false)}
         iconModalName="alert-circle-outline"
-        title="Hapus Data"
+        title="Hapus Training"
         description="Apakah Anda yakin ingin menghapus data ini?"
         buttonSubmit={handleDelete}
         buttonDisable={isLoading}
@@ -295,6 +294,7 @@ const styles = StyleSheet.create({
   noDataContainer: {
     flex: 1,
     alignItems: 'center',
+    justifyContent: 'center',
   },
   notFoundImage: {
     width: 250,

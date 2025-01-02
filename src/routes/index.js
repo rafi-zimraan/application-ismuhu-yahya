@@ -11,7 +11,11 @@ import {
   QrCodeAdmin,
   ScannerQrCodeByCategoryAbsensi,
 } from '../features/PresenceEmployee';
-import {CreateProfile, DetailDataPribadi} from '../features/Profile';
+import {
+  CreateProfile,
+  DetailDataPribadi,
+  DetailTraining,
+} from '../features/Profile';
 import {
   AboutApplication,
   ChangePassword,
@@ -69,6 +73,7 @@ export default function Navigator() {
       <Stack.Screen name="BottomTabs" component={BottomTabs} />
       <Stack.Screen name="Profile" component={Profile} />
       <Stack.Screen name="CreateProfile" component={CreateProfile} />
+      <Stack.Screen name="DetailTraining" component={DetailTraining} />
       <Stack.Screen name="DetailDataPribadi" component={DetailDataPribadi} />
       <Stack.Screen name="PrivasiSetting" component={PrivasiSetting} />
       <Stack.Screen name="AboutApplication" component={AboutApplication} />

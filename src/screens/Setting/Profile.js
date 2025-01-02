@@ -21,7 +21,7 @@ import {
 } from '../../Component';
 import {getAllDepartment} from '../../features/Departmant';
 import {getAllDivisions} from '../../features/Divisi';
-import {getCoupleData} from '../../features/Profile';
+import {getCoupleData, getTrainingData} from '../../features/Profile';
 import {COLORS, DIMENS} from '../../utils';
 
 export default function Profile({navigation}) {
@@ -35,6 +35,7 @@ export default function Profile({navigation}) {
   const [photo, setPhoto] = useState(null);
   const [refreshing, setRefreshing] = useState(false);
   const [modalLoadingVisible, setModalLoadingVisible] = useState(true);
+  const [trainingData, setTrainingData] = useState([]);
 
   const loadData = async () => {
     setLoading(true);
@@ -49,12 +50,14 @@ export default function Profile({navigation}) {
         setUserName(userSession.name);
       }
 
-      const [divisions, departments, coupleDataResponse] = await Promise.all([
-        getAllDivisions(),
-        getAllDepartment(),
-        getCoupleData(userId),
-      ]);
-      console.log('data', coupleDataResponse);
+      const [divisions, departments, coupleDataResponse, trainingResponse] =
+        await Promise.all([
+          getAllDivisions(),
+          getAllDepartment(),
+          getCoupleData(userId),
+          getTrainingData(userId),
+        ]);
+      console.log('data', trainingResponse);
 
       if (divisions?.message === 'Silahkan login terlebih dahulu') {
         setTokenExpired(true);
@@ -84,6 +87,12 @@ export default function Profile({navigation}) {
         }
       } else {
         setCoupleData([]);
+      }
+
+      if (trainingResponse?.status && trainingResponse?.data?.trainings) {
+        setTrainingData(trainingResponse.data.trainings);
+      } else {
+        setTrainingData([]);
       }
     } catch (error) {
       console.error('Error fetching data:', error);
@@ -165,7 +174,7 @@ export default function Profile({navigation}) {
             ]}
           />
         ) : (
-          <Icon name="account-circle" size={85} color={'#999'} />
+          <Icon name="account-circle" size={85} color={COLORS.black} />
         )}
         <Text style={styles.name}>{coupleData[0]?.name_couple || ' - '}</Text>
         <Text style={styles.division}>{divisionName}</Text>
@@ -206,7 +215,7 @@ export default function Profile({navigation}) {
                   <Icon name="email" size={24} color="#666" />
                   <View style={styles.viewContainerText}>
                     <Text style={styles.textLabels}>Email</Text>
-                    <Text style={styles.TextDatas}>{email}</Text>
+                    <Text style={styles.TextDatas}>{email || '-'}</Text>
                   </View>
                 </View>
                 <View style={styles.section}>
@@ -214,7 +223,7 @@ export default function Profile({navigation}) {
                   <View style={styles.sectionTextContainer}>
                     <Text style={styles.textLabels}>Username</Text>
                     <Text style={styles.sectionTitle}>
-                      {couple.name_couple || 'N/A'}
+                      {couple.name_couple || '-'}
                     </Text>
                   </View>
                 </View>
@@ -223,7 +232,7 @@ export default function Profile({navigation}) {
                   <View style={styles.sectionTextContainer}>
                     <Text style={styles.textLabels}>Domisili</Text>
                     <Text style={styles.sectionTitle}>
-                      {couple.couple_domisili || 'N/A'}
+                      {couple.couple_domisili || '-'}
                     </Text>
                   </View>
                 </View>
@@ -238,6 +247,62 @@ export default function Profile({navigation}) {
                 style={styles.createButton}
                 activeOpacity={0.7}
                 onPress={() => navigation.navigate('CreateProfile')}>
+                <Icon name="plus-circle" size={25} color={COLORS.black} />
+              </TouchableOpacity>
+            </View>
+          )}
+        </TouchableOpacity>
+
+        <Gap height={15} />
+        {/* Data Training */}
+        <TouchableOpacity activeOpacity={0.9} style={styles.contentCouple}>
+          <Text style={styles.sectionHeader}>Data Training</Text>
+          {trainingData.length > 0 ? (
+            trainingData.map((training, index) => (
+              <TouchableOpacity
+                key={index}
+                style={styles.trainingCard}
+                onPress={() =>
+                  navigation.navigate('DetailTraining', {
+                    data: training,
+                  })
+                }>
+                <View style={styles.section}>
+                  <Icon name="book" size={24} color="#666" />
+                  <View style={styles.viewContainerText}>
+                    <Text style={styles.textLabels}>Title</Text>
+                    <Text style={styles.TextDatas}>
+                      {training.title || '-'}
+                    </Text>
+                  </View>
+                </View>
+                <View style={styles.section}>
+                  <Icon name="calendar" size={24} color="#666" />
+                  <View style={styles.viewContainerText}>
+                    <Text style={styles.textLabels}>Date</Text>
+                    <Text style={styles.TextDatas}>{training.date || '-'}</Text>
+                  </View>
+                </View>
+                <View style={styles.section}>
+                  <Icon name="tag" size={24} color="#666" />
+                  <View style={styles.viewContainerText}>
+                    <Text style={styles.textLabels}>Category</Text>
+                    <Text style={styles.TextDatas}>
+                      {training.category || '-'}
+                    </Text>
+                  </View>
+                </View>
+              </TouchableOpacity>
+            ))
+          ) : (
+            <View>
+              <Text style={styles.sectionSubtitle}>
+                Data Training tidak tersedia.
+              </Text>
+              <TouchableOpacity
+                style={styles.createButton}
+                activeOpacity={0.7}
+                onPress={() => navigation.navigate('CreateTraining')}>
                 <Icon name="plus-circle" size={25} color={COLORS.black} />
               </TouchableOpacity>
             </View>
