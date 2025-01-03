@@ -21,7 +21,11 @@ import {
 } from '../../Component';
 import {getAllDepartment} from '../../features/Departmant';
 import {getAllDivisions} from '../../features/Divisi';
-import {getCoupleData, getTrainingData} from '../../features/Profile';
+import {
+  getCoupleData,
+  getExperienceData,
+  getTrainingData,
+} from '../../features/Profile';
 import {COLORS, DIMENS} from '../../utils';
 
 export default function Profile({navigation}) {
@@ -36,6 +40,7 @@ export default function Profile({navigation}) {
   const [refreshing, setRefreshing] = useState(false);
   const [modalLoadingVisible, setModalLoadingVisible] = useState(true);
   const [trainingData, setTrainingData] = useState([]);
+  const [experienceData, setExperienceData] = useState([]);
 
   const loadData = async () => {
     setLoading(true);
@@ -50,13 +55,19 @@ export default function Profile({navigation}) {
         setUserName(userSession.name);
       }
 
-      const [divisions, departments, coupleDataResponse, trainingResponse] =
-        await Promise.all([
-          getAllDivisions(),
-          getAllDepartment(),
-          getCoupleData(userId),
-          getTrainingData(userId),
-        ]);
+      const [
+        divisions,
+        departments,
+        coupleDataResponse,
+        trainingResponse,
+        experienceResponse,
+      ] = await Promise.all([
+        getAllDivisions(),
+        getAllDepartment(),
+        getCoupleData(userId),
+        getTrainingData(userId),
+        getExperienceData(userId),
+      ]);
       console.log('data', trainingResponse);
 
       if (divisions?.message === 'Silahkan login terlebih dahulu') {
@@ -90,9 +101,17 @@ export default function Profile({navigation}) {
       }
 
       if (trainingResponse?.status && trainingResponse?.data?.trainings) {
+        console.log('trainingData:', trainingResponse);
         setTrainingData(trainingResponse.data.trainings);
       } else {
         setTrainingData([]);
+      }
+
+      if (experienceResponse?.status && experienceResponse?.data?.experiences) {
+        console.log('experience', experienceResponse);
+        setExperienceData(experienceResponse.data.experiences);
+      } else {
+        setExperienceData([]);
       }
     } catch (error) {
       console.error('Error fetching data:', error);
@@ -127,18 +146,6 @@ export default function Profile({navigation}) {
     extrapolate: 'clamp',
   });
 
-  const headerTransparentTop = scrollY.interpolate({
-    inputRange: [0, 120],
-    outputRange: [10, -20],
-    extrapolate: 'clamp',
-  });
-
-  const headerTransparentHeight = scrollY.interpolate({
-    inputRange: [0, 150],
-    outputRange: [60, 10],
-    extrapolate: 'clamp',
-  });
-
   return (
     <View style={styles.container}>
       <ModalLoading
@@ -146,40 +153,34 @@ export default function Profile({navigation}) {
         onRequestClose={() => setModalLoadingVisible(false)}
       />
       <Background />
-      <View style={styles.header}>
-        <Animated.View
-          style={[
-            styles.headerTransparent,
-            {top: headerTransparentTop, height: headerTransparentHeight},
-          ]}>
-          <HeaderTransparent
-            title="Profile"
-            icon="arrow-left-circle-outline"
-            onPress={() => navigation.goBack()}
-          />
-        </Animated.View>
-        <LinearGradient
-          colors={['#ffd700', '#daa520']}
-          start={{x: 0, y: 0}}
-          end={{x: 1, y: 1}}
-          style={styles.gradientBackground}
+      <LinearGradient
+        colors={['#ffd700', '#daa520']}
+        start={{x: 0, y: 0}}
+        end={{x: 1, y: 1}}
+        style={styles.header}>
+        <HeaderTransparent
+          title="Profile"
+          icon="arrow-left-circle-outline"
+          onPress={() => navigation.goBack()}
         />
-        <Gap height={55} />
-        {photo ? (
-          <Animated.Image
-            source={{uri: photo}}
-            style={[
-              styles.profileImage,
-              {width: profileImageSize, height: profileImageSize},
-            ]}
-          />
-        ) : (
-          <Icon name="account-circle" size={85} color={COLORS.black} />
-        )}
-        <Text style={styles.name}>{coupleData[0]?.name_couple || ' - '}</Text>
-        <Text style={styles.division}>{divisionName}</Text>
-        <Text style={styles.department}>{departmentName}</Text>
-      </View>
+        <View style={{alignItems: 'center', justifyContent: 'center'}}>
+          {photo ? (
+            <Animated.Image
+              source={{uri: photo}}
+              style={[
+                styles.profileImage,
+                {width: profileImageSize, height: profileImageSize},
+              ]}
+            />
+          ) : (
+            <Icon name="account-circle" size={85} color={COLORS.black} />
+          )}
+          <Text style={styles.name}>{coupleData[0]?.name_couple || ' - '}</Text>
+          <Text style={styles.division}>{divisionName || '-'}</Text>
+          <Text style={styles.department}>{departmentName || '-'}</Text>
+        </View>
+      </LinearGradient>
+
       <ScrollView
         refreshControl={
           <RefreshControl
@@ -267,10 +268,16 @@ export default function Profile({navigation}) {
                     data: training,
                   })
                 }>
+                <View style={styles.sectionWithIcon}>
+                  <Icon name="star-circle" size={20} color="#FFD700" />
+                  <Text style={styles.sectionHeaderText}>{`Training ${
+                    index + 1
+                  }`}</Text>
+                </View>
                 <View style={styles.section}>
                   <Icon name="book" size={24} color="#666" />
                   <View style={styles.viewContainerText}>
-                    <Text style={styles.textLabels}>Title</Text>
+                    <Text style={styles.textLabels}>Judul</Text>
                     <Text style={styles.TextDatas}>
                       {training.title || '-'}
                     </Text>
@@ -279,14 +286,14 @@ export default function Profile({navigation}) {
                 <View style={styles.section}>
                   <Icon name="calendar" size={24} color="#666" />
                   <View style={styles.viewContainerText}>
-                    <Text style={styles.textLabels}>Date</Text>
+                    <Text style={styles.textLabels}>Tanggal</Text>
                     <Text style={styles.TextDatas}>{training.date || '-'}</Text>
                   </View>
                 </View>
                 <View style={styles.section}>
                   <Icon name="tag" size={24} color="#666" />
                   <View style={styles.viewContainerText}>
-                    <Text style={styles.textLabels}>Category</Text>
+                    <Text style={styles.textLabels}>Kategory</Text>
                     <Text style={styles.TextDatas}>
                       {training.category || '-'}
                     </Text>
@@ -303,6 +310,72 @@ export default function Profile({navigation}) {
                 style={styles.createButton}
                 activeOpacity={0.7}
                 onPress={() => navigation.navigate('CreateTraining')}>
+                <Icon name="plus-circle" size={25} color={COLORS.black} />
+              </TouchableOpacity>
+            </View>
+          )}
+        </TouchableOpacity>
+
+        <Gap height={15} />
+        {/* Data Experience */}
+        <TouchableOpacity activeOpacity={0.9} style={styles.contentCouple}>
+          <Text style={styles.sectionHeader}>Data Experience</Text>
+          {experienceData.length > 0 ? (
+            experienceData.map((experience, index) => (
+              <TouchableOpacity
+                key={index}
+                style={styles.trainingCard}
+                onPress={() =>
+                  navigation.navigate('DetailExperience', {
+                    data: experience,
+                  })
+                }>
+                <View style={styles.sectionWithIcon}>
+                  <Icon name="shield-star" size={20} color="#00BFFF" />
+                  <Text style={styles.sectionHeaderText}>{`Experience ${
+                    index + 1
+                  }`}</Text>
+                </View>
+                <View style={styles.section}>
+                  <Icon name="office-building" size={24} color="#666" />
+                  <View style={styles.viewContainerText}>
+                    <Text style={styles.textLabels}>Perusahaan</Text>
+                    <Text style={styles.TextDatas}>
+                      {experience.company || '-'}
+                    </Text>
+                  </View>
+                </View>
+                <View style={styles.section}>
+                  <Icon name="timer" size={24} color="#666" />
+                  <View style={styles.viewContainerText}>
+                    <Text style={styles.textLabels}>Lama Bekerja</Text>
+                    <Text style={styles.TextDatas}>
+                      {experience.length_of_work
+                        ? `${experience.length_of_work} Tahun`
+                        : '-'}
+                    </Text>
+                  </View>
+                </View>
+                <View style={styles.section}>
+                  <Icon name="account" size={24} color="#666" />
+                  <View style={styles.viewContainerText}>
+                    <Text style={styles.textLabels}>Posisi</Text>
+                    <Text style={styles.TextDatas}>
+                      {experience.position || '-'}
+                    </Text>
+                  </View>
+                </View>
+              </TouchableOpacity>
+            ))
+          ) : (
+            <View>
+              <Text style={styles.sectionSubtitle}>
+                Data Experience tidak tersedia.
+              </Text>
+              <TouchableOpacity
+                style={styles.createButton}
+                activeOpacity={0.7}
+                onPress={() => navigation.navigate('CreateExperience')}>
                 <Icon name="plus-circle" size={25} color={COLORS.black} />
               </TouchableOpacity>
             </View>
@@ -327,6 +400,17 @@ export default function Profile({navigation}) {
 }
 
 const styles = StyleSheet.create({
+  sectionWithIcon: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  sectionHeaderText: {
+    fontSize: DIMENS.m,
+    fontWeight: 'bold',
+    color: COLORS.primary,
+    marginLeft: 10,
+  },
   createButton: {
     marginTop: 3,
     padding: 5,
@@ -382,9 +466,6 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   header: {
-    backgroundColor: '#ffd700',
-    justifyContent: 'center',
-    alignItems: 'center',
     overflow: 'hidden',
     borderBottomLeftRadius: 30,
     borderBottomRightRadius: 30,
@@ -392,8 +473,8 @@ const styles = StyleSheet.create({
     shadowOffset: {width: 0, height: 10},
     shadowOpacity: 0.3,
     shadowRadius: 10,
-    elevation: 10,
-    height: 250,
+    elevation: 5,
+    height: 265,
   },
   gradientBackground: {
     ...StyleSheet.absoluteFillObject,
@@ -405,7 +486,7 @@ const styles = StyleSheet.create({
     marginTop: 30,
   },
   headerTransparent: {
-    position: 'absolute',
+    position: 'relative',
     left: 20,
     right: 20,
     zIndex: 10,

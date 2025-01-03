@@ -73,12 +73,11 @@ export const deleteCouple = async id_couple => {
     });
 
     if (response.data?.status === true) {
-      console.log(response.data?.message || 'Data pasangan berhasil  dihapus');
+      console.log(response.data?.message || 'Data pasangan berhasil dihapus');
       return true;
     } else {
       throw new Error('Gagal menghapus notifikasi');
     }
-    // return response.data;
   } catch (error) {
     console.error(error.response?.data?.message || error.message);
     throw error;
@@ -155,7 +154,12 @@ export const deleteTraining = async id_training => {
       },
     });
 
-    return response.data;
+    if (response.data?.status === true) {
+      console.log(response.data?.message || 'Data training telah dihapus');
+      return true;
+    } else {
+      throw new Error('Gagal menghapus notifikasi');
+    }
   } catch (error) {
     console.error(error.response?.data?.message || error.message);
     throw error;
@@ -236,7 +240,12 @@ export const deleteExperience = async id_experience => {
       },
     });
 
-    return response.data;
+    if (response.data?.status === true) {
+      console.log(response.data?.message || 'Data pengalaman telah dihapu');
+      return true;
+    } else {
+      throw new Error('Gagal menghapus notifikasi');
+    }
   } catch (error) {
     console.error(error.response?.data?.message || error.message);
     throw error;

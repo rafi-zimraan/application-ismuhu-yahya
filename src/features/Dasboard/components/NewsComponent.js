@@ -27,7 +27,6 @@ export default function NewsComponent() {
       setLoading(true);
       try {
         const response = await getAllImageInformation();
-        console.log('response information', response);
         setNewsData(response);
       } catch (error) {
         console.log('Error fetching news data:', error.message);
