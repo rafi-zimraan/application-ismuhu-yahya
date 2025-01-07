@@ -1,5 +1,6 @@
 import SignIn from './Auth/SignIn';
 import SignUp from './Auth/SignUp';
+import CarLoan from './CarLoan/CarLoan';
 import Dashboard from './Dasboard/Dasboard';
 import DrawerContent from './DrawerContent/DrawerContent';
 import ForgotPassword from './ForgotPassword/ForgotPassword';
@@ -21,6 +22,7 @@ import SplashScreen from './SplashScreen/SplashScreen';
 import LibDemo from './__test__/LibDemo.test';
 
 export {
+  CarLoan,
   ForgotPassword,
   QrCodePresense,
   NotificationDetail,

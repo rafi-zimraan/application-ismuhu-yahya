@@ -7,6 +7,7 @@ import {
   View,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import {COLORS} from '../../utils';
 import {DIMENS} from '../../utils/dimens';
 
 export default function HeaderTransparent({
@@ -26,7 +27,7 @@ export default function HeaderTransparent({
         useForeground
         background={TouchableNativeFeedback.Ripple(null, null, 20)}>
         <View style={styles.icon}>
-          <Icon name={icon} size={30} color="black" />
+          <Icon name={icon} size={30} color={COLORS.black} />
         </View>
       </TouchableNativeFeedback>
       <View style={{width: 15}} />

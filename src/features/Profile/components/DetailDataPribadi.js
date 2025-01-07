@@ -40,7 +40,6 @@ export default function DetailDataPribadi({route, navigation}) {
     setIsLoading(true);
     try {
       await updateCouple(data.id, editedData);
-      console.log('Data updated successfully');
       ToastAndroid.show('Data berhasil diperbarui!', ToastAndroid.SHORT);
       setEditModalVisible(false);
     } catch (error) {

@@ -45,7 +45,6 @@ export default function CreateTraining({navigation}) {
       const userId = await EncryptedStorage.getItem('idUser');
       const response = await addTraining(userId, data);
 
-      console.log('response', response);
       if (response) {
         setModalVisible(true);
       }

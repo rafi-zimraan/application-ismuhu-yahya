@@ -20,6 +20,7 @@ export default function SearchInput({
   borderWidth = 1,
   onChangeText,
   borderColor = COLORS.primary,
+  placeholderStyle = {},
 }) {
   const [showPassword, setShowPassword] = useState(secureTextEntry);
 

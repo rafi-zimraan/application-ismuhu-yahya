@@ -73,7 +73,6 @@ export default function CreateProfile({navigation}) {
       const userId = await EncryptedStorage.getItem('idUser');
       const response = await addCouple(userId, data);
 
-      console.log('response', response);
       if (response) {
         setModalVisible(true);
       }

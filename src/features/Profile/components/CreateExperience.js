@@ -34,12 +34,10 @@ export default function CreateExperience({navigation}) {
       const userId = await EncryptedStorage.getItem('idUser');
       const response = await addExperience(userId, data);
 
-      console.log('response', response);
       if (response) {
         setModalVisible(true);
       }
     } catch (error) {
-      console.log('error', error.message);
       ToastAndroid.show(
         error.response?.data?.message || 'Gagal menambahkan data!',
         ToastAndroid.SHORT,

@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
-import {Image, StyleSheet, TouchableOpacity, View} from 'react-native';
+import {StyleSheet, TouchableOpacity, View} from 'react-native';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {Gap} from '..';
-import {IMG_PROFILE_FAKE} from '../../assets';
 import {COLORS} from '../../utils';
 
 export default function HeaderSearch({
@@ -65,7 +65,7 @@ export default function HeaderSearch({
       </View> */}
       <Gap width={30} />
       <TouchableOpacity onPress={onProfilePress} activeOpacity={0.7}>
-        <Image source={IMG_PROFILE_FAKE} style={{height: 50, width: 50}} />
+        <Icon name="account-circle" size={85} color={COLORS.black} />
       </TouchableOpacity>
     </View>
   );

@@ -4,6 +4,7 @@ import CreateTraining from './components/CreateTraining';
 import DetailDataPribadi from './components/DetailDataPribadi';
 import DetailExperience from './components/DetailExperience';
 import DetailTraining from './components/DetailTraining';
+import SectionWithData from './components/SectionWithData';
 import {
   addCouple,
   addExperience,
@@ -27,6 +28,7 @@ export {
   CreateTraining,
   DetailExperience,
   CreateExperience,
+  SectionWithData,
 };
 // slice
 export {

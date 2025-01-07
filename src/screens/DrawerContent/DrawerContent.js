@@ -11,7 +11,7 @@ import {
 import EncryptedStorage from 'react-native-encrypted-storage';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {Gap} from '../../Component';
-import {IMG_DRAWER, IMG_PONDOK_DIGITAL_WHITE} from '../../assets';
+import {IMG_PONDOK_DIGITAL_WHITE} from '../../assets';
 import {COLORS} from '../../utils';
 
 export default function DrawerContent() {
@@ -52,7 +52,7 @@ export default function DrawerContent() {
   }
   return (
     <View style={{flex: 1}}>
-      <Image source={IMG_DRAWER} style={styles.imgBackground} />
+      {/* <Image source={IMG_DRAWER} style={styles.imgBackground} /> */}
       <View style={styles.overlay} />
       <Image source={IMG_PONDOK_DIGITAL_WHITE} style={styles.imgPD} />
       <View style={{flexDirection: 'row'}}>

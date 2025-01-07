@@ -1,5 +1,6 @@
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import React from 'react';
+import {DetailCarLoan} from '../features/CarLoan';
 import {DetailNewInformation} from '../features/Dasboard';
 import {CheckOtpEmail, OtpForgotPassword} from '../features/ForgotPassword';
 import {
@@ -21,6 +22,7 @@ import {
 } from '../features/Profile';
 import {
   AboutApplication,
+  CarLoan,
   ChangePassword,
   FaceScaanPresence,
   ForgotPassword,
@@ -53,7 +55,7 @@ export default function Navigator() {
         statusBarColor: 'transparent',
         statusBarTranslucent: true,
       }}
-      initialRouteName={'SplashScreen'}>
+      initialRouteName={'LibDemo'}>
       <Stack.Screen name="LibDemo" component={LibDemo} />
       <Stack.Screen name="Onboarding" component={OnBoarding} />
       <Stack.Screen name="SplashScreen" component={SplashScreen} />
@@ -109,6 +111,8 @@ export default function Navigator() {
       <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
       <Stack.Screen name="CheckOtpEmail" component={CheckOtpEmail} />
       <Stack.Screen name="OtpForgotPassword" component={OtpForgotPassword} />
+      <Stack.Screen name="CarLoan" component={CarLoan} />
+      <Stack.Screen name="DetailCarLoan" component={DetailCarLoan} />
     </Stack.Navigator>
   );
 }

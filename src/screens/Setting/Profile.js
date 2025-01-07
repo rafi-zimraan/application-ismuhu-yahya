@@ -154,7 +154,7 @@ export default function Profile({navigation}) {
       />
       <Background />
       <LinearGradient
-        colors={['#ffd700', '#daa520']}
+        colors={['#FFD700', '#FFB200']}
         start={{x: 0, y: 0}}
         end={{x: 1, y: 1}}
         style={styles.header}>
@@ -258,6 +258,13 @@ export default function Profile({navigation}) {
         {/* Data Training */}
         <TouchableOpacity activeOpacity={0.9} style={styles.contentCouple}>
           <Text style={styles.sectionHeader}>Data Training</Text>
+          {trainingData.length > 0 && (
+            <TouchableOpacity
+              style={styles.addButton}
+              onPress={() => navigation.navigate('CreateTraining')}>
+              <Icon name="plus-circle" size={24} color={COLORS.goldenOrange} />
+            </TouchableOpacity>
+          )}
           {trainingData.length > 0 ? (
             trainingData.map((training, index) => (
               <TouchableOpacity
@@ -320,6 +327,13 @@ export default function Profile({navigation}) {
         {/* Data Experience */}
         <TouchableOpacity activeOpacity={0.9} style={styles.contentCouple}>
           <Text style={styles.sectionHeader}>Data Experience</Text>
+          {experienceData.length > 0 && (
+            <TouchableOpacity
+              style={styles.addButton}
+              onPress={() => navigation.navigate('CreateExperience')}>
+              <Icon name="plus-circle" size={24} color={COLORS.goldenOrange} />
+            </TouchableOpacity>
+          )}
           {experienceData.length > 0 ? (
             experienceData.map((experience, index) => (
               <TouchableOpacity
@@ -400,6 +414,12 @@ export default function Profile({navigation}) {
 }
 
 const styles = StyleSheet.create({
+  addButton: {
+    position: 'absolute',
+    top: 10,
+    right: 10,
+    zIndex: 10,
+  },
   sectionWithIcon: {
     flexDirection: 'row',
     alignItems: 'center',

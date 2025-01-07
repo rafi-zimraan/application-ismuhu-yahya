@@ -2,7 +2,6 @@ import {useIsFocused} from '@react-navigation/native';
 import React, {useEffect, useState} from 'react';
 import {
   ActivityIndicator,
-  Alert,
   ImageBackground,
   RefreshControl,
   SafeAreaView,
@@ -141,9 +140,7 @@ export default function Dasboard({navigation}) {
               color={COLORS.white}
               backgroundColor={COLORS.goldenOrange}
               iconSize={36}
-              onPress={() =>
-                Alert.alert('Nantikan Fitur Terlengkapnya, Mohon Doa nya')
-              }
+              onPress={() => navigation.navigate('CarLoan')}
             />
 
             {/* <Gap width={56} />
