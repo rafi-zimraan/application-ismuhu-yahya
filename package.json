@@ -32,7 +32,6 @@
     "react-native": "0.74.4",
     "react-native-biometrics": "^3.0.1",
     "react-native-bootsplash": "^5.5.3",
-    "react-native-camera": "^4.2.1",
     "react-native-device-info": "^14.0.1",
     "react-native-email-link": "^1.16.1",
     "react-native-encrypted-storage": "^4.0.3",

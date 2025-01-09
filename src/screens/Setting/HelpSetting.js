@@ -9,10 +9,15 @@ import {
   View,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import {useSelector} from 'react-redux';
 import {Background, HeaderTransparent} from '../../Component';
+import {Translations} from '../../features/Language';
 import {COLORS} from '../../utils';
 
 export default function HelpSetting({navigation}) {
+  const currentLanguage = useSelector(state => state.language.currentLanguage);
+  const t = key => Translations[currentLanguage][key]; // Fungsi untuk menerjemahkan
+
   const [expandedIndex, setExpandedIndex] = useState(null);
 
   const toggleDescription = index => {
@@ -21,28 +26,20 @@ export default function HelpSetting({navigation}) {
 
   const helpData = [
     {
-      title: 'Bagaimana cara melakukan logout?',
-      description:
-        'Untuk melakukan logout, buka menu Setting, gulir ke bawah, dan tekan tombol "Logout". Konfirmasi jika diminta.',
+      title: t('help_faq_1_title'),
+      description: t('help_faq_1_description'),
     },
     {
-      title: 'Bagaimana cara mengubah kata sandi?',
-      description:
-        'Buka menu Pengaturan > Pengaturan Akun > Privasi. Pilih opsi "Ubah Kata Sandi" dan ikuti instruksi.',
+      title: t('help_faq_2_title'),
+      description: t('help_faq_2_description'),
     },
     {
-      title: 'Bagaimana cara mengatur notifikasi?',
-      description:
-        'Pergi ke menu Pengaturan > Pengaturan Aplikasi. Aktifkan atau nonaktifkan notifikasi sesuai preferensi Anda.',
+      title: t('help_faq_3_title'),
+      description: t('help_faq_3_description'),
     },
     {
-      title: 'Bagaimana cara menggunakan fitur notifikasi?',
-      description:
-        '1. Notifikasi akan muncul di halaman Notifikasi berdasarkan kategori (Perizinan, Slip Gaji).\n' +
-        '2. Anda dapat menyegarkan notifikasi dengan menarik layar ke bawah.\n' +
-        '3. Klik salah satu notifikasi untuk melihat detailnya.\n' +
-        '4. Anda dapat menghapus notifikasi dengan menekan tombol "Delete".\n' +
-        '5. Jika sesi Anda berakhir, login ulang untuk memuat ulang notifikasi.',
+      title: t('help_faq_4_title'),
+      description: t('help_faq_4_description'),
     },
   ];
 
@@ -52,7 +49,7 @@ export default function HelpSetting({navigation}) {
       <Background />
       <View style={styles.headerWrapper}>
         <HeaderTransparent
-          title="Pusat Bantuan"
+          title={t('help_title')}
           icon="arrow-left-circle-outline"
           onPress={() => navigation.goBack()}
         />
@@ -102,12 +99,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-  },
-  titleText: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: COLORS.black,
-    marginVertical: 10,
   },
   section: {
     flexDirection: 'row',

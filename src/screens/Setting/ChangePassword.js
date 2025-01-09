@@ -11,6 +11,7 @@ import {
   View,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import {useSelector} from 'react-redux';
 import {
   Background,
   ButtonAction,
@@ -18,9 +19,12 @@ import {
   ModalCustom,
 } from '../../Component';
 import {apiChangePassword} from '../../features/ChangePassword';
+import {Translations} from '../../features/Language';
 import {COLORS, DIMENS} from '../../utils';
 
 export default function ChangePassword({navigation}) {
+  const currentLanguage = useSelector(state => state.language.currentLanguage);
+
   const {control, handleSubmit, setValue, watch} = useForm({
     defaultValues: {
       newPassword: '',
@@ -34,9 +38,12 @@ export default function ChangePassword({navigation}) {
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
+  // Ambil teks terjemahan berdasarkan bahasa saat ini
+  const t = key => Translations[currentLanguage][key];
+
   const onSubmit = async data => {
     if (data.newPassword !== data.confirmPassword) {
-      Alert.alert('Error', 'Password tidak cocok');
+      Alert.alert(t('error'), t('password_mismatch'));
       return;
     }
 
@@ -56,18 +63,18 @@ export default function ChangePassword({navigation}) {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle={'default'} backgroundColor={'transparent'} />
+      <Background />
       <View style={styles.headerWrapper}>
         <HeaderTransparent
-          title="Pengaturan Aplikasi"
+          title={t('app_settings')}
           icon="arrow-left-circle-outline"
           onPress={() => navigation.goBack()}
         />
       </View>
 
       <View style={styles.contentWrapper}>
-        <Background />
         <View style={{paddingHorizontal: 20, paddingVertical: 15}}>
-          <Text style={styles.title}>Masukkan password baru Anda</Text>
+          <Text style={styles.title}>{t('change_password_title')}</Text>
 
           <View style={styles.inputContainer}>
             <TextInput
@@ -75,7 +82,7 @@ export default function ChangePassword({navigation}) {
               secureTextEntry={!showNewPassword}
               onChangeText={text => setValue('newPassword', text)}
               value={newPassword}
-              placeholder="Masukkan password baru"
+              placeholder={t('new_password_placeholder')}
               placeholderTextColor={COLORS.grey}
             />
             <TouchableOpacity
@@ -89,14 +96,14 @@ export default function ChangePassword({navigation}) {
             </TouchableOpacity>
           </View>
 
-          <Text style={styles.title}>Konfirmasi password baru Anda</Text>
+          <Text style={styles.title}>{t('confirm_password_title')}</Text>
           <View style={styles.inputContainer}>
             <TextInput
               style={styles.textInput}
               secureTextEntry={!showConfirmPassword}
               onChangeText={text => setValue('confirmPassword', text)}
               value={confirmPassword}
-              placeholder="Konfirmasi password baru"
+              placeholder={t('confirm_password_placeholder')}
               placeholderTextColor={COLORS.grey}
             />
             <TouchableOpacity
@@ -112,7 +119,7 @@ export default function ChangePassword({navigation}) {
         </View>
 
         <ButtonAction
-          title="Simpan"
+          title={t('save_button')}
           color={COLORS.white}
           onPress={handleSubmit(onSubmit)}
         />
@@ -121,8 +128,8 @@ export default function ChangePassword({navigation}) {
       <ModalCustom
         visible={modalVisible}
         onRequestClose={() => setModalVisible(false)}
-        title="Sukses"
-        description="Password Anda berhasil diubah."
+        title={t('password_success_title')}
+        description={t('password_success_message')}
         iconModalName="check-circle-outline"
         buttonTitle="OK"
         buttonSubmit={() => {

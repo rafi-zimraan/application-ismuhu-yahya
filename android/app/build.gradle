@@ -80,8 +80,7 @@ android {
         minSdkVersion  rootProject.ext.minSdkVersion
         targetSdkVersion  rootProject.ext.targetSdkVersion
         versionCode 1
-        versionName "1.0-sidaq-rc"
-        missingDimensionStrategy 'react-native-camera', 'mlkit'
+        versionName "1.0-simpondok-rc"
     }
     signingConfigs {
         debug {

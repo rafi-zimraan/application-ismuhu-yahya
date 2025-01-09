@@ -42,7 +42,7 @@ export default function SplashScreen({navigation}) {
 
   return (
     <SafeAreaView style={styles.background}>
-      <StatusBar barStyle={'dark-content'} backgroundColor={'transparent'} />
+      <StatusBar barStyle={'default'} backgroundColor={'transparent'} />
       <View style={styles.container}>
         <Image source={IMG_ISMUHUYAHYA_POTRAIT} style={styles.img} />
         <Gap height={15} />

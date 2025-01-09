@@ -51,7 +51,10 @@ export default function CarLoan({navigation}) {
           height: '9%',
         }}>
         {/* Reborn Car */}
-        <View style={styles.carBody}>
+        <TouchableOpacity
+          activeOpacity={0.8}
+          style={styles.carBody}
+          onPress={() => navigation.navigate('DetailCarLoan')}>
           <View style={styles.viewActiveText}>
             <Text style={styles.textActive}>Tersedia</Text>
           </View>
@@ -67,14 +70,20 @@ export default function CarLoan({navigation}) {
           <View style={styles.viewNoPlat}>
             <Text style={styles.textPlat}>KB-2232-RFI</Text>
           </View>
-          <View style={styles.viewContentRent}>
+          <TouchableOpacity
+            activeOpacity={0.7}
+            style={styles.viewContentRent}
+            onPress={() => navigation.navigate('CreateCarLoan')}>
             <Text style={styles.textRent}>Pinjam sekarang</Text>
-          </View>
-        </View>
+          </TouchableOpacity>
+        </TouchableOpacity>
         <Gap width={15} />
 
         {/* Ertiga Car */}
-        <View style={styles.carBody}>
+        <TouchableOpacity
+          activeOpacity={0.8}
+          style={styles.carBody}
+          onPress={() => navigation.navigate('DetailCarLoan')}>
           <View style={styles.viewActiveText}>
             <Text style={styles.textActive}>Tersedia</Text>
           </View>
@@ -90,14 +99,20 @@ export default function CarLoan({navigation}) {
           <View style={styles.viewNoPlat}>
             <Text style={styles.textPlat}>KB-2232-RFI</Text>
           </View>
-          <View style={styles.viewContentRent}>
+          <TouchableOpacity
+            activeOpacity={0.7}
+            style={styles.viewContentRent}
+            onPress={() => navigation.navigate('CreateCarLoan')}>
             <Text style={styles.textRent}>Pinjam sekarang</Text>
-          </View>
-        </View>
+          </TouchableOpacity>
+        </TouchableOpacity>
         <Gap width={15} />
 
         {/* Ambulance Car */}
-        <View style={styles.carBody}>
+        <TouchableOpacity
+          activeOpacity={0.8}
+          style={styles.carBody}
+          onPress={() => navigation.navigate('DetailCarLoan')}>
           <View style={styles.viewActiveText}>
             <Text style={styles.textActive}>Tersedia</Text>
           </View>
@@ -113,14 +128,20 @@ export default function CarLoan({navigation}) {
           <View style={styles.viewNoPlat}>
             <Text style={styles.textPlat}>KB-2232-RFI</Text>
           </View>
-          <View style={styles.viewContentRent}>
+          <TouchableOpacity
+            activeOpacity={0.7}
+            style={styles.viewContentRent}
+            onPress={() => navigation.navigate('CreateCarLoan')}>
             <Text style={styles.textRent}>Pinjam sekarang</Text>
-          </View>
-        </View>
+          </TouchableOpacity>
+        </TouchableOpacity>
         <Gap width={15} />
 
         {/* Pickup Car */}
-        <View style={styles.carBody}>
+        <TouchableOpacity
+          activeOpacity={0.8}
+          style={styles.carBody}
+          onPress={() => navigation.navigate('DetailCarLoan')}>
           <View style={styles.viewActiveText}>
             <Text style={styles.textActive}>Tersedia</Text>
           </View>
@@ -136,14 +157,20 @@ export default function CarLoan({navigation}) {
           <View style={styles.viewNoPlat}>
             <Text style={styles.textPlat}>KB-2232-RFI</Text>
           </View>
-          <View style={styles.viewContentRent}>
+          <TouchableOpacity
+            activeOpacity={0.7}
+            style={styles.viewContentRent}
+            onPress={() => navigation.navigate('CreateCarLoan')}>
             <Text style={styles.textRent}>Pinjam sekarang</Text>
-          </View>
-        </View>
+          </TouchableOpacity>
+        </TouchableOpacity>
         <Gap width={15} />
 
         {/* Pickup Car */}
-        <View style={styles.carBody}>
+        <TouchableOpacity
+          activeOpacity={0.8}
+          style={styles.carBody}
+          onPress={() => navigation.navigate('DetailCarLoan')}>
           <View style={styles.viewActiveText}>
             <Text style={styles.textActive}>Tersedia</Text>
           </View>
@@ -159,10 +186,14 @@ export default function CarLoan({navigation}) {
           <View style={styles.viewNoPlat}>
             <Text style={styles.textPlat}>KB-2232-RFI</Text>
           </View>
-          <View style={styles.viewContentRent}>
+          <TouchableOpacity
+            activeOpacity={0.7}
+            style={styles.viewContentRent}
+            onPress={() => navigation.navigate('CreateCarLoan')}>
             <Text style={styles.textRent}>Pinjam sekarang</Text>
-          </View>
-        </View>
+          </TouchableOpacity>
+        </TouchableOpacity>
+        <Gap width={25} />
       </ScrollView>
 
       <View style={styles.contentLastUs}>
@@ -319,7 +350,7 @@ const styles = StyleSheet.create({
     transform: [{scaleX: -1}],
   },
   textPlat: {
-    color: COLORS.primary,
+    color: COLORS.grey,
     textAlign: 'left',
     fontSize: DIMENS.xs,
   },
@@ -333,7 +364,7 @@ const styles = StyleSheet.create({
     fontSize: DIMENS.s,
   },
   viewContentRent: {
-    top: 100,
+    top: 105,
     backgroundColor: COLORS.blueLight,
     padding: 5,
     borderRadius: 15,

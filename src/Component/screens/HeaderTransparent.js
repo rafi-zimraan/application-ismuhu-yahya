@@ -14,6 +14,7 @@ export default function HeaderTransparent({
   title = '',
   icon = 'menu',
   onPress,
+  color = COLORS.black,
 }) {
   return (
     <View style={styles.view}>
@@ -27,11 +28,11 @@ export default function HeaderTransparent({
         useForeground
         background={TouchableNativeFeedback.Ripple(null, null, 20)}>
         <View style={styles.icon}>
-          <Icon name={icon} size={30} color={COLORS.black} />
+          <Icon name={icon} size={30} color={color} />
         </View>
       </TouchableNativeFeedback>
       <View style={{width: 15}} />
-      <Text style={styles.text}>{title}</Text>
+      <Text style={{...styles.text, color}}>{title}</Text>
     </View>
   );
 }

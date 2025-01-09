@@ -9,7 +9,6 @@ import NotificationDetail from './Notification/NotificationDetail';
 import NotificationFromCategory from './Notification/NotificationFromCategory';
 import OnBoarding from './Onboarding/Onboarding';
 import Perizinan from './Perizinan/Perizinan';
-import FaceScaanPresence from './PresenceEmployee/FaceScaanPresence';
 import Presensi from './PresenceEmployee/Presensi';
 import QrCodePresense from './PresenceEmployee/QrCodePresense';
 import AboutApplication from './Setting/AboutApplication';
@@ -36,7 +35,6 @@ export {
   Perizinan,
   Notification,
   Settings,
-  FaceScaanPresence,
   Presensi,
   DrawerContent,
   SignUp,

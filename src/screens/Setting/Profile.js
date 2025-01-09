@@ -31,7 +31,6 @@ import {COLORS, DIMENS} from '../../utils';
 export default function Profile({navigation}) {
   const [divisionName, setDivisionName] = useState('');
   const [departmentName, setDepartmentName] = useState('');
-  const [loading, setLoading] = useState(true);
   const [tokenExpired, setTokenExpired] = useState(false);
   const [coupleData, setCoupleData] = useState([]);
   const [userName, setUserName] = useState('');
@@ -42,9 +41,11 @@ export default function Profile({navigation}) {
   const [trainingData, setTrainingData] = useState([]);
   const [experienceData, setExperienceData] = useState([]);
 
-  const loadData = async () => {
-    setLoading(true);
-    setModalLoadingVisible(true);
+  const loadData = async (showLoading = true) => {
+    if (showLoading) {
+      setModalLoadingVisible(true);
+    }
+
     try {
       const userId = JSON.parse(await EncryptedStorage.getItem('idUser'));
       const userSession = JSON.parse(
@@ -68,7 +69,6 @@ export default function Profile({navigation}) {
         getTrainingData(userId),
         getExperienceData(userId),
       ]);
-      console.log('data', trainingResponse);
 
       if (divisions?.message === 'Silahkan login terlebih dahulu') {
         setTokenExpired(true);
@@ -87,7 +87,6 @@ export default function Profile({navigation}) {
 
       if (coupleDataResponse?.status && coupleDataResponse?.data) {
         const {user, couples, photo: userPhoto} = coupleDataResponse.data;
-        console.log('couples', couples);
         setEmail(user?.email || 'N/A');
         setPhoto(userPhoto);
 
@@ -101,14 +100,12 @@ export default function Profile({navigation}) {
       }
 
       if (trainingResponse?.status && trainingResponse?.data?.trainings) {
-        console.log('trainingData:', trainingResponse);
         setTrainingData(trainingResponse.data.trainings);
       } else {
         setTrainingData([]);
       }
 
       if (experienceResponse?.status && experienceResponse?.data?.experiences) {
-        console.log('experience', experienceResponse);
         setExperienceData(experienceResponse.data.experiences);
       } else {
         setExperienceData([]);
@@ -116,8 +113,9 @@ export default function Profile({navigation}) {
     } catch (error) {
       console.error('Error fetching data:', error);
     } finally {
-      setLoading(false);
-      setModalLoadingVisible(false);
+      if (showLoading) {
+        setModalLoadingVisible(false);
+      }
     }
   };
 
@@ -130,7 +128,7 @@ export default function Profile({navigation}) {
   const onRefresh = async () => {
     setRefreshing(true);
     try {
-      await loadData();
+      await loadData(false);
     } catch (error) {
       console.error('Error during refresh:', error);
     } finally {
@@ -389,6 +387,7 @@ export default function Profile({navigation}) {
               <TouchableOpacity
                 style={styles.createButton}
                 activeOpacity={0.7}
+                TouchableOpacity
                 onPress={() => navigation.navigate('CreateExperience')}>
                 <Icon name="plus-circle" size={25} color={COLORS.black} />
               </TouchableOpacity>

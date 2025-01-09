@@ -282,266 +282,145 @@
 
 import React, {useState} from 'react';
 import {
-  Image,
-  ScrollView,
-  StatusBar,
+  FlatList,
+  Modal,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {Gap, HeaderTransparent} from '../../Component';
-import {IMG_NAME_CARD_REBORN, IMG_REBORN_CAR_ESCAPE} from '../../assets';
-import {COLORS, DIMENS} from '../../utils';
+import {useDispatch, useSelector} from 'react-redux';
+import {setLanguage} from '../../features/Language/services/languageSlice';
+import {COLORS} from '../../utils';
 
-export default function LibDemo({navigation}) {
-  const [currentScreen, setCurrentScreen] = useState(0);
+const LanguageSelector = () => {
+  const dispatch = useDispatch();
+  const currentLanguage = useSelector(state => state.language.currentLanguage);
 
-  const screens = [IMG_REBORN_CAR_ESCAPE, IMG_REBORN_CAR_ESCAPE];
+  const [isModalVisible, setModalVisible] = useState(false);
 
-  const handleScroll = event => {
-    const position = Math.floor(
-      event.nativeEvent.contentOffset.x /
-        event.nativeEvent.layoutMeasurement.width,
-    );
-    setCurrentScreen(position);
+  const languages = [
+    {code: 'en', label: 'English'},
+    {code: 'id', label: 'Bahasa Indonesia'},
+    {code: 'fr', label: 'Français'},
+  ];
+
+  const handleLanguageChange = languageCode => {
+    dispatch(setLanguage(languageCode));
+    setModalVisible(false);
   };
 
   return (
-    <View style={styles.container}>
-      <StatusBar barStyle={'default'} backgroundColor={'transparent'} />
-      <HeaderTransparent
-        icon="arrow-left-circle-outline"
-        title="Detail Pinjam Mobil"
-        onPress={() => navigation.goBack()}
-      />
-      <ScrollView
-        showsVerticalScrollIndicator={true}
-        contentContainerStyle={{paddingBottom: 20}}
-        style={styles.scrollViewContainer}>
-        <View style={styles.bodyDetail}>
-          <Text style={styles.txtCategoryCar}>Ambulance Car</Text>
-          <Gap height={5} />
-          <Text style={styles.txtNameCar}>Reborn GT-R NISMO 2019</Text>
-          <Gap height={15} />
-          <ScrollView
-            horizontal
-            pagingEnabled
-            showsHorizontalScrollIndicator={false}
-            onScroll={handleScroll}
-            style={styles.scrollView}>
-            {screens.map((image, index) => (
-              <View key={index} style={styles.viewCar}>
-                <Image source={image} style={{height: 120, width: 300}} />
-              </View>
-            ))}
-          </ScrollView>
-
-          {/* Pagination */}
-          <View style={styles.viewPagination}>
-            <View style={styles.paginationWrapper}>
-              {screens.map((_, index) => (
-                <View
-                  key={index}
-                  style={[
-                    styles.paginationDot,
-                    currentScreen === index
-                      ? styles.activeDot
-                      : styles.inactiveDot,
-                  ]}
-                />
-              ))}
-            </View>
-          </View>
-
-          <Gap height={20} />
-          <Text style={styles.title}>Detail Mobil</Text>
-          <Gap height={10} />
-          <View style={styles.contentCar}>
-            <Image
-              source={IMG_NAME_CARD_REBORN}
-              style={{height: 50, width: 50, borderRadius: 7}}
-            />
-            <Gap width={15} />
-            <View>
-              <Text style={styles.txtTitleCar}>Mobil Reborn</Text>
-              <Text style={styles.txtColorCar}>Hitam Pekat</Text>
-              <Gap height={10} />
-
-              <View style={styles.viewPlatAndDesc}>
-                {/* Icon for Seats */}
-                <View style={styles.row}>
-                  <Icon name="seat" size={16} color={COLORS.black} />
-                  <Text style={styles.txtDescCar}>2 seat - Manual</Text>
-                </View>
-                {/* Icon for Plate */}
-                <View style={styles.row}>
-                  <Icon name="car-info" size={16} color={COLORS.black} />
-                  <Text style={styles.txtPlatCar}>KB - 1212 - BJH</Text>
-                </View>
-              </View>
-            </View>
-          </View>
-
-          <Gap height={20} />
-          <Text style={styles.title}>History Peminjaman</Text>
-          <Gap height={10} />
-
-          {/* History Peminjaman */}
-          {Array(7)
-            .fill(0)
-            .map((_, index) => (
-              <View key={index} style={styles.contentCar}>
-                <Icon
-                  name="account-circle"
-                  size={50}
-                  color={COLORS.goldenOrange}
-                />
-                <Gap width={15} />
-                <View>
-                  <Text style={styles.txtTitleCar}>Fulan bin fulanah</Text>
-                  <Text style={styles.txtColorCar}>Des, 22, 2025</Text>
-                </View>
-                <Gap height={20} />
-              </View>
-            ))}
-        </View>
-      </ScrollView>
-      {/* Sticky Footer */}
-      <View style={styles.footer}>
-        <Text style={styles.footerText}>
-          Segera pinjam {'\n'}kendaraan pilihan Anda!
+    <View style={[styles.section, {backgroundColor: COLORS.white}]}>
+      <TouchableOpacity onPress={() => setModalVisible(true)}>
+        <Text style={styles.sectionTitle}>Pilih Bahasa</Text>
+        <Text style={styles.sectionSubtitle}>
+          {languages.find(lang => lang.code === currentLanguage)?.label ||
+            'Pilih Bahasa'}
         </Text>
-        <TouchableOpacity
-          style={styles.buttonAction}
-          activeOpacity={0.6}
-          onPress={() => console.log('Pinjam Button Pressed')}>
-          <Text style={styles.buttonText}>Pinjam</Text>
-        </TouchableOpacity>
-      </View>
+      </TouchableOpacity>
+
+      {/* Modal Pilihan Bahasa */}
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={isModalVisible}
+        onRequestClose={() => setModalVisible(false)}>
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Pilih Bahasa</Text>
+            <FlatList
+              data={languages}
+              keyExtractor={item => item.code}
+              renderItem={({item}) => (
+                <TouchableOpacity
+                  style={styles.modalItem}
+                  onPress={() => handleLanguageChange(item.code)}>
+                  <Text
+                    style={[
+                      styles.modalItemText,
+                      item.code === currentLanguage && styles.selectedLanguage,
+                    ]}>
+                    {item.label}
+                  </Text>
+                </TouchableOpacity>
+              )}
+            />
+            <TouchableOpacity
+              style={styles.closeButton}
+              onPress={() => setModalVisible(false)}>
+              <Text style={styles.closeButtonText}>Tutup</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
-  footer: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    backgroundColor: COLORS.white,
-    flexDirection: 'row',
+  section: {
+    flexDirection: 'column',
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
+    padding: 15,
+    borderRadius: 10,
+    marginBottom: 15,
+    elevation: 3,
+  },
+  sectionTitle: {
+    fontSize: 16,
+    color: COLORS.black,
+  },
+  sectionSubtitle: {
+    fontSize: 14,
+    color: COLORS.gray,
+    marginTop: 5,
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
     alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 20,
-    paddingVertical: 12,
-    borderTopWidth: 0.2,
-    borderColor: COLORS.grey,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
-  footerText: {
-    fontSize: DIMENS.m,
-    fontWeight: '400',
-    color: COLORS.grey,
+  modalContent: {
+    width: '80%',
+    backgroundColor: COLORS.white,
+    borderRadius: 10,
+    padding: 20,
+    elevation: 5,
   },
-  buttonAction: {
-    backgroundColor: COLORS.goldenOrange,
-    paddingHorizontal: 20,
-    paddingVertical: 10,
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 20,
+    textAlign: 'center',
+    color: COLORS.black,
+  },
+  modalItem: {
+    padding: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: COLORS.grey,
+  },
+  modalItemText: {
+    fontSize: 16,
+    color: COLORS.black,
+  },
+  selectedLanguage: {
+    fontWeight: 'bold',
+    color: COLORS.goldenOrange,
+  },
+  closeButton: {
+    marginTop: 20,
+    alignSelf: 'center',
+    padding: 10,
+    backgroundColor: COLORS.primary,
     borderRadius: 5,
   },
-  buttonText: {
-    fontSize: DIMENS.m,
+  closeButtonText: {
     color: COLORS.white,
-    fontWeight: '600',
-  },
-  title: {
-    fontSize: DIMENS.m,
-    color: COLORS.grey,
-    fontWeight: '600',
-  },
-  row: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 2,
-  },
-  viewPlatAndDesc: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    width: '89%',
-  },
-  txtColorCar: {
-    fontSize: DIMENS.s,
-    color: '#333',
-    fontWeight: '400',
-  },
-  txtPlatCar: {
-    fontSize: DIMENS.s,
-    color: COLORS.grey,
-    fontWeight: '400',
-  },
-  txtTitleCar: {
-    fontSize: DIMENS.xl,
-    color: COLORS.black,
-    fontWeight: '700',
-  },
-  contentCar: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  viewPagination: {
-    marginTop: 10,
-    alignItems: 'center',
-  },
-  paginationWrapper: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  paginationDot: {
-    height: 8,
-    width: 8,
-    borderRadius: 4,
-    marginHorizontal: 4,
-  },
-  activeDot: {
-    backgroundColor: COLORS.goldenOrange,
-  },
-  inactiveDot: {
-    backgroundColor: '#D3D3D3',
-  },
-  scrollView: {
-    width: '100%',
-    height: 140,
-  },
-  scrollViewContainer: {
-    flex: 1,
-  },
-  viewCar: {
-    alignSelf: 'center',
-  },
-  txtDescCar: {
-    fontSize: DIMENS.m,
-    color: COLORS.grey,
-    fontWeight: '500',
-  },
-  txtNameCar: {
-    fontSize: DIMENS.xxxl,
-    color: COLORS.black,
-    fontWeight: '500',
-  },
-  txtCategoryCar: {
-    fontSize: DIMENS.m,
-    color: COLORS.grey,
-    fontWeight: '500',
-  },
-  bodyDetail: {
-    padding: 15,
-  },
-  container: {
-    backgroundColor: COLORS.white,
-    flex: 1,
+    fontSize: 14,
   },
 });
+
+export default LanguageSelector;
