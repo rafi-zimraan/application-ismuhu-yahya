@@ -1,7 +1,6 @@
 import {useNavigation} from '@react-navigation/native';
 import React, {useState} from 'react';
 import {
-  Alert,
   StyleSheet,
   Text,
   TextInput,
@@ -21,8 +20,8 @@ import {verifyOtpCode} from '../services/ForgotApiSlice';
 
 export default function OtpForgotPassword({route}) {
   const navigation = useNavigation();
-  const {email} = route.params; // Email yang dikirim melalui navigasi
-  const [otp, setOtp] = useState(new Array(6).fill('')); // Menyimpan 6 digit OTP
+  const {email} = route.params;
+  const [otp, setOtp] = useState(new Array(6).fill(''));
   const [loading, setLoading] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [token, setToken] = useState(null);
@@ -65,7 +64,7 @@ export default function OtpForgotPassword({route}) {
       }
 
       if (response?.token) {
-        await EncryptedStorage.setItem('token', JSON.stringify(response.token)); // Simpan token dengan JSON.stringify
+        await EncryptedStorage.setItem('token', JSON.stringify(response.token));
         setToken(response.token);
         setModalVisible(true);
       }
@@ -80,13 +79,13 @@ export default function OtpForgotPassword({route}) {
   };
 
   const handleResendEmail = () => {
-    Alert.alert('Tunggu Rilis ya');
+    ToastAndroid.show('Nantinkan fitur terbarunya yaa 🤗', ToastAndroid.SHORT);
   };
 
   const handleModalClose = () => {
     setModalVisible(false);
     if (token) {
-      navigation.replace('Dasboard', {token}); // Arahkan ke Dashboard dengan token
+      navigation.replace('Dasboard', {token});
     }
   };
 

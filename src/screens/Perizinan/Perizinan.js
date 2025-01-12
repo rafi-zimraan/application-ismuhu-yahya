@@ -2,13 +2,13 @@ import {useFocusEffect} from '@react-navigation/native';
 import React, {useEffect, useState} from 'react';
 import {
   ActivityIndicator,
-  Alert,
   FlatList,
   Image,
   RefreshControl,
   StatusBar,
   StyleSheet,
   Text,
+  ToastAndroid,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -20,14 +20,19 @@ import {
   ModalCustom,
 } from '../../Component';
 import {IMG_NOTHING_DATA_HISTORY_PERIZINA} from '../../assets';
-import {deleteDataPerizinan, getAllPerizinan} from '../../features/Perizinan';
-import HistoryItem from '../../features/Perizinan/components/HistoryItem';
-import TotalCuti from '../../features/Perizinan/components/TotalCuti';
+import {
+  HistoryItem,
+  TotalCuti,
+  deleteCuti,
+  deletePerizinanKeluar,
+  getAllCuti,
+  getAllPerizinanKeluar,
+} from '../../features/Perizinan';
 import {COLORS, DIMENS} from '../../utils';
 
 export default function Perizinan({navigation}) {
-  const [dataHistory, setDataHistory] = useState([]);
-  console.log('dataHistory', dataHistory);
+  const [dataCuti, setDataCuti] = useState([]);
+  const [dataExitPermit, setDataExitPermit] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [tokenExpired, setTokenExpired] = useState(false);
@@ -42,35 +47,46 @@ export default function Perizinan({navigation}) {
   const fetchData = async () => {
     try {
       setLoading(true);
-      const response = await getAllPerizinan();
+      const response = await getAllCuti();
 
       if (response?.message === 'Silahkan login terlebih dahulu') {
         setTokenExpired(true);
-      } else if (response?.data) {
-        const sortedData = response.data.sort((a, b) => {
-          const dateA = new Date(a.created_at);
-          const dateB = new Date(b.created_at);
-          return dateB - dateA;
-        });
+      } else if (response?.data?.data) {
+        const mappedData = response.data.data.map(item => ({
+          id: item.id,
+          user_id: item.user_id,
+          division_id: item.division_id,
+          department_id: item.department_id,
+          regarding: item.regarding,
+          necessity: item.necessity,
+          category: item.category,
+          start_date: item.start_date,
+          end_date: item.end_date,
+          is_exit_permit: item.is_exit_permit,
+          out: item.out,
+          in: item.in,
+          duration: item.duration,
+          desc: item.desc,
+          approve: item.approve,
+        }));
 
-        setDataHistory(sortedData.slice(0, 10));
+        setDataCuti(mappedData);
 
-        if (sortedData.length > 0) {
-          const firstEntry = sortedData[0];
+        if (mappedData.length > 0) {
+          const firstEntry = mappedData[0];
           setUserDivisionId(firstEntry.division_id);
           setUserDepartmentId(firstEntry.department_id);
         }
-
         const categoryValues = Object.values(response?.category || {});
         const totalTerpakai = categoryValues.reduce(
-          (sum, value) => sum + value,
+          (sum, item) => sum + parseInt(item || 0, 10),
           0,
         );
 
         setTerpakai(totalTerpakai);
         setTotalCuti(12 - totalTerpakai);
       } else {
-        setDataHistory([]);
+        setDataCuti([]);
       }
     } catch (error) {
       console.error('Error fetching data: ', error);
@@ -79,19 +95,63 @@ export default function Perizinan({navigation}) {
     }
   };
 
+  const combinedData = [...dataCuti, ...dataExitPermit].sort((a, b) => {
+    const dateA = new Date(a.created_at);
+    const dateB = new Date(b.created_at);
+    return dateB - dateA;
+  });
+
+  const fetchExitPermitData = async () => {
+    try {
+      setLoading(true);
+      const response = await getAllPerizinanKeluar();
+
+      if (response?.data) {
+        const mappedData = response.data.map(item => ({
+          id: item.id,
+          user_id: item.user_id,
+          division_id: item.division_id,
+          department_id: item.department_id,
+          regarding: item.regarding,
+          necessity: item.necessity,
+          category: item.category,
+          start_date: item.start_date,
+          end_date: item.end_date,
+          is_exit_permit: item.is_exit_permit,
+          out: item.out,
+          in: item.in,
+          duration: item.duration,
+          desc: item.desc,
+          approve: item.approve,
+        }));
+
+        setDataExitPermit(mappedData);
+      } else {
+        setDataExitPermit([]);
+      }
+    } catch (error) {
+      console.error('Error fetching exit permit data: ', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const onRefresh = async () => {
     setRefreshing(true);
     await fetchData();
+    await fetchExitPermitData();
     setRefreshing(false);
   };
 
   useEffect(() => {
     fetchData();
+    fetchExitPermitData();
   }, []);
 
   useFocusEffect(
     React.useCallback(() => {
       fetchData();
+      fetchExitPermitData();
     }, []),
   );
 
@@ -100,15 +160,34 @@ export default function Perizinan({navigation}) {
 
     setIsDelete(true);
     try {
-      const isDeleted = await deleteDataPerizinan(selectedDeleteId);
-      if (isDeleted) {
-        setDataHistory(prevData =>
-          prevData.filter(item => item?.id !== selectedDeleteId),
-        );
+      const itemToDelete = combinedData.find(
+        item => item.id === selectedDeleteId,
+      );
 
-        setDeleteModalVisible(false);
+      if (itemToDelete) {
+        const isDeleted =
+          itemToDelete.is_exit_permit === '1'
+            ? await deletePerizinanKeluar(selectedDeleteId)
+            : await deleteCuti(selectedDeleteId);
+
+        if (isDeleted) {
+          if (itemToDelete.is_exit_permit === '1') {
+            setDataExitPermit(prevData =>
+              prevData.filter(item => item.id !== selectedDeleteId),
+            );
+          } else {
+            setDataCuti(prevData =>
+              prevData.filter(item => item.id !== selectedDeleteId),
+            );
+          }
+
+          ToastAndroid.show('Data berhasil dihapus.', ToastAndroid.SHORT);
+          setDeleteModalVisible(false);
+        } else {
+          ToastAndroid.show('Gagal menghapus data.', ToastAndroid.SHORT);
+        }
       } else {
-        Alert.alert('Gagal', 'Gagal menghapus data.');
+        ToastAndroid.show('Data tidak ditemukan.', ToastAndroid.SHORT);
       }
     } catch (error) {
       console.error('Error deleting data:', error);
@@ -122,7 +201,7 @@ export default function Perizinan({navigation}) {
       <StatusBar barStyle={'default'} backgroundColor={'transparent'} />
       <Background />
       <HeaderTransparent
-        title="Perizinan "
+        title="Perizinan"
         icon="arrow-left-circle-outline"
         onPress={() => navigation.goBack()}
       />
@@ -141,7 +220,7 @@ export default function Perizinan({navigation}) {
             activeOpacity={0.3}
             onPress={() =>
               navigation.navigate('TopTabBar', {
-                dataHistory: [...dataHistory],
+                dataHistory: combinedData,
               })
             }>
             <Text style={styles.txtHistorycal}>Selengkapnya</Text>
@@ -154,7 +233,7 @@ export default function Perizinan({navigation}) {
           </View>
         ) : (
           <FlatList
-            data={dataHistory}
+            data={combinedData}
             keyExtractor={item => item.id.toString()}
             renderItem={({item}) => (
               <HistoryItem
@@ -191,6 +270,8 @@ export default function Perizinan({navigation}) {
       <FloatingButton
         iconName="exit-to-app"
         label={'Keluar'}
+        style={{right: 20, bottom: 105}}
+        backgroundColor={COLORS.blue}
         onPress={() =>
           navigation.navigate('CreateFormulirPerizinanExit', {
             division_id: userDivisionId,
@@ -200,20 +281,19 @@ export default function Perizinan({navigation}) {
       />
 
       {/* Perinan cuti / dalam jangan waktu yang lama */}
-      {/* <FloatingButton
+      <FloatingButton
         iconName="calendar-check"
         label={'Cuti'}
         style={{bottom: 10, right: 20}}
-        backgroundColor="#FF8C00"
+        backgroundColor={COLORS.goldenOrange}
         onPress={() =>
           navigation.navigate('CreateFormulirPerizinan', {
             division_id: userDivisionId,
             department_id: userDepartmentId,
           })
         }
-      /> */}
+      />
 
-      {/* Modal untuk Token Expired */}
       <ModalCustom
         visible={tokenExpired}
         onRequestClose={() => setTokenExpired(false)}
@@ -227,17 +307,17 @@ export default function Perizinan({navigation}) {
         buttonTitle="Login Ulang"
       />
 
-      {/* Modal untuk Konfirmasi Delete */}
       <ModalCustom
         visible={deleteModalVisible}
         onRequestClose={() => setDeleteModalVisible(false)}
         iconModalName="delete-forever"
         buttonLoading={isDelete}
         title="Hapus Perizinan"
-        description="Apakah Anda yakin inginmenghapus history ini?"
+        description="Apakah Anda yakin ingin menghapus history ini?"
         TextDescription={COLORS.red}
         ColorIcon={COLORS.red}
         buttonSubmit={handleDelete}
+        buttonTitle="Ya"
       />
     </View>
   );

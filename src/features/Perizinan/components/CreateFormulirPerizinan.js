@@ -1,27 +1,24 @@
-import DateTimePicker from '@react-native-community/datetimepicker';
 import React, {useEffect, useState} from 'react';
 import {
-  ActivityIndicator,
   SafeAreaView,
   ScrollView,
   StatusBar,
   StyleSheet,
-  Text,
-  TextInput,
   ToastAndroid,
-  TouchableOpacity,
   View,
 } from 'react-native';
+import {CustomTextInput, addCuti} from '..';
 import {
+  AlertWarning,
   Background,
   ButtonAction,
+  Gap,
   HeaderTransparent,
   ModalCustom,
 } from '../../../Component';
-import {COLORS, DIMENS} from '../../../utils';
+import {COLORS} from '../../../utils';
 import {getAllDepartment} from '../../Departmant';
 import {getAllDivisions} from '../../Divisi';
-import {addCutiPerizinan} from '../services/perizinanApiSlice';
 
 export default function CreateFormulirPerizinan({navigation, route}) {
   const {division_id, department_id} = route.params;
@@ -31,17 +28,15 @@ export default function CreateFormulirPerizinan({navigation, route}) {
   const [loadingDepartment, setLoadingDepartment] = useState(false);
   const [divisionId, setDivisionId] = useState(division_id || '');
   const [departmentId, setDepartmentId] = useState(department_id || '');
-  const [regarding, setRegarding] = useState('');
-  const [necessity, setNecessity] = useState('');
-  const [category, setCategory] = useState('');
+  const [desc, setDesc] = useState('');
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
-  const [showStartDatePicker, setShowStartDatePicker] = useState(false);
-  const [showEndDatePicker, setShowEndDatePicker] = useState(false);
   const [loading, setLoading] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [totalDays, setTotalDays] = useState(0);
+  const [showWarning, setShowWarning] = useState(false);
   const [tokenExpired, setTokenExpired] = useState(false);
+  const [warningMessage, setWarningMessage] = useState('');
 
   useEffect(() => {
     const fetchDivisionsAndDepartments = async () => {
@@ -72,44 +67,44 @@ export default function CreateFormulirPerizinan({navigation, route}) {
   }, [startDate, endDate]);
 
   const handleSubmit = async () => {
-    setLoading(true);
+    setShowWarning(false);
 
+    if (!desc) {
+      setWarningMessage('Harap lengkapi deskripsi sebelum mengirim.');
+      setShowWarning(true);
+      return;
+    }
+
+    if (!startDate || !endDate) {
+      setWarningMessage('Harap pilih tanggal awal dan akhir cuti.');
+      setShowWarning(true);
+      return;
+    }
+    setLoading(true);
     try {
       const data = {
         division_id: divisionId,
         department_id: departmentId,
-        regarding,
-        necessity,
-        category,
+        desc: desc,
         start_date: startDate.toISOString().split('T')[0],
         end_date: endDate.toISOString().split('T')[0],
-        tot_day: totalDays,
+        duration: totalDays,
       };
 
-      const response = await addCutiPerizinan(data);
+      const response = await addCuti(data);
 
       if (response?.status === true) {
         setShowSuccessModal(true);
       } else if (response?.message === 'Silahkan login terlebih dahulu') {
         setTokenExpired(true);
       } else {
-        if (
-          response?.message?.includes('Request failed with status code 500')
-        ) {
-          ToastAndroid.show(
-            'Terdapat kesalahan pada server',
-            ToastAndroid.SHORT,
-          );
-        } else {
-          ToastAndroid.show(response?.message, ToastAndroid.SHORT);
-        }
+        ToastAndroid.show(
+          response?.message || 'Gagal mengirim data',
+          ToastAndroid.SHORT,
+        );
       }
     } catch (error) {
-      if (error.message?.includes('Request failed with status code 500')) {
-        ToastAndroid.show('Terdapat kesalahan pada server', ToastAndroid.SHORT);
-      } else {
-        ToastAndroid.show(error.message, ToastAndroid.SHORT);
-      }
+      ToastAndroid.show('Terjadi kesalahan', ToastAndroid.SHORT);
     } finally {
       setLoading(false);
     }
@@ -117,126 +112,69 @@ export default function CreateFormulirPerizinan({navigation, route}) {
 
   return (
     <SafeAreaView style={{flex: 1}}>
-      <StatusBar barStyle={'default'} backgroundColor={'transparent'} />
+      <StatusBar barStyle="default" backgroundColor="transparent" />
       <Background />
       <HeaderTransparent
         title="Perizinan Cuti"
         icon="arrow-left-circle-outline"
         onPress={() => navigation.goBack()}
       />
+
+      <AlertWarning show={showWarning} message={warningMessage} />
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         <View style={styles.container}>
-          <Text style={styles.label}>Division</Text>
-          <View style={{position: 'relative'}}>
-            <Text style={styles.input}>
-              {loadingDivision ? 'Memuat...' : divisionName}
-            </Text>
-            {loadingDivision && (
-              <ActivityIndicator
-                size="small"
-                color={COLORS.black}
-                style={styles.activityIndicator}
-              />
-            )}
-          </View>
-
-          <Text style={styles.label}>Department</Text>
-          <View style={{position: 'relative'}}>
-            <Text style={styles.input}>
-              {loadingDepartment ? 'Memuat...' : departmentName}
-            </Text>
-            {loadingDepartment && (
-              <ActivityIndicator
-                size="small"
-                color={COLORS.black}
-                style={styles.activityIndicator}
-              />
-            )}
-          </View>
-
-          <Text style={styles.label}>Perihal</Text>
-          <TextInput
-            style={styles.input}
-            value={regarding}
-            onChangeText={setRegarding}
-            placeholder="Perihal (cuti, lainnya)"
+          <CustomTextInput
+            label="Division"
+            value={divisionName}
+            placeholder="Memuat..."
+            isLoading={loadingDivision}
             placeholderTextColor={COLORS.grey}
           />
-
-          <Text style={styles.label}>Keperluan</Text>
-          <TextInput
-            style={styles.input}
-            value={necessity}
-            onChangeText={setNecessity}
-            placeholder="Masukkan keperluan"
+          <CustomTextInput
+            label="Department"
+            value={departmentName}
+            placeholder="Memuat..."
+            isLoading={loadingDepartment}
             placeholderTextColor={COLORS.grey}
           />
-
-          <Text style={styles.label}>Kategori</Text>
-          <TextInput
-            style={styles.input}
-            value={category}
-            onChangeText={setCategory}
-            placeholder="Kategori (cuti, lainnya)"
+          <CustomTextInput
+            label="Deskripsi"
+            value={desc}
+            onChangeText={setDesc}
+            placeholder="Masukkan deskripsi"
+            placeholderTextColor={COLORS.grey}
+            isMultiline={true}
+          />
+          <CustomTextInput
+            label="Tanggal Awal Cuti"
+            value={startDate.toISOString().split('T')[0]}
+            onChangeText={date => setStartDate(new Date(date))}
+            placeholder="Pilih tanggal"
+            isDatePicker={true}
+          />
+          <CustomTextInput
+            label="Tanggal Akhir Cuti"
+            value={endDate.toISOString().split('T')[0]}
+            onChangeText={date => setEndDate(new Date(date))}
+            placeholder="Pilih tanggal"
+            isDatePicker={true}
+          />
+          <CustomTextInput
+            label="Jumlah Hari"
+            value={
+              totalDays ? `${totalDays} hari` : 'Jumlah hari belum tersedia'
+            }
+            editable={false}
             placeholderTextColor={COLORS.grey}
           />
-
-          <Text style={styles.label}>Tanggal Awal Cuti</Text>
-          <TouchableOpacity
-            onPress={() => setShowStartDatePicker(true)}
-            style={styles.dateInput}>
-            <Text style={styles.textDate}>
-              {startDate.toISOString().split('T')[0]}
-            </Text>
-          </TouchableOpacity>
-          {showStartDatePicker && (
-            <DateTimePicker
-              value={startDate}
-              mode="date"
-              display="default"
-              onChange={(event, selectedDate) => {
-                setShowStartDatePicker(false);
-                if (selectedDate) {
-                  setStartDate(selectedDate);
-                }
-              }}
-            />
-          )}
-
-          <Text style={styles.label}>Tanggal Kembali Cuti</Text>
-          <TouchableOpacity
-            onPress={() => setShowEndDatePicker(true)}
-            style={styles.dateInput}>
-            <Text style={styles.textDate}>
-              {endDate.toISOString().split('T')[0]}
-            </Text>
-          </TouchableOpacity>
-          {showEndDatePicker && (
-            <DateTimePicker
-              value={endDate}
-              mode="date"
-              display="default"
-              onChange={(event, selectedDate) => {
-                setShowEndDatePicker(false);
-                if (selectedDate) {
-                  setEndDate(selectedDate);
-                }
-              }}
-            />
-          )}
-
-          <Text style={styles.label}>Jumlah Hari</Text>
-          <Text style={styles.input}>{totalDays} hari</Text>
-
-          <View style={{marginTop: 20, alignItems: 'center'}}>
-            <ButtonAction
-              title={loading ? 'Loading...' : 'Kirim'}
-              onPress={handleSubmit}
-              backgroundColor={COLORS.goldenOrange}
-              color={COLORS.white}
-              loading={loading}
-            />
-          </View>
+          <Gap height={20} />
+          <ButtonAction
+            title={loading ? 'Loading...' : 'Kirim'}
+            onPress={handleSubmit}
+            backgroundColor={COLORS.goldenOrange}
+            color={COLORS.white}
+            loading={loading}
+          />
         </View>
       </ScrollView>
 
@@ -244,14 +182,13 @@ export default function CreateFormulirPerizinan({navigation, route}) {
         visible={showSuccessModal}
         onRequestClose={() => setShowSuccessModal(false)}
         iconModalName="check-circle-outline"
-        title="Permintaan Berhasil"
-        description="Permintaan perizinan Anda telah berhasil dikirim."
+        title="Berhasil"
+        description="Perizinan berhasil dikirim"
         buttonSubmit={() => {
           setShowSuccessModal(false);
           navigation.goBack();
         }}
         buttonTitle="Kembali"
-        buttonDisable={false}
       />
 
       <ModalCustom
@@ -271,44 +208,10 @@ export default function CreateFormulirPerizinan({navigation, route}) {
 }
 
 const styles = StyleSheet.create({
-  textDate: {
-    color: COLORS.black,
-    fontSize: DIMENS.l,
-  },
   scrollContainer: {
     paddingBottom: 20,
   },
   container: {
     padding: 20,
-  },
-  label: {
-    fontSize: DIMENS.l,
-    fontWeight: '600',
-    color: COLORS.black,
-    marginBottom: 5,
-  },
-  input: {
-    borderWidth: 0.5,
-    borderColor: COLORS.grey,
-    padding: 10,
-    borderRadius: 8,
-    marginBottom: 15,
-    backgroundColor: COLORS.champagne,
-    color: COLORS.black,
-  },
-  dateInput: {
-    borderWidth: 0.5,
-    borderColor: COLORS.grey,
-    padding: 10,
-    borderRadius: 8,
-    marginBottom: 15,
-    backgroundColor: COLORS.champagne,
-    justifyContent: 'center',
-  },
-  activityIndicator: {
-    position: 'absolute',
-    right: 10,
-    top: '50%',
-    transform: [{translateY: -10}],
   },
 });

@@ -20,18 +20,19 @@ export default function PrivasiSetting({navigation}) {
   const darkTheme = useSelector(state => state.theme.darkTheme);
   const currentLanguage = useSelector(state => state.language.currentLanguage);
   const [selectedLanguage, setSelectedLanguage] = useState(currentLanguage);
+  console.log('currentLanguage', currentLanguage);
 
   const [isModalVisible, setModalVisible] = useState(false);
   const languages = [
     {code: 'en', label: 'English'},
     {code: 'id', label: 'Bahasa Indonesia'},
   ];
+
   const handleLanguageChange = () => {
     dispatch(setLanguage(selectedLanguage));
     setModalVisible(false);
   };
 
-  // Ambil teks terjemahan berdasarkan bahasa saat ini
   const t = key => Translations[currentLanguage][key];
 
   return (

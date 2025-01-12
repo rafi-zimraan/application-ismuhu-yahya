@@ -10,10 +10,12 @@ import {DIMENS} from '../../../utils/dimens';
 moment.locale('id');
 
 const HistoryItem = ({item, onEditPress, onDeletePress}) => {
-  // Fungsi untuk memformat tanggal
+  const approveStatus =
+    item.approve && item.approve.length > 0 ? item.approve[0].is_approve : null;
+
   const formatDate = date => {
     if (!date) return '';
-    return moment(date).format('DD-MMM-YYYY'); // Format: 21-Des-2024
+    return moment(date).format('DD-MMM-YYYY');
   };
 
   const calculateDuration = (start, end) => {
@@ -42,16 +44,16 @@ const HistoryItem = ({item, onEditPress, onDeletePress}) => {
 
   const renderDateButtons = () => (
     <View style={styles.dateButtonsRow}>
-      {/* {item.is_exit_permit === '1' ? ( */}
-      <>
-        <View style={[styles.dateButton, {backgroundColor: COLORS.greenBoy}]}>
-          <Text style={styles.dateButtonText}>{item.out}</Text>
-        </View>
-        <View style={[styles.dateButton, {backgroundColor: COLORS.red}]}>
-          <Text style={styles.dateButtonText}>{item.in}</Text>
-        </View>
-      </>
-      {/* ) : (
+      {item.is_exit_permit === '1' ? (
+        <>
+          <View style={[styles.dateButton, {backgroundColor: COLORS.greenBoy}]}>
+            <Text style={styles.dateButtonText}>{item.out}</Text>
+          </View>
+          <View style={[styles.dateButton, {backgroundColor: COLORS.red}]}>
+            <Text style={styles.dateButtonText}>{item.in}</Text>
+          </View>
+        </>
+      ) : (
         <>
           <View style={[styles.viewDate, {backgroundColor: COLORS.greenBoy}]}>
             <Text style={styles.dateButtonText}>
@@ -65,32 +67,32 @@ const HistoryItem = ({item, onEditPress, onDeletePress}) => {
             </Text>
           </View>
         </>
-      )} */}
+      )}
     </View>
   );
 
   const renderPermitContent = () => {
-    // if (item.is_exit_permit === '1') {
-    return (
-      <>
-        <View style={styles.textRow}>
-          <Text style={styles.label}>Durasi Jam</Text>
-          <Text style={styles.value}>
-            : {calculateDuration(item.out, item.in)}
-          </Text>
-        </View>
-      </>
-    );
-    // } else {
-    //   return (
-    //     <>
-    //       <View style={styles.textRow}>
-    //         <Text style={styles.label}>Jumlah Hari</Text>
-    //         <Text style={styles.value}>: {item.tot_day} Hari</Text>
-    //       </View>
-    //     </>
-    //   );
-    // }
+    if (item.is_exit_permit === '1') {
+      return (
+        <>
+          <View style={styles.textRow}>
+            <Text style={styles.label}>Durasi Jam</Text>
+            <Text style={styles.value}>
+              : {calculateDuration(item.out, item.in)}
+            </Text>
+          </View>
+        </>
+      );
+    } else {
+      return (
+        <>
+          <View style={styles.textRow}>
+            <Text style={styles.label}>Jumlah Hari</Text>
+            <Text style={styles.value}>: {item.duration} Hari</Text>
+          </View>
+        </>
+      );
+    }
   };
 
   return (
@@ -102,7 +104,7 @@ const HistoryItem = ({item, onEditPress, onDeletePress}) => {
             styles.buttonStatus,
             {
               backgroundColor:
-                item.approve?.is_approve === null
+                approveStatus === null
                   ? COLORS.goldenOrange
                   : item.approve?.is_approve === '1'
                   ? COLORS.greenBoy
@@ -110,7 +112,7 @@ const HistoryItem = ({item, onEditPress, onDeletePress}) => {
             },
           ]}>
           <Text style={styles.timeButtonText}>
-            {item.approve?.is_approve === null
+            {approveStatus === null
               ? 'Pending'
               : item.approve?.is_approve === '1'
               ? 'Diterima'
@@ -129,17 +131,17 @@ const HistoryItem = ({item, onEditPress, onDeletePress}) => {
       </View>
       {renderPermitContent()}
 
-      {/* KETERANGAN */}
+      {/* DESCRIPTION */}
       <Text style={styles.label}>Keterangan</Text>
       <Gap height={5} />
       <View style={[styles.textRow, styles.descriptionContainer]}>
-        <Text style={styles.descriptionText}>{item.necessity}</Text>
+        <Text style={styles.descriptionText}>{item.desc}</Text>
       </View>
       <Gap height={15} />
       <View style={styles.footerRow}>
         <Text style={styles.date}>{item.start_date}</Text>
         <View style={styles.optionsEditAndDelete}>
-          {item.approve?.is_approve === null && (
+          {approveStatus === null && (
             <TouchableOpacity
               activeOpacity={0.7}
               style={styles.iconButton}

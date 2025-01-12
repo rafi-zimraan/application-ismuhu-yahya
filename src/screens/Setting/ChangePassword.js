@@ -1,12 +1,12 @@
 import React, {useState} from 'react';
 import {useForm} from 'react-hook-form';
 import {
-  Alert,
   SafeAreaView,
   StatusBar,
   StyleSheet,
   Text,
   TextInput,
+  ToastAndroid,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -15,6 +15,7 @@ import {useSelector} from 'react-redux';
 import {
   Background,
   ButtonAction,
+  Gap,
   HeaderTransparent,
   ModalCustom,
 } from '../../Component';
@@ -24,7 +25,6 @@ import {COLORS, DIMENS} from '../../utils';
 
 export default function ChangePassword({navigation}) {
   const currentLanguage = useSelector(state => state.language.currentLanguage);
-
   const {control, handleSubmit, setValue, watch} = useForm({
     defaultValues: {
       newPassword: '',
@@ -37,13 +37,20 @@ export default function ChangePassword({navigation}) {
   const [modalVisible, setModalVisible] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [newPasswordBorderColor, setNewPasswordBorderColor] = useState(
+    COLORS.grey,
+  );
+  const [confirmPasswordBorderColor, setConfirmPasswordBorderColor] = useState(
+    COLORS.grey,
+  );
+  const [newPasswordError, setNewPasswordError] = useState('');
+  const [confirmPasswordError, setConfirmPasswordError] = useState('');
 
-  // Ambil teks terjemahan berdasarkan bahasa saat ini
   const t = key => Translations[currentLanguage][key];
 
   const onSubmit = async data => {
     if (data.newPassword !== data.confirmPassword) {
-      Alert.alert(t('error'), t('password_mismatch'));
+      ToastAndroid.show(t('password_mismatch'), ToastAndroid.SHORT);
       return;
     }
 
@@ -57,6 +64,27 @@ export default function ChangePassword({navigation}) {
       }
     } catch (error) {
       console.log('error', error.message);
+    }
+  };
+
+  // Function to validate input
+  const validatePassword = (key, value) => {
+    if (value.length < 6) {
+      if (key === 'newPassword') {
+        setNewPasswordBorderColor(COLORS.red);
+        setNewPasswordError(t('password_min_length_error'));
+      } else {
+        setConfirmPasswordBorderColor(COLORS.red);
+        setConfirmPasswordError(t('password_min_length_error'));
+      }
+    } else {
+      if (key === 'newPassword') {
+        setNewPasswordBorderColor(COLORS.black);
+        setNewPasswordError('');
+      } else {
+        setConfirmPasswordBorderColor(COLORS.black);
+        setConfirmPasswordError('');
+      }
     }
   };
 
@@ -78,13 +106,19 @@ export default function ChangePassword({navigation}) {
 
           <View style={styles.inputContainer}>
             <TextInput
-              style={styles.textInput}
+              style={[styles.textInput, {borderColor: newPasswordBorderColor}]}
               secureTextEntry={!showNewPassword}
-              onChangeText={text => setValue('newPassword', text)}
+              onChangeText={text => {
+                setValue('newPassword', text);
+                validatePassword('newPassword', text);
+              }}
+              onFocus={() => setNewPasswordBorderColor(COLORS.goldenOrange)}
+              onBlur={() => setNewPasswordBorderColor(COLORS.grey)}
               value={newPassword}
               placeholder={t('new_password_placeholder')}
               placeholderTextColor={COLORS.grey}
             />
+
             <TouchableOpacity
               style={styles.iconContainer}
               onPress={() => setShowNewPassword(!showNewPassword)}>
@@ -95,17 +129,30 @@ export default function ChangePassword({navigation}) {
               />
             </TouchableOpacity>
           </View>
+          {newPasswordError ? (
+            <Text style={styles.errorText}>{newPasswordError}</Text>
+          ) : null}
 
+          <Gap height={15} />
           <Text style={styles.title}>{t('confirm_password_title')}</Text>
           <View style={styles.inputContainer}>
             <TextInput
-              style={styles.textInput}
+              style={[
+                styles.textInput,
+                {borderColor: confirmPasswordBorderColor},
+              ]}
               secureTextEntry={!showConfirmPassword}
-              onChangeText={text => setValue('confirmPassword', text)}
+              onChangeText={text => {
+                setValue('confirmPassword', text);
+                validatePassword('confirmPassword', text);
+              }}
+              onFocus={() => setConfirmPasswordBorderColor(COLORS.goldenOrange)}
+              onBlur={() => setConfirmPasswordBorderColor(COLORS.grey)}
               value={confirmPassword}
               placeholder={t('confirm_password_placeholder')}
               placeholderTextColor={COLORS.grey}
             />
+
             <TouchableOpacity
               style={styles.iconContainer}
               onPress={() => setShowConfirmPassword(!showConfirmPassword)}>
@@ -116,6 +163,9 @@ export default function ChangePassword({navigation}) {
               />
             </TouchableOpacity>
           </View>
+          {confirmPasswordError ? (
+            <Text style={styles.errorText}>{confirmPasswordError}</Text>
+          ) : null}
         </View>
 
         <ButtonAction
@@ -142,6 +192,11 @@ export default function ChangePassword({navigation}) {
 }
 
 const styles = StyleSheet.create({
+  errorText: {
+    color: COLORS.red,
+    fontSize: DIMENS.s,
+    textAlign: 'right',
+  },
   container: {
     flex: 1,
     backgroundColor: COLORS.lightGray,
@@ -176,7 +231,7 @@ const styles = StyleSheet.create({
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 15,
+    marginBottom: 5,
   },
   textInput: {
     flex: 1,

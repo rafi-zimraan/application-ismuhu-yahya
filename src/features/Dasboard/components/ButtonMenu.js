@@ -29,9 +29,7 @@ export default function ButtonMenu({
           {iconName && <Icon name={iconName} size={iconSize} color={color} />}
         </View>
       </TouchableNativeFeedback>
-      <Text style={styles.textTitle} numberOfLines={1} adjustsFontSizeToFit>
-        {title}
-      </Text>
+      <Text style={styles.textTitle}>{title}</Text>
     </View>
   );
 }
@@ -39,8 +37,7 @@ export default function ButtonMenu({
 const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
-    marginBottom: 5,
-    marginHorizontal: 5,
+    marginHorizontal: 4,
   },
   image: {
     width: 47.5,
@@ -64,6 +61,6 @@ const styles = StyleSheet.create({
     top: 2,
     textAlign: 'center',
     flexWrap: 'wrap',
-    maxWidth: 100,
+    maxWidth: 70,
   },
 });

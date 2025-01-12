@@ -1,23 +1,141 @@
+import {ToastAndroid} from 'react-native';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import api from '../../../utils/axiosInstance';
 
 // All Data Perizinan
-export const getAllPerizinan = async () => {
+export const getAllCuti = async () => {
   try {
-    // take it token from encryptedStorage
     const token = await EncryptedStorage.getItem('token');
     if (!token) {
       throw new Error('token expired, silahkan login terlebih dahulu');
     }
-    // add token to api
+
+    const response = await api.get('mobile/cutis', {
+      headers: {
+        Authorization: `Bearer ${JSON.parse(token)}`,
+      },
+    });
+    const data = response.data;
+
+    if (data) {
+      return data;
+    } else {
+      throw new Error('Data cuti tidak ditemukan');
+    }
+  } catch (error) {
+    if (error.response) {
+      console.log(error.response?.data?.message || 'Terjadi Kesalahan');
+    } else {
+      console.log(error.message);
+    }
+  }
+};
+
+// Delete data perizinan
+export const deleteCuti = async id => {
+  try {
+    const token = await EncryptedStorage.getItem('token');
+    if (!token) {
+      throw new Error('token expired, silahkan login terlebih dahulu');
+    }
+
+    const response = await api.delete(`mobile/cutis/${id}`, {
+      headers: {
+        Authorization: `Bearer ${JSON.parse(token)}`,
+      },
+    });
+
+    if (response.data?.status === true) {
+      return response.data;
+    } else {
+      throw new Error('Gagal menghapus data cuti');
+    }
+  } catch (error) {
+    if (error.response) {
+      console.log(error.response?.data?.message || 'Terjadi kesalahan');
+    } else {
+      console.log(error.message);
+    }
+    return false;
+  }
+};
+
+// Patch edit data perizinan
+export const patchCuti = async (id, data) => {
+  try {
+    const token = await EncryptedStorage.getItem('token');
+    if (!token) {
+      throw new Error('token expired, silahkan login terlebih dahulu');
+    }
+
+    const response = await api.patch(`mobile/cutis/${id}`, data, {
+      headers: {
+        Authorization: `Bearer ${JSON.parse(token)}`,
+      },
+    });
+
+    if (response.data?.status === true) {
+      return response.data;
+    } else {
+      throw new Error('Gagal edit data cuti');
+    }
+  } catch (error) {
+    if (error.response) {
+      console.log(error.response?.data?.message || 'Terjadi kesalahan');
+    } else {
+      console.log(error.message, 'error message');
+    }
+    throw error;
+  }
+};
+
+// Tambah data perizinan
+export const addCuti = async data => {
+  try {
+    const token = await EncryptedStorage.getItem('token');
+    if (!token) {
+      throw new Error('Token expired, silahkan login terlebih dahulu');
+    }
+
+    const response = await api.post('mobile/cutis', data, {
+      headers: {
+        Authorization: `Bearer ${JSON.parse(token)}`,
+      },
+    });
+
+    if (response.data?.status === true) {
+      return response.data;
+    } else {
+      throw new Error(response.data?.message || 'Gagal menambahkan data cuti');
+    }
+  } catch (error) {
+    if (error.response) {
+      console.log(error.response?.data?.message || 'Terjadi kesalahan');
+    } else {
+      ToastAndroid.show();
+      console.log(error.message);
+    }
+    throw error;
+  }
+};
+
+// Tambah Data Perizinan Keluar
+export const getAllPerizinanKeluar = async () => {
+  try {
+    const token = await EncryptedStorage.getItem('token');
+    if (!token) {
+      throw new Error('token expired, silahkan login terlebih dahulu');
+    }
+
     const response = await api.get('lisences', {
       headers: {
         Authorization: `Bearer ${JSON.parse(token)}`,
       },
     });
-    const getDataHistory = response.data;
-    if (getDataHistory) {
-      return getDataHistory;
+    const dataAll = response.data;
+
+    if (dataAll) {
+      return dataAll;
     } else {
       throw new Error('Data tidak ditemukan');
     }
@@ -30,10 +148,9 @@ export const getAllPerizinan = async () => {
   }
 };
 
-// Delete data perizinan
-export const deleteDataPerizinan = async id => {
+// Delete data Perizinan Keluar
+export const deletePerizinanKeluar = async id => {
   try {
-    // take it token from encryptedStorage
     const token = await EncryptedStorage.getItem('token');
     if (!token) {
       throw new Error('token expired, silahkan login terlebih dahulu');
@@ -46,9 +163,7 @@ export const deleteDataPerizinan = async id => {
     });
 
     if (response.data?.status === true) {
-      const message = response.data?.message;
-      console.log(message);
-      return true;
+      return response.data;
     } else {
       throw new Error('Gagal menghapus data');
     }
@@ -62,10 +177,9 @@ export const deleteDataPerizinan = async id => {
   }
 };
 
-// Patch edit data perizinan
-export const patchPerizinan = async (id, data) => {
+// Patch edit data Perizinan Keluar
+export const patchPerizinanKeluar = async (id, data) => {
   try {
-    // take it from encrytedStorage
     const token = await EncryptedStorage.getItem('token');
     if (!token) {
       throw new Error('token expired, silahkan login terlebih dahulu');
@@ -80,7 +194,7 @@ export const patchPerizinan = async (id, data) => {
     if (response.data?.status === true) {
       return response.data;
     } else {
-      throw new Error('Gagal edit perizinan');
+      throw new Error('Gagal edit perizinan keluar');
     }
   } catch (error) {
     if (error.response) {
@@ -92,10 +206,9 @@ export const patchPerizinan = async (id, data) => {
   }
 };
 
-// Tambah data perizinan
-export const addPerizinan = async data => {
+// Tambah data Perizinan Keluar
+export const addPerizinanKeluar = async data => {
   try {
-    // Ambil token dari EncryptedStorage
     const token = await EncryptedStorage.getItem('token');
     if (!token) {
       throw new Error('Token expired, silahkan login terlebih dahulu');
@@ -110,48 +223,15 @@ export const addPerizinan = async data => {
     if (response.data?.status === true) {
       return response.data;
     } else {
-      throw new Error(response.data?.message || 'Gagal menambahkan perizinan');
-    }
-  } catch (error) {
-    if (error.response) {
-      console.log(error.response?.data?.message || 'Terjadi kesalahan');
-    } else {
-      console.log(error.message);
-    }
-    throw error;
-  }
-};
-
-// Tambah data perizinan cuti
-export const addCutiPerizinan = async data => {
-  try {
-    // Ambil token dari EncryptedStorage
-    const token = await EncryptedStorage.getItem('token');
-    if (!token) {
-      throw new Error('Token expired, silahkan login terlebih dahulu');
-    }
-
-    // Kirim request ke endpoint lisences-cuti dengan method POST
-    const response = await api.post('lisences-cuti', data, {
-      headers: {
-        Authorization: `Bearer ${JSON.parse(token)}`,
-      },
-    });
-
-    // Periksa apakah response menunjukkan keberhasilan
-    if (response.data?.status === true) {
-      console.log('Data berhasil ditambahkan:', response.data?.message);
-      return response.data;
-    } else {
       throw new Error(
-        response.data?.message || 'Gagal menambahkan data izin cuti',
+        response.data?.message || 'Gagal menambahkan perizinan keluar',
       );
     }
   } catch (error) {
-    // Tangani error
     if (error.response) {
       console.log(error.response?.data?.message || 'Terjadi kesalahan');
     } else {
+      ToastAndroid.show();
       console.log(error.message);
     }
     throw error;

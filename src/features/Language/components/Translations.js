@@ -50,6 +50,8 @@ export const Translations = {
       'This application is designed to help manage user settings efficiently.',
     app_version: 'Version: 1.0 sidaq-rc',
     copyright: 'Copyright© 2024 Ismuhuyahya.',
+    password_min_length_error: 'Password must be at least 6 characters long.',
+    password_mismatch: 'The passwords do not match.',
   },
   id: {
     app_settings: 'Pengaturan Aplikasi',
@@ -104,5 +106,7 @@ export const Translations = {
       'Aplikasi ini dirancang untuk membantu pengelolaan pengaturan pengguna secara efisien.',
     app_version: 'Versi: 1.0 sidaq-rc',
     copyright: 'Hak Cipta: Copyright© 2024 Ismuhuyahya.',
+    password_min_length_error: 'Password minimal terdiri dari 6 karakter.',
+    password_mismatch: 'Password tidak cocok.',
   },
 };

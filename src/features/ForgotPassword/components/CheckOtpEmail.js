@@ -1,6 +1,6 @@
 import {useNavigation} from '@react-navigation/native';
 import React from 'react';
-import {StatusBar, StyleSheet, Text, View} from 'react-native';
+import {StatusBar, StyleSheet, Text, ToastAndroid, View} from 'react-native';
 import {openInbox} from 'react-native-email-link';
 import {ButtonAction, Gap, HeaderTransparent} from '../../../Component';
 import {COLORS, DIMENS} from '../../../utils';
@@ -13,13 +13,14 @@ export default function CheckOtpEmail({route}) {
     openInbox()
       .then(() => {
         console.log('Aplikasi email berhasil dibuka');
-
-        // Navigasi ke OtpForgotPassword dengan email
         navigation.navigate('OtpForgotPassword', {email});
       })
       .catch(err => {
         console.error('Gagal membuka aplikasi email:', err);
-        alert('Gagal membuka aplikasi email. Silakan buka secara manual.');
+        ToastAndroid.show(
+          'Gagal membuka aplikasi email. Silakan buka secara manual.',
+          ToastAndroid.SHORT,
+        );
       });
   };
 

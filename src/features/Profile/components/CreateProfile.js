@@ -107,6 +107,7 @@ export default function CreateProfile({navigation}) {
           stickyHeaderHiddenOnScroll>
           <TouchableOpacity
             style={styles.profileImageContainer}
+            activeOpacity={0.7}
             onPress={handleImagePicker}>
             {selectedImage ? (
               <Image
@@ -127,7 +128,7 @@ export default function CreateProfile({navigation}) {
 
           <View style={styles.inputContainer}>
             <View style={styles.inputFieldContainer}>
-              <Text style={styles.inputLabel}>Nama </Text>
+              <Text style={styles.inputLabel}>Nama</Text>
               <TextInput
                 style={styles.input}
                 value={nameCouple}

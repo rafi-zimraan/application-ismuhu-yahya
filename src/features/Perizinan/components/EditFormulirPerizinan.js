@@ -1,21 +1,16 @@
-import DateTimePicker from '@react-native-community/datetimepicker';
 import React, {useEffect, useState} from 'react';
 import {
   SafeAreaView,
   ScrollView,
   StatusBar,
   StyleSheet,
-  Text,
-  TextInput,
   ToastAndroid,
-  TouchableOpacity,
   View,
 } from 'react-native';
-import {patchPerizinan} from '..';
+import {CustomTextInput, patchCuti, patchPerizinanKeluar} from '..';
 import {
   Background,
   ButtonAction,
-  Gap,
   HeaderTransparent,
   ModalCustom,
   ModalLoading,
@@ -27,15 +22,15 @@ import {getDivisionDetail} from '../../Divisi';
 export default function EditFormulirPerizinan({navigation, route}) {
   const {id_lisences, initialData} = route.params;
   const isExitPermit = initialData.is_exit_permit === '1';
+
   const [divisionId, setDivisionId] = useState(initialData.division_id || '');
   const [departmentId, setDepartmentId] = useState(
     initialData.department_id || '',
   );
-  const [regarding, setRegarding] = useState(initialData.regarding || '');
+  const [divisionName, setDivisionName] = useState('');
+  const [departmentName, setDepartmentName] = useState('');
+  const [desc, setDesc] = useState(initialData.desc || '');
   const [necessity, setNecessity] = useState(initialData.necessity || '');
-  const [showOutPicker, setShowOutPicker] = useState(false);
-  const [showIntPicker, setShowIntPicker] = useState(false);
-  const [category, setCategory] = useState(initialData.category || '');
   const [outTime, setOutTime] = useState(initialData.out || '');
   const [intTime, setIntTime] = useState(initialData.in || '');
   const [startDate, setStartDate] = useState(
@@ -44,20 +39,17 @@ export default function EditFormulirPerizinan({navigation, route}) {
   const [endDate, setEndDate] = useState(
     new Date(initialData.end_date) || new Date(),
   );
-  const [showStartDatePicker, setShowStartDatePicker] = useState(false);
-  const [showEndDatePicker, setShowEndDatePicker] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [modalVisible, setModalVisible] = useState(false);
-  const [divisionName, setDivisionName] = useState('');
-  const [departmentName, setDepartmentName] = useState('');
-  const [tokenExpired, setTokenExpired] = useState(false);
   const [totalTime, setTotalTime] = useState('');
   const [totalDays, setTotalDays] = useState(0);
+  const [loading, setLoading] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [tokenExpired, setTokenExpired] = useState(false);
 
   useEffect(() => {
     const fetchDivisionAndDepartment = async () => {
       try {
         setLoading(true);
+
         if (divisionId) {
           const division = await getDivisionDetail(divisionId);
           if (division?.message === 'Silahkan login terlebih dahulu') {
@@ -65,7 +57,6 @@ export default function EditFormulirPerizinan({navigation, route}) {
             return;
           }
           setDivisionName(division.data?.name);
-          console.log('divisi', division.data?.name);
         }
 
         if (departmentId) {
@@ -75,7 +66,6 @@ export default function EditFormulirPerizinan({navigation, route}) {
             return;
           }
           setDepartmentName(department.data?.name);
-          console.log('department', department.data?.name);
         }
       } catch (error) {
         console.error('Error fetching division or department:', error);
@@ -87,49 +77,6 @@ export default function EditFormulirPerizinan({navigation, route}) {
     fetchDivisionAndDepartment();
   }, [divisionId, departmentId]);
 
-  const handleUpdate = async () => {
-    setLoading(true);
-    try {
-      const payload = {
-        division_id: divisionId,
-        department_id: departmentId,
-        regarding,
-        necessity,
-        category,
-        ...(isExitPermit
-          ? {out: outTime, in: intTime, tot_day: totalTime}
-          : {start_date: startDate, end_date: endDate, tot_day: totalDays}),
-      };
-
-      const response = await patchPerizinan(id_lisences, payload);
-
-      if (response?.message === 'Silahkan login terlebih dahulu') {
-        setTokenExpired(true);
-        return;
-      }
-
-      if (response && response.status === true) {
-        console.log('Update berhasil:', response.message);
-        ToastAndroid.show(response?.message, ToastAndroid.SHORT);
-
-        const {onSave} = route.params || {};
-
-        if (onSave) {
-          onSave({...initialData, ...payload});
-        }
-
-        setModalVisible(true);
-      } else {
-        alert('Gagal merubah data: ' + response.message);
-      }
-    } catch (error) {
-      console.error('Error updating perizinan:', error);
-      alert('Terjadi kesalahan saat mengubah data');
-    } finally {
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
     if (outTime && intTime) {
       const [outHours, outMinutes] = outTime.split(':').map(Number);
@@ -138,10 +85,7 @@ export default function EditFormulirPerizinan({navigation, route}) {
       const inDate = new Date(0, 0, 0, inHours, inMinutes);
 
       let diff = (inDate - outDate) / 1000;
-
-      if (diff < 0) {
-        diff += 24 * 60 * 60;
-      }
+      if (diff < 0) diff += 24 * 60 * 60;
 
       const hours = Math.floor(diff / 3600);
       const minutes = Math.floor((diff % 3600) / 60);
@@ -158,6 +102,44 @@ export default function EditFormulirPerizinan({navigation, route}) {
     setTotalDays(diffDays);
   }, [startDate, endDate]);
 
+  const handleUpdate = async () => {
+    setLoading(true);
+    try {
+      const payload = {
+        division_id: divisionId,
+        department_id: departmentId,
+        desc: desc,
+        ...(isExitPermit
+          ? {necessity, out: outTime, in: intTime, duration: totalTime}
+          : {start_date: startDate, end_date: endDate, duration: totalDays}),
+      };
+
+      const response = isExitPermit
+        ? await patchPerizinanKeluar(id_lisences, payload)
+        : await patchCuti(id_lisences, payload);
+
+      if (response?.message === 'Silahkan login terlebih dahulu') {
+        setTokenExpired(true);
+        return;
+      }
+
+      if (response?.status === true) {
+        ToastAndroid.show(response?.message, ToastAndroid.SHORT);
+        const {onSave} = route.params || {};
+        if (onSave) {
+          onSave({...initialData, ...payload});
+        }
+        setModalVisible(true);
+      } else {
+        ToastAndroid.show(response.message, ToastAndroid.SHORT);
+      }
+    } catch (error) {
+      console.error('Error updating perizinan:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <SafeAreaView style={{flex: 1}}>
       <StatusBar barStyle={'default'} backgroundColor={'transparent'} />
@@ -168,167 +150,91 @@ export default function EditFormulirPerizinan({navigation, route}) {
         onPress={() => navigation.goBack()}
       />
       <ScrollView contentContainerStyle={styles.container}>
-        <Text style={styles.label}>Division</Text>
-        <TextInput
-          style={styles.input}
+        <CustomTextInput
+          label="Division"
           value={divisionName}
           onChangeText={text => {
             setDivisionId('');
             setDivisionName(text);
           }}
-          placeholderTextColor={COLORS.black}
+          placeholder="Masukkan Division"
+          editable={false}
         />
-
-        <Text style={styles.label}>Department</Text>
-        <TextInput
-          style={styles.input}
+        <CustomTextInput
+          label="Department"
           value={departmentName}
           onChangeText={text => {
             setDepartmentId('');
             setDepartmentName(text);
           }}
-          placeholderTextColor={COLORS.black}
+          placeholder="Masukkan Department"
+          editable={false}
         />
-
-        <Text style={styles.label}>Perihal</Text>
-        <TextInput
-          style={styles.input}
-          value={regarding}
-          onChangeText={setRegarding}
-          placeholder="Perihal (cuti, dinas, lainnya)"
-          placeholderTextColor={COLORS.black}
+        <CustomTextInput
+          label="Deskripsi"
+          value={desc}
+          onChangeText={setDesc}
+          placeholder="Berikan keterangan"
+          isMultiline
         />
-
-        <Text style={styles.label}>Keperluan</Text>
-        <TextInput
-          style={styles.input}
-          value={necessity}
-          onChangeText={setNecessity}
-          placeholder="Masukkan keperluan"
-          placeholderTextColor={COLORS.black}
-        />
-
         {isExitPermit ? (
           <>
-            <Text style={styles.label}>Jam Keluar</Text>
-            <TouchableOpacity
-              onPress={() => setShowOutPicker(true)}
-              style={styles.input}>
-              <Text style={styles.clockText}>
-                {outTime || 'Pilih Jam keluar'}
-              </Text>
-            </TouchableOpacity>
-            {showOutPicker && (
-              <DateTimePicker
-                value={new Date()}
-                mode="time"
-                is24Hour={true}
-                display="default"
-                onChange={(event, selectedClock) => {
-                  setShowOutPicker(false);
-                  if (selectedClock) {
-                    const hours = selectedClock
-                      .getHours()
-                      .toString()
-                      .padStart(2, '0');
-                    const minutes = selectedClock
-                      .getMinutes()
-                      .toString()
-                      .padStart(2, '0');
-                    setOutTime(`${hours}:${minutes}`);
-                  }
-                }}
-              />
-            )}
-
-            <Text style={styles.label}>Jam Kembali</Text>
-            <TouchableOpacity
-              onPress={() => setShowIntPicker(true)}
-              style={styles.input}>
-              <Text style={styles.clockText}>
-                {intTime || 'Pilih Jam kembali'}
-              </Text>
-            </TouchableOpacity>
-            {showIntPicker && (
-              <DateTimePicker
-                value={new Date()}
-                mode="time"
-                is24Hour={true}
-                display="default"
-                onChange={(event, selectedClock) => {
-                  setShowIntPicker(false);
-                  if (selectedClock) {
-                    const hours = selectedClock
-                      .getHours()
-                      .toString()
-                      .padStart(2, '0');
-                    const minutes = selectedClock
-                      .getMinutes()
-                      .toString()
-                      .padStart(2, '0');
-                    setIntTime(`${hours}:${minutes}`);
-                  }
-                }}
-              />
-            )}
-
-            <Text style={styles.label}>Durasi</Text>
-            <Text style={styles.input}>
-              {totalTime || 'Durasi belum dihitung'}
-            </Text>
+            <CustomTextInput
+              label="Kategori"
+              value={necessity}
+              onChangeText={setNecessity}
+              placeholder="Pilih kategori"
+              isDropdown
+              dropdownOptions={[
+                {label: 'Pribadi', value: 'pribadi'},
+                {label: 'Tugas', value: 'tugas'},
+              ]}
+            />
+            <CustomTextInput
+              label="Jam Keluar"
+              value={outTime}
+              onChangeText={setOutTime}
+              placeholder="Pilih Jam Keluar"
+              isTimePicker
+            />
+            <CustomTextInput
+              label="Jam Kembali"
+              value={intTime}
+              onChangeText={setIntTime}
+              placeholder="Pilih Jam Kembali"
+              isTimePicker
+            />
+            <CustomTextInput
+              label="Durasi Waktu"
+              value={totalTime}
+              placeholder="Durasi dihitung otomatis"
+              editable={false}
+            />
           </>
         ) : (
           <>
-            <Text style={styles.label}>Tanggal Mulai</Text>
-            <TouchableOpacity
-              onPress={() => setShowStartDatePicker(true)}
-              style={styles.dateInput}>
-              <Text style={styles.textDate}>
-                {startDate.toISOString().split('T')[0]}
-              </Text>
-            </TouchableOpacity>
-            {showStartDatePicker && (
-              <DateTimePicker
-                value={startDate}
-                mode="date"
-                display="default"
-                onChange={(event, selectedDate) => {
-                  setShowStartDatePicker(false);
-                  if (selectedDate) {
-                    setStartDate(selectedDate);
-                  }
-                }}
-              />
-            )}
-
-            <Text style={styles.label}>Tanggal Berakhir</Text>
-            <TouchableOpacity
-              onPress={() => setShowEndDatePicker(true)}
-              style={styles.dateInput}>
-              <Text style={styles.textDate}>
-                {endDate.toISOString().split('T')[0]}
-              </Text>
-            </TouchableOpacity>
-            {showEndDatePicker && (
-              <DateTimePicker
-                value={endDate}
-                mode="date"
-                display="default"
-                onChange={(event, selectedDate) => {
-                  setShowEndDatePicker(false);
-                  if (selectedDate) {
-                    setEndDate(selectedDate);
-                  }
-                }}
-              />
-            )}
-
-            <Text style={styles.label}>Jumlah Hari</Text>
-            <Text style={styles.input}>{totalDays} hari</Text>
+            <CustomTextInput
+              label="Tanggal Mulai"
+              value={startDate.toISOString().split('T')[0]}
+              onChangeText={date => setStartDate(new Date(date))}
+              placeholder="Pilih Tanggal Mulai"
+              isDatePicker
+            />
+            <CustomTextInput
+              label="Tanggal Akhir"
+              value={endDate.toISOString().split('T')[0]}
+              onChangeText={date => setEndDate(new Date(date))}
+              placeholder="Pilih Tanggal Akhir"
+              isDatePicker
+            />
+            <CustomTextInput
+              label="Jumlah Hari"
+              value={`${totalDays} hari`}
+              placeholder="Jumlah hari dihitung otomatis"
+              editable={false}
+            />
           </>
         )}
-
-        <Gap height={20} />
         <View style={{alignItems: 'center'}}>
           <ButtonAction
             title="Perbarui Data"
@@ -338,7 +244,6 @@ export default function EditFormulirPerizinan({navigation, route}) {
           />
         </View>
       </ScrollView>
-
       <ModalLoading visible={loading} />
       <ModalCustom
         visible={modalVisible}
@@ -352,7 +257,6 @@ export default function EditFormulirPerizinan({navigation, route}) {
         }}
         buttonTitle="OK"
       />
-
       <ModalCustom
         visible={tokenExpired}
         onRequestClose={() => setTokenExpired(false)}
@@ -405,5 +309,16 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     backgroundColor: COLORS.champagne,
     color: COLORS.black,
+  },
+  inputDesc: {
+    minHeight: 90,
+    paddingHorizontal: 10,
+    backgroundColor: COLORS.champagne,
+    borderRadius: 10,
+    borderColor: '#ddd',
+    borderWidth: 1,
+    fontSize: 13,
+    color: COLORS.black,
+    textAlignVertical: 'top',
   },
 });

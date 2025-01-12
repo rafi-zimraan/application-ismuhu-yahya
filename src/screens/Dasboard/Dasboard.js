@@ -135,15 +135,23 @@ export default function Dasboard({navigation}) {
               onPress={() => navigation.navigate('Presensi')}
             />
             <ButtonMenu
-              title="Sewa Mobil"
+              title="Peminjaman Mobil"
               iconName="car"
               color={COLORS.white}
               backgroundColor={COLORS.goldenOrange}
               iconSize={36}
               onPress={() => navigation.navigate('CarLoan')}
             />
-
-            {/* <Gap width={56} />
+            <ButtonMenu
+              title="Pengaduan Fasilitas"
+              iconName="tools"
+              color={COLORS.white}
+              backgroundColor={COLORS.goldenOrange}
+              iconSize={30}
+              // onPress={() => navigation.navigate('CarLoan')}
+            />
+            {/* 
+            <Gap width={56} />
             <ButtonMenu
               title="More"
               iconName="apps"

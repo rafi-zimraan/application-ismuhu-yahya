@@ -31,7 +31,6 @@ export default function SignIn({navigation}) {
         const savedLogin = await EncryptedStorage.getItem('userLogin');
         if (savedLogin) {
           const {email, password} = JSON.parse(savedLogin);
-          // Isi form dengan nilai yang tersimpan
           setValue('email', email);
           setValue('password', password);
         }

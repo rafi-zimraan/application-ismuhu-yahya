@@ -4,7 +4,7 @@ import {COLORS} from '../../utils';
 import {DIMENS} from '../../utils/dimens';
 
 const AlertWarning = ({show, message, paddingTop = 30, duration = 5000}) => {
-  const [fadeAnim] = React.useState(new Animated.Value(0)); // Untuk fade in/out animasi
+  const [fadeAnim] = React.useState(new Animated.Value(0));
 
   React.useEffect(() => {
     if (show) {
@@ -45,14 +45,14 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
     right: 0,
-    backgroundColor: COLORS.red, // Sesuaikan warna background alert
+    backgroundColor: COLORS.red,
     zIndex: 1000,
     padding: 15,
     alignItems: 'center',
     justifyContent: 'center',
   },
   alertText: {
-    color: COLORS.white, // Warna teks alert
+    color: COLORS.white,
     fontSize: DIMENS.l,
     textAlign: 'center',
   },

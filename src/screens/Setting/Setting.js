@@ -203,7 +203,7 @@ export default function Settings({navigation}) {
         BackgroundButtonAction={COLORS.red}
         description={
           loadingLogout
-            ? t('logout_procesing')
+            ? t('logout_processing')
             : t('logout_confirmation_message')
         }
         buttonSubmit={handleLogout}
