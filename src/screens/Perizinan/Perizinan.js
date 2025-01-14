@@ -13,7 +13,6 @@ import {
   View,
 } from 'react-native';
 import {
-  Background,
   FloatingButton,
   Gap,
   HeaderTransparent,
@@ -197,14 +196,15 @@ export default function Perizinan({navigation}) {
   };
 
   return (
-    <View style={{flex: 1}}>
+    <View style={{flex: 1, backgroundColor: COLORS.white}}>
       <StatusBar barStyle={'default'} backgroundColor={'transparent'} />
-      <Background />
-      <HeaderTransparent
-        title="Perizinan"
-        icon="arrow-left-circle-outline"
-        onPress={() => navigation.goBack()}
-      />
+      <View style={styles.headerWrapper}>
+        <HeaderTransparent
+          title="Perizinan"
+          icon="arrow-left-circle-outline"
+          onPress={() => navigation.goBack()}
+        />
+      </View>
       <View style={{padding: 15, flex: 1}}>
         <Text style={styles.txtTitlePerizinan}>Total dan cuti terpakai</Text>
         <Gap height={5} />
@@ -324,6 +324,14 @@ export default function Perizinan({navigation}) {
 }
 
 const styles = StyleSheet.create({
+  headerWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 10,
+    backgroundColor: COLORS.goldenOrange,
+    elevation: 3,
+  },
   viewTitle: {
     flexDirection: 'row',
     justifyContent: 'space-between',

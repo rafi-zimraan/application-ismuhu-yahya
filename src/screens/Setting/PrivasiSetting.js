@@ -45,7 +45,11 @@ export default function PrivasiSetting({navigation}) {
       <View
         style={[
           styles.headerWrapper,
-          {backgroundColor: darkTheme ? COLORS.darkBackground : '#fff'},
+          {
+            backgroundColor: darkTheme
+              ? COLORS.darkBackground
+              : COLORS.goldenOrange,
+          },
         ]}>
         <HeaderTransparent
           title={t('app_settings')}

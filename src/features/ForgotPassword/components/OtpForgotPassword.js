@@ -40,26 +40,23 @@ export default function OtpForgotPassword({route}) {
     }
   };
 
+  const showToast = message => {
+    ToastAndroid.show(message, ToastAndroid.SHORT);
+  };
+
   const handleVerifyOtp = async () => {
     const otpCode = otp.join('');
     if (otpCode.length < 6) {
-      ToastAndroid.show(
-        'Harap masukkan kode OTP yang lengkap.',
-        ToastAndroid.LONG,
-      );
+      showToast('Harap masukkan kode OTP yang lengkap.');
       return;
     }
 
     try {
       setLoading(true);
       const response = await verifyOtpCode(email, otpCode);
-      console.log('OTP Verification Success:', response);
 
       if (response?.used) {
-        ToastAndroid.show(
-          'Kode OTP telah digunakan. Silakan minta kode baru.',
-          ToastAndroid.LONG,
-        );
+        showToast('Kode OTP telah digunakan. Silakan minta kode baru.');
         return;
       }
 
@@ -69,10 +66,14 @@ export default function OtpForgotPassword({route}) {
         setModalVisible(true);
       }
     } catch (error) {
-      ToastAndroid.show(
-        error.message || 'Verifikasi OTP gagal.',
-        ToastAndroid.SHORT,
-      );
+      const statusCode = error.response?.status;
+      if (statusCode === 404) {
+        showToast('Terdapat kesalahan dari server.');
+      } else if (statusCode === 500) {
+        showToast('Harap hubungi developer untuk bantuan lebi lanjut.');
+      } else {
+        showToast(error.message || 'Verifikasi OTP gagal.');
+      }
     } finally {
       setLoading(false);
     }

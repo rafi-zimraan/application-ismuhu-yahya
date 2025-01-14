@@ -7,7 +7,7 @@ import {COLORS} from '../../utils';
 
 export default function AboutApplication({navigation}) {
   const currentLanguage = useSelector(state => state.language.currentLanguage);
-  const t = key => Translations[currentLanguage][key]; // Fungsi untuk menerjemahkan
+  const t = key => Translations[currentLanguage][key];
 
   return (
     <SafeAreaView style={styles.container}>
@@ -38,7 +38,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: 10,
-    backgroundColor: '#fff',
+    backgroundColor: COLORS.goldenOrange,
     elevation: 3,
   },
   container: {

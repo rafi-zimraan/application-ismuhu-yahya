@@ -13,7 +13,8 @@ export const login = async (data, navigation, dispatch) => {
       return;
     }
 
-    const response = await api.post('/mobile/login', data);
+    // const response = await api.post('/mobile/login', data);
+    const response = await api.post('mobile/login', data);
     console.log('RESPONSE login:', response.data);
 
     if (response.data.status === false) {

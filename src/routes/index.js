@@ -2,6 +2,11 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import React from 'react';
 import {CreateCarLoan, DetailCarLoan} from '../features/CarLoan';
 import {DetailNewInformation} from '../features/Dasboard';
+import {
+  AllComplaints,
+  Complaints,
+  CreateFacilityComplaint,
+} from '../features/FacilityComplaint';
 import {CheckOtpEmail, OtpForgotPassword} from '../features/ForgotPassword';
 import {
   CreateFormulirPerizinan,
@@ -22,8 +27,10 @@ import {
 } from '../features/Profile';
 import {
   AboutApplication,
+  AmalYaumi,
   CarLoan,
   ChangePassword,
+  FacilityComplaint,
   ForgotPassword,
   HelpSetting,
   LibDemo,
@@ -112,6 +119,14 @@ export default function Navigator() {
       <Stack.Screen name="CarLoan" component={CarLoan} />
       <Stack.Screen name="DetailCarLoan" component={DetailCarLoan} />
       <Stack.Screen name="CreateCarLoan" component={CreateCarLoan} />
+      <Stack.Screen name="FacilityComplaint" component={FacilityComplaint} />
+      <Stack.Screen name="AllComplaints" component={AllComplaints} />
+      <Stack.Screen name="Complaints" component={Complaints} />
+      <Stack.Screen
+        name="CreateFacilityComplaint"
+        component={CreateFacilityComplaint}
+      />
+      <Stack.Screen name="AmalYaumi" component={AmalYaumi} />
     </Stack.Navigator>
   );
 }

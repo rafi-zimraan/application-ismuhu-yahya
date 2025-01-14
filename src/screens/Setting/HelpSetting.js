@@ -16,7 +16,7 @@ import {COLORS} from '../../utils';
 
 export default function HelpSetting({navigation}) {
   const currentLanguage = useSelector(state => state.language.currentLanguage);
-  const t = key => Translations[currentLanguage][key]; // Fungsi untuk menerjemahkan
+  const t = key => Translations[currentLanguage][key];
 
   const [expandedIndex, setExpandedIndex] = useState(null);
 
@@ -93,7 +93,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: 10,
-    backgroundColor: '#fff',
+    backgroundColor: COLORS.goldenOrange,
     elevation: 3,
   },
   container: {
@@ -103,7 +103,7 @@ const styles = StyleSheet.create({
   section: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#fff',
+    backgroundColor: COLORS.white,
     padding: 15,
     borderRadius: 10,
     marginBottom: 10,

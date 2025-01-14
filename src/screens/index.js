@@ -1,8 +1,10 @@
+import AmalYaumi from './AmalYaumi/AmalYaumi';
 import SignIn from './Auth/SignIn';
 import SignUp from './Auth/SignUp';
 import CarLoan from './CarLoan/CarLoan';
 import Dashboard from './Dasboard/Dasboard';
 import DrawerContent from './DrawerContent/DrawerContent';
+import FacilityComplaint from './FacilityComplaint/FacilityComplaint';
 import ForgotPassword from './ForgotPassword/ForgotPassword';
 import Notification from './Notification/Notification';
 import NotificationDetail from './Notification/NotificationDetail';
@@ -21,6 +23,8 @@ import SplashScreen from './SplashScreen/SplashScreen';
 import LibDemo from './__test__/LibDemo.test';
 
 export {
+  AmalYaumi,
+  FacilityComplaint,
   CarLoan,
   ForgotPassword,
   QrCodePresense,

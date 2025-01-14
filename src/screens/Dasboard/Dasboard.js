@@ -3,11 +3,14 @@ import React, {useEffect, useState} from 'react';
 import {
   ActivityIndicator,
   ImageBackground,
+  Modal,
   RefreshControl,
   SafeAreaView,
   ScrollView,
   StatusBar,
   StyleSheet,
+  Text,
+  TouchableOpacity,
   View,
 } from 'react-native';
 import {useSelector} from 'react-redux';
@@ -29,7 +32,7 @@ import {
   useWelcomeMessage,
 } from '../../features/Dasboard';
 import {FecthMe} from '../../features/authentication';
-import {COLORS} from '../../utils';
+import {COLORS, DIMENS} from '../../utils';
 
 export default function Dasboard({navigation}) {
   const urlPhotoRedux = useSelector(state => state.auth.url_photo);
@@ -39,6 +42,7 @@ export default function Dasboard({navigation}) {
   const {ayat, loadingAyat} = useFetchAyat();
   const [refreshing, setRefreshing] = useState(false);
   const [tokenExpired, setTokenExpired] = useState(false);
+  const [isModalVisible, setModalVisible] = useState(false);
   const isFocused = useIsFocused();
 
   const {
@@ -71,6 +75,11 @@ export default function Dasboard({navigation}) {
       fetchUserSession();
     }
   }, [isFocused]);
+
+  const toggleModal = () => {
+    setModalVisible(!isModalVisible);
+  };
+
   return (
     <SafeAreaView style={{flex: 1}}>
       <StatusBar barStyle="default" backgroundColor="transparent" />
@@ -121,7 +130,7 @@ export default function Dasboard({navigation}) {
             <ButtonMenu
               title="Perizinan"
               iconName="check-decagram-outline"
-              iconSize={36}
+              iconSize={33}
               color={COLORS.white}
               backgroundColor={COLORS.goldenOrange}
               onPress={() => navigation.navigate('Perizinan')}
@@ -131,39 +140,90 @@ export default function Dasboard({navigation}) {
               iconName="line-scan"
               color={COLORS.white}
               backgroundColor={COLORS.goldenOrange}
-              iconSize={36}
+              iconSize={33}
               onPress={() => navigation.navigate('Presensi')}
             />
             <ButtonMenu
-              title="Peminjaman Mobil"
-              iconName="car"
+              title="Amal yaumi"
+              iconName="clipboard-check-multiple"
               color={COLORS.white}
               backgroundColor={COLORS.goldenOrange}
-              iconSize={36}
-              onPress={() => navigation.navigate('CarLoan')}
+              iconSize={33}
+              onPress={() => navigation.navigate('AmalYaumi')}
             />
             <ButtonMenu
               title="Pengaduan Fasilitas"
               iconName="tools"
               color={COLORS.white}
               backgroundColor={COLORS.goldenOrange}
-              iconSize={30}
-              // onPress={() => navigation.navigate('CarLoan')}
+              iconSize={33}
+              onPress={() => {
+                // Alert.alert('Nantikan Fitur nya kawan...');
+                navigation.navigate('FacilityComplaint');
+              }}
             />
-            {/* 
-            <Gap width={56} />
+
+            {/* <Gap width={76} />
             <ButtonMenu
               title="More"
               iconName="apps"
               color={COLORS.white}
+              width={45}
+              height={45}
               backgroundColor={COLORS.goldenOrange}
-              iconSize={36}
+              iconSize={26}
+              onPress={toggleModal}
             /> */}
           </View>
           <Gap height={15} />
           <NewsComponent />
         </ImageBackground>
       </ScrollView>
+
+      {/* Modal untuk Menu Tambahan */}
+      <Modal
+        visible={isModalVisible}
+        transparent={true}
+        animationType="slide"
+        onRequestClose={toggleModal}>
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Menu Tambahan</Text>
+
+            {/* ScrollView Vertikal */}
+            <ScrollView
+              showsVerticalScrollIndicator={false}
+              contentContainerStyle={styles.scrollContainer}>
+              {/* Bagian Horizontal */}
+              <View style={styles.horizontalContainer}>
+                <ButtonMenu
+                  title="Pengaduan Fasilitas"
+                  iconName="tools"
+                  color={COLORS.white}
+                  backgroundColor={COLORS.goldenOrange}
+                  iconSize={30}
+                  onPress={() => {
+                    toggleModal();
+                    navigation.navigate('FacilityComplaint');
+                  }}
+                />
+                <Gap width={10} />
+                <ButtonMenu
+                  title="Peminjaman Mobil"
+                  iconName="car"
+                  color={COLORS.white}
+                  backgroundColor={COLORS.goldenOrange}
+                  iconSize={36}
+                  onPress={() => navigation.navigate('CarLoan')}
+                />
+              </View>
+            </ScrollView>
+            <TouchableOpacity style={styles.closeButton} onPress={toggleModal}>
+              <Text style={styles.closeButtonText}>Tutup</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 }
@@ -173,10 +233,49 @@ const styles = StyleSheet.create({
   menu: {
     flexDirection: 'row',
     justifyContent: 'flex-start',
+    alignItems: 'center',
   },
   viewLoadingAyat: {
     alignItems: 'center',
     justifyContent: 'center',
     height: 140,
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    justifyContent: 'flex-end',
+  },
+  modalContent: {
+    backgroundColor: 'white',
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    padding: 20,
+    maxHeight: '70%', // Membatasi modal hingga 70% tinggi layar
+  },
+  modalTitle: {
+    fontSize: DIMENS.xl,
+    fontWeight: 'bold',
+    color: COLORS.black,
+    marginBottom: 15,
+  },
+  scrollContainer: {
+    flexGrow: 1,
+  },
+  horizontalContainer: {
+    flexDirection: 'row', // Tata letak horizontal
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 15,
+  },
+  closeButton: {
+    marginTop: 20,
+    alignSelf: 'center',
+    backgroundColor: COLORS.goldenOrange,
+    padding: 10,
+    borderRadius: 10,
+  },
+  closeButtonText: {
+    color: COLORS.white,
+    fontSize: DIMENS.l,
   },
 });

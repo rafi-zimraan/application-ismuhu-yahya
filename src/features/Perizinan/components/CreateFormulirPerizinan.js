@@ -19,6 +19,7 @@ import {
 import {COLORS} from '../../../utils';
 import {getAllDepartment} from '../../Departmant';
 import {getAllDivisions} from '../../Divisi';
+import {FecthMe} from '../../authentication';
 
 export default function CreateFormulirPerizinan({navigation, route}) {
   const {division_id, department_id} = route.params;
@@ -109,6 +110,22 @@ export default function CreateFormulirPerizinan({navigation, route}) {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    const fetchUserSession = async () => {
+      try {
+        const response = await FecthMe();
+        if (response.message === 'Silahkan login terlebih dahulu') {
+          setTokenExpired(true);
+        }
+      } catch (e) {
+        console.log('error checking session', e);
+        setTokenExpired(false);
+      }
+    };
+
+    fetchUserSession();
+  }, []);
 
   return (
     <SafeAreaView style={{flex: 1}}>

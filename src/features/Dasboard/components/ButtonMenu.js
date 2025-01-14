@@ -17,6 +17,8 @@ export default function ButtonMenu({
   image,
   color = COLORS.white,
   backgroundColor = '#FFF',
+  height,
+  width,
 }) {
   return (
     <View style={styles.container}>
@@ -24,12 +26,14 @@ export default function ButtonMenu({
         useForeground
         background={COLORS.ripple}
         onPress={onPress}>
-        <View style={{...styles.viewButton, backgroundColor}}>
+        <View style={{...styles.viewButton, backgroundColor, height, width}}>
           {image && <Image source={image} style={styles.image} />}
           {iconName && <Icon name={iconName} size={iconSize} color={color} />}
         </View>
       </TouchableNativeFeedback>
-      <Text style={styles.textTitle}>{title}</Text>
+      <Text style={styles.textTitle} numberOfLines={1}>
+        {title}
+      </Text>
     </View>
   );
 }
@@ -37,7 +41,7 @@ export default function ButtonMenu({
 const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
-    marginHorizontal: 4,
+    marginHorizontal: 12,
   },
   image: {
     width: 47.5,
@@ -47,7 +51,7 @@ const styles = StyleSheet.create({
   viewButton: {
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: 15,
+    borderRadius: 10,
     overflow: 'hidden',
     elevation: 3,
     padding: 10,

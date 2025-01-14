@@ -237,7 +237,7 @@ const styles = StyleSheet.create({
     top: 40,
     fontSize: DIMENS.xxxl,
     fontWeight: 'bold',
-    color: COLORS.white,
+    color: COLORS.black,
   },
   scrollContent: {
     padding: 20,

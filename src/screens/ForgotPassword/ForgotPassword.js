@@ -13,7 +13,6 @@ import {COLORS, DIMENS} from '../../utils';
 
 export default function ForgotPassword({navigation}) {
   const [email, setEmail] = useState('');
-  const [showNewPassword, setShowNewPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const showToast = message => {
@@ -29,16 +28,17 @@ export default function ForgotPassword({navigation}) {
     try {
       setLoading(true);
       const response = await sendVerificationEmail(email);
-      console.log('response', response);
-      // showToast(response.message || 'Email berhasil dikirim!');
-      showToast('Email berhasil dikirim!');
-
-      // Navigasi ke screen CheckOtpEmail dengan parameter email
+      ToastAndroid.show('Email berhasil dikirim!', ToastAndroid.SHORT);
       navigation.navigate('CheckOtpEmail', {email});
     } catch (error) {
-      showToast(
-        error.response?.data?.message || 'Gagal mengirim email verifikasi.',
-      );
+      const statusCode = error.response?.status;
+      if (statusCode === 404) {
+        showToast('Terdapat kesalahan dari server.');
+      } else if (statusCode === 500) {
+        showToast('Harap hubungi developer untuk bantuan lebih lanjut.');
+      } else {
+        console.log('statusCode', statusCode);
+      }
     } finally {
       setLoading(false);
     }

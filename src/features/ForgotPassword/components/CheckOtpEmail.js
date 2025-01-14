@@ -12,7 +12,6 @@ export default function CheckOtpEmail({route}) {
   const handleOpenInbox = () => {
     openInbox()
       .then(() => {
-        console.log('Aplikasi email berhasil dibuka');
         navigation.navigate('OtpForgotPassword', {email});
       })
       .catch(err => {
