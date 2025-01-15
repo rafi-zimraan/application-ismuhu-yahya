@@ -22,7 +22,7 @@ import {
   ModalCustom,
   ModalLoading,
 } from '../../../Component';
-import {COLORS} from '../../../utils';
+import {COLORS, DIMENS} from '../../../utils';
 
 export default function UpdateFacilityComplaint({navigation, route}) {
   const {id} = route.params;
@@ -33,8 +33,7 @@ export default function UpdateFacilityComplaint({navigation, route}) {
   const [suggestion, setSuggestion] = useState('');
   const [complaint, setComplaint] = useState('');
   const [phone, setPhone] = useState('');
-  const [image, setImage] = useState(null);
-  const [imageId, setImageId] = useState(null);
+  const [image, setImage] = useState([]);
   const [loading, setLoading] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [tokenExpired, setTokenExpired] = useState(false);
@@ -44,7 +43,7 @@ export default function UpdateFacilityComplaint({navigation, route}) {
       try {
         setLoading(true);
         const response = await getSuggestionDetail(id);
-
+        console.log('data', response.data);
         if (response?.data) {
           const data = response.data;
           setName(data.name || '');
@@ -54,12 +53,14 @@ export default function UpdateFacilityComplaint({navigation, route}) {
           setSuggestion(data.suggestion || '');
           setComplaint(data.complaint || '');
           setPhone(data.phone || '');
-          if (data.images?.[0]?.path) {
-            setImage({
-              uri: `https://app.simpondok.com/${data.images[0].path}`,
-            });
-            setImageId(data.images[0].id);
-          }
+          setImage(
+            data.images?.map(img => ({
+              id: img.id,
+              uri: `https://app.simpondok.com/${img.path}`,
+              type: 'image/jpeg',
+              name: img.path.split('/').pop(),
+            })) || [],
+          );
         }
       } catch (error) {
         ToastAndroid.show(
@@ -74,17 +75,18 @@ export default function UpdateFacilityComplaint({navigation, route}) {
     fetchData();
   }, [id]);
 
-  console.log('id file', imageId);
-
   const handleImageResponse = response => {
     if (!response.didCancel && !response.error) {
       const asset = response.assets[0];
-      setImage({
-        uri: asset.uri,
-        type: asset.type,
-        name: asset.fileName,
-      });
-      setImageId(null);
+      setImage(prevImages => [
+        ...prevImages,
+        {
+          id: null,
+          uri: asset.uri,
+          type: asset.type || 'image/jpeg',
+          name: asset.fileName || `image-${Date.now()}.jpg`,
+        },
+      ]);
     }
   };
 
@@ -114,15 +116,16 @@ export default function UpdateFacilityComplaint({navigation, route}) {
     );
   };
 
-  const removeImage = async () => {
+  const removeImage = async imageId => {
+    console.log('Image ID to delete:', imageId);
     if (imageId) {
       try {
         setLoading(true);
         const response = await deleteSuggestionFile(imageId);
-
+        console.log('delete file', response);
         if (response?.status === true) {
-          setImage(null);
-          setImageId(null);
+          setImage(prevImages => prevImages.filter(img => img.id !== imageId));
+
           ToastAndroid.show(
             response.message || 'Gambar berhasil dihapus!',
             ToastAndroid.SHORT,
@@ -192,13 +195,19 @@ export default function UpdateFacilityComplaint({navigation, route}) {
     formData.append('suggestion', suggestion);
     formData.append('complaint', complaint);
     formData.append('phone', phone);
-    if (image?.uri) {
-      formData.append('images[]', {
-        uri: image.uri,
-        type: image.type,
-        name: image.name,
-      });
-    }
+
+    // Tambahkan semua gambar dari array `image` ke FormData
+    image.forEach(img => {
+      if (!img.id) {
+        // Hanya gambar baru yang tidak memiliki ID yang dikirimkan
+        formData.append('images[]', {
+          uri: img.uri,
+          type: img.type,
+          name: img.name,
+        });
+      }
+    });
+
     setLoading(true);
     try {
       const response = await updateSuggestion(id, formData);
@@ -297,18 +306,21 @@ export default function UpdateFacilityComplaint({navigation, route}) {
           placeholderTextColor={COLORS.grey}
         />
 
-        {image?.uri && (
-          <View style={styles.imageContainer}>
-            <Image
-              source={{uri: image.uri}}
-              style={styles.imagePreview}
-              resizeMethod="scale"
-            />
-            <TouchableOpacity style={styles.deleteIcon} onPress={removeImage}>
-              <Icon name="close-circle" size={24} color={COLORS.red} />
-            </TouchableOpacity>
-          </View>
-        )}
+        {Array.isArray(image) &&
+          image.map((img, index) => (
+            <View key={index} style={styles.imageContainer}>
+              <Image
+                source={{uri: img.uri}}
+                style={styles.imagePreview}
+                resizeMethod="scale"
+              />
+              <TouchableOpacity
+                style={styles.deleteIcon}
+                onPress={() => removeImage(img.id)}>
+                <Icon name="close-circle" size={24} color={COLORS.red} />
+              </TouchableOpacity>
+            </View>
+          ))}
 
         <TouchableOpacity style={styles.fileInput} onPress={handleImagePicker}>
           <Text style={styles.fileInputText}>Input file</Text>
@@ -380,7 +392,7 @@ const styles = StyleSheet.create({
   },
   fileInputText: {
     color: COLORS.grey,
-    fontSize: 14,
+    fontSize: DIMENS.m,
   },
   imageContainer: {
     position: 'relative',

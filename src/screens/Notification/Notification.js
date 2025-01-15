@@ -49,7 +49,7 @@ export default function Notification({navigation}) {
       }
     } catch (error) {
       console.error('Failed to fetch notifications:', error?.message || error);
-      setNotifications({lisences: [], payrol: []}); // Fallback ke nilai default
+      setNotifications({lisences: [], payrol: []});
     }
   };
 
@@ -68,10 +68,6 @@ export default function Notification({navigation}) {
   };
 
   const countCategoryItems = category => {
-    console.log(
-      `Counting items for category: ${category}`,
-      notifications?.[category],
-    );
     return Array.isArray(notifications?.[category])
       ? notifications[category].filter(item => item?.is_read === '0').length
       : 0;

@@ -32,20 +32,12 @@ export default function NotificationFromCategory({route, navigation}) {
   const [refreshing, setRefreshing] = useState(false);
   const [tokenExpired, setTokenExpired] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
-  const [modalLoadingVisible, setModalLoadingVisible] = useState(false);
   const [filterOption, setFilterOption] = useState('');
   const [originalData, setOriginalData] = useState([]);
   const [isLoadingFilter, setIsLoadingFilter] = useState(false);
   const [dropdownVisible, setDropdownVisible] = useState(false);
 
-  const sortNotifications = notifications => {
-    return notifications.sort(
-      (a, b) => new Date(b.created_at) - new Date(a.created_at),
-    );
-  };
-
   const filterOptions = [
-    {label: 'All', value: ''},
     {label: 'Today', value: 'today'},
     {label: 'This Week', value: 'this_week'},
     {label: 'This Month', value: 'this_month'},
@@ -58,11 +50,7 @@ export default function NotificationFromCategory({route, navigation}) {
   };
 
   const filterNotificationsByOption = () => {
-    if (!filterOption || filterOption === 'All') {
-      setData(originalData);
-      return;
-    }
-
+    setIsLoadingFilter(true);
     const filteredData = originalData.filter(item => {
       const notificationDate = new Date(item.created_at);
       if (filterOption === 'today') {
@@ -87,6 +75,7 @@ export default function NotificationFromCategory({route, navigation}) {
       return true;
     });
     setData(filteredData);
+    setTimeout(() => setIsLoadingFilter(false), 500);
   };
 
   const fetchCategoryNotifications = async () => {
@@ -96,8 +85,6 @@ export default function NotificationFromCategory({route, navigation}) {
       if (response?.message === 'Silahkan login terlebih dahulu') {
         setTokenExpired(true);
       } else if (response?.data) {
-        // const sortedData = sortNotifications(response.data);
-        // const limitedData = sortedData.slice(0, 5);
         const sortedData = response.data
           .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
           .slice(0, 5);
@@ -123,9 +110,6 @@ export default function NotificationFromCategory({route, navigation}) {
   useEffect(() => {
     if (filterOption) {
       filterNotificationsByOption();
-      setTimeout(() => {
-        setIsLoadingFilter(false);
-      }, 500);
     }
   }, [filterOption]);
 
@@ -166,9 +150,8 @@ export default function NotificationFromCategory({route, navigation}) {
   };
 
   const viewNotificationDetail = async id => {
-    setModalLoadingVisible(true);
+    setIsLoadingFilter(true);
     try {
-      console.log(`Fetching detail for notification ID: ${id}`);
       const detail = await getNotificationDetail(id);
 
       if (detail?.data) {
@@ -179,12 +162,9 @@ export default function NotificationFromCategory({route, navigation}) {
         console.error('Detail not found for the provided ID:', id);
       }
     } catch (error) {
-      console.error(
-        'Failed to fetch notification detail',
-        error?.message || error,
-      );
+      console.error('Failed to fetch notification detail', error);
     } finally {
-      setModalLoadingVisible(false);
+      setIsLoadingFilter(false);
     }
   };
 
@@ -241,20 +221,15 @@ export default function NotificationFromCategory({route, navigation}) {
                 key={index}
                 style={styles.notificationCard}
                 onPress={() => viewNotificationDetail(item?.id)}>
-                {/* Title Section */}
                 <View style={styles.titleSection}>
                   <Text style={styles.titleText}>{item?.title}</Text>
                   <Text style={styles.dateText}>
                     {new Date(item?.created_at).toLocaleString()}
                   </Text>
                 </View>
-
-                {/* Message Section */}
                 <View style={styles.messageSection}>
                   <Text style={styles.messageText}>{item?.message}</Text>
                 </View>
-
-                {/* Action Buttons */}
                 <View style={styles.actionsSection}>
                   <TouchableOpacity
                     style={styles.deleteButton}

@@ -17,7 +17,7 @@ import {
   ModalLoading,
 } from '../../Component';
 import {updateApprovalStatus} from '../../features/Notification';
-import {COLORS} from '../../utils';
+import {COLORS, DIMENS} from '../../utils';
 
 export default function NotificationDetail({route, navigation}) {
   const {notificationDetail: initialDetail} = route.params;
@@ -66,16 +66,14 @@ export default function NotificationDetail({route, navigation}) {
   const confirmApproval = async status => {
     try {
       setModalVisible(false);
-      setLoadingModalVisible(true); // Tampilkan ModalLoading
+      setLoadingModalVisible(true);
       const approvalStatus = status === 'approve' ? 1 : 0;
 
       const response = await updateApprovalStatus(
         notificationDetail.approval.id,
         approvalStatus,
       );
-      console.log('API Response:', response);
 
-      // Perbarui state notificationDetail secara langsung
       setNotificationDetail(prevDetail => ({
         ...prevDetail,
         approval: {
@@ -112,11 +110,13 @@ export default function NotificationDetail({route, navigation}) {
     <View style={styles.container}>
       <StatusBar barStyle="default" backgroundColor="transparent" />
       <Background />
-      <HeaderTransparent
-        title="Detail Notifikasi"
-        icon="arrow-left-circle-outline"
-        onPress={() => navigation.goBack()}
-      />
+      <View style={styles.headerWrapper}>
+        <HeaderTransparent
+          title="Detail Notifikasi"
+          icon="arrow-left-circle-outline"
+          onPress={() => navigation.goBack()}
+        />
+      </View>
       {notificationDetail ? (
         <ScrollView
           contentContainerStyle={styles.contentContainer}
@@ -154,7 +154,7 @@ export default function NotificationDetail({route, navigation}) {
         </ScrollView>
       ) : null}
 
-      {/* Bottom Buttons */}
+      {/* Bottom Approval */}
       {notificationDetail?.approval?.is_approve === null && (
         <View style={styles.bottomContainer}>
           <TouchableOpacity
@@ -170,7 +170,6 @@ export default function NotificationDetail({route, navigation}) {
         </View>
       )}
 
-      {/* Approval Modal */}
       <ModalCustom
         visible={modalVisible}
         onRequestClose={() => setModalVisible(false)}
@@ -180,7 +179,6 @@ export default function NotificationDetail({route, navigation}) {
         buttonTitle="Konfirmasi"
       />
 
-      {/* Success Modal */}
       <ModalCustom
         visible={successModalVisible}
         onRequestClose={() => {
@@ -195,7 +193,6 @@ export default function NotificationDetail({route, navigation}) {
         buttonTitle="Ok"
       />
 
-      {/* Error Modal for Missing Notification Detail */}
       <ModalCustom
         visible={errorModalVisible}
         onRequestClose={() => {
@@ -212,7 +209,6 @@ export default function NotificationDetail({route, navigation}) {
         buttonTitle="Kembali"
       />
 
-      {/* Loading Modal */}
       <ModalLoading
         visible={loadingModalVisible}
         onRequestClose={() => setLoadingModalVisible(false)}
@@ -222,6 +218,14 @@ export default function NotificationDetail({route, navigation}) {
 }
 
 const styles = StyleSheet.create({
+  headerWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 10,
+    backgroundColor: COLORS.goldenOrange,
+    elevation: 3,
+  },
   container: {
     flex: 1,
     backgroundColor: COLORS.background,
@@ -237,13 +241,13 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   title: {
-    fontSize: 22,
+    fontSize: DIMENS.xl,
     fontWeight: 'bold',
     color: COLORS.black,
     marginBottom: 10,
   },
   date: {
-    fontSize: 14,
+    fontSize: DIMENS.m,
     color: COLORS.grey,
     marginBottom: 20,
   },
@@ -254,13 +258,13 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   sectionHeader: {
-    fontSize: 16,
+    fontSize: DIMENS.l,
     fontWeight: 'bold',
     color: COLORS.black,
     marginBottom: 5,
   },
   text: {
-    fontSize: 14,
+    fontSize: DIMENS.m,
     color: COLORS.grey,
   },
   bottomContainer: {
@@ -298,12 +302,12 @@ const styles = StyleSheet.create({
   approvedText: {
     color: COLORS.white,
     fontWeight: 'bold',
-    fontSize: 14,
+    fontSize: DIMENS.m,
   },
   buttonText: {
     color: COLORS.white,
     fontWeight: 'bold',
-    fontSize: 16,
+    fontSize: DIMENS.l,
   },
   loadingContainer: {
     flex: 1,
@@ -318,7 +322,7 @@ const styles = StyleSheet.create({
   },
   loadingText: {
     marginTop: 10,
-    fontSize: 16,
+    fontSize: DIMENS.l,
     color: COLORS.grey,
   },
 });

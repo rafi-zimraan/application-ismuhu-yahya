@@ -34,6 +34,7 @@ export default function DetailFacilityComplaint({navigation, route}) {
     try {
       setLoading(true);
       const response = await getSuggestionDetail(id);
+      console.log('response', response.data);
       if (response?.message === 'Silahkan login terlebih dahulu') {
         setTokenExpired(true);
       } else {

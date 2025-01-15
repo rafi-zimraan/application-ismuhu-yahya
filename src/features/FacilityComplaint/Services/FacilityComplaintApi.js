@@ -147,7 +147,7 @@ export const deleteSuggestionFile = async imageId => {
       throw new Error('Gagal menghapus file gambar');
     }
   } catch (error) {
-    console.error(error.response?.data?.message || error.message);
+    console.error('Error in deleteSuggestionFile:', error);
     throw error;
   }
 };
