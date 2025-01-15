@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {
+  Modal,
   RefreshControl,
   ScrollView,
   StatusBar,
@@ -8,6 +9,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {
   Background,
   HeaderTransparent,
@@ -19,7 +21,7 @@ import {
   getNotificationCategory,
   getNotificationDetail,
 } from '../../features/Notification';
-import {COLORS} from '../../utils';
+import {COLORS, DIMENS} from '../../utils';
 
 export default function NotificationFromCategory({route, navigation}) {
   const {category} = route.params;
@@ -31,34 +33,84 @@ export default function NotificationFromCategory({route, navigation}) {
   const [tokenExpired, setTokenExpired] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [modalLoadingVisible, setModalLoadingVisible] = useState(false);
+  const [filterOption, setFilterOption] = useState('');
+  const [originalData, setOriginalData] = useState([]);
+  const [isLoadingFilter, setIsLoadingFilter] = useState(false);
+  const [dropdownVisible, setDropdownVisible] = useState(false);
 
-  // Fungsi untuk menyortir notifikasi berdasarkan waktu (paling baru di atas)
   const sortNotifications = notifications => {
     return notifications.sort(
       (a, b) => new Date(b.created_at) - new Date(a.created_at),
     );
   };
 
-  // Fetch notifications by category
+  const filterOptions = [
+    {label: 'All', value: ''},
+    {label: 'Today', value: 'today'},
+    {label: 'This Week', value: 'this_week'},
+    {label: 'This Month', value: 'this_month'},
+  ];
+
+  const handleFilterSelect = value => {
+    setIsLoadingFilter(true);
+    setFilterOption(value);
+    setDropdownVisible(false);
+  };
+
+  const filterNotificationsByOption = () => {
+    if (!filterOption || filterOption === 'All') {
+      setData(originalData);
+      return;
+    }
+
+    const filteredData = originalData.filter(item => {
+      const notificationDate = new Date(item.created_at);
+      if (filterOption === 'today') {
+        const today = new Date();
+        return notificationDate.toDateString() === today.toDateString();
+      } else if (filterOption === 'this_week') {
+        const today = new Date();
+        const startOfWeek = new Date(
+          today.setDate(today.getDate() - today.getDay()),
+        );
+        const endOfWeek = new Date(startOfWeek);
+        endOfWeek.setDate(endOfWeek.getDate() + 6);
+
+        return notificationDate >= startOfWeek && notificationDate <= endOfWeek;
+      } else if (filterOption === 'this_month') {
+        const today = new Date();
+        return (
+          notificationDate.getMonth() === today.getMonth() &&
+          notificationDate.getFullYear() === today.getFullYear()
+        );
+      }
+      return true;
+    });
+    setData(filteredData);
+  };
+
   const fetchCategoryNotifications = async () => {
     setLoading(true);
     try {
       const response = await getNotificationCategory(category);
-      console.log('response fetch', response.data);
-
       if (response?.message === 'Silahkan login terlebih dahulu') {
         setTokenExpired(true);
       } else if (response?.data) {
-        // Sort the notifications before setting the state
-        const sortedData = sortNotifications(response.data);
+        // const sortedData = sortNotifications(response.data);
+        // const limitedData = sortedData.slice(0, 5);
+        const sortedData = response.data
+          .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+          .slice(0, 5);
+        setOriginalData(sortedData);
         setData(sortedData);
       } else {
         console.warn('Data notifikasi tidak valid:', response?.data);
         setData([]);
       }
     } catch (error) {
-      console.error('Failed to fetch notifications by category', error);
-      setData([]); // Fallback ke array kosong
+      console.log('Failed to fetch notifications by category', error);
+      setOriginalData([]);
+      setData([]);
     } finally {
       setLoading(false);
     }
@@ -68,7 +120,15 @@ export default function NotificationFromCategory({route, navigation}) {
     fetchCategoryNotifications();
   }, [category]);
 
-  // Handle notification deletion
+  useEffect(() => {
+    if (filterOption) {
+      filterNotificationsByOption();
+      setTimeout(() => {
+        setIsLoadingFilter(false);
+      }, 500);
+    }
+  }, [filterOption]);
+
   const handleDeleteNotification = async () => {
     if (!selectedNotification) return;
 
@@ -79,7 +139,6 @@ export default function NotificationFromCategory({route, navigation}) {
         setData(prevData =>
           prevData.filter(item => item.id !== selectedNotification),
         );
-        console.log('Notifikasi berhasil dihapus');
       }
     } catch (error) {
       console.error('Failed to delete notification', error);
@@ -90,13 +149,11 @@ export default function NotificationFromCategory({route, navigation}) {
     }
   };
 
-  // Open confirmation modal
   const openDeleteModal = id => {
     setSelectedNotification(id);
     setModalVisible(true);
   };
 
-  // Refresh notifications
   const onRefresh = async () => {
     setRefreshing(true);
     try {
@@ -108,7 +165,6 @@ export default function NotificationFromCategory({route, navigation}) {
     }
   };
 
-  // Navigate to detail notification
   const viewNotificationDetail = async id => {
     setModalLoadingVisible(true);
     try {
@@ -116,7 +172,6 @@ export default function NotificationFromCategory({route, navigation}) {
       const detail = await getNotificationDetail(id);
 
       if (detail?.data) {
-        console.log('Detail fetched successfully:', detail.data);
         navigation.navigate('NotificationDetail', {
           notificationDetail: detail.data,
         });
@@ -134,14 +189,43 @@ export default function NotificationFromCategory({route, navigation}) {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={{flex: 1}}>
       <StatusBar barStyle="default" backgroundColor="transparent" />
       <Background />
-      <HeaderTransparent
-        title={`Detail Notification (${category})`}
-        icon="arrow-left-circle-outline"
-        onPress={() => navigation.goBack()}
-      />
+      <View style={styles.headerWrapper}>
+        <HeaderTransparent
+          title={'Detail Notification'}
+          icon="arrow-left-circle-outline"
+          onPress={() => navigation.goBack()}
+        />
+        <TouchableOpacity
+          onPress={() => setDropdownVisible(true)}
+          style={styles.viewIconFilter}>
+          <Icon name="dots-vertical" size={24} color={COLORS.black} />
+        </TouchableOpacity>
+      </View>
+
+      <Modal
+        transparent
+        visible={dropdownVisible}
+        animationType="fade"
+        onRequestClose={() => setDropdownVisible(false)}>
+        <TouchableOpacity
+          style={styles.modalOverlay}
+          onPress={() => setDropdownVisible(false)}
+        />
+        <View style={styles.dropdownMenu}>
+          {filterOptions.map(option => (
+            <TouchableOpacity
+              key={option.value}
+              style={styles.dropdownItem}
+              onPress={() => handleFilterSelect(option.value)}>
+              <Text style={styles.dropdownText}>{option.label}</Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+      </Modal>
+
       <ScrollView
         contentContainerStyle={styles.contentContainer}
         refreshControl={
@@ -188,7 +272,6 @@ export default function NotificationFromCategory({route, navigation}) {
         )}
       </ScrollView>
 
-      {/* Modal Custom untuk Konfirmasi Penghapusan */}
       <ModalCustom
         visible={modalVisible}
         onRequestClose={() => setModalVisible(false)}
@@ -198,9 +281,10 @@ export default function NotificationFromCategory({route, navigation}) {
         iconModalName="trash-can-outline"
         title="Hapus Notifikasi"
         description="Apakah Anda yakin ingin menghapus notifikasi ini?"
+        ColorIcon={COLORS.red}
+        TextDescription={COLORS.red}
       />
 
-      {/* Modal untuk Token Expired */}
       <ModalCustom
         visible={tokenExpired}
         onRequestClose={() => setTokenExpired(false)}
@@ -214,22 +298,46 @@ export default function NotificationFromCategory({route, navigation}) {
         buttonTitle="Login Ulang"
       />
 
-      {/* Modal Loading untuk Fetch Detail */}
       <ModalLoading
-        visible={modalLoadingVisible}
-        onRequestClose={() => setModalLoadingVisible(false)}
+        visible={isLoadingFilter}
+        onRequestClose={() => setIsLoadingFilter(false)}
       />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: COLORS.background,
+  viewIconFilter: {
+    position: 'absolute',
+    top: 48,
+    right: 20,
+  },
+  dropdownMenu: {
+    position: 'absolute',
+    top: 50,
+    right: 15,
+    backgroundColor: COLORS.white,
+    borderRadius: 8,
+    padding: 10,
+    elevation: 5,
+  },
+  dropdownItem: {
+    paddingVertical: 10,
+  },
+  dropdownText: {
+    fontSize: 14,
+    color: COLORS.black,
+  },
+  headerWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 10,
+    backgroundColor: COLORS.goldenOrange,
+    elevation: 3,
   },
   contentContainer: {
-    padding: 20,
+    padding: 15,
   },
   loadingText: {
     fontStyle: 'italic',
@@ -238,7 +346,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   newNotificationText: {
-    fontSize: 18,
+    fontSize: DIMENS.xl,
     fontWeight: 'bold',
     color: COLORS.black,
     marginBottom: 10,
@@ -251,24 +359,23 @@ const styles = StyleSheet.create({
     padding: 15,
   },
   titleSection: {
-    marginBottom: 10,
+    marginBottom: 3,
   },
   titleText: {
-    fontSize: 21,
+    fontSize: DIMENS.xxl,
     fontWeight: 'bold',
     color: COLORS.black,
   },
   dateText: {
-    marginTop: 5,
-    fontSize: 12,
+    fontSize: DIMENS.s,
     color: COLORS.grey,
   },
   messageSection: {
-    marginBottom: 10,
-    padding: 10,
+    marginBottom: 2,
+    marginTop: 3,
   },
   messageText: {
-    fontSize: 14,
+    fontSize: DIMENS.m,
     color: COLORS.black,
   },
   actionsSection: {
@@ -277,16 +384,17 @@ const styles = StyleSheet.create({
   },
   deleteButton: {
     backgroundColor: COLORS.redSoft,
-    padding: 10,
+    top: 10,
+    padding: 4,
     borderRadius: 8,
   },
   deleteText: {
-    fontSize: 14,
+    fontSize: DIMENS.m,
     color: COLORS.red,
   },
   emptyText: {
     textAlign: 'center',
-    fontSize: 16,
+    fontSize: DIMENS.l,
     color: COLORS.grey,
   },
 });

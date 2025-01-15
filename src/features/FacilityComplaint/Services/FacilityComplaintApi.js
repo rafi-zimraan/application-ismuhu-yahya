@@ -33,11 +33,12 @@ export const addSuggestion = async data => {
       throw new Error('Token expired, silahkan login terlebih dahulu');
     }
 
-    const response = await api.post('suggestions', data, {
-      headers: {
-        Authorization: `Bearer ${JSON.parse(token)}`,
-      },
-    });
+    const headers = {
+      'Content-Type': 'multipart/form-data',
+      Authorization: `Bearer ${JSON.parse(token)}`,
+    };
+
+    const response = await api.post('suggestions', data, {headers});
 
     if (response.data?.status === true) {
       return response.data;
@@ -83,12 +84,12 @@ export const updateSuggestion = async (id, data) => {
       throw new Error('Token expired, silahkan login terlebih dahulu');
     }
 
-    const response = await api.patch(`suggestions/${id}`, data, {
-      headers: {
-        Authorization: `Bearer ${JSON.parse(token)}`,
-      },
-    });
+    const headers = {
+      'Content-Type': 'multipart/form-data',
+      Authorization: `Bearer ${JSON.parse(token)}`,
+    };
 
+    const response = await api.post(`suggestions/${id}`, data, {headers});
     if (response.data?.status === true) {
       return response.data;
     } else {
@@ -118,6 +119,32 @@ export const deleteSuggestion = async id => {
       return response.data;
     } else {
       throw new Error('Gagal menghapus saran dan pengaduan');
+    }
+  } catch (error) {
+    console.error(error.response?.data?.message || error.message);
+    throw error;
+  }
+};
+
+// Delete Suggestion File
+export const deleteSuggestionFile = async imageId => {
+  try {
+    const token = await EncryptedStorage.getItem('token');
+    if (!token) {
+      throw new Error('Token expired, silahkan login terlebih dahulu');
+    }
+
+    const response = await api.delete(`suggestions/file/${imageId}`, {
+      headers: {
+        Authorization: `Bearer ${JSON.parse(token)}`,
+      },
+    });
+
+    if (response.data?.status === true) {
+      console.log('response', response.message);
+      return response.data;
+    } else {
+      throw new Error('Gagal menghapus file gambar');
     }
   } catch (error) {
     console.error(error.response?.data?.message || error.message);

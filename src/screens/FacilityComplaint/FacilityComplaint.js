@@ -1,4 +1,5 @@
-import React, {useEffect, useState} from 'react';
+import {useFocusEffect} from '@react-navigation/native';
+import React, {useState} from 'react';
 import {
   ActivityIndicator,
   FlatList,
@@ -26,51 +27,69 @@ export default function FacilityComplaint({navigation}) {
   const fetchSuggestions = async (isRefresh = false) => {
     try {
       if (!isRefresh) setLoading(true);
+
       const response = await getAllSuggestions();
-      console.log('response', response.data.data);
-      setSuggestions(response.data?.data || []);
-    } catch (error) {
-      if (error.message === 'token expired, silahkan login terlebih dahulu') {
+      if (response?.message === 'Silahkan login terlebih dahulu') {
         setTokenExpired(true);
-      } else {
-        console.error(error.message);
+        return;
       }
+
+      // Urutkan data berdasarkan tanggal
+      const sortedData = (response.data?.data || []).sort(
+        (a, b) => new Date(b.created_at) - new Date(a.created_at),
+      );
+      setSuggestions(sortedData);
+    } catch (error) {
+      console.error(error.message);
     } finally {
       setLoading(false);
-      if (isRefresh) setRefreshing(false); // Stop refreshing indicator
+      if (isRefresh) setRefreshing(false);
     }
   };
 
-  useEffect(() => {
-    fetchSuggestions();
-  }, []);
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchSuggestions();
+    }, []),
+  );
 
   const handleRefresh = () => {
     setRefreshing(true);
     fetchSuggestions(true);
   };
-  const renderItem = ({item}) => (
-    <View style={styles.historyItem}>
-      <View style={styles.row}>
-        <View style={{flex: 1}}>
-          <View style={styles.textRow}>
-            <Text style={styles.label}>Nama :</Text>
-            <Text style={styles.value}> {item.name}</Text>
-          </View>
-          <View style={styles.textRow}>
-            <Text style={styles.label}>Keluhan :</Text>
-            <Text style={styles.value}> {item.complaint}</Text>
-          </View>
-        </View>
 
-        <Text style={styles.historyStatus}>
-          {item.is_done === '1' ? 'Completed' : 'Pending'}
-        </Text>
+  const handlePressItem = id => {
+    navigation.navigate('DetailFacilityComplaint', {id});
+  };
+
+  const renderItem = ({item}) => (
+    <TouchableOpacity
+      onPress={() => handlePressItem(item.id)}
+      activeOpacity={0.9}>
+      <View style={styles.historyItem}>
+        <View style={styles.row}>
+          <View style={{flex: 1}}>
+            <View style={styles.textRow}>
+              <Text style={styles.label}>Nama </Text>
+              <Text style={styles.value}>: {item.name}</Text>
+            </View>
+            <View style={styles.textRow}>
+              <Text style={styles.label}>Keluhan </Text>
+              <Text style={styles.value}>: {item.complaint}</Text>
+            </View>
+          </View>
+
+          <Text style={styles.historyStatus}>
+            {item.is_done === '1' ? 'Completed' : 'Pending'}
+          </Text>
+        </View>
+        <View>
+          <Text style={styles.historyDate}>
+            {item?.created_at.split('T')[0]}
+          </Text>
+        </View>
       </View>
-      <View>
-        <Text style={styles.historyDate}>{item?.created_at.split('T')[0]}</Text>
-      </View>
-    </View>
+    </TouchableOpacity>
   );
 
   return (
@@ -122,11 +141,11 @@ export default function FacilityComplaint({navigation}) {
         <Gap height={15} />
         <View style={styles.ViewTitlePengaduan}>
           <Text style={styles.txtHistory}>History Pengaduan</Text>
-          <TouchableOpacity
+          {/* <TouchableOpacity
             onPress={() => navigation.navigate('AllComplaints')}
             activeOpacity={0.6}>
             <Text style={styles.txtSeeAll}>Selengkapnya</Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </View>
         <Gap height={5} />
 
@@ -144,7 +163,6 @@ export default function FacilityComplaint({navigation}) {
             data={suggestions}
             keyExtractor={item => item.id.toString()}
             renderItem={renderItem}
-            contentContainerStyle={styles.historyContainer}
             refreshControl={
               <RefreshControl
                 refreshing={refreshing}
@@ -156,7 +174,6 @@ export default function FacilityComplaint({navigation}) {
         )}
       </View>
 
-      {/* Modal untuk Token Expired */}
       <ModalCustom
         visible={tokenExpired}
         onRequestClose={() => setTokenExpired(false)}
@@ -175,19 +192,20 @@ export default function FacilityComplaint({navigation}) {
 
 const styles = StyleSheet.create({
   textRow: {
-    flexDirection: 'row', // Atur elemen dalam satu baris
-    alignItems: 'flex-start', // Rata tengah secara vertikal
-    marginBottom: 2, // Spasi antar baris
+    flexDirection: 'row',
+    alignItems: 'flex-start',
   },
   label: {
-    fontSize: DIMENS.m,
-    fontWeight: 'bold',
+    fontSize: DIMENS.l,
+    fontWeight: '400',
     color: COLORS.black,
+    width: 66,
   },
   value: {
-    fontSize: DIMENS.m,
-    color: COLORS.black,
+    fontSize: DIMENS.l,
     fontWeight: '500',
+    color: COLORS.black,
+    maxWidth: 205,
   },
   notFoundContainer: {
     alignItems: 'center',
@@ -249,12 +267,10 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   content: {
+    flex: 1,
     padding: 15,
   },
-  historyContainer: {
-    flex: 1,
-    padding: 5,
-  },
+
   historyItem: {
     backgroundColor: COLORS.champagne,
     padding: 15,

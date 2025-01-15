@@ -41,7 +41,7 @@ export default function ButtonMenu({
 const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
-    marginHorizontal: 12,
+    marginHorizontal: 11,
   },
   image: {
     width: 47.5,

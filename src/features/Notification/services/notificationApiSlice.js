@@ -104,8 +104,8 @@ export const getNotificationCategory = async category => {
       throw new Error('Token expired, Silahkan login terlebih dahulu');
     }
 
-    const response = await api.post(
-      'notifications/category',
+    const response = await api.get(
+      'notifications/category/lisences',
       {category},
       {
         headers: {

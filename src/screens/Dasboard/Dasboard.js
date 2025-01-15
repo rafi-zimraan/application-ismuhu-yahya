@@ -2,6 +2,7 @@ import {useIsFocused} from '@react-navigation/native';
 import React, {useEffect, useState} from 'react';
 import {
   ActivityIndicator,
+  Alert,
   ImageBackground,
   Modal,
   RefreshControl,
@@ -144,12 +145,12 @@ export default function Dasboard({navigation}) {
               onPress={() => navigation.navigate('Presensi')}
             />
             <ButtonMenu
-              title="Amal yaumi"
-              iconName="clipboard-check-multiple"
+              title="Peminjaman Mobile"
+              iconName="car"
               color={COLORS.white}
               backgroundColor={COLORS.goldenOrange}
-              iconSize={33}
-              onPress={() => navigation.navigate('AmalYaumi')}
+              iconSize={36}
+              onPress={() => navigation.navigate('CarLoan')}
             />
             <ButtonMenu
               title="Pengaduan Fasilitas"
@@ -158,7 +159,6 @@ export default function Dasboard({navigation}) {
               backgroundColor={COLORS.goldenOrange}
               iconSize={33}
               onPress={() => {
-                // Alert.alert('Nantikan Fitur nya kawan...');
                 navigation.navigate('FacilityComplaint');
               }}
             />
@@ -174,6 +174,20 @@ export default function Dasboard({navigation}) {
               iconSize={26}
               onPress={toggleModal}
             /> */}
+          </View>
+          <Gap height={15} />
+
+          <View style={styles.menu}>
+            <ButtonMenu
+              title="Amal yaumi"
+              iconName="clipboard-check-multiple"
+              color={COLORS.white}
+              backgroundColor={COLORS.goldenOrange}
+              iconSize={33}
+              onPress={() => {
+                Alert.alert('Nantikan Fitur nya kawan...');
+              }}
+            />
           </View>
           <Gap height={15} />
           <NewsComponent />
@@ -196,17 +210,6 @@ export default function Dasboard({navigation}) {
               contentContainerStyle={styles.scrollContainer}>
               {/* Bagian Horizontal */}
               <View style={styles.horizontalContainer}>
-                <ButtonMenu
-                  title="Pengaduan Fasilitas"
-                  iconName="tools"
-                  color={COLORS.white}
-                  backgroundColor={COLORS.goldenOrange}
-                  iconSize={30}
-                  onPress={() => {
-                    toggleModal();
-                    navigation.navigate('FacilityComplaint');
-                  }}
-                />
                 <Gap width={10} />
                 <ButtonMenu
                   title="Peminjaman Mobil"

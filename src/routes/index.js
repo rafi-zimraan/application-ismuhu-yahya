@@ -3,9 +3,10 @@ import React from 'react';
 import {CreateCarLoan, DetailCarLoan} from '../features/CarLoan';
 import {DetailNewInformation} from '../features/Dasboard';
 import {
-  AllComplaints,
   Complaints,
   CreateFacilityComplaint,
+  DetailFacilityComplaint,
+  UpdateFacilityComplaint,
 } from '../features/FacilityComplaint';
 import {CheckOtpEmail, OtpForgotPassword} from '../features/ForgotPassword';
 import {
@@ -120,8 +121,15 @@ export default function Navigator() {
       <Stack.Screen name="DetailCarLoan" component={DetailCarLoan} />
       <Stack.Screen name="CreateCarLoan" component={CreateCarLoan} />
       <Stack.Screen name="FacilityComplaint" component={FacilityComplaint} />
-      <Stack.Screen name="AllComplaints" component={AllComplaints} />
       <Stack.Screen name="Complaints" component={Complaints} />
+      <Stack.Screen
+        name="UpdateFacilityComplaint"
+        component={UpdateFacilityComplaint}
+      />
+      <Stack.Screen
+        name="DetailFacilityComplaint"
+        component={DetailFacilityComplaint}
+      />
       <Stack.Screen
         name="CreateFacilityComplaint"
         component={CreateFacilityComplaint}

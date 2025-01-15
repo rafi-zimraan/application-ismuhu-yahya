@@ -105,6 +105,7 @@ export default function CreateFormulirPerizinan({navigation, route}) {
         );
       }
     } catch (error) {
+      console.log('err', error.response);
       ToastAndroid.show('Terjadi kesalahan', ToastAndroid.SHORT);
     } finally {
       setLoading(false);

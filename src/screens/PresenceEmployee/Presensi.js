@@ -25,11 +25,10 @@ import {COLORS} from '../../utils';
 import {DIMENS} from '../../utils/dimens';
 
 export default function Perizinan({navigation}) {
-  const [refreshing, setRefreshing] = useState(false); // State untuk RefreshControl
+  const [refreshing, setRefreshing] = useState(false);
   const permissions = useSelector(state => state.auth.permissions);
   const dispatch = useDispatch();
 
-  // Pulihkan permissions dari EncryptedStorage saat komponen dimuat
   useEffect(() => {
     const loadPermissions = async () => {
       try {
@@ -52,7 +51,6 @@ export default function Perizinan({navigation}) {
     }
   }, []);
 
-  // Simpan permissions ke EncryptedStorage jika diperbarui
   useEffect(() => {
     const savePermissions = async () => {
       try {
@@ -71,7 +69,6 @@ export default function Perizinan({navigation}) {
     }
   }, [permissions]);
 
-  // Logika refresh
   const onRefresh = useCallback(() => {
     setRefreshing(true);
     const reloadPermissions = async () => {
@@ -85,14 +82,13 @@ export default function Perizinan({navigation}) {
       } catch (error) {
         console.log('Error refreshing permissions:', error);
       } finally {
-        setRefreshing(false); // Hentikan animasi penyegaran
+        setRefreshing(false);
       }
     };
 
     reloadPermissions();
   }, [dispatch]);
 
-  // Validasi permissions
   const hasAdminPermissions =
     permissions.includes('admin_qr_code') &&
     permissions.includes('admin_scan_wajah');
@@ -199,7 +195,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: 10,
-    backgroundColor: '#fff',
+    backgroundColor: COLORS.goldenOrange,
     elevation: 3,
   },
   additionalIconButton: {

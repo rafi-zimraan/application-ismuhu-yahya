@@ -94,12 +94,16 @@ export default function Perizinan({navigation}) {
     }
   };
 
-  const combinedData = [...dataCuti, ...dataExitPermit].sort((a, b) => {
-    const dateA = new Date(a.created_at);
-    const dateB = new Date(b.created_at);
-    return dateB - dateA;
-  });
-
+  const combinedData = [...dataCuti, ...dataExitPermit]
+    .map(item => ({
+      ...item,
+      created_at: item.created_at || item.start_date || item.end_date || '',
+    }))
+    .sort((a, b) => {
+      const dateA = new Date(a.created_at);
+      const dateB = new Date(b.created_at);
+      return dateB - dateA;
+    });
   const fetchExitPermitData = async () => {
     try {
       setLoading(true);
@@ -266,7 +270,6 @@ export default function Perizinan({navigation}) {
         )}
       </View>
 
-      {/* Perinan Keluar / tidak lama */}
       <FloatingButton
         iconName="exit-to-app"
         label={'Keluar'}
@@ -280,7 +283,6 @@ export default function Perizinan({navigation}) {
         }
       />
 
-      {/* Perinan cuti / dalam jangan waktu yang lama */}
       <FloatingButton
         iconName="calendar-check"
         label={'Cuti'}
@@ -337,7 +339,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   txtHistorycal: {
-    color: COLORS.black,
+    color: COLORS.goldenOrange,
     fontSize: DIMENS.s,
   },
   txtTitlePerizinan: {

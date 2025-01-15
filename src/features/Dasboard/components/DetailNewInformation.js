@@ -88,7 +88,6 @@ export default function DetailNewInformation({route, navigation}) {
                     ? {uri: `https://app.simpondok.com/${image.path}`}
                     : ICON_NOTFOUND_DATA
                 }
-                // source={{uri: `https://app.simpondok.com/${image.path}`}}
                 style={styles.image}
                 resizeMode="contain"
               />

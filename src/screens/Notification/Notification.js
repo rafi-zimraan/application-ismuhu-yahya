@@ -115,7 +115,7 @@ export default function Notification({navigation}) {
         <Gap height={15} />
 
         {/* Payroll */}
-        <TouchableOpacity
+        {/* <TouchableOpacity
           activeOpacity={0.7}
           style={styles.categoryCard}
           onPress={() =>
@@ -132,7 +132,7 @@ export default function Notification({navigation}) {
           <View style={styles.countBadge}>
             <Text style={styles.countText}>{countCategoryItems('payrol')}</Text>
           </View>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </ScrollView>
 
       {/* Modal untuk Token Expired */}
