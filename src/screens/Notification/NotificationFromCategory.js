@@ -6,6 +6,7 @@ import {
   StatusBar,
   StyleSheet,
   Text,
+  ToastAndroid,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -125,7 +126,7 @@ export default function NotificationFromCategory({route, navigation}) {
         );
       }
     } catch (error) {
-      console.error('Failed to delete notification', error);
+      console.log('Failed to delete notification', error);
     } finally {
       setIsDeleting(false);
       setModalVisible(false);
@@ -143,7 +144,7 @@ export default function NotificationFromCategory({route, navigation}) {
     try {
       await fetchCategoryNotifications();
     } catch (error) {
-      console.error('response api', error?.message || error);
+      console.log('response api', error?.message || error);
     } finally {
       setRefreshing(false);
     }
@@ -159,10 +160,13 @@ export default function NotificationFromCategory({route, navigation}) {
           notificationDetail: detail.data,
         });
       } else {
-        console.error('Detail not found for the provided ID:', id);
+        console.log('Detail not found for the provided ID:', id);
       }
     } catch (error) {
-      console.error('Failed to fetch notification detail', error);
+      ToastAndroid.show(
+        'Terjadi Kesalahan saat memuat detail notification,',
+        ToastAndroid.SHORT,
+      );
     } finally {
       setIsLoadingFilter(false);
     }
@@ -174,7 +178,7 @@ export default function NotificationFromCategory({route, navigation}) {
       <Background />
       <View style={styles.headerWrapper}>
         <HeaderTransparent
-          title={'Detail Notification'}
+          title={'Kategori Notification'}
           icon="arrow-left-circle-outline"
           onPress={() => navigation.goBack()}
         />

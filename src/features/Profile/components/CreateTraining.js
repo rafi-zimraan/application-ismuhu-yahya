@@ -24,9 +24,9 @@ import {COLORS} from '../../../utils';
 export default function CreateTraining({navigation}) {
   const {control, handleSubmit} = useForm();
   const [title, setTitle] = useState('');
-  const [date, setDate] = useState('2024-05-27');
+  const [date, setDate] = useState(new Date());
   const [category, setCategory] = useState('');
-  const [description, setDescription] = useState('');
+  const [desc, setDesc] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [showDatePicker, setShowDatePicker] = useState(false);
@@ -34,8 +34,7 @@ export default function CreateTraining({navigation}) {
   const handleDateChange = (event, selectedDate) => {
     setShowDatePicker(false);
     if (selectedDate) {
-      const formattedDate = selectedDate.toISOString().split('T')[0];
-      setDate(formattedDate);
+      setDate(selectedDate);
     }
   };
 
@@ -44,14 +43,15 @@ export default function CreateTraining({navigation}) {
     try {
       const userId = await EncryptedStorage.getItem('idUser');
       const response = await addTraining(userId, data);
+      console.log('response', response);
 
       if (response) {
         setModalVisible(true);
       }
     } catch (error) {
-      console.log('error', error.message);
+      console.log('error', error);
       ToastAndroid.show(
-        error.response?.data?.message || 'Gagal menambahkan data!',
+        'Gagal menambahkan data pelatihan!',
         ToastAndroid.SHORT,
       );
     } finally {
@@ -64,7 +64,7 @@ export default function CreateTraining({navigation}) {
       title,
       date,
       category,
-      description,
+      desc,
     };
     handleAPI(data);
   };
@@ -72,11 +72,13 @@ export default function CreateTraining({navigation}) {
   return (
     <View style={{flex: 1}}>
       <Background />
-      <HeaderTransparent
-        title="Create Training"
-        icon="arrow-left-circle-outline"
-        onPress={() => navigation.goBack()}
-      />
+      <View style={styles.headerWrapper}>
+        <HeaderTransparent
+          title="Tambah Data Pelatihan"
+          icon="arrow-left-circle-outline"
+          onPress={() => navigation.goBack()}
+        />
+      </View>
       <View style={styles.container}>
         <Gap height={15} />
         <ScrollView
@@ -99,11 +101,13 @@ export default function CreateTraining({navigation}) {
               <TouchableOpacity
                 onPress={() => setShowDatePicker(true)}
                 style={styles.datePickerContainer}>
-                <Text style={styles.dateText}>{date}</Text>
+                <Text style={styles.dateText}>
+                  {date.toISOString().split('T')[0]}
+                </Text>
               </TouchableOpacity>
               {showDatePicker && (
                 <DateTimePicker
-                  value={new Date(date)}
+                  value={date}
                   mode="date"
                   display="default"
                   onChange={handleDateChange}
@@ -126,8 +130,8 @@ export default function CreateTraining({navigation}) {
               <Text style={styles.inputLabel}>Deskripsi</Text>
               <TextInput
                 style={styles.inputMultiline}
-                value={description}
-                onChangeText={setDescription}
+                value={desc}
+                onChangeText={setDesc}
                 placeholderTextColor={COLORS.grey}
                 placeholder="Deskripsi training"
                 multiline
@@ -136,7 +140,7 @@ export default function CreateTraining({navigation}) {
           </View>
           <Gap height={15} />
           <ButtonAction
-            title="Save"
+            title="Simpan"
             backgroundColor={COLORS.goldenOrange}
             loading={isLoading}
             color={COLORS.white}
@@ -150,6 +154,7 @@ export default function CreateTraining({navigation}) {
         onRequestClose={() => setModalVisible(false)}
         iconModalName="check-decagram-outline"
         title="Training Berhasil Ditambahkan"
+        buttonTitle="Ok"
         description="Data training Anda berhasil ditambahkan!"
         buttonSubmit={() => navigation.goBack()}
       />
@@ -158,6 +163,14 @@ export default function CreateTraining({navigation}) {
 }
 
 const styles = StyleSheet.create({
+  headerWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 10,
+    backgroundColor: COLORS.goldenOrange,
+    elevation: 3,
+  },
   container: {
     flex: 1,
     paddingHorizontal: 24,

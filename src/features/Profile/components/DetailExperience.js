@@ -48,7 +48,7 @@ export default function DetailExperience({route, navigation}) {
       );
       setEditModalVisible(false);
     } catch (error) {
-      console.error('Error updating experience:', error.message);
+      console.log('Error updating experience:', error.message);
     } finally {
       setIsLoading(false);
     }
@@ -61,7 +61,7 @@ export default function DetailExperience({route, navigation}) {
       setIsDeleted(true);
       setDeleteModalVisible(false);
     } catch (error) {
-      console.error('Error deleting experience:', error.message);
+      console.log('Error deleting experience:', error.message);
     } finally {
       setIsLoading(false);
     }
@@ -72,7 +72,7 @@ export default function DetailExperience({route, navigation}) {
     try {
       console.log('Data refreshed');
     } catch (error) {
-      console.error('Error during refresh:', error);
+      console.log('Error during refresh:', error);
     } finally {
       setRefreshing(false);
     }
@@ -82,11 +82,13 @@ export default function DetailExperience({route, navigation}) {
     <View style={{flex: 1}}>
       <StatusBar barStyle="default" backgroundColor="transparent" />
       <Background />
-      <HeaderTransparent
-        title="Detail Experience"
-        icon="arrow-left-circle-outline"
-        onPress={() => navigation.goBack()}
-      />
+      <View style={styles.headerWrapper}>
+        <HeaderTransparent
+          title="Detail Experience"
+          icon="arrow-left-circle-outline"
+          onPress={() => navigation.goBack()}
+        />
+      </View>
       <ScrollView
         refreshControl={
           <RefreshControl
@@ -102,7 +104,11 @@ export default function DetailExperience({route, navigation}) {
               <View style={styles.content}>
                 <Text style={styles.title}>Detail Experience</Text>
                 <View style={styles.section}>
-                  <Icon name="office-building" size={24} color="#666" />
+                  <Icon
+                    name="office-building"
+                    size={24}
+                    color={COLORS.goldenOrange}
+                  />
                   <View style={styles.viewContentText}>
                     <Text style={styles.textTitle}>Company</Text>
                     <Text style={styles.label}>
@@ -111,7 +117,7 @@ export default function DetailExperience({route, navigation}) {
                   </View>
                 </View>
                 <View style={styles.section}>
-                  <Icon name="timer" size={24} color="#666" />
+                  <Icon name="timer" size={24} color={COLORS.goldenOrange} />
                   <View style={styles.viewContentText}>
                     <Text style={styles.textTitle}>Length of Work</Text>
                     <Text style={styles.label}>
@@ -122,7 +128,7 @@ export default function DetailExperience({route, navigation}) {
                   </View>
                 </View>
                 <View style={styles.section}>
-                  <Icon name="account" size={24} color="#666" />
+                  <Icon name="account" size={24} color={COLORS.goldenOrange} />
                   <View style={styles.viewContentText}>
                     <Text style={styles.textTitle}>Position</Text>
                     <Text style={styles.label}>
@@ -219,6 +225,14 @@ export default function DetailExperience({route, navigation}) {
 }
 
 const styles = StyleSheet.create({
+  headerWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 10,
+    backgroundColor: COLORS.goldenOrange,
+    elevation: 3,
+  },
   container: {
     flex: 1,
     padding: 20,

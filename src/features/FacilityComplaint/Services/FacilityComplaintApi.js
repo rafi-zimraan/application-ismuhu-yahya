@@ -46,7 +46,7 @@ export const addSuggestion = async data => {
       throw new Error('Gagal menambahkan saran dan pengaduan');
     }
   } catch (error) {
-    console.error(error.response?.data?.message || error.message);
+    console.log(error.response?.data?.message || error.message);
     throw error;
   }
 };
@@ -71,7 +71,7 @@ export const getSuggestionDetail = async id => {
       throw new Error('Detail saran dan pengaduan tidak ditemukan');
     }
   } catch (error) {
-    console.error(error.response?.data?.message || error.message);
+    console.log(error.response?.data?.message || error.message);
     throw error;
   }
 };
@@ -96,7 +96,7 @@ export const updateSuggestion = async (id, data) => {
       throw new Error('Gagal memperbarui saran dan pengaduan');
     }
   } catch (error) {
-    console.error(error.response?.data?.message || error.message);
+    console.log(error.response?.data?.message || error.message);
     throw error;
   }
 };
@@ -121,7 +121,7 @@ export const deleteSuggestion = async id => {
       throw new Error('Gagal menghapus saran dan pengaduan');
     }
   } catch (error) {
-    console.error(error.response?.data?.message || error.message);
+    console.log(error.response?.data?.message || error.message);
     throw error;
   }
 };
@@ -141,13 +141,12 @@ export const deleteSuggestionFile = async imageId => {
     });
 
     if (response.data?.status === true) {
-      console.log('response', response.message);
       return response.data;
     } else {
       throw new Error('Gagal menghapus file gambar');
     }
   } catch (error) {
-    console.error('Error in deleteSuggestionFile:', error);
+    console.log('Error in deleteSuggestionFile:', error);
     throw error;
   }
 };

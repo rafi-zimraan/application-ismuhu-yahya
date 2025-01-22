@@ -6,6 +6,7 @@ import {
   StatusBar,
   StyleSheet,
   Text,
+  ToastAndroid,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -48,7 +49,10 @@ export default function Notification({navigation}) {
         });
       }
     } catch (error) {
-      console.error('Failed to fetch notifications:', error?.message || error);
+      ToastAndroid.show(
+        'Gagal memuat notifikasi. Silakan coba lagi.',
+        ToastAndroid.SHORT,
+      );
       setNotifications({lisences: [], payrol: []});
     }
   };
@@ -58,9 +62,9 @@ export default function Notification({navigation}) {
     try {
       await fetchNotifications();
     } catch (error) {
-      console.error(
-        'Failed to refresh notifications:',
-        error?.message || error,
+      ToastAndroid.show(
+        'Gagal menyegarkan notifikasi. Silakan coba lagi.',
+        ToastAndroid.SHORT,
       );
     } finally {
       setRefreshing(false);
@@ -131,7 +135,6 @@ export default function Notification({navigation}) {
         </TouchableOpacity> */}
       </ScrollView>
 
-      {/* Modal untuk Token Expired */}
       <ModalCustom
         visible={tokenExpired}
         onRequestClose={() => setTokenExpired(false)}

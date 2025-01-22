@@ -1,7 +1,9 @@
+import CreateCouple from './components/CreateCouple';
 import CreateExperience from './components/CreateExperience';
-import CreateProfile from './components/CreateProfile';
+import CreateProfileSpa from './components/CreateProfileSpa';
 import CreateTraining from './components/CreateTraining';
-import DetailDataPribadi from './components/DetailDataPribadi';
+import DetailDataCouple from './components/DetailDataCouple';
+import DetailDataProfileSpa from './components/DetailDataProfileSpa';
 import DetailExperience from './components/DetailExperience';
 import DetailTraining from './components/DetailTraining';
 import SectionWithData from './components/SectionWithData';
@@ -18,12 +20,15 @@ import {
   updateCouple,
   updateExperience,
   updateTraining,
+  uploadPhotoProfile,
 } from './services/ProfileApiSlice';
 
 // component
 export {
-  CreateProfile,
-  DetailDataPribadi,
+  CreateProfileSpa,
+  DetailDataProfileSpa,
+  CreateCouple,
+  DetailDataCouple,
   DetailTraining,
   CreateTraining,
   DetailExperience,
@@ -32,6 +37,7 @@ export {
 };
 // slice
 export {
+  uploadPhotoProfile,
   getCoupleData,
   addCouple,
   updateCouple,

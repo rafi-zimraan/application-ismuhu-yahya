@@ -62,7 +62,7 @@ export const Translations = {
     modal_description: 'Silakan pilih bahasa aplikasi Anda.',
     confirm: 'Konfirmasi',
     close: 'Tutup',
-    profile: 'Profil',
+    profile: 'Profile',
     name_settings: 'Pengaturan',
 
     name_unavailable: 'Nama tidak tersedia',

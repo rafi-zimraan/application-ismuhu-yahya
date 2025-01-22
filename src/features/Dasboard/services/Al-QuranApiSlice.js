@@ -12,7 +12,10 @@ const fetchAyat = async (surahNumber, ayahNumber) => {
   try {
     const response = await axios.get(`${BASE_URL}/${surahNumber}`);
     const surah = response.data;
-    const ayah = surah.ayat[ayahNumber - 1];
+    const ayah = surah.ayat?.[ayahNumber - 1];
+    if (!ayah) {
+      throw new Error('Ayah not found in the surah data');
+    }
     return {
       arab: ayah.ar,
       translation: ayah.idn,
@@ -21,7 +24,7 @@ const fetchAyat = async (surahNumber, ayahNumber) => {
       juz: ayah.juz,
     };
   } catch (error) {
-    // console.error('Error fetching ayah:', error);
+    console.log('Error fetching ayah:', error.response?.status, error.message);
     throw error;
   }
 };
@@ -32,12 +35,11 @@ const fetchAyat = async (surahNumber, ayahNumber) => {
  */
 const fetchDailyAyah = async () => {
   const ayahList = [
-    {surah: 34, ayah: 17}, // "Allah tidak membebani seseorang melainkan sesuai dengan kesanggupannya."
-    {surah: 94, ayah: 6}, // "Sesungguhnya bersama kesulitan ada kemudahan."
-    {surah: 44, ayah: 17}, // "Sungguh, Kami benar-benar telah memudahkan Al-Qur'an sebagai pelajaran"
+    {surah: 34, ayah: 17},
+    {surah: 94, ayah: 6},
+    {surah: 44, ayah: 17},
   ];
 
-  // Determine the ayah for the current day
   const dayOfYear = Math.floor(
     (new Date() - new Date(new Date().getFullYear(), 0, 0)) / 86400000,
   );

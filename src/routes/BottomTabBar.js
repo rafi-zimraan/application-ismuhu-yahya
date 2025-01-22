@@ -4,8 +4,8 @@ import LinearGradient from 'react-native-linear-gradient';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 export default function BottomTabBar({state, descriptors, navigation}) {
-  const iconColorDefault = '#808080'; // Warna untuk tab tidak aktif
-  const iconColorActive = '#FFB200'; // Warna untuk tab aktif
+  const iconColorDefault = '#808080';
+  const iconColorActive = '#FFB200';
 
   return (
     <View
@@ -67,7 +67,7 @@ export default function BottomTabBar({state, descriptors, navigation}) {
             style={{
               flex: 1,
               alignItems: 'center',
-              marginTop: 2, // Menambahkan jarak ke bawah untuk keseluruhan tab
+              marginTop: 2,
             }}>
             {/* Efek Cahaya */}
             {isFocused && (
@@ -78,7 +78,7 @@ export default function BottomTabBar({state, descriptors, navigation}) {
                   top: -3,
                   left: 0,
                   right: 0,
-                  height: 8, // Tinggi cahaya
+                  height: 8,
                   zIndex: 1,
                 }}
               />
@@ -89,7 +89,7 @@ export default function BottomTabBar({state, descriptors, navigation}) {
               name={iconName}
               size={isFocused ? 29 : 23}
               color={isFocused ? iconColorActive : iconColorDefault}
-              style={{marginTop: 8}} // Tambahkan jarak ke bawah
+              style={{marginTop: 8}}
             />
 
             {/* Label */}

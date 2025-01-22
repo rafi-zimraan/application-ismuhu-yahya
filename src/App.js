@@ -80,7 +80,7 @@ export default function App() {
       BackHandler.exitApp();
       setModalVisible(false);
     } catch (error) {
-      console.error('Error during logout:', error);
+      console.log('Error during logout:', error);
     } finally {
       setLoadingLogout(false);
     }

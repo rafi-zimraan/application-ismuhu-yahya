@@ -2,6 +2,7 @@ import React from 'react';
 import {
   Image,
   ScrollView,
+  StatusBar,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -22,7 +23,8 @@ import {COLORS, DIMENS} from '../../utils';
 
 export default function CarLoan({navigation}) {
   return (
-    <View style={{flex: 1}}>
+    <View style={styles.ContentView}>
+      <StatusBar barStyle={'default'} backgroundColor={'transparent'} />
       <LinearGradient
         colors={['#FFD700', '#FFB200']}
         start={{x: 0, y: 0}}
@@ -43,232 +45,252 @@ export default function CarLoan({navigation}) {
           />
         </View>
       </LinearGradient>
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={true} // indikator scroll
-        style={{
-          padding: 15,
-          height: '9%',
-        }}>
-        {/* Reborn Car */}
-        <TouchableOpacity
-          activeOpacity={0.8}
-          style={styles.carBody}
-          onPress={() => navigation.navigate('DetailCarLoan')}>
-          <View style={styles.viewActiveText}>
-            <Text style={styles.textActive}>Tersedia</Text>
-          </View>
-          <Image
-            source={IMG_CAR_REBORN}
-            style={styles.carImage}
-            resizeMethod="resize"
-          />
-          <View style={styles.viewTextCar}>
-            <Text style={styles.textCar}>Reborn</Text>
-            <Icon name="arrow-right-thin" size={20} color={COLORS.black} />
-          </View>
-          <View style={styles.viewNoPlat}>
-            <Text style={styles.textPlat}>KB-2232-RFI</Text>
-          </View>
-          <TouchableOpacity
-            activeOpacity={0.7}
-            style={styles.viewContentRent}
-            onPress={() => navigation.navigate('CreateCarLoan')}>
-            <Text style={styles.textRent}>Pinjam sekarang</Text>
-          </TouchableOpacity>
-        </TouchableOpacity>
-        <Gap width={15} />
 
-        {/* Ertiga Car */}
-        <TouchableOpacity
-          activeOpacity={0.8}
-          style={styles.carBody}
-          onPress={() => navigation.navigate('DetailCarLoan')}>
-          <View style={styles.viewActiveText}>
-            <Text style={styles.textActive}>Tersedia</Text>
-          </View>
-          <Image
-            source={IMG_CAR_ERTIGA}
-            style={styles.imgErtiga}
-            resizeMethod="resize"
-          />
-          <View style={styles.viewTextCar}>
-            <Text style={styles.textCar}>Ertiga</Text>
-            <Icon name="arrow-right-thin" size={20} color={COLORS.black} />
-          </View>
-          <View style={styles.viewNoPlat}>
-            <Text style={styles.textPlat}>KB-2232-RFI</Text>
-          </View>
+      <View style={{padding: 15, flex: 1}}>
+        {/* Menu Cars */}
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={true}
+          style={{
+            height: '12%',
+          }}>
+          <Gap width={5} />
           <TouchableOpacity
-            activeOpacity={0.7}
-            style={styles.viewContentRent}
-            onPress={() => navigation.navigate('CreateCarLoan')}>
-            <Text style={styles.textRent}>Pinjam sekarang</Text>
+            activeOpacity={0.8}
+            style={styles.carBody}
+            onPress={() => navigation.navigate('DetailCarLoan')}>
+            <View style={styles.viewActiveText}>
+              <Text style={styles.textActive}>Tersedia</Text>
+            </View>
+            <Image
+              source={IMG_CAR_REBORN}
+              style={styles.carImage}
+              resizeMethod="resize"
+            />
+            <View style={styles.viewTextCar}>
+              <Text style={styles.textCar}>Reborn</Text>
+              <Icon name="arrow-right-thin" size={20} color={COLORS.black} />
+            </View>
+            <View style={styles.viewNoPlat}>
+              <Text style={styles.textPlat}>KB-2232-RFI</Text>
+            </View>
+            <TouchableOpacity
+              activeOpacity={0.7}
+              style={styles.viewContentRent}
+              onPress={() => navigation.navigate('CreateCarLoan')}>
+              <Text style={styles.textRent}>Pinjam sekarang</Text>
+            </TouchableOpacity>
           </TouchableOpacity>
-        </TouchableOpacity>
-        <Gap width={15} />
+          <Gap width={15} />
 
-        {/* Ambulance Car */}
-        <TouchableOpacity
-          activeOpacity={0.8}
-          style={styles.carBody}
-          onPress={() => navigation.navigate('DetailCarLoan')}>
-          <View style={styles.viewActiveText}>
-            <Text style={styles.textActive}>Tersedia</Text>
-          </View>
-          <Image
-            source={IMG_CAR_AMBULANCE}
-            style={styles.imgAmbulance}
-            resizeMethod="resize"
-          />
-          <View style={styles.viewTextCar}>
-            <Text style={styles.textCar}>Ambulance</Text>
-            <Icon name="arrow-right-thin" size={20} color={COLORS.black} />
-          </View>
-          <View style={styles.viewNoPlat}>
-            <Text style={styles.textPlat}>KB-2232-RFI</Text>
-          </View>
           <TouchableOpacity
-            activeOpacity={0.7}
-            style={styles.viewContentRent}
-            onPress={() => navigation.navigate('CreateCarLoan')}>
-            <Text style={styles.textRent}>Pinjam sekarang</Text>
+            activeOpacity={0.8}
+            style={styles.carBody}
+            onPress={() => navigation.navigate('DetailCarLoan')}>
+            <View style={styles.viewActiveText}>
+              <Text style={styles.textActive}>Tersedia</Text>
+            </View>
+            <Image
+              source={IMG_CAR_ERTIGA}
+              style={styles.imgErtiga}
+              resizeMethod="resize"
+            />
+            <View style={styles.viewTextCar}>
+              <Text style={styles.textCar}>Ertiga</Text>
+              <Icon name="arrow-right-thin" size={20} color={COLORS.black} />
+            </View>
+            <View style={styles.viewNoPlat}>
+              <Text style={styles.textPlat}>KB-2232-RFI</Text>
+            </View>
+            <TouchableOpacity
+              activeOpacity={0.7}
+              style={styles.viewContentRent}
+              onPress={() => navigation.navigate('CreateCarLoan')}>
+              <Text style={styles.textRent}>Pinjam sekarang</Text>
+            </TouchableOpacity>
           </TouchableOpacity>
-        </TouchableOpacity>
-        <Gap width={15} />
+          <Gap width={15} />
 
-        {/* Pickup Car */}
-        <TouchableOpacity
-          activeOpacity={0.8}
-          style={styles.carBody}
-          onPress={() => navigation.navigate('DetailCarLoan')}>
-          <View style={styles.viewActiveText}>
-            <Text style={styles.textActive}>Tersedia</Text>
-          </View>
-          <Image
-            source={IMG_CAR_PICKUPWHITE}
-            style={styles.imgPickWhite}
-            resizeMethod="resize"
-          />
-          <View style={styles.viewTextCar}>
-            <Text style={styles.textCar}>Pickup putih</Text>
-            <Icon name="arrow-right-thin" size={20} color={COLORS.black} />
-          </View>
-          <View style={styles.viewNoPlat}>
-            <Text style={styles.textPlat}>KB-2232-RFI</Text>
-          </View>
           <TouchableOpacity
-            activeOpacity={0.7}
-            style={styles.viewContentRent}
-            onPress={() => navigation.navigate('CreateCarLoan')}>
-            <Text style={styles.textRent}>Pinjam sekarang</Text>
+            activeOpacity={0.8}
+            style={styles.carBody}
+            onPress={() => navigation.navigate('DetailCarLoan')}>
+            <View style={styles.viewActiveText}>
+              <Text style={styles.textActive}>Tersedia</Text>
+            </View>
+            <Image
+              source={IMG_CAR_AMBULANCE}
+              style={styles.imgAmbulance}
+              resizeMethod="resize"
+            />
+            <View style={styles.viewTextCar}>
+              <Text style={styles.textCar}>Ambulance</Text>
+              <Icon name="arrow-right-thin" size={20} color={COLORS.black} />
+            </View>
+            <View style={styles.viewNoPlat}>
+              <Text style={styles.textPlat}>KB-2232-RFI</Text>
+            </View>
+            <TouchableOpacity
+              activeOpacity={0.7}
+              style={styles.viewContentRent}
+              onPress={() => navigation.navigate('CreateCarLoan')}>
+              <Text style={styles.textRent}>Pinjam sekarang</Text>
+            </TouchableOpacity>
           </TouchableOpacity>
-        </TouchableOpacity>
-        <Gap width={15} />
+          <Gap width={15} />
 
-        {/* Pickup Car */}
-        <TouchableOpacity
-          activeOpacity={0.8}
-          style={styles.carBody}
-          onPress={() => navigation.navigate('DetailCarLoan')}>
-          <View style={styles.viewActiveText}>
-            <Text style={styles.textActive}>Tersedia</Text>
-          </View>
-          <Image
-            source={IMG_CAR_PICKUPBLACK}
-            style={styles.imgPickBlack}
-            resizeMethod="resize"
-          />
-          <View style={styles.viewTextCar}>
-            <Text style={styles.textCar}>Pickup hitam</Text>
-            <Icon name="arrow-right-thin" size={20} color={COLORS.black} />
-          </View>
-          <View style={styles.viewNoPlat}>
-            <Text style={styles.textPlat}>KB-2232-RFI</Text>
-          </View>
           <TouchableOpacity
-            activeOpacity={0.7}
-            style={styles.viewContentRent}
-            onPress={() => navigation.navigate('CreateCarLoan')}>
-            <Text style={styles.textRent}>Pinjam sekarang</Text>
+            activeOpacity={0.8}
+            style={styles.carBody}
+            onPress={() => navigation.navigate('DetailCarLoan')}>
+            <View style={styles.viewActiveText}>
+              <Text style={styles.textActive}>Tersedia</Text>
+            </View>
+            <Image
+              source={IMG_CAR_PICKUPWHITE}
+              style={styles.imgPickWhite}
+              resizeMethod="resize"
+            />
+            <View style={styles.viewTextCar}>
+              <Text style={styles.textCar}>Pickup putih</Text>
+              <Icon name="arrow-right-thin" size={20} color={COLORS.black} />
+            </View>
+            <View style={styles.viewNoPlat}>
+              <Text style={styles.textPlat}>KB-2232-RFI</Text>
+            </View>
+            <TouchableOpacity
+              activeOpacity={0.7}
+              style={styles.viewContentRent}
+              onPress={() => navigation.navigate('CreateCarLoan')}>
+              <Text style={styles.textRent}>Pinjam sekarang</Text>
+            </TouchableOpacity>
           </TouchableOpacity>
-        </TouchableOpacity>
-        <Gap width={25} />
-      </ScrollView>
+          <Gap width={15} />
 
-      <View style={styles.contentLastUs}>
-        <Text style={styles.titleTextLastUse}>Terakhir Digunakan</Text>
+          <TouchableOpacity
+            activeOpacity={0.8}
+            style={styles.carBody}
+            onPress={() => navigation.navigate('DetailCarLoan')}>
+            <View style={styles.viewActiveText}>
+              <Text style={styles.textActive}>Tersedia</Text>
+            </View>
+            <Image
+              source={IMG_CAR_PICKUPBLACK}
+              style={styles.imgPickBlack}
+              resizeMethod="resize"
+            />
+            <View style={styles.viewTextCar}>
+              <Text style={styles.textCar}>Pickup hitam</Text>
+              <Icon name="arrow-right-thin" size={20} color={COLORS.black} />
+            </View>
+            <View style={styles.viewNoPlat}>
+              <Text style={styles.textPlat}>KB-2232-RFI</Text>
+            </View>
+            <TouchableOpacity
+              activeOpacity={0.7}
+              style={styles.viewContentRent}
+              onPress={() => navigation.navigate('CreateCarLoan')}>
+              <Text style={styles.textRent}>Pinjam sekarang</Text>
+            </TouchableOpacity>
+          </TouchableOpacity>
+        </ScrollView>
+
         <Gap height={10} />
-        <View style={styles.viewBodyLastUse}>
-          <View>
-            <Text style={styles.txtLastUseNameCar}>Reborn-Car</Text>
-            <Text style={styles.txtDateLastUse}>Jan 12, 2024 - 08,40</Text>
-          </View>
-          <View style={styles.viewTime}>
-            <Text style={styles.txtDateLastUse}>Overtime</Text>
+        <View style={styles.contentLastUs}>
+          <Text style={styles.titleTextLastUse}>Terakhir Digunakan</Text>
+          <Gap height={5} />
+          <View style={styles.viewBodyLastUse}>
+            <View>
+              <Text style={styles.txtLastUseNameCar}>Reborn-Car</Text>
+              <Text style={styles.txtDateLastUse}>Jan 12, 2024 - 08,40</Text>
+            </View>
+            <View style={styles.viewTime}>
+              <Text style={styles.txtDateLastUse}>Overtime</Text>
+            </View>
           </View>
         </View>
+
+        {/* Favorite Cars */}
+        <Gap height={19} />
+        <View style={styles.viewFavorite}>
+          <Text style={styles.titleTextLastUse}>Sering Digunakan</Text>
+          <TouchableOpacity
+            activeOpacity={0.5}
+            onPress={() => navigation.navigate('SeeAllCars')}>
+            <Text style={styles.titleTextSeeAll}>See All</Text>
+          </TouchableOpacity>
+        </View>
+        <Gap height={10} />
+        <ScrollView
+          showsVerticalScrollIndicator={true}
+          style={{
+            flex: 1,
+            marginHorizontal: 10,
+          }}>
+          <View style={styles.viewBodyFavorite}>
+            <View style={styles.ViewFavoriteText}>
+              <Text style={styles.textTitleCar}>Reborn-Car</Text>
+              <Text style={styles.textManual}>4 seat-manual</Text>
+            </View>
+            <Image
+              source={IMG_CAR_REBORN}
+              style={{height: 80, width: 160}}
+              resizeMethod="resize"
+            />
+          </View>
+          <Gap height={10} />
+          <View style={styles.viewBodyFavorite}>
+            <View style={styles.ViewFavoriteText}>
+              <Text style={styles.textTitleCar}>Reborn-Car</Text>
+              <Text style={styles.textManual}>4 seat-manual</Text>
+            </View>
+            <Image
+              source={IMG_CAR_REBORN}
+              style={{height: 80, width: 160}}
+              resizeMethod="resize"
+            />
+          </View>
+          <Gap height={10} />
+          <View style={styles.viewBodyFavorite}>
+            <View style={styles.ViewFavoriteText}>
+              <Text style={styles.textTitleCar}>Reborn-Car</Text>
+              <Text style={styles.textManual}>4 seat-manual</Text>
+            </View>
+            <Image
+              source={IMG_CAR_REBORN}
+              style={{height: 80, width: 160}}
+              resizeMethod="resize"
+            />
+          </View>
+          <Gap height={20} />
+        </ScrollView>
       </View>
-
-      <View style={styles.viewFavorite}>
-        <Text style={styles.titleTextLastUse}>Sering Digunakan</Text>
-        <TouchableOpacity activeOpacity={0.5}>
-          <Text style={styles.titleTextSeeAll}>See All</Text>
-        </TouchableOpacity>
-      </View>
-      <ScrollView
-        showsVerticalScrollIndicator={true}
-        style={{
-          flex: 1,
-          marginHorizontal: 10,
-        }}>
-        <View style={styles.viewBodyFavorite}>
-          <View>
-            <Text style={styles.textTitleCar}>Reborn-Car</Text>
-            <Text style={styles.textManual}>4 seat-manual</Text>
-          </View>
-          <Image
-            source={IMG_CAR_REBORN}
-            style={{height: 80, width: 160}}
-            resizeMethod="resize"
-          />
-        </View>
-        <Gap height={10} />
-        <View style={styles.viewBodyFavorite}>
-          <View>
-            <Text style={styles.textTitleCar}>Reborn-Car</Text>
-            <Text style={styles.textManual}>4 seat-manual</Text>
-          </View>
-          <Image
-            source={IMG_CAR_REBORN}
-            style={{height: 80, width: 160}}
-            resizeMethod="resize"
-          />
-        </View>
-        <Gap height={10} />
-        <View style={styles.viewBodyFavorite}>
-          <View>
-            <Text style={styles.textTitleCar}>Reborn-Car</Text>
-            <Text style={styles.textManual}>4 seat-manual</Text>
-          </View>
-          <Image
-            source={IMG_CAR_REBORN}
-            style={{height: 80, width: 160}}
-            resizeMethod="resize"
-          />
-        </View>
-      </ScrollView>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  viewBodyFavorite: {
+  ViewFavoriteText: {
     marginHorizontal: 10,
+  },
+  ContentView: {
+    flex: 1,
+    backgroundColor: COLORS.white,
+  },
+  viewBodyFavorite: {
     flexDirection: 'row',
-    width: '100%',
-    justifyContent: 'space-between',
     alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: 2,
+    borderRadius: 12,
+    backgroundColor: COLORS.white,
+    elevation: 2,
+    shadowColor: COLORS.black,
+    shadowOffset: {width: 0, height: 2},
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    zIndex: 10,
+    borderWidth: 0.3,
   },
   textManual: {
     color: '#333',
@@ -288,8 +310,7 @@ const styles = StyleSheet.create({
   viewFavorite: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginHorizontal: 19,
-    marginTop: 22,
+    alignItems: 'center',
   },
   viewTime: {
     backgroundColor: COLORS.greenBoy,
@@ -314,11 +335,11 @@ const styles = StyleSheet.create({
   },
   titleTextLastUse: {
     color: COLORS.black,
-    fontSize: DIMENS.xl,
+    fontSize: DIMENS.xxl,
     fontWeight: '500',
   },
   contentLastUs: {
-    marginHorizontal: 10,
+    // marginHorizontal: 10,
   },
   imgErtiga: {
     width: 124,

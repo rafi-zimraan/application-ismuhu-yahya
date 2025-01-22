@@ -2,7 +2,6 @@ import {useIsFocused} from '@react-navigation/native';
 import React, {useEffect, useState} from 'react';
 import {
   ActivityIndicator,
-  Alert,
   ImageBackground,
   Modal,
   RefreshControl,
@@ -14,7 +13,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import {useSelector} from 'react-redux';
+import EncryptedStorage from 'react-native-encrypted-storage';
 import {Gap} from '../../Component';
 import {ICON_DASBOARD} from '../../assets';
 import {
@@ -36,7 +35,6 @@ import {FecthMe} from '../../features/authentication';
 import {COLORS, DIMENS} from '../../utils';
 
 export default function Dasboard({navigation}) {
-  const urlPhotoRedux = useSelector(state => state.auth.url_photo);
   const formatTime = useTime();
   const backgroundImage = useBackgroundImage();
   const welcomeText = useWelcomeMessage();
@@ -45,6 +43,7 @@ export default function Dasboard({navigation}) {
   const [tokenExpired, setTokenExpired] = useState(false);
   const [isModalVisible, setModalVisible] = useState(false);
   const isFocused = useIsFocused();
+  const [photo, setPhoto] = useState(null);
 
   const {
     isOffline,
@@ -61,6 +60,9 @@ export default function Dasboard({navigation}) {
 
   const fetchUserSession = async () => {
     try {
+      const storedPhoto = await EncryptedStorage.getItem('userPhoto');
+      setPhoto(storedPhoto);
+
       const response = await FecthMe();
       if (response.message === 'Silahkan login terlebih dahulu') {
         setTokenExpired(true);
@@ -95,7 +97,7 @@ export default function Dasboard({navigation}) {
           resizeMode="cover">
           <Gap height={18} />
 
-          <HeaderComponent urlPhoto={urlPhotoRedux} welcomeText={welcomeText} />
+          <HeaderComponent urlPhoto={photo} welcomeText={welcomeText} />
 
           {loadingAyat ? (
             <View style={styles.viewLoadingAyat}>
@@ -184,9 +186,7 @@ export default function Dasboard({navigation}) {
               color={COLORS.white}
               backgroundColor={COLORS.goldenOrange}
               iconSize={33}
-              onPress={() => {
-                Alert.alert('Nantikan Fitur nya kawan...');
-              }}
+              onPress={() => navigation.navigate('AmalYaumi')}
             />
           </View>
           <Gap height={15} />
@@ -253,7 +253,7 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     padding: 20,
-    maxHeight: '70%', // Membatasi modal hingga 70% tinggi layar
+    maxHeight: '70%',
   },
   modalTitle: {
     fontSize: DIMENS.xl,
@@ -265,7 +265,7 @@ const styles = StyleSheet.create({
     flexGrow: 1,
   },
   horizontalContainer: {
-    flexDirection: 'row', // Tata letak horizontal
+    flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 15,

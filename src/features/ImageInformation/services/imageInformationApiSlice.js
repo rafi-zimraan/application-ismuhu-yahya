@@ -21,11 +21,11 @@ export const getAllImageInformation = async () => {
       throw new Error('Data tidak ditemukan');
     }
   } catch (error) {
-    if (error.response) {
-      console.log(error.response?.data?.message || 'Terjadi Kesalahan');
-    } else {
-      console.log(error.message);
-    }
+    // if (error.response) {
+    //   console.log(error.response?.data?.message || 'Terjadi Kesalahan');
+    // } else {
+    //   console.log(error.message);
+    // }
     throw error;
   }
 };
@@ -49,7 +49,6 @@ export const addImageInformation = async (idInformation, imageData) => {
     );
 
     if (response.data?.status === true) {
-      console.log('Data berhasil ditambahkan', response.data.message);
       return response.data;
     } else {
       throw new Error(
@@ -57,11 +56,11 @@ export const addImageInformation = async (idInformation, imageData) => {
       );
     }
   } catch (error) {
-    if (error.message) {
-      console.log(error.response?.data?.message || 'Terjadi kesalahan');
-    } else {
-      console.log(error.message);
-    }
+    // if (error.message) {
+    //   console.log(error.response?.data?.message || 'Terjadi kesalahan');
+    // } else {
+    //   console.log(error.message);
+    // }
     throw error;
   }
 };
@@ -80,7 +79,6 @@ export const getAllDetailInformation = async idInformation => {
     });
 
     const data = response.data;
-    console.log('detail data information', data);
 
     if (data) {
       return data;
@@ -88,11 +86,11 @@ export const getAllDetailInformation = async idInformation => {
       throw new Error('Data tidak ditemukan');
     }
   } catch (error) {
-    if (error.response) {
-      console.log(error.response?.data?.message || 'Terjadi kesalahan');
-    } else {
-      console.log(error.message);
-    }
+    // if (error.response) {
+    //   console.log(error.response?.data?.message || 'Terjadi kesalahan');
+    // } else {
+    //   console.log(error.message);
+    // }
     throw error;
   }
 };

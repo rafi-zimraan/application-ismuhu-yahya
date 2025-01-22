@@ -28,7 +28,7 @@ export default function BottomTabs({navigation}) {
       }
       return 0;
     } catch (error) {
-      console.error('Failed to fetch unread notifications:', error);
+      console.log('Failed to fetch unread notifications:', error);
       return 0;
     }
   };
@@ -38,7 +38,7 @@ export default function BottomTabs({navigation}) {
     useCallback(() => {
       const updateUnreadCount = async () => {
         const count = await fetchUnreadCount();
-        setUnreadCount(count); // Perbarui state
+        setUnreadCount(count);
       };
 
       updateUnreadCount();

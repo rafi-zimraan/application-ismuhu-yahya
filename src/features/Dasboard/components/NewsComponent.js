@@ -29,7 +29,7 @@ export default function NewsComponent() {
         const response = await getAllImageInformation();
         setNewsData(response);
       } catch (error) {
-        console.log('Error fetching news data:', error.message);
+        // console.log('Error fetching news data:', error);
       } finally {
         setLoading(false);
       }
@@ -43,7 +43,7 @@ export default function NewsComponent() {
       const detailData = await getAllDetailInformation(id);
       navigation.navigate('DetailNewInformation', {detailData});
     } catch (error) {
-      console.log('Error fetching detail data:', error.message);
+      // console.log('Error fetching detail data:', error.message);
     }
   };
 

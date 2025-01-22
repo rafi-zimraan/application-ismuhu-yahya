@@ -1,6 +1,7 @@
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import React from 'react';
-import {CreateCarLoan, DetailCarLoan} from '../features/CarLoan';
+import {ListAmalYaumi} from '../features/AmalYaumi';
+import {CreateCarLoan, DetailCarLoan, SeeAllCars} from '../features/CarLoan';
 import {DetailNewInformation} from '../features/Dasboard';
 import {
   Complaints,
@@ -19,10 +20,12 @@ import {
   ScannerQrCodeByCategoryAbsensi,
 } from '../features/PresenceEmployee';
 import {
+  CreateCouple,
   CreateExperience,
-  CreateProfile,
+  CreateProfileSpa,
   CreateTraining,
-  DetailDataPribadi,
+  DetailDataCouple,
+  DetailDataProfileSpa,
   DetailExperience,
   DetailTraining,
 } from '../features/Profile';
@@ -64,35 +67,51 @@ export default function Navigator() {
       }}
       initialRouteName={'SplashScreen'}>
       <Stack.Screen name="LibDemo" component={LibDemo} />
+
+      {/* Auth */}
       <Stack.Screen name="Onboarding" component={OnBoarding} />
       <Stack.Screen name="SplashScreen" component={SplashScreen} />
       <Stack.Screen name="SignIn" component={SignIn} />
       <Stack.Screen name="SignUp" component={SignUp} />
+      <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
+      <Stack.Screen name="CheckOtpEmail" component={CheckOtpEmail} />
+      <Stack.Screen name="OtpForgotPassword" component={OtpForgotPassword} />
       <Stack.Screen name="Dasboard" component={BottomTabs} />
+      <Stack.Screen name="TopTabBar" component={TopTapBar} />
+      <Stack.Screen name="BottomTabs" component={BottomTabs} />
+
+      {/* Presensi */}
+      <Stack.Screen name="Presensi" component={Presensi} />
+      <Stack.Screen name="QrCodePresense" component={QrCodePresense} />
+      <Stack.Screen name="QrCodeAdmin" component={QrCodeAdmin} />
       <Stack.Screen
         name="ScannerQrCodeByCategoryAbsensi"
         component={ScannerQrCodeByCategoryAbsensi}
       />
-      <Stack.Screen name="Presensi" component={Presensi} />
-      <Stack.Screen name="Perizinan" component={Perizinan} />
-      <Stack.Screen
-        name="NotificationFromCategory"
-        component={NotificationFromCategory}
-      />
-      <Stack.Screen name="Settings" component={Settings} />
-      <Stack.Screen name="Notification" component={Notification} />
-      <Stack.Screen name="BottomTabs" component={BottomTabs} />
+
+      {/* Profile */}
       <Stack.Screen name="Profile" component={Profile} />
-      <Stack.Screen name="CreateProfile" component={CreateProfile} />
-      <Stack.Screen name="DetailDataPribadi" component={DetailDataPribadi} />
+      <Stack.Screen name="CreateCouple" component={CreateCouple} />
+      <Stack.Screen name="DetailDataCouple" component={DetailDataCouple} />
       <Stack.Screen name="DetailTraining" component={DetailTraining} />
       <Stack.Screen name="CreateTraining" component={CreateTraining} />
       <Stack.Screen name="DetailExperience" component={DetailExperience} />
       <Stack.Screen name="CreateExperience" component={CreateExperience} />
+      <Stack.Screen
+        name="DetailDataProfileSpa"
+        component={DetailDataProfileSpa}
+      />
+      <Stack.Screen name="CreateProfileSpa" component={CreateProfileSpa} />
+
+      {/* Setting  */}
+      <Stack.Screen name="Settings" component={Settings} />
       <Stack.Screen name="PrivasiSetting" component={PrivasiSetting} />
       <Stack.Screen name="AboutApplication" component={AboutApplication} />
       <Stack.Screen name="HelpSetting" component={HelpSetting} />
       <Stack.Screen name="ChangePassword" component={ChangePassword} />
+
+      {/* Perizinan */}
+      <Stack.Screen name="Perizinan" component={Perizinan} />
       <Stack.Screen
         name="CreateFormulirPerizinan"
         component={CreateFormulirPerizinan}
@@ -106,20 +125,27 @@ export default function Navigator() {
         component={EditFormulirPerizinan}
       />
 
+      {/* Notification */}
+      <Stack.Screen name="Notification" component={Notification} />
       <Stack.Screen name="NotificationDetail" component={NotificationDetail} />
-      <Stack.Screen name="QrCodePresense" component={QrCodePresense} />
-      <Stack.Screen name="QrCodeAdmin" component={QrCodeAdmin} />
-      <Stack.Screen name="TopTabBar" component={TopTapBar} />
+      <Stack.Screen
+        name="NotificationFromCategory"
+        component={NotificationFromCategory}
+      />
+
+      {/* News Images */}
       <Stack.Screen
         name="DetailNewInformation"
         component={DetailNewInformation}
       />
-      <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
-      <Stack.Screen name="CheckOtpEmail" component={CheckOtpEmail} />
-      <Stack.Screen name="OtpForgotPassword" component={OtpForgotPassword} />
+
+      {/* Car Loan */}
       <Stack.Screen name="CarLoan" component={CarLoan} />
       <Stack.Screen name="DetailCarLoan" component={DetailCarLoan} />
       <Stack.Screen name="CreateCarLoan" component={CreateCarLoan} />
+      <Stack.Screen name="SeeAllCars" component={SeeAllCars} />
+
+      {/* Facility Complaint */}
       <Stack.Screen name="FacilityComplaint" component={FacilityComplaint} />
       <Stack.Screen name="Complaints" component={Complaints} />
       <Stack.Screen
@@ -134,7 +160,10 @@ export default function Navigator() {
         name="CreateFacilityComplaint"
         component={CreateFacilityComplaint}
       />
+
+      {/* Amal Yaumi */}
       <Stack.Screen name="AmalYaumi" component={AmalYaumi} />
+      <Stack.Screen name="ListAmalYaumi" component={ListAmalYaumi} />
     </Stack.Navigator>
   );
 }

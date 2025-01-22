@@ -60,11 +60,13 @@ export default function CreateExperience({navigation}) {
   return (
     <View style={{flex: 1}}>
       <Background />
-      <HeaderTransparent
-        title="Create Experience"
-        icon="arrow-left-circle-outline"
-        onPress={() => navigation.goBack()}
-      />
+      <View style={styles.headerWrapper}>
+        <HeaderTransparent
+          title="Tambah Data Pengalaman"
+          icon="arrow-left-circle-outline"
+          onPress={() => navigation.goBack()}
+        />
+      </View>
       <View style={styles.container}>
         <Gap height={15} />
         <ScrollView
@@ -119,7 +121,7 @@ export default function CreateExperience({navigation}) {
           </View>
           <Gap height={15} />
           <ButtonAction
-            title="Save"
+            title="Simpan"
             backgroundColor={COLORS.goldenOrange}
             loading={isLoading}
             color={COLORS.white}
@@ -135,12 +137,21 @@ export default function CreateExperience({navigation}) {
         title="Pengalaman Berhasil Ditambahkan"
         description="Data pengalaman kerja Anda berhasil ditambahkan!"
         buttonSubmit={() => navigation.goBack()}
+        buttonTitle="OK"
       />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
+  headerWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 10,
+    backgroundColor: COLORS.goldenOrange,
+    elevation: 3,
+  },
   container: {
     flex: 1,
     paddingHorizontal: 24,

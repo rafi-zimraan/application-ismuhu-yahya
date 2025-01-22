@@ -87,7 +87,6 @@ export const logout = async (navigation, dispatch) => {
     }
 
     const response = await api.post('/mobile/logout');
-    console.log('RESPONSE logout:', response.data);
 
     if (response.data.status === true) {
       await EncryptedStorage.removeItem('token');

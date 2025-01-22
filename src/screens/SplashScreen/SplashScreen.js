@@ -5,6 +5,7 @@ import {
   SafeAreaView,
   StatusBar,
   StyleSheet,
+  ToastAndroid,
   View,
 } from 'react-native';
 import EncryptedStorage from 'react-native-encrypted-storage';
@@ -23,18 +24,19 @@ export default function SplashScreen({navigation}) {
         const onboarding = await EncryptedStorage.getItem('is_boarding');
         setTimeout(() => {
           if (storedCredential) {
-            console.log('tokenlogin', storedCredential);
             navigation.replace('Dasboard');
           } else if (!onboarding) {
-            console.log('onboarding', onboarding);
             navigation.replace('Onboarding');
           } else {
-            console.log('No token, but onboarding completed');
             navigation.replace('SignIn');
           }
         }, 2000);
       } catch (error) {
         console.log('error masbro', error);
+        ToastAndroid.show(
+          'Terjadi kesalahan saat di Splashscreen',
+          ToastAndroid.SHORT,
+        );
       }
     }
     statusUserChecking();

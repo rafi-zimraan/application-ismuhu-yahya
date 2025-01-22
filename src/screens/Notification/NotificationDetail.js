@@ -36,7 +36,7 @@ export default function NotificationDetail({route, navigation}) {
       const updatedDetail = initialDetail;
       setNotificationDetail(updatedDetail);
     } catch (error) {
-      console.error('Failed to fetch notification detail:', error);
+      console.log('Failed to fetch notification detail:', error);
     } finally {
       setLoading(false);
       setRefreshing(false);
@@ -84,7 +84,7 @@ export default function NotificationDetail({route, navigation}) {
 
       setSuccessModalVisible(true);
     } catch (error) {
-      console.error('Error updating approval:', error);
+      console.log('Error updating approval:', error);
       setModalData({
         title: 'Error',
         description:

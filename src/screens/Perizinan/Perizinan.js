@@ -88,7 +88,7 @@ export default function Perizinan({navigation}) {
         setDataCuti([]);
       }
     } catch (error) {
-      console.error('Error fetching data: ', error);
+      console.log('Error fetching perizinan', error);
     } finally {
       setLoading(false);
     }
@@ -133,7 +133,7 @@ export default function Perizinan({navigation}) {
         setDataExitPermit([]);
       }
     } catch (error) {
-      console.error('Error fetching exit permit data: ', error);
+      console.log('Error fetching exit permit data: ', error);
     } finally {
       setLoading(false);
     }
@@ -193,7 +193,7 @@ export default function Perizinan({navigation}) {
         ToastAndroid.show('Data tidak ditemukan.', ToastAndroid.SHORT);
       }
     } catch (error) {
-      console.error('Error deleting data:', error);
+      console.log('Error deleting data:', error);
     } finally {
       setIsDelete(false);
     }

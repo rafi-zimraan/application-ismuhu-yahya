@@ -68,7 +68,7 @@ export default function EditFormulirPerizinan({navigation, route}) {
           setDepartmentName(department.data?.name);
         }
       } catch (error) {
-        console.error('Error fetching division or department:', error);
+        console.log('Error fetching division or department:', error);
       } finally {
         setLoading(false);
       }
@@ -134,7 +134,7 @@ export default function EditFormulirPerizinan({navigation, route}) {
         ToastAndroid.show(response.message, ToastAndroid.SHORT);
       }
     } catch (error) {
-      console.error('Error updating perizinan:', error);
+      console.log('Error updating perizinan:', error);
     } finally {
       setLoading(false);
     }

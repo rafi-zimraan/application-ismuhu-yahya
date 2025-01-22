@@ -29,7 +29,6 @@ export const apiChangePassword = async (password, passwordConfirmation) => {
     );
 
     if (response.data?.status === true) {
-      console.log('Password berhasil diubah:', response.data?.message);
       return response.data;
     } else {
       throw new Error(response.data?.message || 'Gagal mengubah password');

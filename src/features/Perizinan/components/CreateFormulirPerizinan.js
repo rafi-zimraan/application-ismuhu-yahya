@@ -51,7 +51,7 @@ export default function CreateFormulirPerizinan({navigation, route}) {
         setDepartmentName(departments?.data?.data?.[0]?.name);
         setDepartmentId(departments?.data?.data?.[0]?.id);
       } catch (error) {
-        console.error('Error fetching divisions or departments:', error);
+        console.log('Error fetching divisions or departments:', error);
       } finally {
         setLoadingDivision(false);
         setLoadingDepartment(false);
@@ -116,7 +116,7 @@ export default function CreateFormulirPerizinan({navigation, route}) {
     const fetchUserSession = async () => {
       try {
         const response = await FecthMe();
-        if (response.message === 'Silahkan login terlebih dahulu') {
+        if (response.data.message === 'Silahkan login terlebih dahulu') {
           setTokenExpired(true);
         }
       } catch (e) {
@@ -132,11 +132,13 @@ export default function CreateFormulirPerizinan({navigation, route}) {
     <SafeAreaView style={{flex: 1}}>
       <StatusBar barStyle="default" backgroundColor="transparent" />
       <Background />
-      <HeaderTransparent
-        title="Perizinan Cuti"
-        icon="arrow-left-circle-outline"
-        onPress={() => navigation.goBack()}
-      />
+      <View style={styles.headerWrapper}>
+        <HeaderTransparent
+          title="Perizinan Cuti"
+          icon="arrow-left-circle-outline"
+          onPress={() => navigation.goBack()}
+        />
+      </View>
 
       <AlertWarning show={showWarning} message={warningMessage} />
       <ScrollView contentContainerStyle={styles.scrollContainer}>
@@ -226,6 +228,14 @@ export default function CreateFormulirPerizinan({navigation, route}) {
 }
 
 const styles = StyleSheet.create({
+  headerWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 10,
+    backgroundColor: COLORS.goldenOrange,
+    elevation: 3,
+  },
   scrollContainer: {
     paddingBottom: 20,
   },

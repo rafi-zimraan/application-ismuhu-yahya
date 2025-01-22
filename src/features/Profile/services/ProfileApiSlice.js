@@ -16,7 +16,7 @@ export const getCoupleData = async id_user => {
 
     return response.data || [];
   } catch (error) {
-    console.error(error.response?.data?.message || error.message);
+    console.log(error.response?.data?.message || error.message);
     throw error;
   }
 };
@@ -33,10 +33,9 @@ export const addCouple = async (id_user, data) => {
       },
     });
 
-    console.log('response', response.data);
     return response.data;
   } catch (error) {
-    console.error(error.response?.data?.message || error.message);
+    console.log(error.response?.data?.message || error.message);
     throw error;
   }
 };
@@ -55,7 +54,7 @@ export const updateCouple = async (id_couple, data) => {
 
     return response.data;
   } catch (error) {
-    console.error(error.response?.data?.message || error.message);
+    console.log(error.response?.data?.message || error.message);
     throw error;
   }
 };
@@ -79,7 +78,7 @@ export const deleteCouple = async id_couple => {
       throw new Error('Gagal menghapus notifikasi');
     }
   } catch (error) {
-    console.error(error.response?.data?.message || error.message);
+    console.log(error.response?.data?.message || error.message);
     throw error;
   }
 };
@@ -99,7 +98,7 @@ export const getTrainingData = async id_user => {
 
     return response.data || [];
   } catch (error) {
-    console.error(error.response?.data?.message || error.message);
+    console.log(error.response?.data?.message || error.message);
     throw error;
   }
 };
@@ -118,7 +117,7 @@ export const addTraining = async (id_user, data) => {
 
     return response.data;
   } catch (error) {
-    console.error(error.response?.data?.message || error.message);
+    console.log(error.response?.data?.message || error.message);
     throw error;
   }
 };
@@ -137,7 +136,7 @@ export const updateTraining = async (id_training, data) => {
 
     return response.data;
   } catch (error) {
-    console.error(error.response?.data?.message || error.message);
+    console.log(error.response?.data?.message || error.message);
     throw error;
   }
 };
@@ -161,7 +160,7 @@ export const deleteTraining = async id_training => {
       throw new Error('Gagal menghapus notifikasi');
     }
   } catch (error) {
-    console.error(error.response?.data?.message || error.message);
+    console.log(error.response?.data?.message || error.message);
     throw error;
   }
 };
@@ -181,7 +180,7 @@ export const getExperienceData = async id_user => {
 
     return response.data || [];
   } catch (error) {
-    console.error(error.response?.data?.message || error.message);
+    console.log(error.response?.data?.message || error.message);
     throw error;
   }
 };
@@ -200,7 +199,7 @@ export const addExperience = async (id_user, data) => {
 
     return response.data;
   } catch (error) {
-    console.error(error.response?.data?.message || error.message);
+    console.log(error.response?.data?.message || error.message);
     throw error;
   }
 };
@@ -223,7 +222,7 @@ export const updateExperience = async (id_experience, data) => {
 
     return response.data;
   } catch (error) {
-    console.error(error.response?.data?.message || error.message);
+    console.log(error.response?.data?.message || error.message);
     throw error;
   }
 };
@@ -247,7 +246,39 @@ export const deleteExperience = async id_experience => {
       throw new Error('Gagal menghapus notifikasi');
     }
   } catch (error) {
-    console.error(error.response?.data?.message || error.message);
+    console.log(error.response?.data?.message || error.message);
+    throw error;
+  }
+};
+
+// Upload Photo API
+export const uploadPhotoProfile = async (id_user, photo) => {
+  try {
+    const token = await EncryptedStorage.getItem('token');
+    if (!token)
+      throw new Error('Token expired, silahkan login terlebih dahulu');
+
+    const formData = new FormData();
+    formData.append('photo', {
+      uri: photo.uri,
+      name: photo.name || 'profile.jpg',
+      type: photo.type || 'image/jpeg',
+    });
+
+    const response = await api.post(
+      `mobile/upload-photo/user/${id_user}`,
+      formData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          Authorization: `Bearer ${JSON.parse(token)}`,
+        },
+      },
+    );
+
+    return response.data;
+  } catch (error) {
+    console.log(error.response?.data?.message || error.message);
     throw error;
   }
 };

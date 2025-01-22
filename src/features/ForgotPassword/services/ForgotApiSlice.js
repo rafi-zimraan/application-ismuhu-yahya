@@ -6,10 +6,7 @@ export const sendVerificationEmail = async email => {
       email,
     });
 
-    console.log('RESPONSE SEND EMAIL:', response.data);
-
     if (response.data?.status) {
-      console.log(response.data?.message);
       return response.data;
     } else {
       throw new Error(
@@ -19,7 +16,7 @@ export const sendVerificationEmail = async email => {
   } catch (error) {
     if (error.response) {
       const errorMessage = error.response?.data?.message || 'Terjadi kesalahan';
-      console.log('ERROR MESSAGE SEND EMAIL:', errorMessage);
+      console.log(errorMessage);
     } else {
       console.log('ERROR CODE:', error.message);
     }
@@ -35,10 +32,7 @@ export const verifyOtpCode = async (email, code) => {
       code,
     });
 
-    console.log('RESPONSE VERIFY OTP:', response.data);
-
     if (response.data?.status) {
-      console.log(response.data?.message);
       return response.data;
     } else {
       throw new Error(response.data?.message || 'Kode OTP tidak valid!');
@@ -46,7 +40,6 @@ export const verifyOtpCode = async (email, code) => {
   } catch (error) {
     if (error.response) {
       const errorMessage = error.response?.data?.message || 'Terjadi kesalahan';
-      console.log('ERROR MESSAGE VERIFY OTP:', errorMessage);
     } else {
       console.log('ERROR CODE:', error.message);
     }

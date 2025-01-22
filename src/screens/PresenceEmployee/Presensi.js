@@ -35,10 +35,6 @@ export default function Perizinan({navigation}) {
         const savedPermissions = await EncryptedStorage.getItem('permissions');
         if (savedPermissions) {
           const parsedPermissions = JSON.parse(savedPermissions);
-          console.log(
-            'Permissions loaded from EncryptedStorage:',
-            parsedPermissions,
-          );
           dispatch(setUserSession({permissions: parsedPermissions}));
         }
       } catch (error) {
@@ -58,7 +54,6 @@ export default function Perizinan({navigation}) {
           'permissions',
           JSON.stringify(permissions),
         );
-        console.log('Permissions saved to EncryptedStorage');
       } catch (error) {
         console.log('Error saving permissions:', error);
       }
@@ -76,7 +71,6 @@ export default function Perizinan({navigation}) {
         const savedPermissions = await EncryptedStorage.getItem('permissions');
         if (savedPermissions) {
           const parsedPermissions = JSON.parse(savedPermissions);
-          console.log('Permissions refreshed:', parsedPermissions);
           dispatch(setUserSession({permissions: parsedPermissions}));
         }
       } catch (error) {

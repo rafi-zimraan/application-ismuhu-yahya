@@ -43,7 +43,6 @@ export default function UpdateFacilityComplaint({navigation, route}) {
       try {
         setLoading(true);
         const response = await getSuggestionDetail(id);
-        console.log('data', response.data);
         if (response?.data) {
           const data = response.data;
           setName(data.name || '');
@@ -117,12 +116,10 @@ export default function UpdateFacilityComplaint({navigation, route}) {
   };
 
   const removeImage = async imageId => {
-    console.log('Image ID to delete:', imageId);
     if (imageId) {
       try {
         setLoading(true);
         const response = await deleteSuggestionFile(imageId);
-        console.log('delete file', response);
         if (response?.status === true) {
           setImage(prevImages => prevImages.filter(img => img.id !== imageId));
 

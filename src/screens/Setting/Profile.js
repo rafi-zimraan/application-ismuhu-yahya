@@ -1,15 +1,20 @@
 import {useFocusEffect} from '@react-navigation/native';
 import React, {useState} from 'react';
 import {
+  Alert,
   Animated,
+  Image,
+  PermissionsAndroid,
   RefreshControl,
   ScrollView,
   StyleSheet,
   Text,
+  ToastAndroid,
   TouchableOpacity,
   View,
 } from 'react-native';
 import EncryptedStorage from 'react-native-encrypted-storage';
+import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import LinearGradient from 'react-native-linear-gradient';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {
@@ -25,6 +30,7 @@ import {
   getCoupleData,
   getExperienceData,
   getTrainingData,
+  uploadPhotoProfile,
 } from '../../features/Profile';
 import {COLORS, DIMENS} from '../../utils';
 
@@ -34,12 +40,72 @@ export default function Profile({navigation}) {
   const [tokenExpired, setTokenExpired] = useState(false);
   const [coupleData, setCoupleData] = useState([]);
   const [userName, setUserName] = useState('');
-  const [email, setEmail] = useState('');
   const [photo, setPhoto] = useState(null);
   const [refreshing, setRefreshing] = useState(false);
   const [modalLoadingVisible, setModalLoadingVisible] = useState(true);
   const [trainingData, setTrainingData] = useState([]);
   const [experienceData, setExperienceData] = useState([]);
+
+  const handleImageResponse = async response => {
+    if (!response.didCancel && response.assets) {
+      const {uri, fileName, type} = response.assets[0];
+
+      const selectedImage = {
+        uri,
+        name: fileName,
+        type: type,
+      };
+
+      try {
+        const userId = JSON.parse(await EncryptedStorage.getItem('idUser'));
+        const uploadResponse = await uploadPhotoProfile(userId, selectedImage);
+
+        if (uploadResponse?.status) {
+          ToastAndroid.show('Suksses Upload Profile', ToastAndroid.SHORT);
+          await EncryptedStorage.setItem('userPhoto', selectedImage.uri);
+          setPhoto(selectedImage.uri);
+        } else {
+          ToastAndroid.show('Gagal mengunggah foto profil', ToastAndroid.SHORT);
+        }
+      } catch (error) {
+        console.log('Error uploading photo:', error);
+        ToastAndroid.show('Gagal mengunggah foto profil', ToastAndroid.SHORT);
+      }
+    } else {
+      ToastAndroid.show('Gambar tidak dipilih', ToastAndroid.SHORT);
+    }
+  };
+
+  const handleImagePicker = () => {
+    const options = {quality: 0.5, mediaType: 'photo'};
+    Alert.alert(
+      'Ambil gambar dari...',
+      '',
+      [
+        {
+          text: 'Camera',
+          onPress: async () => {
+            const granted = await PermissionsAndroid.request(
+              PermissionsAndroid.PERMISSIONS.CAMERA,
+            );
+            if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+              launchCamera(options, handleImageResponse);
+            } else {
+              ToastAndroid.show(
+                'Izin kamera tidak diberikan',
+                ToastAndroid.SHORT,
+              );
+            }
+          },
+        },
+        {
+          text: 'Gallery',
+          onPress: () => launchImageLibrary(options, handleImageResponse),
+        },
+      ],
+      {cancelable: true},
+    );
+  };
 
   const loadData = async (showLoading = true) => {
     if (showLoading) {
@@ -47,6 +113,11 @@ export default function Profile({navigation}) {
     }
 
     try {
+      const storedPhoto = await EncryptedStorage.getItem('userPhoto');
+      if (storedPhoto) {
+        setPhoto(storedPhoto);
+      }
+
       const userId = JSON.parse(await EncryptedStorage.getItem('idUser'));
       const userSession = JSON.parse(
         await EncryptedStorage.getItem('user_sesion'),
@@ -86,9 +157,7 @@ export default function Profile({navigation}) {
       }
 
       if (coupleDataResponse?.status && coupleDataResponse?.data) {
-        const {user, couples, photo: userPhoto} = coupleDataResponse.data;
-        setEmail(user?.email || 'N/A');
-        setPhoto(userPhoto);
+        const {couples} = coupleDataResponse.data;
 
         if (Array.isArray(couples)) {
           setCoupleData(couples);
@@ -111,7 +180,7 @@ export default function Profile({navigation}) {
         setExperienceData([]);
       }
     } catch (error) {
-      console.error('Error fetching data:', error);
+      console.log('Error fetching data:', error);
     } finally {
       if (showLoading) {
         setModalLoadingVisible(false);
@@ -130,7 +199,7 @@ export default function Profile({navigation}) {
     try {
       await loadData(false);
     } catch (error) {
-      console.error('Error during refresh:', error);
+      console.log('Error during refresh:', error);
     } finally {
       setRefreshing(false);
     }
@@ -162,17 +231,20 @@ export default function Profile({navigation}) {
           onPress={() => navigation.goBack()}
         />
         <View style={{alignItems: 'center', justifyContent: 'center'}}>
-          {photo ? (
-            <Animated.Image
-              source={{uri: photo}}
-              style={[
-                styles.profileImage,
-                {width: profileImageSize, height: profileImageSize},
-              ]}
-            />
-          ) : (
-            <Icon name="account-circle" size={85} color={COLORS.black} />
-          )}
+          <TouchableOpacity activeOpacity={0.7} onPress={handleImagePicker}>
+            {photo ? (
+              <Image source={{uri: photo}} style={styles.profileImage} />
+            ) : (
+              <View style={styles.placeholderImage}>
+                <Icon name="account" size={40} color="#bbb" />
+              </View>
+            )}
+            <TouchableOpacity
+              style={styles.editButton}
+              onPress={handleImagePicker}>
+              <Icon name="camera" size={15} color="#fff" />
+            </TouchableOpacity>
+          </TouchableOpacity>
           <Text style={styles.name}>{coupleData[0]?.name_couple || ' - '}</Text>
           <Text style={styles.division}>{divisionName || '-'}</Text>
           <Text style={styles.department}>{departmentName || '-'}</Text>
@@ -194,15 +266,14 @@ export default function Profile({navigation}) {
           {useNativeDriver: false},
         )}
         scrollEventThrottle={15}>
-        {/* Data Pribadi */}
-        <TouchableOpacity
+        {/* Data SPA */}
+        {/* <TouchableOpacity
           activeOpacity={0.9}
           style={styles.contentCouple}
           onPress={() => {
             if (coupleData.length > 0) {
-              navigation.navigate('DetailDataPribadi', {
+              navigation.navigate('DetailDataProfileSpa', {
                 data: coupleData[0],
-                email: email,
               });
             }
           }}>
@@ -211,27 +282,41 @@ export default function Profile({navigation}) {
             coupleData.map((couple, index) => (
               <View key={index}>
                 <View style={styles.section}>
-                  <Icon name="email" size={24} color="#666" />
+                  <Icon
+                    name="human-female"
+                    size={24}
+                    color={COLORS.goldenOrange}
+                  />
                   <View style={styles.viewContainerText}>
-                    <Text style={styles.textLabels}>Email</Text>
-                    <Text style={styles.TextDatas}>{email || '-'}</Text>
-                  </View>
-                </View>
-                <View style={styles.section}>
-                  <Icon name="account" size={24} color="#666" />
-                  <View style={styles.sectionTextContainer}>
                     <Text style={styles.textLabels}>Username</Text>
-                    <Text style={styles.sectionTitle}>
+                    <Text style={styles.TextDatas}>
                       {couple.name_couple || '-'}
                     </Text>
                   </View>
                 </View>
                 <View style={styles.section}>
-                  <Icon name="map-marker" size={24} color="#666" />
+                  <Icon
+                    name="map-marker"
+                    size={24}
+                    color={COLORS.goldenOrange}
+                  />
                   <View style={styles.sectionTextContainer}>
-                    <Text style={styles.textLabels}>Domisili</Text>
+                    <Text style={styles.textLabels}>email</Text>
                     <Text style={styles.sectionTitle}>
                       {couple.couple_domisili || '-'}
+                    </Text>
+                  </View>
+                </View>
+                <View style={styles.section}>
+                  <Icon
+                    name="account-child"
+                    size={24}
+                    color={COLORS.goldenOrange}
+                  />
+                  <View style={styles.sectionTextContainer}>
+                    <Text style={styles.textLabels}>address</Text>
+                    <Text style={styles.sectionTitle}>
+                      {couple.children || '-'}
                     </Text>
                   </View>
                 </View>
@@ -240,12 +325,85 @@ export default function Profile({navigation}) {
           ) : (
             <View>
               <Text style={styles.sectionSubtitle}>
-                Data pribadi tidak tersedia.
+                Data spa tidak tersedia.
               </Text>
               <TouchableOpacity
                 style={styles.createButton}
                 activeOpacity={0.7}
-                onPress={() => navigation.navigate('CreateProfile')}>
+                onPress={() => navigation.navigate('CreateProfileSpa')}>
+                <Icon name="plus-circle" size={25} color={COLORS.black} />
+              </TouchableOpacity>
+            </View>
+          )}
+        </TouchableOpacity>
+
+        <Gap height={15} /> */}
+
+        {/* Data Couple */}
+        <TouchableOpacity
+          activeOpacity={0.9}
+          style={styles.contentCouple}
+          onPress={() => {
+            if (coupleData.length > 0) {
+              navigation.navigate('DetailDataCouple', {
+                data: coupleData[0],
+              });
+            }
+          }}>
+          <Text style={styles.sectionHeader}>Data Pasangan</Text>
+          {coupleData.length > 0 ? (
+            coupleData.map((couple, index) => (
+              <View key={index}>
+                <View style={styles.section}>
+                  <Icon
+                    name="human-female"
+                    size={24}
+                    color={COLORS.goldenOrange}
+                  />
+                  <View style={styles.viewContainerText}>
+                    <Text style={styles.textLabels}>Nama Pasangan</Text>
+                    <Text style={styles.TextDatas}>
+                      {couple.name_couple || '-'}
+                    </Text>
+                  </View>
+                </View>
+                <View style={styles.section}>
+                  <Icon
+                    name="map-marker"
+                    size={24}
+                    color={COLORS.goldenOrange}
+                  />
+                  <View style={styles.sectionTextContainer}>
+                    <Text style={styles.textLabels}>Domisili</Text>
+                    <Text style={styles.sectionTitle}>
+                      {couple.couple_domisili || '-'}
+                    </Text>
+                  </View>
+                </View>
+                <View style={styles.section}>
+                  <Icon
+                    name="account-child"
+                    size={24}
+                    color={COLORS.goldenOrange}
+                  />
+                  <View style={styles.sectionTextContainer}>
+                    <Text style={styles.textLabels}>Jumlah Anak</Text>
+                    <Text style={styles.sectionTitle}>
+                      {couple.children || '-'}
+                    </Text>
+                  </View>
+                </View>
+              </View>
+            ))
+          ) : (
+            <View>
+              <Text style={styles.sectionSubtitle}>
+                Data pasangan tidak tersedia.
+              </Text>
+              <TouchableOpacity
+                style={styles.createButton}
+                activeOpacity={0.7}
+                onPress={() => navigation.navigate('CreateCouple')}>
                 <Icon name="plus-circle" size={25} color={COLORS.black} />
               </TouchableOpacity>
             </View>
@@ -280,7 +438,7 @@ export default function Profile({navigation}) {
                   }`}</Text>
                 </View>
                 <View style={styles.section}>
-                  <Icon name="book" size={24} color="#666" />
+                  <Icon name="book" size={24} color={COLORS.goldenOrange} />
                   <View style={styles.viewContainerText}>
                     <Text style={styles.textLabels}>Judul</Text>
                     <Text style={styles.TextDatas}>
@@ -289,14 +447,14 @@ export default function Profile({navigation}) {
                   </View>
                 </View>
                 <View style={styles.section}>
-                  <Icon name="calendar" size={24} color="#666" />
+                  <Icon name="calendar" size={24} color={COLORS.goldenOrange} />
                   <View style={styles.viewContainerText}>
                     <Text style={styles.textLabels}>Tanggal</Text>
                     <Text style={styles.TextDatas}>{training.date || '-'}</Text>
                   </View>
                 </View>
                 <View style={styles.section}>
-                  <Icon name="tag" size={24} color="#666" />
+                  <Icon name="tag" size={24} color={COLORS.goldenOrange} />
                   <View style={styles.viewContainerText}>
                     <Text style={styles.textLabels}>Kategory</Text>
                     <Text style={styles.TextDatas}>
@@ -349,7 +507,11 @@ export default function Profile({navigation}) {
                   }`}</Text>
                 </View>
                 <View style={styles.section}>
-                  <Icon name="office-building" size={24} color="#666" />
+                  <Icon
+                    name="office-building"
+                    size={24}
+                    color={COLORS.goldenOrange}
+                  />
                   <View style={styles.viewContainerText}>
                     <Text style={styles.textLabels}>Perusahaan</Text>
                     <Text style={styles.TextDatas}>
@@ -358,7 +520,7 @@ export default function Profile({navigation}) {
                   </View>
                 </View>
                 <View style={styles.section}>
-                  <Icon name="timer" size={24} color="#666" />
+                  <Icon name="timer" size={24} color={COLORS.goldenOrange} />
                   <View style={styles.viewContainerText}>
                     <Text style={styles.textLabels}>Lama Bekerja</Text>
                     <Text style={styles.TextDatas}>
@@ -369,7 +531,7 @@ export default function Profile({navigation}) {
                   </View>
                 </View>
                 <View style={styles.section}>
-                  <Icon name="account" size={24} color="#666" />
+                  <Icon name="account" size={24} color={COLORS.goldenOrange} />
                   <View style={styles.viewContainerText}>
                     <Text style={styles.textLabels}>Posisi</Text>
                     <Text style={styles.TextDatas}>
@@ -413,6 +575,29 @@ export default function Profile({navigation}) {
 }
 
 const styles = StyleSheet.create({
+  editButton: {
+    position: 'absolute',
+    bottom: 0,
+    right: 5,
+    backgroundColor: COLORS.goldenOrange,
+    borderRadius: 20,
+    padding: 5,
+  },
+  placeholderImage: {
+    width: 90,
+    height: 90,
+    borderRadius: 65,
+    backgroundColor: '#e1e1e1',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  profileImage: {
+    width: 100,
+    height: 97,
+    borderRadius: 65,
+    borderWidth: 2,
+    borderColor: COLORS.white,
+  },
   addButton: {
     position: 'absolute',
     top: 10,
@@ -493,17 +678,12 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 10,
     elevation: 5,
-    height: 265,
+    height: 272,
   },
   gradientBackground: {
     ...StyleSheet.absoluteFillObject,
   },
-  profileImage: {
-    borderRadius: 60,
-    borderWidth: 4,
-    borderColor: 'white',
-    marginTop: 30,
-  },
+
   headerTransparent: {
     position: 'relative',
     left: 20,

@@ -15,7 +15,7 @@ export default function CheckOtpEmail({route}) {
         navigation.navigate('OtpForgotPassword', {email});
       })
       .catch(err => {
-        console.error('Gagal membuka aplikasi email:', err);
+        console.log('Gagal membuka aplikasi email:', err);
         ToastAndroid.show(
           'Gagal membuka aplikasi email. Silakan buka secara manual.',
           ToastAndroid.SHORT,

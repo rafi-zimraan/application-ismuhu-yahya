@@ -44,7 +44,7 @@ export default function DetailTraining({route, navigation}) {
       ToastAndroid.show('Data berhasil diperbarui!', ToastAndroid.SHORT);
       setEditModalVisible(false);
     } catch (error) {
-      console.error('Error updating training:', error.message);
+      console.log('Error updating training:', error.message);
     } finally {
       setIsLoading(false);
     }
@@ -54,10 +54,11 @@ export default function DetailTraining({route, navigation}) {
     setIsLoading(true);
     try {
       await deleteTraining(data.id);
+
       setIsDeleted(true);
       setDeleteModalVisible(false);
     } catch (error) {
-      console.error('Error deleting training:', error.message);
+      console.log('Error deleting training:', error.message);
     } finally {
       setIsLoading(false);
     }
@@ -68,7 +69,7 @@ export default function DetailTraining({route, navigation}) {
     try {
       console.log('Data refreshed');
     } catch (error) {
-      console.error('Error during refresh:', error);
+      console.log('Error during refresh:', error);
     } finally {
       setRefreshing(false);
     }
@@ -78,11 +79,13 @@ export default function DetailTraining({route, navigation}) {
     <View style={{flex: 1}}>
       <StatusBar barStyle="default" backgroundColor="transparent" />
       <Background />
-      <HeaderTransparent
-        title="Detail Training"
-        icon="arrow-left-circle-outline"
-        onPress={() => navigation.goBack()}
-      />
+      <View style={styles.headerWrapper}>
+        <HeaderTransparent
+          title="Detail Training"
+          icon="arrow-left-circle-outline"
+          onPress={() => navigation.goBack()}
+        />
+      </View>
       <ScrollView
         refreshControl={
           <RefreshControl
@@ -98,21 +101,21 @@ export default function DetailTraining({route, navigation}) {
               <View style={styles.content}>
                 <Text style={styles.title}>Detail Training</Text>
                 <View style={styles.section}>
-                  <Icon name="book" size={24} color="#666" />
+                  <Icon name="book" size={24} color={COLORS.goldenOrange} />
                   <View style={styles.viewContentText}>
                     <Text style={styles.textTitle}>Title</Text>
                     <Text style={styles.label}>{editedData.title || '-'}</Text>
                   </View>
                 </View>
                 <View style={styles.section}>
-                  <Icon name="calendar" size={24} color="#666" />
+                  <Icon name="calendar" size={24} color={COLORS.goldenOrange} />
                   <View style={styles.viewContentText}>
                     <Text style={styles.textTitle}>Date</Text>
                     <Text style={styles.label}>{editedData.date || '-'}</Text>
                   </View>
                 </View>
                 <View style={styles.section}>
-                  <Icon name="tag" size={24} color="#666" />
+                  <Icon name="tag" size={24} color={COLORS.goldenOrange} />
                   <View style={styles.viewContentText}>
                     <Text style={styles.textTitle}>Category</Text>
                     <Text style={styles.label}>
@@ -121,7 +124,11 @@ export default function DetailTraining({route, navigation}) {
                   </View>
                 </View>
                 <View style={styles.section}>
-                  <Icon name="information-outline" size={24} color="#666" />
+                  <Icon
+                    name="information-outline"
+                    size={24}
+                    color={COLORS.goldenOrange}
+                  />
                   <View style={styles.viewContentText}>
                     <Text style={styles.textTitle}>Description</Text>
                     <Text style={styles.label}>{editedData.desc || '-'}</Text>
@@ -223,6 +230,14 @@ export default function DetailTraining({route, navigation}) {
 }
 
 const styles = StyleSheet.create({
+  headerWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 10,
+    backgroundColor: COLORS.goldenOrange,
+    elevation: 3,
+  },
   container: {
     flex: 1,
     padding: 20,

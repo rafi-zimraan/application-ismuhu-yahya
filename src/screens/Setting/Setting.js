@@ -1,4 +1,5 @@
-import React, {useEffect, useState} from 'react';
+import {useFocusEffect} from '@react-navigation/native';
+import React, {useCallback, useState} from 'react';
 import {
   Image,
   SafeAreaView,
@@ -31,40 +32,43 @@ export default function Settings({navigation}) {
 
   const t = key => Translations[currentLanguage][key];
 
+  const fetchProfileData = useCallback(async () => {
+    try {
+      const storedPhoto = await EncryptedStorage.getItem('userPhoto');
+      const userId = JSON.parse(await EncryptedStorage.getItem('idUser'));
+      const coupleDataResponse = await getCoupleData(userId);
+      setPhoto(storedPhoto);
+
+      if (coupleDataResponse?.status && coupleDataResponse?.data) {
+        const {user, couples} = coupleDataResponse.data;
+        setUserName(couples?.[0]?.name_couple);
+        setEmail(user?.email);
+      }
+    } catch (error) {
+      console.log('Error fetching profile data:', error);
+    }
+  }, []);
+
   const handleLogout = async () => {
     setLoadingLogout(true);
     try {
       await logout(navigation, dispatch);
     } catch (error) {
-      console.error('Error during logout:', error);
+      console.log('Error during logout:', error);
     } finally {
       setLoadingLogout(false);
       setLogoutModalVisible(false);
     }
   };
 
-  useEffect(() => {
-    const fetchProfileData = async () => {
-      try {
-        const userId = JSON.parse(await EncryptedStorage.getItem('idUser'));
-        const coupleDataResponse = await getCoupleData(userId);
-
-        if (coupleDataResponse?.status && coupleDataResponse?.data) {
-          const {user, couples, photo: userPhoto} = coupleDataResponse.data;
-          setUserName(couples?.[0]?.name_couple);
-          setEmail(user?.email);
-          setPhoto(userPhoto);
-        }
-      } catch (error) {
-        console.error('Error fetching profile data:', error);
-      }
-    };
-
-    fetchProfileData();
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      fetchProfileData();
+    }, [fetchProfileData]),
+  );
 
   return (
-    <SafeAreaView style={{flex: 1, backgroundColor: COLORS.lightGray}}>
+    <SafeAreaView style={{flex: 1}}>
       <StatusBar barStyle={'default'} backgroundColor={'transparent'} />
       {/* Navbar */}
       <View style={styles.navbar}>
@@ -83,10 +87,7 @@ export default function Settings({navigation}) {
           activeOpacity={0.6}
           onPress={() => navigation.navigate('Profile')}>
           {photo ? (
-            <Image
-              source={{uri: photo}}
-              style={{height: 55, width: 55, borderRadius: 27.5}}
-            />
+            <Image source={{uri: photo}} style={styles.imgPhoto} />
           ) : (
             <Icon name="account-circle" size={55} color={'#999'} />
           )}
@@ -216,6 +217,13 @@ export default function Settings({navigation}) {
 }
 
 const styles = StyleSheet.create({
+  imgPhoto: {
+    height: 54,
+    width: 54,
+    borderRadius: 27.5,
+    borderWidth: 2,
+    borderColor: COLORS.goldenOrange,
+  },
   viewSwitch: {
     position: 'absolute',
     right: 10,
@@ -237,7 +245,7 @@ const styles = StyleSheet.create({
     top: 40,
     fontSize: DIMENS.xxxl,
     fontWeight: 'bold',
-    color: COLORS.black,
+    color: COLORS.white,
   },
   scrollContent: {
     padding: 20,

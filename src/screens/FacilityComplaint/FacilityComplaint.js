@@ -40,7 +40,7 @@ export default function FacilityComplaint({navigation}) {
       );
       setSuggestions(sortedData);
     } catch (error) {
-      console.error(error.message);
+      console.log(error.message);
     } finally {
       setLoading(false);
       if (isRefresh) setRefreshing(false);
@@ -110,7 +110,7 @@ export default function FacilityComplaint({navigation}) {
             onPress={() => navigation.navigate('Complaints')}
             activeOpacity={0.8}>
             <LinearGradient
-              colors={['#FFA07A', '#FF6347']}
+              colors={['#FFB200', '#FFD700']}
               style={[styles.elementFacilityComplaint, styles.enhancedButton]}>
               <View style={styles.buttonContent}>
                 <Icon
@@ -128,7 +128,7 @@ export default function FacilityComplaint({navigation}) {
             onPress={() => navigation.navigate('CreateFacilityComplaint')}
             activeOpacity={0.8}>
             <LinearGradient
-              colors={['#87CEFA', '#4682B4']}
+              colors={['#FFD700', '#FFA07A']}
               style={[styles.elementFacilityComplaint, styles.enhancedButton]}>
               <View style={styles.buttonContent}>
                 <Icon name="plus-box-outline" size={50} color={COLORS.black} />

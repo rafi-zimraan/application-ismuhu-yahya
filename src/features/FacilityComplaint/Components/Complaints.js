@@ -29,10 +29,9 @@ export default function Complaints({navigation}) {
         setTokenExpired(true);
         return;
       }
-      console.log('response', response.data.data);
       setSuggestions(response.data?.data || []);
     } catch (error) {
-      console.error(error.message);
+      console.log(error.message);
     } finally {
       setLoading(false);
       if (isRefresh) setRefreshing(false);

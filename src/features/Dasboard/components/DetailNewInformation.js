@@ -155,7 +155,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: 10,
-    backgroundColor: '#fff',
+    backgroundColor: COLORS.goldenOrange,
     elevation: 3,
   },
   container: {flex: 1, backgroundColor: COLORS.white},

@@ -26,6 +26,8 @@ const COLORS = {
   beige: '#F5F5DC',
   darkGray: '#4A4A4A',
   darkBackground: '#1E1E1E',
+  lightGrey: '#eaeaea',
+  Orange: 'orange',
   ripple: TouchableNativeFeedback.Ripple('#0000001a', false),
 };
 

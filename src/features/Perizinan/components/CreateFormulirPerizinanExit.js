@@ -51,7 +51,7 @@ export default function CreateFormulirPerizinanExit({navigation, route}) {
         setDepartmentName(departments?.data?.data?.[0]?.name);
         setDepartmentId(departments?.data?.data?.[0]?.id);
       } catch (error) {
-        console.error('Error fetching divisions or departments:', error);
+        console.log('Error fetching divisions or departments:', error);
       } finally {
         setLoadingDivision(false);
         setLoadingDepartment(false);
@@ -84,7 +84,7 @@ export default function CreateFormulirPerizinanExit({navigation, route}) {
 
         setTotalTime(`${hours} jam ${minutes} menit`);
       } catch (error) {
-        console.error('Error calculating total time:', error.message);
+        console.log('Error calculating total time:', error.message);
         setTotalTime('');
       }
     } else {
@@ -139,11 +139,13 @@ export default function CreateFormulirPerizinanExit({navigation, route}) {
     <SafeAreaView style={{flex: 1}}>
       <StatusBar barStyle={'default'} backgroundColor={'transparent'} />
       <Background />
-      <HeaderTransparent
-        title="Perizinan Keluar"
-        icon="arrow-left-circle-outline"
-        onPress={() => navigation.goBack()}
-      />
+      <View style={styles.headerWrapper}>
+        <HeaderTransparent
+          title="Perizinan Keluar"
+          icon="arrow-left-circle-outline"
+          onPress={() => navigation.goBack()}
+        />
+      </View>
       <AlertWarning show={showAlert} message={alertMessage} />
 
       <ScrollView contentContainerStyle={styles.scrollContainer}>
@@ -249,6 +251,14 @@ export default function CreateFormulirPerizinanExit({navigation, route}) {
 }
 
 const styles = StyleSheet.create({
+  headerWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 10,
+    backgroundColor: COLORS.goldenOrange,
+    elevation: 3,
+  },
   scrollContainer: {
     paddingBottom: 15,
   },

@@ -22,8 +22,8 @@ import {
 import {ICON_NOTFOUND_DATA} from '../../../assets';
 import {COLORS, DIMENS} from '../../../utils';
 
-export default function DetailDataPribadi({route, navigation}) {
-  const {data, email} = route.params;
+export default function DetailDataCouple({route, navigation}) {
+  const {data} = route.params;
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -43,7 +43,7 @@ export default function DetailDataPribadi({route, navigation}) {
       ToastAndroid.show('Data berhasil diperbarui!', ToastAndroid.SHORT);
       setEditModalVisible(false);
     } catch (error) {
-      console.error('Error updating data:', error.message);
+      console.log('Error updating data:', error.message);
     } finally {
       setIsLoading(false);
     }
@@ -56,7 +56,7 @@ export default function DetailDataPribadi({route, navigation}) {
       setIsDeleted(true);
       setDeleteModalVisible(false);
     } catch (error) {
-      console.error('Error deleting data:', error.message);
+      console.log('Error deleting data:', error.message);
     } finally {
       setIsLoading(false);
     }
@@ -67,7 +67,7 @@ export default function DetailDataPribadi({route, navigation}) {
     try {
       console.log('Data refreshed');
     } catch (error) {
-      console.error('Error during refresh:', error);
+      console.log('Error during refresh:', error);
     } finally {
       setRefreshing(false);
     }
@@ -77,11 +77,13 @@ export default function DetailDataPribadi({route, navigation}) {
     <View style={{flex: 1}}>
       <StatusBar barStyle="default" backgroundColor="transparent" />
       <Background />
-      <HeaderTransparent
-        title="Detail Data Pribadi"
-        icon="arrow-left-circle-outline"
-        onPress={() => navigation.goBack()}
-      />
+      <View style={styles.headerWrapper}>
+        <HeaderTransparent
+          title="Detail Data Pasangan"
+          icon="arrow-left-circle-outline"
+          onPress={() => navigation.goBack()}
+        />
+      </View>
       <ScrollView
         refreshControl={
           <RefreshControl
@@ -95,25 +97,23 @@ export default function DetailDataPribadi({route, navigation}) {
           {!isDeleted ? (
             <>
               <View style={styles.content}>
-                <Text style={styles.title}>Data Pribadi</Text>
+                <Text style={styles.title}>Data Pasangan</Text>
                 <View style={styles.section}>
-                  <Icon name="account" size={24} color="#666" />
+                  <Icon name="account" size={24} color={COLORS.goldenOrange} />
                   <View style={styles.viewContentText}>
-                    <Text style={styles.textTitle}>Nama</Text>
+                    <Text style={styles.textTitle}>Nama Pasangan</Text>
                     <Text style={styles.label}>
                       {editedData.name_couple || '-'}
                     </Text>
                   </View>
                 </View>
+
                 <View style={styles.section}>
-                  <Icon name="email" size={24} color="#666" />
-                  <View style={styles.viewContentText}>
-                    <Text style={styles.textTitle}>Email</Text>
-                    <Text style={styles.label}>{email || '-'}</Text>
-                  </View>
-                </View>
-                <View style={styles.section}>
-                  <Icon name="account-child" size={24} color="#666" />
+                  <Icon
+                    name="account-child"
+                    size={24}
+                    color={COLORS.goldenOrange}
+                  />
                   <View style={styles.viewContentText}>
                     <Text style={styles.textTitle}>Jumlah Anak</Text>
                     <Text style={styles.label}>
@@ -122,7 +122,11 @@ export default function DetailDataPribadi({route, navigation}) {
                   </View>
                 </View>
                 <View style={styles.section}>
-                  <Icon name="map-marker" size={24} color="#666" />
+                  <Icon
+                    name="map-marker"
+                    size={24}
+                    color={COLORS.goldenOrange}
+                  />
                   <View style={styles.viewContentText}>
                     <Text style={styles.textTitle}>Domisili</Text>
                     <Text style={styles.label}>
@@ -223,6 +227,14 @@ export default function DetailDataPribadi({route, navigation}) {
 }
 
 const styles = StyleSheet.create({
+  headerWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 10,
+    backgroundColor: COLORS.goldenOrange,
+    elevation: 3,
+  },
   container: {
     flex: 1,
     padding: 20,
