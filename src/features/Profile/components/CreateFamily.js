@@ -1,5 +1,4 @@
 import React, {useState} from 'react';
-import {useForm} from 'react-hook-form';
 import {
   ScrollView,
   StyleSheet,
@@ -9,7 +8,7 @@ import {
   View,
 } from 'react-native';
 import EncryptedStorage from 'react-native-encrypted-storage';
-import {addExperience} from '..';
+import {addFamilyData} from '..';
 import {
   Background,
   ButtonAction,
@@ -19,12 +18,11 @@ import {
 } from '../../../Component';
 import {COLORS, DIMENS} from '../../../utils';
 
-export default function CreateExperience({navigation}) {
-  const {control, handleSubmit} = useForm();
-  const [company, setCompany] = useState('');
-  const [lengthOfWork, setLengthOfWork] = useState('');
-  const [position, setPosition] = useState('');
-  const [description, setDescription] = useState('');
+export default function CreateFamily({navigation}) {
+  const [father, setFather] = useState('');
+  const [mother, setMother] = useState('');
+  const [brother, setBrother] = useState('');
+  const [child, setChild] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -32,8 +30,8 @@ export default function CreateExperience({navigation}) {
     setIsLoading(true);
     try {
       const userId = await EncryptedStorage.getItem('idUser');
-      const response = await addExperience(userId, data);
-
+      const response = await addFamilyData(userId, data);
+      console.log('add family', response.message);
       if (response) {
         setModalVisible(true);
       }
@@ -49,10 +47,10 @@ export default function CreateExperience({navigation}) {
 
   const onSubmit = () => {
     const data = {
-      company,
-      length_of_work: lengthOfWork,
-      position,
-      description,
+      father,
+      mother,
+      brother,
+      child,
     };
     handleAPI(data);
   };
@@ -62,7 +60,7 @@ export default function CreateExperience({navigation}) {
       <Background />
       <View style={styles.headerWrapper}>
         <HeaderTransparent
-          title="Tambah Data Pengalaman"
+          title="Tambah Data Keluarga"
           icon="arrow-left-circle-outline"
           onPress={() => navigation.goBack()}
         />
@@ -74,48 +72,46 @@ export default function CreateExperience({navigation}) {
           stickyHeaderHiddenOnScroll>
           <View style={styles.inputContainer}>
             <View style={styles.inputFieldContainer}>
-              <Text style={styles.inputLabel}>Perusahaan</Text>
+              <Text style={styles.inputLabel}>Nama Ayah</Text>
               <TextInput
                 style={styles.input}
-                value={company}
-                onChangeText={setCompany}
+                value={father}
+                onChangeText={setFather}
                 placeholderTextColor={COLORS.grey}
-                placeholder="Nama perusahaan"
+                placeholder="Nama Ayah"
               />
             </View>
 
             <View style={styles.inputFieldContainer}>
-              <Text style={styles.inputLabel}>Lama Bekerja (Tahun)</Text>
+              <Text style={styles.inputLabel}>Nama Ibu</Text>
               <TextInput
                 style={styles.input}
-                value={lengthOfWork}
-                onChangeText={setLengthOfWork}
-                keyboardType="numeric"
+                value={mother}
+                onChangeText={setMother}
                 placeholderTextColor={COLORS.grey}
-                placeholder="Lama bekerja dalam tahun"
+                placeholder="Nama Ibu"
               />
             </View>
 
             <View style={styles.inputFieldContainer}>
-              <Text style={styles.inputLabel}>Posisi</Text>
+              <Text style={styles.inputLabel}>Nama Kakak</Text>
               <TextInput
                 style={styles.input}
-                value={position}
-                onChangeText={setPosition}
+                value={brother}
+                onChangeText={setBrother}
                 placeholderTextColor={COLORS.grey}
-                placeholder="Posisi pekerjaan"
+                placeholder="Nama Kakak"
               />
             </View>
 
             <View style={styles.inputFieldContainer}>
-              <Text style={styles.inputLabel}>Deskripsi</Text>
+              <Text style={styles.inputLabel}>Nama Adik</Text>
               <TextInput
-                style={styles.inputMultiline}
-                value={description}
-                onChangeText={setDescription}
+                style={styles.input}
+                value={child}
+                onChangeText={setChild}
                 placeholderTextColor={COLORS.grey}
-                placeholder="Deskripsi pekerjaan"
-                multiline
+                placeholder="Nama Adik"
               />
             </View>
           </View>
@@ -125,7 +121,7 @@ export default function CreateExperience({navigation}) {
             backgroundColor={COLORS.goldenOrange}
             loading={isLoading}
             color={COLORS.white}
-            onPress={handleSubmit(onSubmit)}
+            onPress={onSubmit}
           />
         </ScrollView>
       </View>
@@ -134,8 +130,8 @@ export default function CreateExperience({navigation}) {
         visible={modalVisible}
         onRequestClose={() => setModalVisible(false)}
         iconModalName="check-decagram-outline"
-        title="Pengalaman Berhasil Ditambahkan"
-        description="Data pengalaman kerja Anda berhasil ditambahkan!"
+        title="Data Keluarga Berhasil Ditambahkan"
+        description="Data keluarga Anda berhasil ditambahkan!"
         buttonSubmit={() => navigation.goBack()}
         buttonTitle="OK"
       />
@@ -182,16 +178,5 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     fontSize: DIMENS.s,
     color: COLORS.black,
-  },
-  inputMultiline: {
-    minHeight: 90,
-    paddingHorizontal: 10,
-    backgroundColor: COLORS.white,
-    borderRadius: 10,
-    borderColor: '#ddd',
-    borderWidth: 1,
-    fontSize: DIMENS.s,
-    color: COLORS.black,
-    textAlignVertical: 'top',
   },
 });

@@ -29,6 +29,7 @@ import {getAllDivisions} from '../../features/Divisi';
 import {
   getCoupleData,
   getExperienceData,
+  getFamilyData,
   getTrainingData,
   uploadPhotoProfile,
 } from '../../features/Profile';
@@ -45,6 +46,8 @@ export default function Profile({navigation}) {
   const [modalLoadingVisible, setModalLoadingVisible] = useState(true);
   const [trainingData, setTrainingData] = useState([]);
   const [experienceData, setExperienceData] = useState([]);
+  const [familyData, setFamilyData] = useState([]);
+  console.log('family', familyData);
 
   const handleImageResponse = async response => {
     if (!response.didCancel && response.assets) {
@@ -133,12 +136,14 @@ export default function Profile({navigation}) {
         coupleDataResponse,
         trainingResponse,
         experienceResponse,
+        familyResponse,
       ] = await Promise.all([
         getAllDivisions(),
         getAllDepartment(),
         getCoupleData(userId),
         getTrainingData(userId),
         getExperienceData(userId),
+        getFamilyData(userId),
       ]);
 
       if (divisions?.message === 'Silahkan login terlebih dahulu') {
@@ -178,6 +183,12 @@ export default function Profile({navigation}) {
         setExperienceData(experienceResponse.data.experiences);
       } else {
         setExperienceData([]);
+      }
+
+      if (familyResponse?.status && familyResponse?.data?.families) {
+        setFamilyData(familyResponse.data.families);
+      } else {
+        setFamilyData([]);
       }
     } catch (error) {
       console.log('Error fetching data:', error);
@@ -278,6 +289,13 @@ export default function Profile({navigation}) {
             }
           }}>
           <Text style={styles.sectionHeader}>Data Pribadi</Text>
+          {trainingData.length > 0 && (
+            <TouchableOpacity
+              style={styles.addButton}
+              onPress={() => navigation.navigate('CreateTraining')}>
+              <Icon name="plus-circle" size={24} color={COLORS.goldenOrange} />
+            </TouchableOpacity>
+          )}
           {coupleData.length > 0 ? (
             coupleData.map((couple, index) => (
               <View key={index}>
@@ -335,10 +353,9 @@ export default function Profile({navigation}) {
               </TouchableOpacity>
             </View>
           )}
-        </TouchableOpacity>
+        </TouchableOpacity> */}
 
-        <Gap height={15} /> */}
-
+        <Gap height={15} />
         {/* Data Couple */}
         <TouchableOpacity
           activeOpacity={0.9}
@@ -351,6 +368,13 @@ export default function Profile({navigation}) {
             }
           }}>
           <Text style={styles.sectionHeader}>Data Pasangan</Text>
+          {coupleData.length > 0 && (
+            <TouchableOpacity
+              style={styles.addButton}
+              onPress={() => navigation.navigate('CreateTraining')}>
+              <Icon name="plus-circle" size={24} color={COLORS.goldenOrange} />
+            </TouchableOpacity>
+          )}
           {coupleData.length > 0 ? (
             coupleData.map((couple, index) => (
               <View key={index}>
@@ -413,7 +437,7 @@ export default function Profile({navigation}) {
         <Gap height={15} />
         {/* Data Training */}
         <TouchableOpacity activeOpacity={0.9} style={styles.contentCouple}>
-          <Text style={styles.sectionHeader}>Data Training</Text>
+          <Text style={styles.sectionHeader}>Data Pelatihan</Text>
           {trainingData.length > 0 && (
             <TouchableOpacity
               style={styles.addButton}
@@ -467,7 +491,7 @@ export default function Profile({navigation}) {
           ) : (
             <View>
               <Text style={styles.sectionSubtitle}>
-                Data Training tidak tersedia.
+                Data Pelatihan tidak tersedia.
               </Text>
               <TouchableOpacity
                 style={styles.createButton}
@@ -482,7 +506,7 @@ export default function Profile({navigation}) {
         <Gap height={15} />
         {/* Data Experience */}
         <TouchableOpacity activeOpacity={0.9} style={styles.contentCouple}>
-          <Text style={styles.sectionHeader}>Data Experience</Text>
+          <Text style={styles.sectionHeader}>Data Pengalaman</Text>
           {experienceData.length > 0 && (
             <TouchableOpacity
               style={styles.addButton}
@@ -544,13 +568,85 @@ export default function Profile({navigation}) {
           ) : (
             <View>
               <Text style={styles.sectionSubtitle}>
-                Data Experience tidak tersedia.
+                Data Pengalaman tidak tersedia.
               </Text>
               <TouchableOpacity
                 style={styles.createButton}
                 activeOpacity={0.7}
                 TouchableOpacity
                 onPress={() => navigation.navigate('CreateExperience')}>
+                <Icon name="plus-circle" size={25} color={COLORS.black} />
+              </TouchableOpacity>
+            </View>
+          )}
+        </TouchableOpacity>
+
+        <Gap height={15} />
+        {/* Data Family */}
+        <TouchableOpacity activeOpacity={0.9} style={styles.contentCouple}>
+          <Text style={styles.sectionHeader}>Data Keluarga</Text>
+          {familyData.length > 0 && (
+            <TouchableOpacity
+              style={styles.addButton}
+              onPress={() => navigation.navigate('CreateFamily')}>
+              <Icon name="plus-circle" size={24} color={COLORS.goldenOrange} />
+            </TouchableOpacity>
+          )}
+          {familyData.length > 0 ? (
+            familyData.map((family, index) => (
+              <TouchableOpacity
+                key={index}
+                style={styles.trainingCard}
+                onPress={() =>
+                  navigation.navigate('DetailFamily', {
+                    data: family,
+                  })
+                }>
+                <View style={styles.sectionWithIcon}>
+                  <Icon name="shield-star" size={20} color="#00BFFF" />
+                  <Text style={styles.sectionHeaderText}>{`Experience ${
+                    index + 1
+                  }`}</Text>
+                </View>
+                <View style={styles.section}>
+                  <Icon
+                    name="office-building"
+                    size={24}
+                    color={COLORS.goldenOrange}
+                  />
+                  <View style={styles.viewContainerText}>
+                    <Text style={styles.textLabels}>Nama Ibu</Text>
+                    <Text style={styles.TextDatas}>{family.mother || '-'}</Text>
+                  </View>
+                </View>
+                <View style={styles.section}>
+                  <Icon name="timer" size={24} color={COLORS.goldenOrange} />
+                  <View style={styles.viewContainerText}>
+                    <Text style={styles.textLabels}>Nama Kakak</Text>
+                    <Text style={styles.TextDatas}>
+                      {family.brother || '-'}
+                    </Text>
+                  </View>
+                </View>
+                <View style={styles.section}>
+                  <Icon name="account" size={24} color={COLORS.goldenOrange} />
+                  <View style={styles.viewContainerText}>
+                    <Text style={styles.textLabels}>Nama Anak</Text>
+                    <Text style={styles.TextDatas}>{family.child || '-'}</Text>
+                  </View>
+                </View>
+              </TouchableOpacity>
+            ))
+          ) : (
+            <View>
+              <Text style={styles.sectionSubtitle}>
+                Data Keluarga tidak tersedia.
+              </Text>
+              <TouchableOpacity
+                style={styles.createButton}
+                activeOpacity={0.7}
+                TouchableOpacity
+                onPress={() => navigation.navigate('CreateFamily')}>
                 <Icon name="plus-circle" size={25} color={COLORS.black} />
               </TouchableOpacity>
             </View>

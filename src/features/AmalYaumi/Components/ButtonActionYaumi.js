@@ -1,3 +1,4 @@
+import {useNavigation} from '@react-navigation/native';
 import React, {useState} from 'react';
 import {
   ActivityIndicator,
@@ -19,6 +20,7 @@ export default function ButtonActionYaumi({
   userSelections,
 }) {
   const [loading, setLoading] = useState(false);
+  const navigation = useNavigation();
 
   const handleSendData = async () => {
     setLoading(true);
@@ -33,8 +35,9 @@ export default function ButtonActionYaumi({
         datas: userSelections,
       };
       const response = await addYaumiNotes(payload.user_id, payload.datas);
-
+      console.log('response', response);
       if (response.status) {
+        navigation.goBack();
         ToastAndroid.show('Data berhasil dikirim!', ToastAndroid.SHORT);
         if (onSuccess) onSuccess();
       } else {

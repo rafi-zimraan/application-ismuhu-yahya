@@ -3,14 +3,11 @@ import React, {useEffect, useState} from 'react';
 import {
   ActivityIndicator,
   ImageBackground,
-  Modal,
   RefreshControl,
   SafeAreaView,
   ScrollView,
   StatusBar,
   StyleSheet,
-  Text,
-  TouchableOpacity,
   View,
 } from 'react-native';
 import EncryptedStorage from 'react-native-encrypted-storage';
@@ -32,7 +29,7 @@ import {
   useWelcomeMessage,
 } from '../../features/Dasboard';
 import {FecthMe} from '../../features/authentication';
-import {COLORS, DIMENS} from '../../utils';
+import {COLORS} from '../../utils';
 
 export default function Dasboard({navigation}) {
   const formatTime = useTime();
@@ -41,9 +38,10 @@ export default function Dasboard({navigation}) {
   const {ayat, loadingAyat} = useFetchAyat();
   const [refreshing, setRefreshing] = useState(false);
   const [tokenExpired, setTokenExpired] = useState(false);
-  const [isModalVisible, setModalVisible] = useState(false);
   const isFocused = useIsFocused();
   const [photo, setPhoto] = useState(null);
+  const [amountSantri, setAmountSantri] = useState('');
+  const [amountSpa, setAmountSpa] = useState('');
 
   const {
     isOffline,
@@ -64,9 +62,16 @@ export default function Dasboard({navigation}) {
       setPhoto(storedPhoto);
 
       const response = await FecthMe();
+      console.log('response', response);
       if (response.message === 'Silahkan login terlebih dahulu') {
         setTokenExpired(true);
       }
+
+      const santriTotal = response?.data_users?.santris?.tot_santri || 0;
+      const spaTotal = response?.data_users?.spa?.tot_spa || 0;
+
+      setAmountSantri(santriTotal);
+      setAmountSpa(spaTotal);
     } catch (e) {
       console.log('error checking session', e);
       setTokenExpired(false);
@@ -78,10 +83,6 @@ export default function Dasboard({navigation}) {
       fetchUserSession();
     }
   }, [isFocused]);
-
-  const toggleModal = () => {
-    setModalVisible(!isModalVisible);
-  };
 
   return (
     <SafeAreaView style={{flex: 1}}>
@@ -124,61 +125,11 @@ export default function Dasboard({navigation}) {
 
           <DataSpaComponent
             iconDashboard={ICON_DASBOARD}
-            totalSantri={0}
-            totalSpa={0}
+            totalSantri={amountSantri}
+            totalSpa={amountSpa}
           />
 
           <Gap height={15} />
-          <View style={styles.menu}>
-            <ButtonMenu
-              title="Perizinan"
-              iconName="check-decagram-outline"
-              iconSize={33}
-              color={COLORS.white}
-              backgroundColor={COLORS.goldenOrange}
-              onPress={() => navigation.navigate('Perizinan')}
-            />
-            <ButtonMenu
-              title="Presensi"
-              iconName="line-scan"
-              color={COLORS.white}
-              backgroundColor={COLORS.goldenOrange}
-              iconSize={33}
-              onPress={() => navigation.navigate('Presensi')}
-            />
-            <ButtonMenu
-              title="Peminjaman Mobile"
-              iconName="car"
-              color={COLORS.white}
-              backgroundColor={COLORS.goldenOrange}
-              iconSize={36}
-              onPress={() => navigation.navigate('CarLoan')}
-            />
-            <ButtonMenu
-              title="Pengaduan Fasilitas"
-              iconName="tools"
-              color={COLORS.white}
-              backgroundColor={COLORS.goldenOrange}
-              iconSize={33}
-              onPress={() => {
-                navigation.navigate('FacilityComplaint');
-              }}
-            />
-
-            {/* <Gap width={76} />
-            <ButtonMenu
-              title="More"
-              iconName="apps"
-              color={COLORS.white}
-              width={45}
-              height={45}
-              backgroundColor={COLORS.goldenOrange}
-              iconSize={26}
-              onPress={toggleModal}
-            /> */}
-          </View>
-          <Gap height={15} />
-
           <View style={styles.menu}>
             <ButtonMenu
               title="Amal yaumi"
@@ -189,44 +140,11 @@ export default function Dasboard({navigation}) {
               onPress={() => navigation.navigate('AmalYaumi')}
             />
           </View>
-          <Gap height={15} />
+
+          <Gap height={35} />
           <NewsComponent />
         </ImageBackground>
       </ScrollView>
-
-      {/* Modal untuk Menu Tambahan */}
-      <Modal
-        visible={isModalVisible}
-        transparent={true}
-        animationType="slide"
-        onRequestClose={toggleModal}>
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Menu Tambahan</Text>
-
-            {/* ScrollView Vertikal */}
-            <ScrollView
-              showsVerticalScrollIndicator={false}
-              contentContainerStyle={styles.scrollContainer}>
-              {/* Bagian Horizontal */}
-              <View style={styles.horizontalContainer}>
-                <Gap width={10} />
-                <ButtonMenu
-                  title="Peminjaman Mobil"
-                  iconName="car"
-                  color={COLORS.white}
-                  backgroundColor={COLORS.goldenOrange}
-                  iconSize={36}
-                  onPress={() => navigation.navigate('CarLoan')}
-                />
-              </View>
-            </ScrollView>
-            <TouchableOpacity style={styles.closeButton} onPress={toggleModal}>
-              <Text style={styles.closeButtonText}>Tutup</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
     </SafeAreaView>
   );
 }
@@ -242,43 +160,5 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     height: 140,
-  },
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.5)',
-    justifyContent: 'flex-end',
-  },
-  modalContent: {
-    backgroundColor: 'white',
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    padding: 20,
-    maxHeight: '70%',
-  },
-  modalTitle: {
-    fontSize: DIMENS.xl,
-    fontWeight: 'bold',
-    color: COLORS.black,
-    marginBottom: 15,
-  },
-  scrollContainer: {
-    flexGrow: 1,
-  },
-  horizontalContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 15,
-  },
-  closeButton: {
-    marginTop: 20,
-    alignSelf: 'center',
-    backgroundColor: COLORS.goldenOrange,
-    padding: 10,
-    borderRadius: 10,
-  },
-  closeButtonText: {
-    color: COLORS.white,
-    fontSize: DIMENS.l,
   },
 });

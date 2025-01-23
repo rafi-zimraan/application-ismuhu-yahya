@@ -17,7 +17,7 @@ import {
   HeaderTransparent,
   ModalCustom,
 } from '../../../Component';
-import {COLORS} from '../../../utils';
+import {COLORS, DIMENS} from '../../../utils';
 
 export default function CreateCouple({navigation}) {
   const {control, handleSubmit} = useForm();
@@ -151,7 +151,7 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   inputLabel: {
-    fontSize: 14,
+    fontSize: DIMENS.m,
     color: '#333',
     marginBottom: 5,
     fontWeight: '600',
@@ -163,7 +163,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     borderColor: '#ddd',
     borderWidth: 1,
-    fontSize: 13,
+    fontSize: DIMENS.s,
     color: COLORS.black,
   },
   saveButton: {
@@ -182,6 +182,6 @@ const styles = StyleSheet.create({
   saveButtonText: {
     color: COLORS.white,
     fontWeight: 'bold',
-    fontSize: 16,
+    fontSize: DIMENS.l,
   },
 });

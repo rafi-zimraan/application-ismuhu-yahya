@@ -24,8 +24,6 @@ import {COLORS, DIMENS} from '../../../utils';
 
 export default function DetailExperience({route, navigation}) {
   const {data} = route.params;
-  console.log('data', data);
-
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);

@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {Gap, Line, ModalCustom} from '../../../Component';
-import {COLORS} from '../../../utils';
+import {COLORS, DIMENS} from '../../../utils';
 
 export default function DataSpaComponent({
   iconDashboard,
@@ -74,7 +74,7 @@ const styles = StyleSheet.create({
     height: 65,
   },
   title: {
-    fontSize: 14,
+    fontSize: DIMENS.m,
     textAlign: 'center',
     fontWeight: '400',
     marginTop: 5,
@@ -84,26 +84,26 @@ const styles = StyleSheet.create({
     maxWidth: 120,
   },
   titleSantri: {
-    fontSize: 16,
+    fontSize: DIMENS.l,
     fontWeight: '500',
     color: COLORS.black,
   },
   amountSantri: {
-    fontSize: 16,
-    fontWeight: '500',
+    fontSize: DIMENS.xxxl,
+    fontWeight: 'bold',
     color: COLORS.black,
   },
   viewSpa: {
     maxWidth: 120,
   },
   titleSpa: {
-    fontSize: 16,
+    fontSize: DIMENS.l,
     fontWeight: '500',
     color: COLORS.black,
   },
   amountSpa: {
-    fontSize: 16,
-    fontWeight: '500',
+    fontSize: DIMENS.xxxl,
+    fontWeight: 'bold',
     color: COLORS.black,
   },
 });

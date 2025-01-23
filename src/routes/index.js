@@ -22,11 +22,13 @@ import {
 import {
   CreateCouple,
   CreateExperience,
+  CreateFamily,
   CreateProfileSpa,
   CreateTraining,
   DetailDataCouple,
   DetailDataProfileSpa,
   DetailExperience,
+  DetailFamily,
   DetailTraining,
 } from '../features/Profile';
 import {
@@ -102,6 +104,8 @@ export default function Navigator() {
         component={DetailDataProfileSpa}
       />
       <Stack.Screen name="CreateProfileSpa" component={CreateProfileSpa} />
+      <Stack.Screen name="CreateFamily" component={CreateFamily} />
+      <Stack.Screen name="DetailFamily" component={DetailFamily} />
 
       {/* Setting  */}
       <Stack.Screen name="Settings" component={Settings} />

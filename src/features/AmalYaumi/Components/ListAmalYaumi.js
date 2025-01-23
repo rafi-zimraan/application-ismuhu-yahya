@@ -31,14 +31,10 @@ export default function ListAmalYaumi({navigation}) {
   const [selectedDropdown, setSelectedDropdown] = useState({});
   const [loading, setLoading] = useState(true);
   const [modalVisible, setModalVisible] = useState(false);
-  const [modalMessage, setModalMessage] = useState('');
   const [tokenExpired, setTokenExpired] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [isHaid, setIsHaid] = useState(false);
   const [userGender, setUserGender] = useState(null);
-  const [textInputs, setTextInputs] = useState({});
-
-  console.log('text', textInputs);
 
   const fetchData = async (haid = 0) => {
     try {
@@ -53,7 +49,6 @@ export default function ListAmalYaumi({navigation}) {
 
       if (response.data?.yaumis?.original?.status === false) {
         const message = response.data?.yaumis?.original?.message;
-        setModalMessage(message);
         setModalVisible(true);
       } else {
         const {yaumis, note_yaumi} = response.data;
@@ -63,6 +58,7 @@ export default function ListAmalYaumi({navigation}) {
         const dropdownSelections = {};
 
         note_yaumi.forEach(note => {
+          const yaumiId = String(note.yaumi_id);
           const {yaumi_id, desc, sub_yaumi_note} = note;
 
           if (note.yaumi.type_tag === 'text') {
@@ -70,41 +66,35 @@ export default function ListAmalYaumi({navigation}) {
           } else if (note.yaumi.type_tag === 'options') {
             const selectedSub = sub_yaumi_note[0]?.sub_yaumi_id || null;
             preFilledSelections[yaumi_id] = {
-              subs: selectedSub ? [selectedSub] : [],
+              subs: selectedSub ? [String(selectedSub)] : [],
             };
           } else if (note.yaumi.type_tag === 'checklist') {
-            const selectedSubs = sub_yaumi_note.map(sub => sub.sub_yaumi_id);
+            const selectedSubs = sub_yaumi_note.map(sub =>
+              String(sub.sub_yaumi_id),
+            );
             preFilledSelections[yaumi_id] = {subs: selectedSubs};
           } else if (note.yaumi.type_tag === 'dropdown') {
             const selectedSub = sub_yaumi_note[0]?.sub_yaumi_id || null;
             preFilledSelections[yaumi_id] = {
-              subs: selectedSub ? [selectedSub] : [],
+              subs: selectedSub ? [String(selectedSub)] : [],
             };
-            dropdownVisibility[yaumi_id] = true;
-            dropdownSelections[yaumi_id] = selectedSub || null;
+            dropdownVisibility[yaumiId] = true;
+            dropdownSelections[yaumiId] = selectedSub
+              ? String(selectedSub)
+              : null;
           }
         });
-        console.log('note', note_yaumi);
 
-        const textInputDefaults = {};
-        yaumis.forEach(yaumi => {
-          if (yaumi.type_tag === 'text') {
-            const existingNote = note_yaumi.find(
-              note => note.yaumi_id === yaumi.id,
-            );
-            console.log('text', existingNote);
-            textInputDefaults[yaumi.id] = existingNote?.desc ?? '';
-          }
-        });
-        setTextInputs(textInputDefaults);
-
-        // yaumis.forEach(yaumi => {
-        //   if (yaumi.type_tag === 'text' && !preFilledSelections[yaumi.id]) {
-        //     preFilledSelections[yaumi.id] = {desc: ''};
-        //   }
-        // });
-
-        setData(yaumis || []);
+        setData(
+          yaumis.map(yaumi => ({
+            ...yaumi,
+            id: String(yaumi.id),
+            sub_yaumi: yaumi.sub_yaumi.map(sub => ({
+              ...sub,
+              id: String(sub.id),
+            })),
+          })),
+        );
         setSelectedOptions(preFilledSelections);
         setDropdownVisible(dropdownVisibility);
         setSelectedDropdown(dropdownSelections);
@@ -119,7 +109,7 @@ export default function ListAmalYaumi({navigation}) {
   useEffect(() => {
     const loadHaidStatus = async () => {
       try {
-        const savedHaidStatus = await EncryptedStorage.getItem('isHaid  ');
+        const savedHaidStatus = await EncryptedStorage.getItem('isHaid');
         const isHaidValue = savedHaidStatus
           ? JSON.parse(savedHaidStatus)
           : false;
@@ -158,22 +148,25 @@ export default function ListAmalYaumi({navigation}) {
   const prepareUserSelections = () => {
     const selections = [];
     data.forEach(item => {
+      const yaumiId = String(item.id);
       const type = item.type_tag;
-      const yaumiId = item.id;
 
       let subs = [];
       let desc = null;
 
-      // if (type === 'text') {
-      //   desc = selectedOptions[yaumiId]?.desc || null;
       if (type === 'text') {
-        desc = textInputs[yaumiId] ?? '';
+        desc = selectedOptions[yaumiId]?.desc ?? '';
+      } else if (
+        (type === 'options' || type === 'checklist' || type === 'dropdown') &&
+        selectedOptions[yaumiId]?.subs?.length > 0
+      ) {
+        subs = selectedOptions[yaumiId]?.subs || [];
       } else if (
         type === 'options' ||
         type === 'checklist' ||
         type === 'dropdown'
       ) {
-        subs = selectedOptions[yaumiId]?.subs || [];
+        subs = [];
       }
 
       selections.push({
@@ -183,7 +176,7 @@ export default function ListAmalYaumi({navigation}) {
       });
     });
 
-    // console.log('Hasil prepareUserSelections:', selections);
+    console.log('prepareUserSelections', selections);
     return selections;
   };
 
@@ -203,14 +196,34 @@ export default function ListAmalYaumi({navigation}) {
     <View style={styles.itemWrapper}>
       <Text style={styles.title}>{item.title}</Text>
       {item.type_tag === 'text' && (
+        <View style={styles.textInput}>
+          <TextInput
+            style={{height: 50, paddingHorizontal: 20, color: COLORS.black}}
+            value={selectedOptions[String(item.id)]?.desc ?? ''}
+            onChangeText={text => {
+              if (text.length <= 200) {
+                setSelectedOptions(prev => ({
+                  ...prev,
+                  [String(item.id)]: {...prev[String(item.id)], desc: text},
+                }));
+              }
+            }}
+            placeholder="Silahkan tulis di sini"
+            placeholderTextColor={COLORS.grey}
+            keyboardType="default"
+            editable={true}
+          />
+        </View>
+      )}
+      {/* {item.type_tag === 'text' && (
         <TextInput
           style={styles.textInput}
-          value={textInputs[item.id] ?? ''}
+          value={selectedOptions[String(item.id)]?.desc ?? ''}
           onChangeText={text => {
             if (text.length <= 200) {
-              setTextInputs(prev => ({
+              setSelectedOptions(prev => ({
                 ...prev,
-                [item.id]: text,
+                [String(item.id)]: {...prev[String(item.id)], desc: text},
               }));
             }
           }}
@@ -219,7 +232,7 @@ export default function ListAmalYaumi({navigation}) {
           placeholder="Silahkan tulis di sini"
           placeholderTextColor={COLORS.grey}
         />
-      )}
+      )} */}
       {item.type_tag === 'dropdown' && (
         <View>
           <TouchableOpacity
@@ -250,12 +263,16 @@ export default function ListAmalYaumi({navigation}) {
                     ? styles.dropdownSelected
                     : styles.dropdownDefault,
                 ]}
-                onPress={() =>
+                onPress={() => {
                   setSelectedOptions(prev => ({
                     ...prev,
                     [item.id]: {subs: [sub.id]},
-                  }))
-                }>
+                  }));
+                  setSelectedDropdown(prev => ({
+                    ...prev,
+                    [item.id]: sub.id,
+                  }));
+                }}>
                 <Text
                   style={[
                     styles.subTitleText,
@@ -321,11 +338,11 @@ export default function ListAmalYaumi({navigation}) {
               onPress={() =>
                 setSelectedOptions(prev => {
                   const currentSubs = prev[item.id]?.subs || [];
-
+                  console.log('current checklist', currentSubs);
                   const updatedSubs = currentSubs.includes(sub.id)
                     ? currentSubs.filter(id => id !== sub.id)
                     : [...currentSubs, sub.id];
-
+                  console.log('update checklist', updatedSubs);
                   return {
                     ...prev,
                     [item.id]: {subs: updatedSubs},
@@ -398,8 +415,7 @@ export default function ListAmalYaumi({navigation}) {
             data={data}
             keyExtractor={item => item.id.toString()}
             renderItem={renderItem}
-            // extraData={selectedOptions}
-            extraData={textInputs}
+            extraData={selectedOptions}
             keyboardShouldPersistTaps="handled"
             initialNumToRender={10}
             maxToRenderPerBatch={10}
@@ -427,10 +443,12 @@ export default function ListAmalYaumi({navigation}) {
         onRequestClose={() => setModalVisible(false)}
         iconModalName="alert-circle-outline"
         title="Profile Belum Lengkap"
-        description={modalMessage}
+        description={
+          'Silahkan menuju website simpondok untuk mengisi profile gender anda!'
+        }
         buttonSubmit={() => {
           setModalVisible(false);
-          navigation.replace('Profile');
+          navigation.goBack();
         }}
         buttonTitle="Pergi Ke Profile"
         ColorIcon={COLORS.red}
@@ -518,7 +536,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: 10,
     backgroundColor: COLORS.goldenOrange,
-    elevation: 3,
+    elevation: 1,
   },
   container: {
     flex: 1,
@@ -529,6 +547,7 @@ const styles = StyleSheet.create({
     padding: 10,
     borderWidth: 1,
     borderColor: '#ddd',
+    backgroundColor: COLORS.white,
     borderRadius: 5,
   },
   title: {
@@ -538,11 +557,13 @@ const styles = StyleSheet.create({
     color: COLORS.black,
   },
   textInput: {
-    borderWidth: 1,
-    borderColor: '#ddd',
+    height: 50,
+    backgroundColor: COLORS.white,
+    borderRadius: 13,
+    elevation: 2,
+    paddingHorizontal: 20,
+    fontSize: DIMENS.m,
     color: COLORS.black,
-    borderRadius: 5,
-    padding: 8,
   },
   dropdownItem: {
     flexDirection: 'row',

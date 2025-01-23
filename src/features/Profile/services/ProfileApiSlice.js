@@ -282,3 +282,104 @@ export const uploadPhotoProfile = async (id_user, photo) => {
     throw error;
   }
 };
+
+// Family APIs
+export const addFamilyData = async (id_user, data) => {
+  try {
+    const token = await EncryptedStorage.getItem('token');
+    if (!token)
+      throw new Error('Token expired, silahkan login terlebih dahulu');
+
+    const response = await api.post(`family/user/${id_user}`, data, {
+      headers: {
+        Authorization: `Bearer ${JSON.parse(token)}`,
+      },
+    });
+
+    return response.data;
+  } catch (error) {
+    console.log(error.response?.data?.message || error.message);
+    throw error;
+  }
+};
+
+export const updateFamilyData = async (id_family, data) => {
+  try {
+    const token = await EncryptedStorage.getItem('token');
+    if (!token)
+      throw new Error('Token expired, silahkan login terlebih dahulu');
+
+    const response = await api.patch(`family/${id_family}`, data, {
+      headers: {
+        Authorization: `Bearer ${JSON.parse(token)}`,
+      },
+    });
+
+    return response.data;
+  } catch (error) {
+    console.log(error.response?.data?.message || error.message);
+    throw error;
+  }
+};
+
+export const deleteFamilyData = async id_family => {
+  try {
+    const token = await EncryptedStorage.getItem('token');
+    if (!token)
+      throw new Error('Token expired, silahkan login terlebih dahulu');
+
+    const response = await api.delete(`family/${id_family}`, {
+      headers: {
+        Authorization: `Bearer ${JSON.parse(token)}`,
+      },
+    });
+
+    if (response.data?.status === true) {
+      console.log(response.data?.message || 'Data keluarga berhasil dihapus');
+      return true;
+    } else {
+      throw new Error('Gagal menghapus data keluarga');
+    }
+  } catch (error) {
+    console.log(error.response?.data?.message || error.message);
+    throw error;
+  }
+};
+
+export const getFamilyDetails = async id_user => {
+  try {
+    const token = await EncryptedStorage.getItem('token');
+    if (!token)
+      throw new Error('Token expired, silahkan login terlebih dahulu');
+
+    const response = await api.get(`family/user/${id_user}/detail`, {
+      headers: {
+        Authorization: `Bearer ${JSON.parse(token)}`,
+      },
+    });
+
+    return response.data || {};
+  } catch (error) {
+    console.log(error.response?.data?.message || error.message);
+    throw error;
+  }
+};
+
+export const getFamilyData = async (id_user, data) => {
+  try {
+    const token = await EncryptedStorage.getItem('token');
+    if (!token)
+      throw new Error('Token expired, silahkan login terlebih dahulu');
+
+    const response = await api.get(`family/user/${id_user}/data`, data, {
+      headers: {
+        Authorization: `Bearer ${JSON.parse(token)}`,
+      },
+    });
+
+    return response.data || [];
+  } catch (error) {
+    console.log(error.response?.data?.message || error.message);
+    throw error;
+  }
+};

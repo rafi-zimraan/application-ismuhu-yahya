@@ -19,7 +19,7 @@ import {
   HeaderTransparent,
   ModalCustom,
 } from '../../../Component';
-import {COLORS} from '../../../utils';
+import {COLORS, DIMENS} from '../../../utils';
 
 export default function CreateTraining({navigation}) {
   const {control, handleSubmit} = useForm();
@@ -187,7 +187,7 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   inputLabel: {
-    fontSize: 14,
+    fontSize: DIMENS.m,
     color: '#333',
     marginBottom: 5,
     fontWeight: '600',
@@ -199,7 +199,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     borderColor: '#ddd',
     borderWidth: 1,
-    fontSize: 13,
+    fontSize: DIMENS.s,
     color: COLORS.black,
   },
   inputMultiline: {
@@ -209,7 +209,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     borderColor: '#ddd',
     borderWidth: 1,
-    fontSize: 13,
+    fontSize: DIMENS.s,
     color: COLORS.black,
     textAlignVertical: 'top',
   },
@@ -223,7 +223,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   dateText: {
-    fontSize: 13,
+    fontSize: DIMENS.s,
     color: COLORS.black,
   },
 });

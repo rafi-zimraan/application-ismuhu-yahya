@@ -1,5 +1,6 @@
+import {useFocusEffect} from '@react-navigation/native';
 import moment from 'moment';
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useState} from 'react';
 import {
   Image,
   RefreshControl,
@@ -35,7 +36,7 @@ export default function AmalYaumi({navigation}) {
   const [refreshing, setRefreshing] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const fetchProfileData = async () => {
+  const fetchProfileData = useCallback(async () => {
     setLoading(true);
     try {
       const storedPhoto = await EncryptedStorage.getItem('userPhoto');
@@ -79,11 +80,13 @@ export default function AmalYaumi({navigation}) {
     } finally {
       setLoading(false);
     }
-  };
-
-  useEffect(() => {
-    fetchProfileData();
   }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchProfileData();
+    }, [fetchProfileData]),
+  );
 
   const onRefresh = async () => {
     setRefreshing(true);
@@ -96,14 +99,20 @@ export default function AmalYaumi({navigation}) {
     }
   };
 
-  const days = Array.from({length: 30}, (_, i) => {
-    const date = moment().startOf('month').add(i, 'days');
-    return {
-      day: date.format('ddd'),
-      date: date.format('YYYY-MM-DD'),
-      shortDate: date.format('D'),
-    };
-  });
+  const days = React.useMemo(() => {
+    const monthIndex = moment().month(selectedMonth).month();
+    const year = moment().year();
+    const daysInMonth = moment({year, month: monthIndex}).daysInMonth();
+
+    return Array.from({length: daysInMonth}, (_, i) => {
+      const date = moment({year, month: monthIndex, day: i + 1});
+      return {
+        day: date.format('ddd'),
+        date: date.format('YYYY-MM-DD'),
+        shortDate: date.format('D'),
+      };
+    });
+  }, [selectedMonth]);
   const todayIndex = days.findIndex(day => day.date === today);
 
   return (
@@ -153,7 +162,7 @@ export default function AmalYaumi({navigation}) {
             style={styles.monthWrapper}
             onPress={() => setModalVisible(true)}>
             <Text style={styles.monthText}>{selectedMonth}</Text>
-            <Icon name="menu-down" size={24} color={COLORS.white} />
+            <Icon name="menu-down" size={24} color={COLORS.black} />
           </TouchableOpacity>
           <DateList
             days={days}
@@ -178,14 +187,14 @@ export default function AmalYaumi({navigation}) {
               showVerticalLines
               spacing={66}
               hideDataPoints={false}
-              initialSpacing={23}
-              color1="orange"
-              color2="#0cb300"
+              initialSpacing={24}
+              color1={COLORS.greenBoy}
+              color2={COLORS.Orange}
               textColor1="green"
-              dataPointsColor1="#FF8C00"
-              dataPointsColor2="#4169E1"
-              startFillColor1="orange"
-              startFillColor2="#0cb300"
+              dataPointsColor1={COLORS.greenSoft}
+              dataPointsColor2="#FF8C00"
+              startFillColor1={COLORS.greenBoy}
+              startFillColor2={COLORS.Orange}
               startOpacity={0.8}
               endOpacity={0.3}
               yAxisValueFormatter={value => Math.round(value).toString()}
@@ -245,7 +254,7 @@ export default function AmalYaumi({navigation}) {
                       <ProgressWheel
                         size={60}
                         width={10}
-                        color={COLORS.Orange}
+                        color={COLORS.greenBoy}
                         progress={item.avgPoin}
                         backgroundColor="#eaeaea"
                       />
@@ -260,7 +269,7 @@ export default function AmalYaumi({navigation}) {
                       <ProgressWheel
                         size={60}
                         width={10}
-                        color={COLORS.greenBoy}
+                        color={COLORS.Orange}
                         progress={item.percenPoin}
                         backgroundColor="#eaeaea"
                       />
@@ -288,7 +297,12 @@ export default function AmalYaumi({navigation}) {
           visible={modalVisible}
           selectedMonth={selectedMonth}
           onClose={() => setModalVisible(false)}
-          onSelect={setSelectedMonth}
+          onSelect={month => {
+            setSelectedMonth(month);
+            setSelectedDate(
+              moment().month(month).startOf('month').format('YYYY-MM-DD'),
+            );
+          }}
         />
       </ScrollView>
     </View>
@@ -374,7 +388,7 @@ const styles = StyleSheet.create({
     top: 20,
     fontSize: DIMENS.s,
     fontWeight: 'bold',
-    color: COLORS.Orange,
+    color: COLORS.greenBoy,
   },
   percentTextpercenPoin: {
     position: 'absolute',
@@ -382,7 +396,7 @@ const styles = StyleSheet.create({
     top: 20,
     fontSize: DIMENS.s,
     fontWeight: 'bold',
-    color: COLORS.greenBoy,
+    color: COLORS.Orange,
   },
   DateYaumiText: {
     color: COLORS.greyText,
@@ -432,7 +446,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    // paddingHorizontal: 10,
     backgroundColor: COLORS.goldenOrange,
     elevation: 3,
   },
@@ -460,7 +473,7 @@ const styles = StyleSheet.create({
   monthText: {
     fontSize: DIMENS.xxxxxl,
     fontWeight: 'bold',
-    color: COLORS.white,
+    color: COLORS.black,
     marginRight: 2,
   },
 });
