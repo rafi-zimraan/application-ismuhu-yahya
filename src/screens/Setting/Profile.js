@@ -27,12 +27,14 @@ import {
 import {getAllDepartment} from '../../features/Departmant';
 import {getAllDivisions} from '../../features/Divisi';
 import {
+  getAllDataSpa,
   getCoupleData,
   getExperienceData,
   getFamilyData,
   getTrainingData,
   uploadPhotoProfile,
 } from '../../features/Profile';
+import {FecthMe} from '../../features/authentication';
 import {COLORS, DIMENS} from '../../utils';
 
 export default function Profile({navigation}) {
@@ -40,14 +42,14 @@ export default function Profile({navigation}) {
   const [departmentName, setDepartmentName] = useState('');
   const [tokenExpired, setTokenExpired] = useState(false);
   const [coupleData, setCoupleData] = useState([]);
-  const [userName, setUserName] = useState('');
   const [photo, setPhoto] = useState(null);
   const [refreshing, setRefreshing] = useState(false);
   const [modalLoadingVisible, setModalLoadingVisible] = useState(true);
   const [trainingData, setTrainingData] = useState([]);
   const [experienceData, setExperienceData] = useState([]);
   const [familyData, setFamilyData] = useState([]);
-  console.log('family', familyData);
+  const [spaData, setSpaData] = useState(null);
+  const [modalVisible, setModalVisible] = useState(false);
 
   const handleImageResponse = async response => {
     if (!response.didCancel && response.assets) {
@@ -64,11 +66,24 @@ export default function Profile({navigation}) {
         const uploadResponse = await uploadPhotoProfile(userId, selectedImage);
 
         if (uploadResponse?.status) {
-          ToastAndroid.show('Suksses Upload Profile', ToastAndroid.SHORT);
-          await EncryptedStorage.setItem('userPhoto', selectedImage.uri);
-          setPhoto(selectedImage.uri);
+          ToastAndroid.show(uploadResponse?.message, ToastAndroid.SHORT);
+
+          const userData = await FecthMe();
+          if (userData?.status) {
+            const baseUrl = 'https://app.simpondok.com/';
+            const photoUrl = userData.url_photo
+              ? `${baseUrl}${userData.url_photo}?timestamp=${Date.now()}`
+              : null;
+            setPhoto(photoUrl);
+          } else {
+            ToastAndroid.show('Gagal memuat data terbaru', ToastAndroid.SHORT);
+          }
         } else {
-          ToastAndroid.show('Gagal mengunggah foto profil', ToastAndroid.SHORT);
+          ToastAndroid.show(
+            uploadResponse?.message || 'Terjadi kesalahan',
+            ToastAndroid.SHORT,
+          );
+          setModalVisible(true);
         }
       } catch (error) {
         console.log('Error uploading photo:', error);
@@ -116,19 +131,7 @@ export default function Profile({navigation}) {
     }
 
     try {
-      const storedPhoto = await EncryptedStorage.getItem('userPhoto');
-      if (storedPhoto) {
-        setPhoto(storedPhoto);
-      }
-
       const userId = JSON.parse(await EncryptedStorage.getItem('idUser'));
-      const userSession = JSON.parse(
-        await EncryptedStorage.getItem('user_sesion'),
-      );
-
-      if (userSession?.name) {
-        setUserName(userSession.name);
-      }
 
       const [
         divisions,
@@ -137,6 +140,8 @@ export default function Profile({navigation}) {
         trainingResponse,
         experienceResponse,
         familyResponse,
+        spaResponse,
+        userData,
       ] = await Promise.all([
         getAllDivisions(),
         getAllDepartment(),
@@ -144,7 +149,18 @@ export default function Profile({navigation}) {
         getTrainingData(userId),
         getExperienceData(userId),
         getFamilyData(userId),
+        getAllDataSpa(userId),
+        FecthMe(),
       ]);
+
+      if (userData?.status) {
+        const baseUrl = 'https://app.simpondok.com/';
+        const photoUrl = userData.url_photo
+          ? `${baseUrl}${userData.url_photo}?timestamp=${Date.now()}`
+          : null; // Tambahkan timestamp untuk menghindari cache
+
+        setPhoto(photoUrl);
+      }
 
       if (divisions?.message === 'Silahkan login terlebih dahulu') {
         setTokenExpired(true);
@@ -161,14 +177,8 @@ export default function Profile({navigation}) {
         );
       }
 
-      if (coupleDataResponse?.status && coupleDataResponse?.data) {
-        const {couples} = coupleDataResponse.data;
-
-        if (Array.isArray(couples)) {
-          setCoupleData(couples);
-        } else {
-          setCoupleData([]);
-        }
+      if (coupleDataResponse?.status && coupleDataResponse?.data?.couples) {
+        setCoupleData(coupleDataResponse.data.couples);
       } else {
         setCoupleData([]);
       }
@@ -185,13 +195,27 @@ export default function Profile({navigation}) {
         setExperienceData([]);
       }
 
-      if (familyResponse?.status && familyResponse?.data?.families) {
-        setFamilyData(familyResponse.data.families);
+      if (familyResponse?.status && familyResponse?.data) {
+        setFamilyData([familyResponse.data]);
       } else {
         setFamilyData([]);
       }
+
+      if (spaResponse?.status && spaResponse?.data) {
+        const {name, email, spa, spa_profile, spa_trainings} = spaResponse.data;
+
+        setSpaData({
+          name: name || '-',
+          email: email || '-',
+          domisili: spa_profile?.domisili || '-',
+          gender: spa_profile?.gender || '-',
+          trainings: spa_trainings || [],
+        });
+      } else {
+        setSpaData(null);
+      }
     } catch (error) {
-      console.log('Error fetching data:', error);
+      console.log('Error fetching data in profile:', error.message);
     } finally {
       if (showLoading) {
         setModalLoadingVisible(false);
@@ -256,7 +280,7 @@ export default function Profile({navigation}) {
               <Icon name="camera" size={15} color="#fff" />
             </TouchableOpacity>
           </TouchableOpacity>
-          <Text style={styles.name}>{coupleData[0]?.name_couple || ' - '}</Text>
+          <Text style={styles.name}>{spaData?.name || '-'}</Text>
           <Text style={styles.division}>{divisionName || '-'}</Text>
           <Text style={styles.department}>{departmentName || '-'}</Text>
         </View>
@@ -278,68 +302,53 @@ export default function Profile({navigation}) {
         )}
         scrollEventThrottle={15}>
         {/* Data SPA */}
-        {/* <TouchableOpacity
+        <TouchableOpacity
           activeOpacity={0.9}
           style={styles.contentCouple}
           onPress={() => {
-            if (coupleData.length > 0) {
-              navigation.navigate('DetailDataProfileSpa', {
-                data: coupleData[0],
+            if (spaData) {
+              navigation.navigate('DetailDataSpa', {
+                data: spaData,
               });
             }
           }}>
           <Text style={styles.sectionHeader}>Data Pribadi</Text>
-          {trainingData.length > 0 && (
-            <TouchableOpacity
-              style={styles.addButton}
-              onPress={() => navigation.navigate('CreateTraining')}>
-              <Icon name="plus-circle" size={24} color={COLORS.goldenOrange} />
-            </TouchableOpacity>
-          )}
-          {coupleData.length > 0 ? (
-            coupleData.map((couple, index) => (
-              <View key={index}>
-                <View style={styles.section}>
-                  <Icon
-                    name="human-female"
-                    size={24}
-                    color={COLORS.goldenOrange}
-                  />
-                  <View style={styles.viewContainerText}>
-                    <Text style={styles.textLabels}>Username</Text>
-                    <Text style={styles.TextDatas}>
-                      {couple.name_couple || '-'}
-                    </Text>
-                  </View>
-                </View>
-                <View style={styles.section}>
-                  <Icon
-                    name="map-marker"
-                    size={24}
-                    color={COLORS.goldenOrange}
-                  />
-                  <View style={styles.sectionTextContainer}>
-                    <Text style={styles.textLabels}>email</Text>
-                    <Text style={styles.sectionTitle}>
-                      {couple.couple_domisili || '-'}
-                    </Text>
-                  </View>
-                </View>
-                <View style={styles.section}>
-                  <Icon
-                    name="account-child"
-                    size={24}
-                    color={COLORS.goldenOrange}
-                  />
-                  <View style={styles.sectionTextContainer}>
-                    <Text style={styles.textLabels}>address</Text>
-                    <Text style={styles.sectionTitle}>
-                      {couple.children || '-'}
-                    </Text>
-                  </View>
+          {spaData ? (
+            <View>
+              <View style={styles.sectionWithIcon}>
+                <Icon name="account-circle" size={20} color="#FFD700" />
+                <Text style={styles.sectionHeaderText}>Pribadi</Text>
+              </View>
+              <View style={styles.section}>
+                <Icon name="account" size={24} color={COLORS.goldenOrange} />
+                <View style={styles.viewContainerText}>
+                  <Text style={styles.textLabels}>Username</Text>
+                  <Text style={styles.TextDatas}>{spaData?.name || '-'}</Text>
                 </View>
               </View>
-            ))
+              <View style={styles.section}>
+                <Icon name="email" size={24} color={COLORS.goldenOrange} />
+                <View style={styles.sectionTextContainer}>
+                  <Text style={styles.textLabels}>email</Text>
+                  <Text style={styles.sectionTitle}>
+                    {spaData?.email || '-'}
+                  </Text>
+                </View>
+              </View>
+              <View style={styles.section}>
+                <Icon
+                  name="gender-male-female"
+                  size={24}
+                  color={COLORS.goldenOrange}
+                />
+                <View style={styles.sectionTextContainer}>
+                  <Text style={styles.textLabels}>Jenis Kelamin</Text>
+                  <Text style={styles.sectionTitle}>
+                    {spaData?.gender || '-'}
+                  </Text>
+                </View>
+              </View>
+            </View>
           ) : (
             <View>
               <Text style={styles.sectionSubtitle}>
@@ -348,77 +357,86 @@ export default function Profile({navigation}) {
               <TouchableOpacity
                 style={styles.createButton}
                 activeOpacity={0.7}
-                onPress={() => navigation.navigate('CreateProfileSpa')}>
+                onPress={() => navigation.navigate('CreateDataSpa')}>
                 <Icon name="plus-circle" size={25} color={COLORS.black} />
               </TouchableOpacity>
             </View>
           )}
-        </TouchableOpacity> */}
+        </TouchableOpacity>
 
-        <Gap height={15} />
         {/* Data Couple */}
-        <TouchableOpacity
-          activeOpacity={0.9}
-          style={styles.contentCouple}
-          onPress={() => {
-            if (coupleData.length > 0) {
-              navigation.navigate('DetailDataCouple', {
-                data: coupleData[0],
-              });
-            }
-          }}>
-          <Text style={styles.sectionHeader}>Data Pasangan</Text>
-          {coupleData.length > 0 && (
+        <Gap height={15} />
+        <TouchableOpacity activeOpacity={0.9} style={styles.contentCouple}>
+          <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+            <Text style={styles.sectionHeader}>Data Pasangan</Text>
+            <View style={{flexDirection: 'row', alignItems: 'center'}}>
+              {coupleData?.length > 1 && (
+                <TouchableOpacity
+                  style={styles.moreButton}
+                  onPress={() => navigation.navigate('AllDataCouple')}>
+                  <Text style={styles.moreText}>Selengkapnya</Text>
+                </TouchableOpacity>
+              )}
+              {coupleData?.length > 0 && (
+                <TouchableOpacity
+                  style={styles.addButton}
+                  onPress={() => navigation.navigate('CreateCouple')}>
+                  <Icon
+                    name="plus-circle"
+                    size={45}
+                    color={COLORS.goldenOrange}
+                  />
+                </TouchableOpacity>
+              )}
+            </View>
+          </View>
+          {coupleData?.length > 0 ? (
             <TouchableOpacity
-              style={styles.addButton}
-              onPress={() => navigation.navigate('CreateTraining')}>
-              <Icon name="plus-circle" size={24} color={COLORS.goldenOrange} />
-            </TouchableOpacity>
-          )}
-          {coupleData.length > 0 ? (
-            coupleData.map((couple, index) => (
-              <View key={index}>
-                <View style={styles.section}>
-                  <Icon
-                    name="human-female"
-                    size={24}
-                    color={COLORS.goldenOrange}
-                  />
-                  <View style={styles.viewContainerText}>
-                    <Text style={styles.textLabels}>Nama Pasangan</Text>
-                    <Text style={styles.TextDatas}>
-                      {couple.name_couple || '-'}
-                    </Text>
-                  </View>
-                </View>
-                <View style={styles.section}>
-                  <Icon
-                    name="map-marker"
-                    size={24}
-                    color={COLORS.goldenOrange}
-                  />
-                  <View style={styles.sectionTextContainer}>
-                    <Text style={styles.textLabels}>Domisili</Text>
-                    <Text style={styles.sectionTitle}>
-                      {couple.couple_domisili || '-'}
-                    </Text>
-                  </View>
-                </View>
-                <View style={styles.section}>
-                  <Icon
-                    name="account-child"
-                    size={24}
-                    color={COLORS.goldenOrange}
-                  />
-                  <View style={styles.sectionTextContainer}>
-                    <Text style={styles.textLabels}>Jumlah Anak</Text>
-                    <Text style={styles.sectionTitle}>
-                      {couple.children || '-'}
-                    </Text>
-                  </View>
+              onPress={() =>
+                navigation.navigate('DetailDataCouple', {
+                  data: coupleData[0],
+                })
+              }>
+              <View style={styles.sectionWithIcon}>
+                <Icon name="heart" size={20} color="#FFD700" />
+                <Text style={styles.sectionHeaderText}>Pasangan</Text>
+              </View>
+              <View style={styles.section}>
+                <Icon
+                  name="human-female"
+                  size={24}
+                  color={COLORS.goldenOrange}
+                />
+                <View style={styles.viewContainerText}>
+                  <Text style={styles.textLabels}>Nama Pasangan</Text>
+                  <Text style={styles.TextDatas}>
+                    {coupleData[0]?.name_couple || '-'}
+                  </Text>
                 </View>
               </View>
-            ))
+              <View style={styles.section}>
+                <Icon name="map-marker" size={24} color={COLORS.goldenOrange} />
+                <View style={styles.viewContainerText}>
+                  <Text style={styles.textLabels}>Asal Daerah</Text>
+                  <Text style={styles.TextDatas}>
+                    {coupleData[0]?.couple_domisili || '-'}
+                  </Text>
+                </View>
+              </View>
+              <View style={styles.section}>
+                <Icon
+                  name="account-child"
+                  size={24}
+                  color={COLORS.goldenOrange}
+                />
+                <View style={styles.viewContainerText}>
+                  <Text style={styles.textLabels}>Jumlah Anak</Text>
+                  <Text style={styles.TextDatas}>
+                    {coupleData[0]?.children || '-'}
+                  </Text>
+                </View>
+              </View>
+            </TouchableOpacity>
           ) : (
             <View>
               <Text style={styles.sectionSubtitle}>
@@ -434,60 +452,71 @@ export default function Profile({navigation}) {
           )}
         </TouchableOpacity>
 
-        <Gap height={15} />
         {/* Data Training */}
+        <Gap height={15} />
         <TouchableOpacity activeOpacity={0.9} style={styles.contentCouple}>
-          <Text style={styles.sectionHeader}>Data Pelatihan</Text>
-          {trainingData.length > 0 && (
+          <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+            <Text style={styles.sectionHeader}>Data Pelatihan</Text>
+            <View style={{flexDirection: 'row', alignItems: 'center'}}>
+              {trainingData?.length > 1 && (
+                <TouchableOpacity
+                  style={styles.moreButton}
+                  onPress={() => navigation.navigate('AllDataTraining')}>
+                  <Text style={styles.moreText}>Selengkapnya</Text>
+                </TouchableOpacity>
+              )}
+              {trainingData?.length > 0 && (
+                <TouchableOpacity
+                  style={styles.addButton}
+                  onPress={() => navigation.navigate('CreateTraining')}>
+                  <Icon
+                    name="plus-circle"
+                    size={45}
+                    color={COLORS.goldenOrange}
+                  />
+                </TouchableOpacity>
+              )}
+            </View>
+          </View>
+          {trainingData?.length > 0 ? (
             <TouchableOpacity
-              style={styles.addButton}
-              onPress={() => navigation.navigate('CreateTraining')}>
-              <Icon name="plus-circle" size={24} color={COLORS.goldenOrange} />
+              onPress={() =>
+                navigation.navigate('DetailTraining', {
+                  data: trainingData[0],
+                })
+              }>
+              <View style={styles.sectionWithIcon}>
+                <Icon name="star-circle" size={20} color="#FFD700" />
+                <Text style={styles.sectionHeaderText}>Pelatihan </Text>
+              </View>
+              <View style={styles.section}>
+                <Icon name="book" size={24} color={COLORS.goldenOrange} />
+                <View style={styles.viewContainerText}>
+                  <Text style={styles.textLabels}>Judul</Text>
+                  <Text style={styles.TextDatas}>
+                    {trainingData[0]?.title || '-'}
+                  </Text>
+                </View>
+              </View>
+              <View style={styles.section}>
+                <Icon name="calendar" size={24} color={COLORS.goldenOrange} />
+                <View style={styles.viewContainerText}>
+                  <Text style={styles.textLabels}>Tanggal</Text>
+                  <Text style={styles.TextDatas}>
+                    {trainingData[0]?.date || '-'}
+                  </Text>
+                </View>
+              </View>
+              <View style={styles.section}>
+                <Icon name="tag" size={24} color={COLORS.goldenOrange} />
+                <View style={styles.viewContainerText}>
+                  <Text style={styles.textLabels}>Kategory</Text>
+                  <Text style={styles.TextDatas}>
+                    {trainingData[0]?.category || '-'}
+                  </Text>
+                </View>
+              </View>
             </TouchableOpacity>
-          )}
-          {trainingData.length > 0 ? (
-            trainingData.map((training, index) => (
-              <TouchableOpacity
-                key={index}
-                style={styles.trainingCard}
-                onPress={() =>
-                  navigation.navigate('DetailTraining', {
-                    data: training,
-                  })
-                }>
-                <View style={styles.sectionWithIcon}>
-                  <Icon name="star-circle" size={20} color="#FFD700" />
-                  <Text style={styles.sectionHeaderText}>{`Training ${
-                    index + 1
-                  }`}</Text>
-                </View>
-                <View style={styles.section}>
-                  <Icon name="book" size={24} color={COLORS.goldenOrange} />
-                  <View style={styles.viewContainerText}>
-                    <Text style={styles.textLabels}>Judul</Text>
-                    <Text style={styles.TextDatas}>
-                      {training.title || '-'}
-                    </Text>
-                  </View>
-                </View>
-                <View style={styles.section}>
-                  <Icon name="calendar" size={24} color={COLORS.goldenOrange} />
-                  <View style={styles.viewContainerText}>
-                    <Text style={styles.textLabels}>Tanggal</Text>
-                    <Text style={styles.TextDatas}>{training.date || '-'}</Text>
-                  </View>
-                </View>
-                <View style={styles.section}>
-                  <Icon name="tag" size={24} color={COLORS.goldenOrange} />
-                  <View style={styles.viewContainerText}>
-                    <Text style={styles.textLabels}>Kategory</Text>
-                    <Text style={styles.TextDatas}>
-                      {training.category || '-'}
-                    </Text>
-                  </View>
-                </View>
-              </TouchableOpacity>
-            ))
           ) : (
             <View>
               <Text style={styles.sectionSubtitle}>
@@ -503,68 +532,78 @@ export default function Profile({navigation}) {
           )}
         </TouchableOpacity>
 
-        <Gap height={15} />
         {/* Data Experience */}
+        <Gap height={15} />
         <TouchableOpacity activeOpacity={0.9} style={styles.contentCouple}>
-          <Text style={styles.sectionHeader}>Data Pengalaman</Text>
-          {experienceData.length > 0 && (
-            <TouchableOpacity
-              style={styles.addButton}
-              onPress={() => navigation.navigate('CreateExperience')}>
-              <Icon name="plus-circle" size={24} color={COLORS.goldenOrange} />
-            </TouchableOpacity>
-          )}
-          {experienceData.length > 0 ? (
-            experienceData.map((experience, index) => (
-              <TouchableOpacity
-                key={index}
-                style={styles.trainingCard}
-                onPress={() =>
-                  navigation.navigate('DetailExperience', {
-                    data: experience,
-                  })
-                }>
-                <View style={styles.sectionWithIcon}>
-                  <Icon name="shield-star" size={20} color="#00BFFF" />
-                  <Text style={styles.sectionHeaderText}>{`Experience ${
-                    index + 1
-                  }`}</Text>
-                </View>
-                <View style={styles.section}>
+          <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+            <Text style={styles.sectionHeader}>Data Pengalaman</Text>
+            <View
+              style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+              {experienceData?.length > 1 && (
+                <TouchableOpacity
+                  style={styles.moreButton}
+                  onPress={() => navigation.navigate('AllDataExperience')}>
+                  <Text style={styles.moreText}>Selengkapnya</Text>
+                </TouchableOpacity>
+              )}
+              {experienceData?.length > 0 && (
+                <TouchableOpacity
+                  style={styles.addButton}
+                  onPress={() => navigation.navigate('CreateExperience')}>
                   <Icon
-                    name="office-building"
-                    size={24}
+                    name="plus-circle"
+                    size={45}
                     color={COLORS.goldenOrange}
                   />
-                  <View style={styles.viewContainerText}>
-                    <Text style={styles.textLabels}>Perusahaan</Text>
-                    <Text style={styles.TextDatas}>
-                      {experience.company || '-'}
-                    </Text>
-                  </View>
+                </TouchableOpacity>
+              )}
+            </View>
+          </View>
+          {experienceData?.length > 0 ? (
+            <TouchableOpacity
+              onPress={() =>
+                navigation.navigate('DetailExperience', {
+                  data: experienceData[0],
+                })
+              }>
+              <View style={styles.sectionWithIcon}>
+                <Icon name="shield-star" size={20} color="#00BFFF" />
+                <Text style={styles.sectionHeaderText}>Pengalaman </Text>
+              </View>
+              <View style={styles.section}>
+                <Icon
+                  name="office-building"
+                  size={24}
+                  color={COLORS.goldenOrange}
+                />
+                <View style={styles.viewContainerText}>
+                  <Text style={styles.textLabels}>Perusahaan</Text>
+                  <Text style={styles.TextDatas}>
+                    {experienceData[0]?.company || '-'}
+                  </Text>
                 </View>
-                <View style={styles.section}>
-                  <Icon name="timer" size={24} color={COLORS.goldenOrange} />
-                  <View style={styles.viewContainerText}>
-                    <Text style={styles.textLabels}>Lama Bekerja</Text>
-                    <Text style={styles.TextDatas}>
-                      {experience.length_of_work
-                        ? `${experience.length_of_work} Tahun`
-                        : '-'}
-                    </Text>
-                  </View>
+              </View>
+              <View style={styles.section}>
+                <Icon name="timer" size={24} color={COLORS.goldenOrange} />
+                <View style={styles.viewContainerText}>
+                  <Text style={styles.textLabels}>Lama Bekerja</Text>
+                  <Text style={styles.TextDatas}>
+                    {experienceData[0]?.length_of_work
+                      ? `${experienceData[0]?.length_of_work} Tahun`
+                      : '-'}
+                  </Text>
                 </View>
-                <View style={styles.section}>
-                  <Icon name="account" size={24} color={COLORS.goldenOrange} />
-                  <View style={styles.viewContainerText}>
-                    <Text style={styles.textLabels}>Posisi</Text>
-                    <Text style={styles.TextDatas}>
-                      {experience.position || '-'}
-                    </Text>
-                  </View>
+              </View>
+              <View style={styles.section}>
+                <Icon name="account" size={24} color={COLORS.goldenOrange} />
+                <View style={styles.viewContainerText}>
+                  <Text style={styles.textLabels}>Posisi</Text>
+                  <Text style={styles.TextDatas}>
+                    {experienceData[0]?.position || '-'}
+                  </Text>
                 </View>
-              </TouchableOpacity>
-            ))
+              </View>
+            </TouchableOpacity>
           ) : (
             <View>
               <Text style={styles.sectionSubtitle}>
@@ -581,62 +620,61 @@ export default function Profile({navigation}) {
           )}
         </TouchableOpacity>
 
-        <Gap height={15} />
         {/* Data Family */}
+        <Gap height={15} />
         <TouchableOpacity activeOpacity={0.9} style={styles.contentCouple}>
           <Text style={styles.sectionHeader}>Data Keluarga</Text>
-          {familyData.length > 0 && (
+          {familyData?.length > 0 ? (
             <TouchableOpacity
-              style={styles.addButton}
-              onPress={() => navigation.navigate('CreateFamily')}>
-              <Icon name="plus-circle" size={24} color={COLORS.goldenOrange} />
+              onPress={() =>
+                navigation.navigate('DetailFamily', {
+                  data: familyData[0],
+                })
+              }>
+              <View style={styles.sectionWithIcon}>
+                <Icon name="shield-star" size={20} color="#00BFFF" />
+                <Text style={styles.sectionHeaderText}>Keluarga</Text>
+              </View>
+              <View style={styles.section}>
+                <Icon
+                  name="account-tie"
+                  size={24}
+                  color={COLORS.goldenOrange}
+                />
+                <View style={styles.viewContainerText}>
+                  <Text style={styles.textLabels}>Nama Ayah</Text>
+                  <Text style={styles.TextDatas}>
+                    {familyData[0]?.father || '-'}
+                  </Text>
+                </View>
+              </View>
+              <View style={styles.section}>
+                <Icon
+                  name="account-tie-outline"
+                  size={24}
+                  color={COLORS.goldenOrange}
+                />
+                <View style={styles.viewContainerText}>
+                  <Text style={styles.textLabels}>Nama Ibu</Text>
+                  <Text style={styles.TextDatas}>
+                    {familyData[0]?.mother || '-'}
+                  </Text>
+                </View>
+              </View>
+              <View style={styles.section}>
+                <Icon
+                  name="account-multiple"
+                  size={24}
+                  color={COLORS.goldenOrange}
+                />
+                <View style={styles.viewContainerText}>
+                  <Text style={styles.textLabels}>Nama Kakak</Text>
+                  <Text style={styles.TextDatas}>
+                    {familyData[0]?.brother || '-'}
+                  </Text>
+                </View>
+              </View>
             </TouchableOpacity>
-          )}
-          {familyData.length > 0 ? (
-            familyData.map((family, index) => (
-              <TouchableOpacity
-                key={index}
-                style={styles.trainingCard}
-                onPress={() =>
-                  navigation.navigate('DetailFamily', {
-                    data: family,
-                  })
-                }>
-                <View style={styles.sectionWithIcon}>
-                  <Icon name="shield-star" size={20} color="#00BFFF" />
-                  <Text style={styles.sectionHeaderText}>{`Experience ${
-                    index + 1
-                  }`}</Text>
-                </View>
-                <View style={styles.section}>
-                  <Icon
-                    name="office-building"
-                    size={24}
-                    color={COLORS.goldenOrange}
-                  />
-                  <View style={styles.viewContainerText}>
-                    <Text style={styles.textLabels}>Nama Ibu</Text>
-                    <Text style={styles.TextDatas}>{family.mother || '-'}</Text>
-                  </View>
-                </View>
-                <View style={styles.section}>
-                  <Icon name="timer" size={24} color={COLORS.goldenOrange} />
-                  <View style={styles.viewContainerText}>
-                    <Text style={styles.textLabels}>Nama Kakak</Text>
-                    <Text style={styles.TextDatas}>
-                      {family.brother || '-'}
-                    </Text>
-                  </View>
-                </View>
-                <View style={styles.section}>
-                  <Icon name="account" size={24} color={COLORS.goldenOrange} />
-                  <View style={styles.viewContainerText}>
-                    <Text style={styles.textLabels}>Nama Anak</Text>
-                    <Text style={styles.TextDatas}>{family.child || '-'}</Text>
-                  </View>
-                </View>
-              </TouchableOpacity>
-            ))
           ) : (
             <View>
               <Text style={styles.sectionSubtitle}>
@@ -666,11 +704,38 @@ export default function Profile({navigation}) {
         }}
         buttonTitle="Login Ulang"
       />
+
+      <ModalCustom
+        visible={modalVisible}
+        onRequestClose={() => setModalVisible(false)}
+        iconModalName="alert-circle-outline"
+        title="Data Tidak Lengkap"
+        description={
+          'Data karyawan harus diisi terlebih dahulu sebelum mengupload foto'
+        }
+        buttonSubmit={() => {
+          setModalVisible(false);
+          navigation.navigate('DetailDataSpa');
+        }}
+        buttonTitle="Isi Data Profil"
+      />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
+  moreButton: {
+    alignSelf: 'flex-end',
+    paddingHorizontal: 13,
+    paddingVertical: 7,
+    backgroundColor: COLORS.goldenOrange,
+    borderRadius: 10,
+  },
+  moreText: {
+    fontSize: DIMENS.m,
+    color: COLORS.white,
+    fontWeight: 'bold',
+  },
   editButton: {
     position: 'absolute',
     bottom: 0,
@@ -696,8 +761,8 @@ const styles = StyleSheet.create({
   },
   addButton: {
     position: 'absolute',
-    top: 10,
-    right: 10,
+    top: 163,
+    right: 0,
     zIndex: 10,
   },
   sectionWithIcon: {

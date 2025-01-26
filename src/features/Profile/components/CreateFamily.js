@@ -25,14 +25,17 @@ export default function CreateFamily({navigation}) {
   const [child, setChild] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [tokenExpired, setTokenExpired] = useState(false);
 
   const handleAPI = async data => {
     setIsLoading(true);
     try {
       const userId = await EncryptedStorage.getItem('idUser');
       const response = await addFamilyData(userId, data);
-      console.log('add family', response.message);
-      if (response) {
+
+      if (response.message === 'Silahkan login terlebih dahulu') {
+        setTokenExpired(true);
+      } else if (response) {
         setModalVisible(true);
       }
     } catch (error) {
@@ -105,13 +108,14 @@ export default function CreateFamily({navigation}) {
             </View>
 
             <View style={styles.inputFieldContainer}>
-              <Text style={styles.inputLabel}>Nama Adik</Text>
+              <Text style={styles.inputLabel}>Urutan Anak</Text>
               <TextInput
                 style={styles.input}
                 value={child}
                 onChangeText={setChild}
                 placeholderTextColor={COLORS.grey}
-                placeholder="Nama Adik"
+                placeholder="Anak ke"
+                keyboardType="numeric"
               />
             </View>
           </View>
@@ -134,6 +138,19 @@ export default function CreateFamily({navigation}) {
         description="Data keluarga Anda berhasil ditambahkan!"
         buttonSubmit={() => navigation.goBack()}
         buttonTitle="OK"
+      />
+
+      <ModalCustom
+        visible={tokenExpired}
+        onRequestClose={() => setTokenExpired(false)}
+        iconModalName="lock-alert-outline"
+        title="Sesi Kedaluwarsa"
+        description="Sesi Anda telah berakhir. Silakan login ulang untuk memperbarui data Anda dan melanjutkan aktivitas."
+        buttonSubmit={() => {
+          setTokenExpired(false);
+          navigation.navigate('SignIn');
+        }}
+        buttonTitle="Login Ulang"
       />
     </View>
   );

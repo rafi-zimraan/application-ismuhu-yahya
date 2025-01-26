@@ -2,11 +2,13 @@ import {useFocusEffect} from '@react-navigation/native';
 import moment from 'moment';
 import React, {useCallback, useState} from 'react';
 import {
+  Dimensions,
   Image,
   RefreshControl,
   ScrollView,
   StyleSheet,
   Text,
+  ToastAndroid,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -21,7 +23,10 @@ import {
   MonthSelectorModal,
   fetchMonthlyReportYaumi,
 } from '../../features/AmalYaumi';
+import {FecthMe} from '../../features/authentication';
 import {COLORS, DIMENS} from '../../utils';
+
+const {height} = Dimensions.get('window');
 
 export default function AmalYaumi({navigation}) {
   const today = moment().format('YYYY-MM-DD');
@@ -39,8 +44,18 @@ export default function AmalYaumi({navigation}) {
   const fetchProfileData = useCallback(async () => {
     setLoading(true);
     try {
-      const storedPhoto = await EncryptedStorage.getItem('userPhoto');
-      setPhoto(storedPhoto);
+      const userData = await FecthMe();
+
+      if (userData?.status) {
+        const baseUrl = 'https://app.simpondok.com/';
+        const photoUrl = userData.url_photo
+          ? `${baseUrl}${userData.url_photo}`
+          : null;
+
+        setPhoto(photoUrl);
+      } else {
+        ToastAndroid.show('Gagal memuat data pengguna', ToastAndroid.SHORT);
+      }
 
       const idUser = JSON.parse(await EncryptedStorage.getItem('idUser'));
       if (!idUser) {
@@ -76,7 +91,10 @@ export default function AmalYaumi({navigation}) {
       setScrollData(scrollItems);
       setDaysData(dataMonth);
     } catch (error) {
-      console.error('Error fetching data:', error);
+      ToastAndroid.show(
+        'Terjadi kesalah saat memuat data grafik yaumi',
+        ToastAndroid.SHORT,
+      );
     } finally {
       setLoading(false);
     }
@@ -93,7 +111,7 @@ export default function AmalYaumi({navigation}) {
     try {
       await fetchProfileData();
     } catch (error) {
-      console.error('Error refreshing data:', error);
+      ToastAndroid.show('gagal refresh data', ToastAndroid.SHORT);
     } finally {
       setRefreshing(false);
     }
@@ -151,10 +169,8 @@ export default function AmalYaumi({navigation}) {
           <RefreshControl
             refreshing={refreshing}
             onRefresh={onRefresh}
-            style={{position: 'absolute', top: 200}}
             colors={[COLORS.goldenOrange]}
             tintColor={COLORS.goldenOrange}
-            windowSize={5}
           />
         }>
         <View style={styles.contentDateAndMonth}>
@@ -460,18 +476,20 @@ const styles = StyleSheet.create({
   },
   contentDateAndMonth: {
     backgroundColor: COLORS.goldenOrange,
+    flex: 1,
     padding: 6,
     borderBottomLeftRadius: 38,
     borderBottomRightRadius: 38,
+    minHeight: height * 0.25,
   },
   monthWrapper: {
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 5,
-    paddingVertical: 3,
+    paddingVertical: 13,
   },
   monthText: {
-    fontSize: DIMENS.xxxxxl,
+    fontSize: DIMENS.xxxxl,
     fontWeight: 'bold',
     color: COLORS.black,
     marginRight: 2,

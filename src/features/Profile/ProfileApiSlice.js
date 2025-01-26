@@ -1,5 +1,5 @@
 import EncryptedStorage from 'react-native-encrypted-storage';
-import api from '../../../utils/axiosInstance';
+import api from '../../utils/axiosInstance';
 
 // Couple APIs
 export const getCoupleData = async id_user => {
@@ -165,6 +165,87 @@ export const deleteTraining = async id_training => {
   }
 };
 
+// Upload Training File API
+export const uploadTrainingFile = async (file_type, file, idFileTraining) => {
+  try {
+    const token = await EncryptedStorage.getItem('token');
+    if (!token)
+      throw new Error('Token expired, silahkan login terlebih dahulu');
+
+    const formData = new FormData();
+    formData.append('file_type', file_type);
+    formData.append('file', {
+      uri: file.uri,
+      name: file.name,
+      type: file.type,
+    });
+
+    const response = await api.post(
+      `training/upload-file/${idFileTraining} `,
+      formData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          Authorization: `Bearer ${JSON.parse(token)}`,
+        },
+      },
+    );
+
+    return response.data;
+  } catch (error) {
+    console.log(error.response?.data?.message || error.message);
+    throw error;
+  }
+};
+
+// Delete Training File API
+export const deleteTrainingFile = async id_file_training => {
+  try {
+    const token = await EncryptedStorage.getItem('token');
+    if (!token)
+      throw new Error('Token expired, silahkan login terlebih dahulu');
+
+    const response = await api.delete(
+      `training/delete-file/${id_file_training}`,
+      {
+        headers: {
+          Authorization: `Bearer ${JSON.parse(token)}`,
+        },
+      },
+    );
+
+    if (response.data?.status === true) {
+      console.log(response.data?.message || 'File training berhasil dihapus');
+      return true;
+    } else {
+      throw new Error('Gagal menghapus file training');
+    }
+  } catch (error) {
+    console.log(error.response?.data?.message || error.message);
+    throw error;
+  }
+};
+
+// Get Training File List API
+export const getTrainingFileList = async id_file_training => {
+  try {
+    const token = await EncryptedStorage.getItem('token');
+    if (!token)
+      throw new Error('Token expired, silahkan login terlebih dahulu');
+
+    const response = await api.get(`training/list-file/${id_file_training}`, {
+      headers: {
+        Authorization: `Bearer ${JSON.parse(token)}`,
+      },
+    });
+
+    return response.data || [];
+  } catch (error) {
+    console.log(error.response?.data?.message || error.message);
+    throw error;
+  }
+};
+
 // Experience APIs
 export const getExperienceData = async id_user => {
   try {
@@ -290,7 +371,7 @@ export const addFamilyData = async (id_user, data) => {
     if (!token)
       throw new Error('Token expired, silahkan login terlebih dahulu');
 
-    const response = await api.post(`family/user/${id_user}`, data, {
+    const response = await api.post(`mobile/family/user/${id_user}/add`, data, {
       headers: {
         Authorization: `Bearer ${JSON.parse(token)}`,
       },
@@ -309,7 +390,7 @@ export const updateFamilyData = async (id_family, data) => {
     if (!token)
       throw new Error('Token expired, silahkan login terlebih dahulu');
 
-    const response = await api.patch(`family/${id_family}`, data, {
+    const response = await api.patch(`mobile/family/${id_family}`, data, {
       headers: {
         Authorization: `Bearer ${JSON.parse(token)}`,
       },
@@ -328,7 +409,7 @@ export const deleteFamilyData = async id_family => {
     if (!token)
       throw new Error('Token expired, silahkan login terlebih dahulu');
 
-    const response = await api.delete(`family/${id_family}`, {
+    const response = await api.delete(`mobile/family/${id_family}`, {
       headers: {
         Authorization: `Bearer ${JSON.parse(token)}`,
       },
@@ -346,13 +427,32 @@ export const deleteFamilyData = async id_family => {
   }
 };
 
-export const getFamilyDetails = async id_user => {
+export const getFamilyData = async (id_user, data) => {
   try {
     const token = await EncryptedStorage.getItem('token');
     if (!token)
       throw new Error('Token expired, silahkan login terlebih dahulu');
 
-    const response = await api.get(`family/user/${id_user}/detail`, {
+    const response = await api.get(`mobile/family/user/${id_user}`, data, {
+      headers: {
+        Authorization: `Bearer ${JSON.parse(token)}`,
+      },
+    });
+    return response.data || [];
+  } catch (error) {
+    console.log(error.response?.data?.message || error.message);
+    throw error;
+  }
+};
+
+// Fetch Detail Data SPA
+export const getAllDataSpa = async id_user => {
+  try {
+    const token = await EncryptedStorage.getItem('token');
+    if (!token)
+      throw new Error('Token expired, silahkan login terlebih dahulu');
+
+    const response = await api.get(`spas/${id_user}`, {
       headers: {
         Authorization: `Bearer ${JSON.parse(token)}`,
       },
@@ -365,13 +465,53 @@ export const getFamilyDetails = async id_user => {
   }
 };
 
-export const getFamilyData = async (id_user, data) => {
+// Update SPA Data
+export const updateSpaData = async (id_user, data) => {
   try {
     const token = await EncryptedStorage.getItem('token');
     if (!token)
       throw new Error('Token expired, silahkan login terlebih dahulu');
 
-    const response = await api.get(`family/user/${id_user}/data`, data, {
+    const response = await api.patch(`spas/${id_user}`, data, {
+      headers: {
+        Authorization: `Bearer ${JSON.parse(token)}`,
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+    });
+
+    return response.data;
+  } catch (error) {
+    console.log(error.response?.data?.message || error.message);
+    throw error;
+  }
+};
+
+export const getProvinces = async () => {
+  try {
+    const token = await EncryptedStorage.getItem('token');
+    if (!token)
+      throw new Error('Token expired, silahkan login terlebih dahulu');
+
+    const response = await api.get('provinces', {
+      headers: {
+        Authorization: `Bearer ${JSON.parse(token)}`,
+      },
+    });
+
+    return response.data || [];
+  } catch (error) {
+    console.log(error.response?.data?.message || error.message);
+    throw error;
+  }
+};
+
+export const getCitiesByProvince = async province_id => {
+  try {
+    const token = await EncryptedStorage.getItem('token');
+    if (!token)
+      throw new Error('Token expired, silahkan login terlebih dahulu');
+
+    const response = await api.get(`city-province/${province_id}`, {
       headers: {
         Authorization: `Bearer ${JSON.parse(token)}`,
       },

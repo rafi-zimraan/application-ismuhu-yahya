@@ -16,7 +16,6 @@ import {COLORS} from '../../utils';
 
 export default function DrawerContent() {
   const [userData, setUserData] = useState({name: '', email: ''});
-  console.log(setUserData);
   const navigation = useNavigation;
 
   useEffect(() => {

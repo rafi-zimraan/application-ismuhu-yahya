@@ -20,7 +20,6 @@ const Tab = createMaterialTopTabNavigator();
 
 export default function TopTabBar({navigation, route}) {
   const {dataHistory} = route.params;
-  console.log('data history', dataHistory);
   const [callbacks, setCallbacks] = useState({});
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
   const [selectedDeleteId, setSelectedDeleteId] = useState(null);

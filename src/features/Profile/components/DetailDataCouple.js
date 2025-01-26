@@ -29,6 +29,7 @@ export default function DetailDataCouple({route, navigation}) {
   const [isLoading, setIsLoading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [isDeleted, setIsDeleted] = useState(false);
+  const [tokenExpired, setTokenExpired] = useState(false);
 
   const [editedData, setEditedData] = useState({
     name_couple: data.name_couple,
@@ -39,10 +40,16 @@ export default function DetailDataCouple({route, navigation}) {
   const handleUpdate = async () => {
     setIsLoading(true);
     try {
-      await updateCouple(data.id, editedData);
-      ToastAndroid.show('Data berhasil diperbarui!', ToastAndroid.SHORT);
-      setEditModalVisible(false);
+      const response = await updateCouple(data.id, editedData);
+
+      if (response.message === 'Silahkan login terlebih dahulu') {
+        setTokenExpired(true);
+      } else {
+        ToastAndroid.show('Data berhasil diperbarui!', ToastAndroid.SHORT);
+        setEditModalVisible(false);
+      }
     } catch (error) {
+      ToastAndroid.show('Berhasil update data pasangan', ToastAndroid.SHORT);
       console.log('Error updating data:', error.message);
     } finally {
       setIsLoading(false);
@@ -56,7 +63,7 @@ export default function DetailDataCouple({route, navigation}) {
       setIsDeleted(true);
       setDeleteModalVisible(false);
     } catch (error) {
-      console.log('Error deleting data:', error.message);
+      // console.log('Error deleting data:', error.message);
     } finally {
       setIsLoading(false);
     }
@@ -67,7 +74,7 @@ export default function DetailDataCouple({route, navigation}) {
     try {
       console.log('Data refreshed');
     } catch (error) {
-      console.log('Error during refresh:', error);
+      // console.log('Error during refresh:', error);
     } finally {
       setRefreshing(false);
     }
@@ -103,7 +110,7 @@ export default function DetailDataCouple({route, navigation}) {
                   <View style={styles.viewContentText}>
                     <Text style={styles.textTitle}>Nama Pasangan</Text>
                     <Text style={styles.label}>
-                      {editedData.name_couple || '-'}
+                      {editedData?.name_couple || '-'}
                     </Text>
                   </View>
                 </View>
@@ -117,7 +124,7 @@ export default function DetailDataCouple({route, navigation}) {
                   <View style={styles.viewContentText}>
                     <Text style={styles.textTitle}>Jumlah Anak</Text>
                     <Text style={styles.label}>
-                      {editedData.children || '-'}
+                      {editedData?.children || '-'}
                     </Text>
                   </View>
                 </View>
@@ -130,7 +137,7 @@ export default function DetailDataCouple({route, navigation}) {
                   <View style={styles.viewContentText}>
                     <Text style={styles.textTitle}>Domisili</Text>
                     <Text style={styles.label}>
-                      {editedData.couple_domisili || '-'}
+                      {editedData?.couple_domisili || '-'}
                     </Text>
                   </View>
                 </View>
@@ -221,6 +228,19 @@ export default function DetailDataCouple({route, navigation}) {
         ColorIcon={COLORS.red}
         BackgroundButtonAction={COLORS.red}
         TextColorButton={COLORS.white}
+      />
+
+      <ModalCustom
+        visible={tokenExpired}
+        onRequestClose={() => setTokenExpired(false)}
+        iconModalName="lock-alert-outline"
+        title="Sesi Kedaluwarsa"
+        description="Sesi Anda telah berakhir. Silakan login ulang untuk memperbarui data Anda dan melanjutkan aktivitas."
+        buttonSubmit={() => {
+          setTokenExpired(false);
+          navigation.navigate('SignIn');
+        }}
+        buttonTitle="Login Ulang"
       />
     </View>
   );

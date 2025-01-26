@@ -1,14 +1,18 @@
+import AllDataCouple from './components/AllDataCouple';
+import AllDataExperience from './components/AllDataExperience';
+import AllDataTraining from './components/AllDataTraining';
 import CreateCouple from './components/CreateCouple';
 import CreateExperience from './components/CreateExperience';
 import CreateFamily from './components/CreateFamily';
-import CreateProfileSpa from './components/CreateProfileSpa';
 import CreateTraining from './components/CreateTraining';
 import DetailDataCouple from './components/DetailDataCouple';
-import DetailDataProfileSpa from './components/DetailDataProfileSpa';
+import DetailDataSpa from './components/DetailDataSpa';
 import DetailExperience from './components/DetailExperience';
 import DetailFamily from './components/DetailFamily';
 import DetailTraining from './components/DetailTraining';
 import SectionWithData from './components/SectionWithData';
+import UpdateDataSpa from './components/UpdateDataSpa';
+
 import {
   addCouple,
   addExperience,
@@ -18,24 +22,33 @@ import {
   deleteExperience,
   deleteFamilyData,
   deleteTraining,
+  deleteTrainingFile,
+  getAllDataSpa,
+  getCitiesByProvince,
   getCoupleData,
   getExperienceData,
   getFamilyData,
-  getFamilyDetails,
+  getProvinces,
   getTrainingData,
+  getTrainingFileList,
   updateCouple,
   updateExperience,
   updateFamilyData,
+  updateSpaData,
   updateTraining,
   uploadPhotoProfile,
-} from './services/ProfileApiSlice';
+  uploadTrainingFile,
+} from './ProfileApiSlice';
 
 // component
 export {
+  UpdateDataSpa,
+  AllDataExperience,
+  AllDataCouple,
+  AllDataTraining,
   DetailFamily,
   CreateFamily,
-  CreateProfileSpa,
-  DetailDataProfileSpa,
+  DetailDataSpa,
   CreateCouple,
   DetailDataCouple,
   DetailTraining,
@@ -46,8 +59,14 @@ export {
 };
 // slice
 export {
+  getProvinces,
+  getCitiesByProvince,
+  getAllDataSpa,
+  updateSpaData,
+  uploadTrainingFile,
+  deleteTrainingFile,
+  getTrainingFileList,
   getFamilyData,
-  getFamilyDetails,
   deleteFamilyData,
   updateFamilyData,
   addFamilyData,

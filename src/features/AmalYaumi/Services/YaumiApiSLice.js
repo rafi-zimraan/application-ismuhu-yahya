@@ -9,7 +9,7 @@ export const fetchGetYaumi = async (id_user, haid = 0) => {
       throw new Error('Token expired, silahkan login terlebih dahulu');
 
     const response = await api.get(
-      `/micro-yaumis/user/${id_user}?haid=${haid}`,
+      `micro-yaumis/user/${id_user}?haid=${haid}`,
       {
         headers: {
           Authorization: `Bearer ${JSON.parse(token)}`,
@@ -43,7 +43,7 @@ export const addYaumiNotes = async (user_id, datas) => {
       throw new Error('Token kedaluwarsa, silakan login terlebih dahulu');
 
     const response = await api.post(
-      '/yaumi-notes',
+      'yaumi-notes',
       {
         user_id,
         datas,
@@ -80,7 +80,7 @@ export const fetchMonthlyReportYaumi = async user_id => {
     if (!token)
       throw new Error('Token expired, silahkan login terlebih dahulu');
 
-    const response = await api.get(`/mobile/report-yaumis/user/${user_id}`, {
+    const response = await api.get(`mobile/report-yaumis/user/${user_id}`, {
       headers: {
         Authorization: `Bearer ${JSON.parse(token)}`,
       },
@@ -88,6 +88,7 @@ export const fetchMonthlyReportYaumi = async user_id => {
 
     return response.data || {};
   } catch (error) {
+    console.log('error', error.message);
     if (error.response?.status === 404) {
       ToastAndroid.show(
         'Data tidak ditemukan. Silakan hubungi developer.',

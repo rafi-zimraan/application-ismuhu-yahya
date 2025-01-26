@@ -4,6 +4,7 @@ import {
   StatusBar,
   StyleSheet,
   Text,
+  ToastAndroid,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -58,7 +59,11 @@ export default function OnBoarding({navigation}) {
       await EncryptedStorage.setItem('is_boarding', 'true');
       navigation.replace('SignIn');
     } catch (error) {
-      console.log('error saving onboarding status', error);
+      ToastAndroid.show(
+        'Terjadi kesalahan saat menyimpan status onboarding',
+        ToastAndroid.SHORT,
+      );
+      // console.log('error saving onboarding status', error);
     }
   };
 

@@ -20,16 +20,19 @@ import {
   ScannerQrCodeByCategoryAbsensi,
 } from '../features/PresenceEmployee';
 import {
+  AllDataCouple,
+  AllDataExperience,
+  AllDataTraining,
   CreateCouple,
   CreateExperience,
   CreateFamily,
-  CreateProfileSpa,
   CreateTraining,
   DetailDataCouple,
-  DetailDataProfileSpa,
+  DetailDataSpa,
   DetailExperience,
   DetailFamily,
   DetailTraining,
+  UpdateDataSpa,
 } from '../features/Profile';
 import {
   AboutApplication,
@@ -99,13 +102,13 @@ export default function Navigator() {
       <Stack.Screen name="CreateTraining" component={CreateTraining} />
       <Stack.Screen name="DetailExperience" component={DetailExperience} />
       <Stack.Screen name="CreateExperience" component={CreateExperience} />
-      <Stack.Screen
-        name="DetailDataProfileSpa"
-        component={DetailDataProfileSpa}
-      />
-      <Stack.Screen name="CreateProfileSpa" component={CreateProfileSpa} />
+      <Stack.Screen name="DetailDataSpa" component={DetailDataSpa} />
       <Stack.Screen name="CreateFamily" component={CreateFamily} />
       <Stack.Screen name="DetailFamily" component={DetailFamily} />
+      <Stack.Screen name="AllDataCouple" component={AllDataCouple} />
+      <Stack.Screen name="AllDataTraining" component={AllDataTraining} />
+      <Stack.Screen name="AllDataExperience" component={AllDataExperience} />
+      <Stack.Screen name="UpdateDataSpa" component={UpdateDataSpa} />
 
       {/* Setting  */}
       <Stack.Screen name="Settings" component={Settings} />

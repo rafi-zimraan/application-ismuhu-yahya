@@ -29,6 +29,7 @@ export default function DetailExperience({route, navigation}) {
   const [isLoading, setIsLoading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [isDeleted, setIsDeleted] = useState(false);
+  const [tokenExpired, setTokenExpired] = useState(false);
 
   const [editedData, setEditedData] = useState({
     company: data.company,
@@ -39,14 +40,20 @@ export default function DetailExperience({route, navigation}) {
   const handleUpdate = async () => {
     setIsLoading(true);
     try {
-      await updateExperience(data.id, editedData);
-      ToastAndroid.show(
-        'Data pengalaman berhasil diperbarui!',
-        ToastAndroid.SHORT,
-      );
-      setEditModalVisible(false);
+      const response = await updateExperience(data.id, editedData);
+
+      if (response.message === 'Silahkan login terlebih dahulu') {
+        setTokenExpired(true);
+      } else {
+        ToastAndroid.show(
+          'Data pengalaman berhasil diperbarui!',
+          ToastAndroid.SHORT,
+        );
+        setEditModalVisible(false);
+      }
     } catch (error) {
-      console.log('Error updating experience:', error.message);
+      ToastAndroid.show('Gagal Update data pengalaman', ToastAndroid.SHORT);
+      // console.log('Error updating experience:', error.message);
     } finally {
       setIsLoading(false);
     }
@@ -59,7 +66,7 @@ export default function DetailExperience({route, navigation}) {
       setIsDeleted(true);
       setDeleteModalVisible(false);
     } catch (error) {
-      console.log('Error deleting experience:', error.message);
+      // console.log('Error deleting experience:', error.message);
     } finally {
       setIsLoading(false);
     }
@@ -82,7 +89,7 @@ export default function DetailExperience({route, navigation}) {
       <Background />
       <View style={styles.headerWrapper}>
         <HeaderTransparent
-          title="Detail Experience"
+          title="Detail Pengalaman"
           icon="arrow-left-circle-outline"
           onPress={() => navigation.goBack()}
         />
@@ -108,7 +115,7 @@ export default function DetailExperience({route, navigation}) {
                     color={COLORS.goldenOrange}
                   />
                   <View style={styles.viewContentText}>
-                    <Text style={styles.textTitle}>Company</Text>
+                    <Text style={styles.textTitle}>Nama Perusahaan</Text>
                     <Text style={styles.label}>
                       {editedData.company || '-'}
                     </Text>
@@ -117,7 +124,7 @@ export default function DetailExperience({route, navigation}) {
                 <View style={styles.section}>
                   <Icon name="timer" size={24} color={COLORS.goldenOrange} />
                   <View style={styles.viewContentText}>
-                    <Text style={styles.textTitle}>Length of Work</Text>
+                    <Text style={styles.textTitle}>Lama Bekerja</Text>
                     <Text style={styles.label}>
                       {editedData.length_of_work
                         ? `${editedData.length_of_work} Tahun`
@@ -128,7 +135,7 @@ export default function DetailExperience({route, navigation}) {
                 <View style={styles.section}>
                   <Icon name="account" size={24} color={COLORS.goldenOrange} />
                   <View style={styles.viewContentText}>
-                    <Text style={styles.textTitle}>Position</Text>
+                    <Text style={styles.textTitle}>Posisi</Text>
                     <Text style={styles.label}>
                       {editedData.position || '-'}
                     </Text>
@@ -170,7 +177,7 @@ export default function DetailExperience({route, navigation}) {
         BackgroundButtonAction={COLORS.goldenOrange}
         TextColorButton={COLORS.white}>
         <View>
-          <Text style={styles.inputLabel}>Company</Text>
+          <Text style={styles.inputLabel}>Nama Perusahan</Text>
           <Gap height={5} />
           <TextInput
             style={styles.input}
@@ -179,18 +186,22 @@ export default function DetailExperience({route, navigation}) {
             placeholderTextColor={COLORS.grey}
             onChangeText={text => setEditedData({...editedData, company: text})}
           />
-          <Text style={styles.inputLabel}>Length of Work</Text>
+          <Text style={styles.inputLabel}>Lama Bekerja</Text>
           <Gap height={5} />
           <TextInput
             style={styles.input}
-            value={editedData.length_of_work}
-            placeholder="Length of Work"
+            value={String(editedData.length_of_work || '')}
+            placeholder="Berapa lamaa kerja.."
+            keyboardType="numeric"
             placeholderTextColor={COLORS.grey}
             onChangeText={text =>
-              setEditedData({...editedData, length_of_work: text})
+              setEditedData({
+                ...editedData,
+                length_of_work: Number(text) || '',
+              })
             }
           />
-          <Text style={styles.inputLabel}>Position</Text>
+          <Text style={styles.inputLabel}>Posisi</Text>
           <Gap height={5} />
           <TextInput
             style={styles.input}
@@ -217,6 +228,19 @@ export default function DetailExperience({route, navigation}) {
         ColorIcon={COLORS.red}
         BackgroundButtonAction={COLORS.red}
         TextColorButton={COLORS.white}
+      />
+
+      <ModalCustom
+        visible={tokenExpired}
+        onRequestClose={() => setTokenExpired(false)}
+        iconModalName="lock-alert-outline"
+        title="Sesi Kedaluwarsa"
+        description="Sesi Anda telah berakhir. Silakan login ulang untuk memperbarui data Anda dan melanjutkan aktivitas."
+        buttonSubmit={() => {
+          setTokenExpired(false);
+          navigation.navigate('SignIn');
+        }}
+        buttonTitle="Login Ulang"
       />
     </View>
   );

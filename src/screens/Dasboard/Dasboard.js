@@ -1,5 +1,5 @@
-import {useIsFocused} from '@react-navigation/native';
-import React, {useEffect, useState} from 'react';
+import {useFocusEffect, useIsFocused} from '@react-navigation/native';
+import React, {useCallback, useState} from 'react';
 import {
   ActivityIndicator,
   ImageBackground,
@@ -10,7 +10,6 @@ import {
   StyleSheet,
   View,
 } from 'react-native';
-import EncryptedStorage from 'react-native-encrypted-storage';
 import {Gap} from '../../Component';
 import {ICON_DASBOARD} from '../../assets';
 import {
@@ -51,39 +50,45 @@ export default function Dasboard({navigation}) {
     openNetworkSettings,
   } = useNetworkStatus(isFocused);
 
-  const onRefresh = () => {
+  const onRefresh = async () => {
     setRefreshing(true);
-    setTimeout(() => setRefreshing(false), 2000);
+    await fetchUserSession();
+    setRefreshing(false);
   };
 
-  const fetchUserSession = async () => {
+  const fetchUserSession = useCallback(async () => {
     try {
-      const storedPhoto = await EncryptedStorage.getItem('userPhoto');
-      setPhoto(storedPhoto);
-
       const response = await FecthMe();
-      console.log('response', response);
       if (response.message === 'Silahkan login terlebih dahulu') {
         setTokenExpired(true);
       }
 
-      const santriTotal = response?.data_users?.santris?.tot_santri || 0;
-      const spaTotal = response?.data_users?.spa?.tot_spa || 0;
+      if (response?.status) {
+        const baseUrl = 'https://app.simpondok.com/';
+        const photoUrl = response?.url_photo
+          ? `${baseUrl}${response.url_photo}`
+          : null;
 
-      setAmountSantri(santriTotal);
-      setAmountSpa(spaTotal);
+        setPhoto(photoUrl);
+        const santriTotal = response?.data_users?.santris?.tot_santri || 0;
+        const spaTotal = response?.data_users?.spa?.tot_spa || 0;
+
+        setAmountSantri(santriTotal);
+        setAmountSpa(spaTotal);
+      } else {
+        console.log('Error fetching user session:', response?.message);
+      }
     } catch (e) {
       console.log('error checking session', e);
       setTokenExpired(false);
     }
-  };
+  }, []);
 
-  useEffect(() => {
-    if (isFocused) {
+  useFocusEffect(
+    useCallback(() => {
       fetchUserSession();
-    }
-  }, [isFocused]);
-
+    }, [fetchUserSession]),
+  );
   return (
     <SafeAreaView style={{flex: 1}}>
       <StatusBar barStyle="default" backgroundColor="transparent" />

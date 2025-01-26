@@ -26,6 +26,7 @@ export default function CreateCouple({navigation}) {
   const [children, setChildren] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [tokenExpired, setTokenExpired] = useState(false);
 
   const handleAPI = async data => {
     setIsLoading(true);
@@ -33,12 +34,14 @@ export default function CreateCouple({navigation}) {
       const userId = await EncryptedStorage.getItem('idUser');
       const response = await addCouple(userId, data);
 
-      if (response) {
+      if (response.message === 'Silahkan login terlebih dahulu') {
+        setTokenExpired(true);
+      } else if (response) {
         setModalVisible(true);
       }
     } catch (error) {
-      console.log('error', error.message);
-      ToastAndroid.show(error.response?.data?.message, ToastAndroid.SHORT);
+      // console.log('error', error.message);
+      ToastAndroid.show('Gagal membuat data pasangan', ToastAndroid.SHORT);
     } finally {
       setIsLoading(false);
     }
@@ -121,6 +124,19 @@ export default function CreateCouple({navigation}) {
         buttonTitle="OK"
         description="Selamat melanjutkan aktivitas anda.. semoga di permudah aktivitasnya yaa 😆"
         buttonSubmit={() => navigation.goBack()}
+      />
+
+      <ModalCustom
+        visible={tokenExpired}
+        onRequestClose={() => setTokenExpired(false)}
+        iconModalName="lock-alert-outline"
+        title="Sesi Kedaluwarsa"
+        description="Sesi Anda telah berakhir. Silakan login ulang untuk memperbarui data Anda dan melanjutkan aktivitas."
+        buttonSubmit={() => {
+          setTokenExpired(false);
+          navigation.navigate('SignIn');
+        }}
+        buttonTitle="Login Ulang"
       />
     </View>
   );

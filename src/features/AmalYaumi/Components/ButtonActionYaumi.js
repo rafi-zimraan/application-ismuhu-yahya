@@ -35,7 +35,6 @@ export default function ButtonActionYaumi({
         datas: userSelections,
       };
       const response = await addYaumiNotes(payload.user_id, payload.datas);
-      console.log('response', response);
       if (response.status) {
         navigation.goBack();
         ToastAndroid.show('Data berhasil dikirim!', ToastAndroid.SHORT);
@@ -44,9 +43,8 @@ export default function ButtonActionYaumi({
         ToastAndroid.show('Data gagal dikirim.', ToastAndroid.SHORT);
       }
     } catch (error) {
-      console.error('Error saat mengirim data:', error);
       ToastAndroid.show(
-        'Terjadi kesalahan. Silakan coba lagi.',
+        'Terjadi kesalahan saat mengirim data, Silakan coba lagi.',
         ToastAndroid.LONG,
       );
     } finally {

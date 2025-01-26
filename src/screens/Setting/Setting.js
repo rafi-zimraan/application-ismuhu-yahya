@@ -10,13 +10,12 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import EncryptedStorage from 'react-native-encrypted-storage';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useDispatch, useSelector} from 'react-redux';
 import {Background, Gap, ModalCustom} from '../../Component';
 import {Translations} from '../../features/Language';
-import {getCoupleData} from '../../features/Profile';
-import {logout} from '../../features/authentication';
+import {getAllDataSpa} from '../../features/Profile';
+import {FecthMe, logout} from '../../features/authentication';
 import {COLORS} from '../../utils';
 import {DIMENS} from '../../utils/dimens';
 
@@ -29,20 +28,33 @@ export default function Settings({navigation}) {
   const [userName, setUserName] = useState('');
   const [email, setEmail] = useState('');
   const [photo, setPhoto] = useState(null);
+  const [tokenExpired, setTokenExpired] = useState(false);
 
   const t = key => Translations[currentLanguage][key];
 
   const fetchProfileData = useCallback(async () => {
     try {
-      const storedPhoto = await EncryptedStorage.getItem('userPhoto');
-      const userId = JSON.parse(await EncryptedStorage.getItem('idUser'));
-      const coupleDataResponse = await getCoupleData(userId);
-      setPhoto(storedPhoto);
+      const userData = await FecthMe();
 
-      if (coupleDataResponse?.status && coupleDataResponse?.data) {
-        const {user, couples} = coupleDataResponse.data;
-        setUserName(couples?.[0]?.name_couple);
-        setEmail(user?.email);
+      if (userData?.status) {
+        const baseUrl = 'https://app.simpondok.com/';
+        const photoUrl = userData.url_photo
+          ? `${baseUrl}${userData.url_photo}`
+          : null;
+
+        setPhoto(photoUrl);
+        setUserName(userData.username || '-');
+
+        const userId = userData.user_id;
+        const spaData = await getAllDataSpa(userId);
+
+        if (spaData?.status && spaData?.data) {
+          setEmail(spaData.data.email || '-');
+        } else {
+          setEmail('-');
+        }
+      } else if (userData?.message === 'Silahkan login terlebih dahulu') {
+        setTokenExpired(true);
       }
     } catch (error) {
       console.log('Error fetching profile data:', error);
@@ -70,7 +82,6 @@ export default function Settings({navigation}) {
   return (
     <SafeAreaView style={{flex: 1}}>
       <StatusBar barStyle={'default'} backgroundColor={'transparent'} />
-      {/* Navbar */}
       <View style={styles.navbar}>
         <Text style={styles.navbarTitle}>{t('name_settings')}</Text>
       </View>
@@ -101,7 +112,7 @@ export default function Settings({navigation}) {
 
         {/* Pengaturan Akun */}
         <Text style={styles.sectionHeader}>{t('account_settings')}</Text>
-        <TouchableOpacity
+        {/* <TouchableOpacity
           style={styles.section}
           activeOpacity={0.6}
           onPress={() => navigation.navigate('PrivasiSetting')}>
@@ -112,7 +123,7 @@ export default function Settings({navigation}) {
               {t('privacy_description')}
             </Text>
           </View>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
 
         {/* Ganti Password */}
         <TouchableOpacity
@@ -163,6 +174,7 @@ export default function Settings({navigation}) {
             <Text style={styles.sectionSubtitle}>{t('faq_description')}</Text>
           </View>
         </TouchableOpacity>
+        <Gap height={5} />
 
         <TouchableOpacity
           style={styles.section}
@@ -211,6 +223,19 @@ export default function Settings({navigation}) {
         buttonTitle={t('logout')}
         iconModalName={'logout'}
         buttonLoading={loadingLogout}
+      />
+
+      <ModalCustom
+        visible={tokenExpired}
+        onRequestClose={() => setTokenExpired(false)}
+        iconModalName="lock-alert-outline"
+        title="Sesi Kedaluwarsa"
+        description="Sesi Anda telah berakhir. Silakan login ulang untuk memperbarui data Anda dan melanjutkan aktivitas."
+        buttonSubmit={() => {
+          setTokenExpired(false);
+          navigation.navigate('SignIn');
+        }}
+        buttonTitle="Login Ulang"
       />
     </SafeAreaView>
   );

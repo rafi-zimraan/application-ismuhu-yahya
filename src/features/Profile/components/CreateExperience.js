@@ -27,6 +27,7 @@ export default function CreateExperience({navigation}) {
   const [description, setDescription] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [tokenExpired, setTokenExpired] = useState(false);
 
   const handleAPI = async data => {
     setIsLoading(true);
@@ -34,7 +35,9 @@ export default function CreateExperience({navigation}) {
       const userId = await EncryptedStorage.getItem('idUser');
       const response = await addExperience(userId, data);
 
-      if (response) {
+      if (response.message === 'Silahkan login terlebih dahulu') {
+        setTokenExpired(true);
+      } else if (response) {
         setModalVisible(true);
       }
     } catch (error) {
@@ -138,6 +141,19 @@ export default function CreateExperience({navigation}) {
         description="Data pengalaman kerja Anda berhasil ditambahkan!"
         buttonSubmit={() => navigation.goBack()}
         buttonTitle="OK"
+      />
+
+      <ModalCustom
+        visible={tokenExpired}
+        onRequestClose={() => setTokenExpired(false)}
+        iconModalName="lock-alert-outline"
+        title="Sesi Kedaluwarsa"
+        description="Sesi Anda telah berakhir. Silakan login ulang untuk memperbarui data Anda dan melanjutkan aktivitas."
+        buttonSubmit={() => {
+          setTokenExpired(false);
+          navigation.navigate('SignIn');
+        }}
+        buttonTitle="Login Ulang"
       />
     </View>
   );
