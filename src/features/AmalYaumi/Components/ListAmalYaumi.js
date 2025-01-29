@@ -59,24 +59,41 @@ export default function ListAmalYaumi({navigation}) {
 
         note_yaumi.forEach(note => {
           const yaumiId = String(note.yaumi_id);
-          const {yaumi_id, desc, sub_yaumi_note} = note;
+          const {yaumi_id, desc, sub_yaumi_note, is_fill} = note;
 
           if (note.yaumi.type_tag === 'text') {
-            preFilledSelections[yaumi_id] = {desc: desc ?? ''};
+            preFilledSelections[yaumi_id] = {
+              desc: desc ?? '',
+              is_fill: is_fill,
+            };
           } else if (note.yaumi.type_tag === 'options') {
             const selectedSub = sub_yaumi_note[0]?.sub_yaumi_id || null;
             preFilledSelections[yaumi_id] = {
               subs: selectedSub ? [String(selectedSub)] : [],
+              is_fill: is_fill,
             };
           } else if (note.yaumi.type_tag === 'checklist') {
-            const selectedSubs = sub_yaumi_note.map(sub =>
-              String(sub.sub_yaumi_id),
-            );
-            preFilledSelections[yaumi_id] = {subs: selectedSubs};
+            if (sub_yaumi_note.length === 0) {
+              // Checklist tanpa sub_yaumi, tetapi pernah diisi
+              preFilledSelections[yaumiId] = {
+                subs: is_fill ? [yaumiId] : [], // Tetap set checklist jika pernah diisi
+                is_fill: is_fill,
+              };
+            } else {
+              // Checklist dengan sub_yaumi
+              const selectedSubs = sub_yaumi_note.map(sub =>
+                String(sub.sub_yaumi_id),
+              );
+              preFilledSelections[yaumiId] = {
+                subs: selectedSubs,
+                is_fill: selectedSubs.length > 0 ? 1 : 0,
+              };
+            }
           } else if (note.yaumi.type_tag === 'dropdown') {
             const selectedSub = sub_yaumi_note[0]?.sub_yaumi_id || null;
             preFilledSelections[yaumi_id] = {
               subs: selectedSub ? [String(selectedSub)] : [],
+              is_fill: selectedSub ? 1 : 0,
             };
             dropdownVisibility[yaumiId] = true;
             dropdownSelections[yaumiId] = selectedSub
@@ -156,29 +173,40 @@ export default function ListAmalYaumi({navigation}) {
 
       let subs = [];
       let desc = null;
+      let isFill = 0;
 
       if (type === 'text') {
         desc = selectedOptions[yaumiId]?.desc ?? '';
-      } else if (
-        (type === 'options' || type === 'checklist' || type === 'dropdown') &&
-        selectedOptions[yaumiId]?.subs?.length > 0
-      ) {
+        isFill = desc.trim() !== '' ? 1 : 0;
+      } else if (type === 'checklist') {
+        if (item.sub_yaumi.length > 0) {
+          // Checklist dengan sub_yaumi, kirim subs
+          subs = selectedOptions[yaumiId]?.subs || [];
+          isFill = subs.length > 0 ? 1 : 0;
+        } else {
+          // Checklist tanpa sub_yaumi, kirim subs sebagai array kosong
+          isFill = selectedOptions[yaumiId]?.subs?.length > 0 ? 1 : 0;
+          subs = [];
+        }
+      } else if (type === 'options' || type === 'dropdown') {
         subs = selectedOptions[yaumiId]?.subs || [];
-      } else if (
-        type === 'options' ||
-        type === 'checklist' ||
-        type === 'dropdown'
-      ) {
-        subs = [];
+        isFill = subs.length > 0 ? 1 : 0;
       }
 
-      selections.push({
+      const selectionData = {
         yaumi_id: yaumiId,
+        is_fill: isFill,
         subs: subs,
-        desc: desc,
-      });
+      };
+
+      if (type === 'text') {
+        selectionData.desc = desc;
+      }
+
+      selections.push(selectionData);
     });
 
+    console.log('Data yang dikirim ke server:', selections);
     return selections;
   };
 
@@ -237,182 +265,244 @@ export default function ListAmalYaumi({navigation}) {
               }>
               {data.map((item, index) => (
                 <View style={styles.itemWrapper} key={index}>
-                  <Text style={styles.title}>{item.title}</Text>
                   {item.type_tag === 'text' && (
-                    <View style={styles.textInput}>
-                      <TextInput
-                        style={{
-                          height: 50,
-                          paddingHorizontal: 20,
-                          color: COLORS.black,
-                        }}
-                        value={selectedOptions[String(item.id)]?.desc ?? ''}
-                        onChangeText={text => {
-                          if (text.length <= 200) {
-                            setSelectedOptions(prev => ({
-                              ...prev,
-                              [String(item.id)]: {
-                                ...prev[String(item.id)],
-                                desc: text,
-                              },
-                            }));
-                          }
-                        }}
-                        placeholder="Silahkan tulis di sini"
-                        placeholderTextColor={COLORS.grey}
-                        keyboardType="default"
-                        editable={true}
-                      />
-                    </View>
-                  )}
-                  {item.type_tag === 'dropdown' && (
-                    <View>
-                      <TouchableOpacity
-                        style={styles.dropdownToggle}
-                        onPress={() =>
-                          setDropdownVisible(prev => ({
-                            ...prev,
-                            [item.id]: !prev[item.id],
-                          }))
-                        }>
-                        <Icon
-                          name={
-                            dropdownVisible[item.id]
-                              ? 'chevron-up'
-                              : 'chevron-down'
-                          }
-                          size={20}
-                          color={
-                            dropdownVisible[item.id]
-                              ? COLORS.black
-                              : COLORS.goldenOrange
-                          }
+                    <>
+                      <Text style={styles.title}>{item.title}</Text>
+                      <View style={styles.textInput}>
+                        <TextInput
+                          style={{
+                            height: 50,
+                            paddingHorizontal: 20,
+                            color: COLORS.black,
+                          }}
+                          value={selectedOptions[String(item.id)]?.desc ?? ''}
+                          onChangeText={text => {
+                            if (text.length <= 200) {
+                              setSelectedOptions(prev => ({
+                                ...prev,
+                                [String(item.id)]: {
+                                  ...prev[String(item.id)],
+                                  desc: text,
+                                },
+                              }));
+                            }
+                          }}
+                          placeholder="Silahkan tulis di sini"
+                          placeholderTextColor={COLORS.grey}
+                          keyboardType="default"
+                          editable={true}
                         />
-                        <Gap width={3} />
-                        <Text style={styles.DropDownText}>Pilih Opsi</Text>
-                      </TouchableOpacity>
-                      {dropdownVisible[item.id] &&
-                        item.sub_yaumi.map(sub => (
+                      </View>
+                    </>
+                  )}
+
+                  {item.type_tag === 'dropdown' && (
+                    <>
+                      <Text style={styles.title}>{item.title}</Text>
+                      <View>
+                        <TouchableOpacity
+                          style={styles.dropdownToggle}
+                          onPress={() =>
+                            setDropdownVisible(prev => ({
+                              ...prev,
+                              [item.id]: !prev[item.id],
+                            }))
+                          }>
+                          <Icon
+                            name={
+                              dropdownVisible[item.id]
+                                ? 'chevron-up'
+                                : 'chevron-down'
+                            }
+                            size={20}
+                            color={
+                              dropdownVisible[item.id]
+                                ? COLORS.black
+                                : COLORS.goldenOrange
+                            }
+                          />
+                          <Gap width={3} />
+                          <Text style={styles.DropDownText}>Pilih Opsi</Text>
+                        </TouchableOpacity>
+                        {dropdownVisible[item.id] &&
+                          item.sub_yaumi.map(sub => (
+                            <TouchableOpacity
+                              key={sub.id}
+                              style={[
+                                styles.dropdownItem,
+                                selectedOptions[item.id]?.subs?.[0] === sub.id
+                                  ? styles.dropdownSelected
+                                  : styles.dropdownDefault,
+                              ]}
+                              onPress={() => {
+                                setSelectedOptions(prev => ({
+                                  ...prev,
+                                  [item.id]: {subs: [sub.id]},
+                                }));
+                                setSelectedDropdown(prev => ({
+                                  ...prev,
+                                  [item.id]: sub.id,
+                                }));
+                              }}>
+                              <Text
+                                style={[
+                                  styles.subTitleText,
+                                  selectedDropdown[item.id] === sub.id
+                                    ? styles.textSelectedDropDown
+                                    : styles.textDefaultDropDown,
+                                ]}>
+                                {sub.title}
+                              </Text>
+                            </TouchableOpacity>
+                          ))}
+                      </View>
+                    </>
+                  )}
+
+                  {item.type_tag === 'options' && (
+                    <>
+                      <Text style={styles.title}>{item.title}</Text>
+                      <View style={styles.optionsWrapper}>
+                        {item.sub_yaumi.map(sub => (
                           <TouchableOpacity
                             key={sub.id}
-                            style={[
-                              styles.dropdownItem,
-                              selectedOptions[item.id]?.subs?.[0] === sub.id
-                                ? styles.dropdownSelected
-                                : styles.dropdownDefault,
-                            ]}
-                            onPress={() => {
+                            style={styles.optionContainer}
+                            onPress={() =>
                               setSelectedOptions(prev => ({
                                 ...prev,
                                 [item.id]: {subs: [sub.id]},
-                              }));
-                              setSelectedDropdown(prev => ({
-                                ...prev,
-                                [item.id]: sub.id,
-                              }));
-                            }}>
+                              }))
+                            }>
+                            <Icon
+                              name={
+                                selectedOptions[item.id]?.subs?.[0] === sub.id
+                                  ? 'radiobox-marked'
+                                  : 'radiobox-blank'
+                              }
+                              size={20}
+                              color={
+                                selectedOptions[item.id]?.subs?.[0] === sub.id
+                                  ? COLORS.goldenOrange
+                                  : COLORS.grey
+                              }
+                            />
+                            <Gap width={5} />
                             <Text
                               style={[
                                 styles.subTitleText,
-                                selectedDropdown[item.id] === sub.id
-                                  ? styles.textSelectedDropDown
-                                  : styles.textDefaultDropDown,
+                                selectedOptions[item.id] === sub.id
+                                  ? styles.textSelected
+                                  : styles.textDefault,
                               ]}>
                               {sub.title}
                             </Text>
                           </TouchableOpacity>
                         ))}
-                    </View>
+                      </View>
+                    </>
                   )}
-                  {item.type_tag === 'options' && (
-                    <View style={styles.optionsWrapper}>
-                      {item.sub_yaumi.map(sub => (
-                        <TouchableOpacity
-                          key={sub.id}
-                          style={styles.optionContainer}
-                          onPress={() =>
-                            setSelectedOptions(prev => ({
-                              ...prev,
-                              [item.id]: {subs: [sub.id]},
-                            }))
-                          }>
-                          <Icon
-                            name={
-                              selectedOptions[item.id]?.subs?.[0] === sub.id
-                                ? 'radiobox-marked'
-                                : 'radiobox-blank'
-                            }
-                            size={20}
-                            color={
-                              selectedOptions[item.id]?.subs?.[0] === sub.id
-                                ? COLORS.goldenOrange
-                                : COLORS.grey
-                            }
-                          />
-                          <Text
-                            style={[
-                              styles.subTitleText,
-                              selectedOptions[item.id] === sub.id
-                                ? styles.textSelected
-                                : styles.textDefault,
-                            ]}>
-                            {sub.title}
-                          </Text>
-                        </TouchableOpacity>
-                      ))}
-                    </View>
-                  )}
+
                   {item.type_tag === 'checklist' && (
-                    <View>
-                      {item.sub_yaumi.map(sub => (
+                    <>
+                      {item.sub_yaumi.length === 0 ? (
                         <TouchableOpacity
-                          key={sub.id}
                           style={[
                             styles.checklistItem,
-                            selectedOptions[item.id]?.subs?.includes(sub.id)
+                            selectedOptions[item.id]?.subs?.length > 0
                               ? styles.checklistSelected
                               : styles.checklistDefault,
                           ]}
                           onPress={() =>
                             setSelectedOptions(prev => {
-                              const currentSubs = prev[item.id]?.subs || [];
-                              console.log('current checklist', currentSubs);
-                              const updatedSubs = currentSubs.includes(sub.id)
-                                ? currentSubs.filter(id => id !== sub.id)
-                                : [...currentSubs, sub.id];
-                              console.log('update checklist', updatedSubs);
+                              const isSelected =
+                                prev[item.id]?.subs?.length > 0;
                               return {
                                 ...prev,
-                                [item.id]: {subs: updatedSubs},
+                                [item.id]: {
+                                  subs: isSelected ? [] : [String(item.id)],
+                                },
                               };
                             })
                           }>
                           <Icon
                             name={
-                              selectedOptions[item.id]?.subs?.includes(sub.id)
+                              selectedOptions[item.id]?.subs?.length > 0
                                 ? 'checkbox-marked'
                                 : 'checkbox-blank-outline'
                             }
                             size={20}
                             color={
-                              selectedOptions[item.id]?.subs?.includes(sub.id)
+                              selectedOptions[item.id]?.subs?.length > 0
                                 ? COLORS.white
                                 : COLORS.grey
                             }
                           />
-                          <Gap width={3} />
-                          <Text
-                            style={[
-                              styles.subTitleText,
-                              selectedOptions[item.id]?.subs?.includes(sub.id)
-                                ? styles.textSelectedDropDown
-                                : styles.textDefaultDropDown,
-                            ]}>
-                            {sub.title}
+                          <Gap width={5} />
+                          <Text style={styles.titleChecklistNotSubYaumi}>
+                            {item.title}
                           </Text>
                         </TouchableOpacity>
-                      ))}
-                    </View>
+                      ) : (
+                        <>
+                          <Text style={styles.title}>{item.title}</Text>
+                          {item.sub_yaumi.map(sub => (
+                            <TouchableOpacity
+                              key={sub.id}
+                              style={[
+                                styles.checklistItem,
+                                selectedOptions[item.id]?.subs?.includes(sub.id)
+                                  ? styles.checklistSelected
+                                  : styles.checklistDefault,
+                              ]}
+                              onPress={() =>
+                                setSelectedOptions(prev => {
+                                  const currentSubs = prev[item.id]?.subs || [];
+                                  const updatedSubs = currentSubs.includes(
+                                    sub.id,
+                                  )
+                                    ? currentSubs.filter(id => id !== sub.id)
+                                    : [...currentSubs, sub.id];
+
+                                  return {
+                                    ...prev,
+                                    [item.id]: {subs: updatedSubs},
+                                  };
+                                })
+                              }>
+                              <Icon
+                                name={
+                                  selectedOptions[item.id]?.subs?.includes(
+                                    sub.id,
+                                  )
+                                    ? 'checkbox-marked'
+                                    : 'checkbox-blank-outline'
+                                }
+                                size={20}
+                                color={
+                                  selectedOptions[item.id]?.subs?.includes(
+                                    sub.id,
+                                  )
+                                    ? COLORS.white
+                                    : COLORS.grey
+                                }
+                              />
+                              <Gap width={5} />
+                              <Text
+                                style={[
+                                  styles.subTitleText,
+                                  selectedOptions[item.id]?.subs?.includes(
+                                    sub.id,
+                                  )
+                                    ? styles.textSelectedDropDown
+                                    : styles.textDefaultDropDown,
+                                ]}>
+                                {sub.title}
+                              </Text>
+                            </TouchableOpacity>
+                          ))}
+                        </>
+                      )}
+                    </>
                   )}
                 </View>
               ))}
@@ -433,7 +523,7 @@ export default function ListAmalYaumi({navigation}) {
         onRequestClose={() => setModalVisible(false)}
         iconModalName="alert-circle-outline"
         title="Profile Belum Lengkap"
-        description={'Silahkan lengkapi data profile & gender anda!'}
+        description={'Silahkan lengkapi data profile & Jenis kelamin anda!'}
         buttonSubmit={() => {
           setModalVisible(false);
           navigation.navigate('DetailDataSpa');
@@ -462,6 +552,11 @@ export default function ListAmalYaumi({navigation}) {
 }
 
 const styles = StyleSheet.create({
+  titleChecklistNotSubYaumi: {
+    fontSize: DIMENS.m,
+    color: COLORS.black,
+    fontWeight: '500',
+  },
   emptyWrapper: {
     flex: 1,
     justifyContent: 'center',

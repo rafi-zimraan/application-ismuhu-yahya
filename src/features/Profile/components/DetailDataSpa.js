@@ -1,6 +1,7 @@
 import {useFocusEffect} from '@react-navigation/native';
 import React, {useState} from 'react';
 import {
+  Image,
   RefreshControl,
   ScrollView,
   StatusBar,
@@ -9,7 +10,7 @@ import {
   ToastAndroid,
   View,
 } from 'react-native';
-import EncryptedStorage from 'react-native-encrypted-storage';
+import EncryptedStorage from 'react-native-encrypted-storage/';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {getAllDataSpa} from '..';
 import {
@@ -19,6 +20,7 @@ import {
   ModalCustom,
   ModalLoading,
 } from '../../../Component';
+import {ICON_NOTFOUND_DATA} from '../../../assets';
 import {COLORS, DIMENS} from '../../../utils';
 
 export default function DetailDataSpa({navigation}) {
@@ -26,6 +28,7 @@ export default function DetailDataSpa({navigation}) {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [tokenExpired, setTokenExpired] = useState(false);
+  console.log('spaData', spaData);
 
   const fetchData = async () => {
     setLoading(true);
@@ -279,7 +282,13 @@ export default function DetailDataSpa({navigation}) {
               </View>
             </View>
           ) : (
-            <Text style={styles.noDataText}>Data tidak tersedia.</Text>
+            <View style={styles.viewImgNotFound}>
+              <Image
+                source={ICON_NOTFOUND_DATA}
+                style={styles.newsImageNotFound}
+              />
+              <Text style={styles.noDataText}>Data tidak tersedia.</Text>
+            </View>
           )}
         </View>
       </ScrollView>
@@ -308,6 +317,15 @@ export default function DetailDataSpa({navigation}) {
 }
 
 const styles = StyleSheet.create({
+  newsImageNotFound: {
+    width: 280,
+    height: 280,
+    resizeMode: 'contain',
+  },
+  viewImgNotFound: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   headerWrapper: {
     paddingHorizontal: 10,
     backgroundColor: COLORS.goldenOrange,

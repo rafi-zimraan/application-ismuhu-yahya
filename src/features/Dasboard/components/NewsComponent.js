@@ -6,10 +6,12 @@ import {
   ScrollView,
   StyleSheet,
   Text,
+  ToastAndroid,
   TouchableOpacity,
   View,
 } from 'react-native';
 import {Gap} from '../../../Component';
+// import {ICON_NOTFOUND_DATA} from '../../../assets';
 import {ICON_NOTFOUND_DATA} from '../../../assets';
 import {COLORS, DIMENS} from '../../../utils';
 import {
@@ -29,6 +31,10 @@ export default function NewsComponent() {
         const response = await getAllImageInformation();
         setNewsData(response);
       } catch (error) {
+        ToastAndroid.show(
+          'Berita Harian Sedang error, Silahkan hubungi developer',
+          ToastAndroid.SHORT,
+        );
         // console.log('Error fetching news data:', error);
       } finally {
         setLoading(false);
@@ -62,7 +68,7 @@ export default function NewsComponent() {
             showsHorizontalScrollIndicator={false}
             stickyHeaderHiddenOnScroll
             stickyHeaderIndices={[0]}
-            style={{flex: 1, alignSelf: 'center'}}>
+            style={styles.scrollView}>
             {newsData.length > 0 ? (
               newsData.map((item, index) => (
                 <TouchableOpacity
@@ -85,6 +91,7 @@ export default function NewsComponent() {
               </View>
             )}
           </ScrollView>
+          <View style={styles.scrollIndicator} />
         </>
       )}
     </View>
@@ -92,6 +99,20 @@ export default function NewsComponent() {
 }
 
 const styles = StyleSheet.create({
+  scrollIndicator: {
+    height: 3,
+    backgroundColor: COLORS.goldenOrange,
+    width: '80%',
+    alignSelf: 'center',
+    marginTop: -8,
+    borderRadius: 5,
+  },
+  scrollView: {
+    flex: 1,
+    alignSelf: 'center',
+    paddingBottom: 5,
+    paddingHorizontal: 10,
+  },
   Title: {
     fontSize: DIMENS.xl,
     color: COLORS.black,

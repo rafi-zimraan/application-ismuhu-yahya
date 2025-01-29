@@ -68,7 +68,7 @@ export default function UpdateDataSpa({route, navigation}) {
       const response = await getProvinces();
       setProvinces(response.data || []);
     } catch (error) {
-      console.error('Error fetching provinces:', error.message);
+      console.log('Error fetching provinces:', error.message);
     } finally {
       setLoadingProvinces(false);
     }
@@ -80,7 +80,7 @@ export default function UpdateDataSpa({route, navigation}) {
       const response = await getCitiesByProvince(provinceId);
       setCities(response.data || []);
     } catch (error) {
-      console.error('Error fetching cities:', error.message);
+      console.log('Error fetching cities:', error.message);
     } finally {
       setLoadingCities(false);
     }
@@ -142,7 +142,11 @@ export default function UpdateDataSpa({route, navigation}) {
         ToastAndroid.show('Gagal memperbarui data.', ToastAndroid.SHORT);
       }
     } catch (error) {
-      console.error('Error updating data:', error.message);
+      console.log('Error updating data:', error.message);
+      ToastAndroid.show(
+        'Lengkapi semua data terlebih dahulu',
+        ToastAndroid.SHORT,
+      );
     } finally {
       setLoading(false);
     }

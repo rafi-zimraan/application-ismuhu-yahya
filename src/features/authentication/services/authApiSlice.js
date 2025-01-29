@@ -45,12 +45,12 @@ export const login = async (data, navigation, dispatch) => {
         'user_sesion',
         JSON.stringify(responseData),
       );
-      if (responseData.url_photo) {
-        console.log('photo', responseData.url_photo);
-        await EncryptedStorage.setItem('url_photo', responseData.url_photo);
-      } else {
-        await EncryptedStorage.removeItem('url_photo');
-      }
+
+      // if (responseData.url_photo) {
+      //   await EncryptedStorage.setItem('url_photo', responseData.url_photo);
+      // } else {
+      //   await EncryptedStorage.removeItem('url_photo');
+      // }
       ToastAndroid.show(
         `Selamat Datang ${responseData.name}`,
         ToastAndroid.SHORT,

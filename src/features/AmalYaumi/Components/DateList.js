@@ -17,6 +17,7 @@ export function DateList({
   dataMonth = {},
 }) {
   const animatedValue = useRef(new Animated.Value(0)).current;
+  const flatListRef = useRef(null);
 
   useEffect(() => {
     Animated.timing(animatedValue, {
@@ -26,16 +27,30 @@ export function DateList({
     }).start();
   }, []);
 
+  useEffect(() => {
+    if (flatListRef.current && todayIndex !== -1) {
+      setTimeout(() => {
+        flatListRef.current.scrollToIndex({
+          index: todayIndex,
+          animated: true,
+          viewPosition: 0.5,
+          extraScrollOffset: 10,
+        });
+      }, 300);
+    }
+  }, [todayIndex]);
+
   return (
     <FlatList
+      ref={flatListRef}
       data={days}
       horizontal
       showsHorizontalScrollIndicator={false}
       keyExtractor={item => item.date}
       initialScrollIndex={todayIndex}
       getItemLayout={(data, index) => ({
-        length: 40,
-        offset: 43 * index,
+        length: 50,
+        offset: 53 * index,
         index,
       })}
       contentContainerStyle={{
@@ -84,7 +99,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     padding: 10,
     marginHorizontal: 4,
-    backgroundColor: COLORS.lightGrey, // Warna default jika tidak ada data
+    backgroundColor: COLORS.lightGrey,
     borderRadius: 25,
   },
   selectedDateActive: {

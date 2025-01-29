@@ -48,8 +48,6 @@ export default function DetailTraining({route, navigation}) {
   const [file, setFile] = useState(null);
   const [existingFiles, setExistingFiles] = useState([]);
   const [selectedFileId, setSelectedFileId] = useState(null);
-  const [imageFiles, setImageFiles] = useState([]);
-  const [pdfFiles, setPdfFiles] = useState([]);
 
   const [editedData, setEditedData] = useState({
     title: data.title,
@@ -118,23 +116,6 @@ export default function DetailTraining({route, navigation}) {
     }
   };
 
-  const handleDeleteFile = async () => {
-    setIsModalLoading(true);
-    try {
-      await deleteTrainingFile(selectedFileId);
-      setExistingFiles(prevFiles =>
-        prevFiles.filter(file => file.id !== selectedFileId),
-      );
-      ToastAndroid.show('File berhasil dihapus!', ToastAndroid.SHORT);
-    } catch (error) {
-      ToastAndroid.show('Gagal menghapus file!', ToastAndroid.SHORT);
-    } finally {
-      setIsModalLoading(false);
-      setModalDeleteFile(false);
-      setSelectedFileId(null);
-    }
-  };
-
   const handleImageResponse = async response => {
     if (!response.didCancel && response.assets && response.assets[0]) {
       const {uri, fileName, type} = response.assets[0];
@@ -161,7 +142,7 @@ export default function DetailTraining({route, navigation}) {
       '',
       [
         {text: 'Gambar', onPress: handleImagePicker},
-        // {text: 'PDF', onPress: pickPDFDocument},
+        {text: 'PDF', onPress: pickPDFDocument},
       ],
       {cancelable: true},
     );
@@ -197,15 +178,10 @@ export default function DetailTraining({route, navigation}) {
         ToastAndroid.show('File berhasil diunggah!', ToastAndroid.SHORT);
         setExistingFiles(prevFiles => [
           ...prevFiles,
-          {
-            id: response.id,
-            file: response.file,
-            type: fileType,
-            name: file.name,
-          },
+          {id: response.id, file: response.file, type: fileType},
         ]);
 
-        navigation.goBack();
+        // navigation.goBack();
       } else {
         ToastAndroid.show('Gagal upload file!', ToastAndroid.SHORT);
       }
@@ -226,7 +202,6 @@ export default function DetailTraining({route, navigation}) {
       if (result && result[0]) {
         setFile(result[0]);
         setFileType('pdf');
-        console.log('result pdf', result);
       }
     } catch (error) {
       // console.log('Error picking PDF document: ', error);
@@ -241,6 +216,23 @@ export default function DetailTraining({route, navigation}) {
     } catch (error) {
       console.error('Error membuka PDF:', error);
       ToastAndroid.show('Terjadi kesalahan', ToastAndroid.SHORT);
+    }
+  };
+
+  const handleDeleteFile = async () => {
+    setIsModalLoading(true);
+    try {
+      await deleteTrainingFile(selectedFileId);
+      setExistingFiles(prevFiles =>
+        prevFiles.filter(file => file.id !== selectedFileId),
+      );
+      ToastAndroid.show('File berhasil dihapus!', ToastAndroid.SHORT);
+    } catch (error) {
+      ToastAndroid.show('Gagal menghapus file!', ToastAndroid.SHORT);
+    } finally {
+      setIsModalLoading(false);
+      setModalDeleteFile(false);
+      setSelectedFileId(null);
     }
   };
 
@@ -320,7 +312,7 @@ export default function DetailTraining({route, navigation}) {
               </View>
 
               <Gap height={10} />
-              {existingFiles?.map((file, index) => (
+              {/* {existingFiles?.map((file, index) => (
                 <View key={index} style={styles.inputFieldContainerUploadFile}>
                   <Image
                     source={{uri: `https://app.simpondok.com/${file.file}`}}
@@ -336,7 +328,39 @@ export default function DetailTraining({route, navigation}) {
                     <Icon name="close" size={20} color="#fff" />
                   </TouchableOpacity>
                 </View>
-              ))}
+              ))} */}
+
+              <Gap height={10} />
+              {/* {file && fileType === 'image' && (
+                <View style={styles.inputFieldContainerUploadFile}>
+                  <Image
+                    source={{uri: `https://app.simpondok.com/${file.file}`}}
+                    style={{width: '100%', height: 150, borderRadius: 10}}
+                    resizeMethod="resize"
+                  />
+                  <TouchableOpacity
+                    style={styles.deleteIconWrapper}
+                    onPress={() => {
+                      setModalDeleteFile(true);
+                      setSelectedFileId(file.id);
+                    }}>
+                    <Icon name="close" size={20} color="#fff" />
+                  </TouchableOpacity>
+                </View>
+              )}
+
+              {file && fileType === 'pdf' && (
+                <View style={styles.pdfContainer}>
+                  <TouchableOpacity
+                    onPress={() => openPDF(file.uri)}
+                    style={styles.pdfWrapper}>
+                    <Icon name="file-pdf-box" size={24} color={COLORS.red} />
+                    <Text style={styles.pdfFileName} numberOfLines={1}>
+                      {file.name}
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              )} */}
 
               <View style={styles.buttonContainer}>
                 <TouchableOpacity
