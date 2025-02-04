@@ -51,7 +51,7 @@ const styles = StyleSheet.create({
     marginLeft: 6,
     fontSize: DIMENS.xxl,
     fontWeight: '600',
-    color: COLORS.white,
+    color: COLORS.white, // ini putih
     flex: 1,
   },
 });
