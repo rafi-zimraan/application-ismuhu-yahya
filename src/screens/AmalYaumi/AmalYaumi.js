@@ -16,7 +16,12 @@ import EncryptedStorage from 'react-native-encrypted-storage';
 import {LineChart} from 'react-native-gifted-charts';
 import ProgressWheel from 'react-native-progress-wheel';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {Gap, HeaderTransparent, ModalLoading} from '../../Component';
+import {
+  Gap,
+  HeaderTransparent,
+  ModalCustom,
+  ModalLoading,
+} from '../../Component';
 import {ICON_NOTFOUND_DATA} from '../../assets';
 import {
   DateList,
@@ -40,6 +45,7 @@ export default function AmalYaumi({navigation}) {
   const [scrollData, setScrollData] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [modalGender, setModalGender] = useState(false);
 
   const fetchProfileData = useCallback(async () => {
     setLoading(true);
@@ -63,6 +69,14 @@ export default function AmalYaumi({navigation}) {
       }
 
       const reportData = await fetchMonthlyReportYaumi(idUser);
+
+      if (
+        !reportData.status &&
+        reportData.message.includes('profil jenis kelamin Anda masih kosong')
+      ) {
+        setModalGender(true);
+        return;
+      }
       const percentageData = reportData?.data?.data_percentage || {};
       const dataMonth = reportData?.data?.data_month || {};
 
@@ -308,6 +322,21 @@ export default function AmalYaumi({navigation}) {
             <Gap height={104} />
           </ScrollView>
         </View>
+
+        <ModalCustom
+          visible={modalGender}
+          onRequestClose={() => setModalGender(false)}
+          iconModalName="alert-circle-outline"
+          title="Profile Belum Lengkap"
+          description={'Silahkan lengkapi data profile & Jenis kelamin anda!'}
+          buttonSubmit={() => {
+            setModalGender(false);
+            navigation.navigate('DetailDataSpa');
+          }}
+          buttonTitle="Pergi Ke Profile"
+          ColorIcon={COLORS.red}
+          TextDescription={COLORS.red}
+        />
 
         <MonthSelectorModal
           visible={modalVisible}

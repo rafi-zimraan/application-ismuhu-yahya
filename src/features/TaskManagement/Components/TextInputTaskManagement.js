@@ -9,9 +9,10 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 import {COLORS} from '../../../utils';
 
-export default function CustomTextInput({
+export default function TextInputTaskManagement({
   label,
   value,
   onChangeText,
@@ -26,33 +27,9 @@ export default function CustomTextInput({
   dropdownOptions = [],
   onOpenPicker = () => {},
   style = {},
+  iconName = null, // Menambahkan props iconName
 }) {
   const [showPicker, setShowPicker] = useState(false);
-
-  // const handleDateChange = (event, selectedDate) => {
-  //   setShowPicker(false);
-  //   if (selectedDate) {
-  //     const formattedDate = selectedDate.toISOString().split('T')[0];
-  //     onChangeText(formattedDate);
-  //   }
-  // };
-
-  // const handleTimeChange = (event, selectedTime) => {
-  //   setShowPicker(false);
-  //   if (selectedTime) {
-  //     try {
-  //       const hours = selectedTime.getHours().toString().padStart(2, '0');
-  //       const minutes = selectedTime.getMinutes().toString().padStart(2, '0');
-  //       const formattedTime = `${hours}:${minutes}`;
-  //       onChangeText(formattedTime);
-  //     } catch (error) {
-  //       console.log('Error formatting time:', error.message);
-  //       onChangeText('');
-  //     }
-  //   } else {
-  //     onChangeText('');
-  //   }
-  // };
 
   return (
     <View style={[styles.container, style]}>
@@ -67,6 +44,14 @@ export default function CustomTextInput({
               }
             }}
             style={[styles.input, styles.touchableInput]}>
+            {iconName && (
+              <Icon
+                name={iconName}
+                size={20}
+                color={COLORS.black}
+                style={styles.icon}
+              />
+            )}
             <Text
               style={[
                 styles.inputText,
@@ -75,6 +60,7 @@ export default function CustomTextInput({
                     value === placeholder || !value
                       ? placeholderTextColor
                       : COLORS.black,
+                  marginLeft: iconName ? 30 : 0,
                 },
               ]}>
               {value || placeholder}
@@ -96,13 +82,11 @@ export default function CustomTextInput({
                 setShowPicker(false);
                 if (selectedValue) {
                   if (isDatePicker) {
-                    // Format tanggal (YYYY-MM-DD)
                     const formattedDate = selectedValue
                       .toISOString()
                       .split('T')[0];
                     onChangeText(formattedDate);
                   } else {
-                    // Format jam (HH:mm)
                     const hours = selectedValue
                       .getHours()
                       .toString()
@@ -142,7 +126,15 @@ export default function CustomTextInput({
           </Picker>
         </View>
       ) : (
-        <View style={{position: 'relative'}}>
+        <View style={styles.inputWrapper}>
+          {iconName && (
+            <Icon
+              name={iconName}
+              size={20}
+              color={COLORS.black}
+              style={styles.icon}
+            />
+          )}
           <TextInput
             style={[
               styles.input,
@@ -152,6 +144,7 @@ export default function CustomTextInput({
                   value === placeholder || !value
                     ? placeholderTextColor
                     : COLORS.black,
+                paddingLeft: iconName ? 35 : 10,
               },
             ]}
             value={value}
@@ -175,13 +168,23 @@ export default function CustomTextInput({
 }
 
 const styles = StyleSheet.create({
+  inputWrapper: {
+    position: 'relative',
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  icon: {
+    position: 'absolute',
+    left: 10,
+    zIndex: 1,
+  },
   inputDesc: {
     minHeight: 90,
     paddingHorizontal: 10,
-    backgroundColor: COLORS.champagne,
+    backgroundColor: COLORS.white,
     borderRadius: 10,
-    borderColor: '#ddd',
-    borderWidth: 1,
+    borderColor: COLORS.grey,
+    borderWidth: 0.4,
     fontSize: 13,
     color: COLORS.black,
     textAlignVertical: 'top',
@@ -196,16 +199,17 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   input: {
-    borderWidth: 0.5,
+    borderWidth: 0.4,
     borderColor: COLORS.gray,
     borderRadius: 8,
     padding: 10,
-    backgroundColor: COLORS.champagne,
+    backgroundColor: COLORS.white,
     color: COLORS.black,
+    width: '100%',
   },
   touchableInput: {
     justifyContent: 'center',
-    backgroundColor: COLORS.champagne,
+    backgroundColor: COLORS.white,
   },
   inputText: {
     color: COLORS.black,
@@ -213,6 +217,7 @@ const styles = StyleSheet.create({
   textInput: {
     paddingVertical: 10,
     paddingHorizontal: 10,
+    flex: 1,
   },
   activityIndicator: {
     position: 'absolute',

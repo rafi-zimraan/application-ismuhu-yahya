@@ -41,6 +41,7 @@ export default function ListAmalYaumi({navigation}) {
       const idUser = await EncryptedStorage.getItem('idUser');
 
       const response = await fetchGetYaumi(JSON.parse(idUser), haid);
+      console.log('data list', response.data);
 
       if (response.message === 'Silahkan login terlebih dahulu') {
         setTokenExpired(true);

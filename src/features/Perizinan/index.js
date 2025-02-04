@@ -1,10 +1,10 @@
 import CreateFormulirPerizinan from './components/CreateFormulirPerizinan';
 import CreateFormulirPerizinanExit from './components/CreateFormulirPerizinanExit';
-import CustomTextInput from './components/CustomTextInput';
 import EditFormulirPerizinan from './components/EditFormulirPerizinan';
 import HistoryCuti from './components/HistoryCuti';
 import HistoryItem from './components/HistoryItem';
 import HistoryKeluar from './components/HistoryKeluar';
+import TextInputPerizinan from './components/TextInputPerizinan';
 import TotalCuti from './components/TotalCuti';
 import {
   addCuti,
@@ -19,7 +19,7 @@ import {
 
 // component
 export {
-  CustomTextInput,
+  TextInputPerizinan,
   CreateFormulirPerizinan,
   EditFormulirPerizinan,
   HistoryKeluar,

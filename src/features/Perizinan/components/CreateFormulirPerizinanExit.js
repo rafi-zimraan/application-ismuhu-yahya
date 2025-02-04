@@ -7,7 +7,7 @@ import {
   ToastAndroid,
   View,
 } from 'react-native';
-import {CustomTextInput, addPerizinanKeluar} from '..';
+import {TextInputPerizinan, addPerizinanKeluar} from '..';
 import {
   AlertWarning,
   Background,
@@ -64,7 +64,7 @@ export default function CreateFormulirPerizinanExit({navigation, route}) {
   useEffect(() => {
     if (outTime && intTime) {
       try {
-        const timeRegex = /^\d{2}:\d{2}$/; // Validasi format HH:mm
+        const timeRegex = /^\d{2}:\d{2}$/;
         if (!timeRegex.test(outTime) || !timeRegex.test(intTime)) {
           throw new Error('Invalid time format');
         }
@@ -112,7 +112,7 @@ export default function CreateFormulirPerizinanExit({navigation, route}) {
       };
 
       const response = await addPerizinanKeluar(data);
-      console.log('response', response);
+      console.log('response', response.message);
 
       if (response?.status === true) {
         setShowSuccessModal(true);
@@ -150,20 +150,20 @@ export default function CreateFormulirPerizinanExit({navigation, route}) {
 
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         <View style={styles.container}>
-          <CustomTextInput
+          <TextInputPerizinan
             label="Division"
             value={divisionName}
             placeholder="Memuat..."
             isLoading={loadingDivision}
           />
-          <CustomTextInput
+          <TextInputPerizinan
             label="Department"
             value={departmentName}
             placeholder="Memuat..."
             isLoading={loadingDepartment}
           />
 
-          <CustomTextInput
+          <TextInputPerizinan
             label="Deskripsi"
             value={desc}
             onChangeText={setDesc}
@@ -172,7 +172,7 @@ export default function CreateFormulirPerizinanExit({navigation, route}) {
             isMultiline={true}
           />
 
-          <CustomTextInput
+          <TextInputPerizinan
             label="Kategori"
             value={necessity}
             onChangeText={setNecessity}
@@ -184,7 +184,7 @@ export default function CreateFormulirPerizinanExit({navigation, route}) {
               {label: 'Tugas', value: 'tugas'},
             ]}
           />
-          <CustomTextInput
+          <TextInputPerizinan
             label="Jam Keluar"
             value={outTime}
             onChangeText={setOutTime}
@@ -192,7 +192,7 @@ export default function CreateFormulirPerizinanExit({navigation, route}) {
             isTimePicker={true}
             placeholderTextColor={COLORS.grey}
           />
-          <CustomTextInput
+          <TextInputPerizinan
             label="Jam Kembali"
             value={intTime}
             onChangeText={setIntTime}
@@ -200,7 +200,7 @@ export default function CreateFormulirPerizinanExit({navigation, route}) {
             placeholderTextColor={COLORS.grey}
             isTimePicker={true}
           />
-          <CustomTextInput
+          <TextInputPerizinan
             label="Durasi Waktu"
             value={totalTime}
             placeholder="Durasi akan dihitung otomatis"

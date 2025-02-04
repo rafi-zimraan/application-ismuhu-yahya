@@ -43,14 +43,11 @@ export default function Perizinan({navigation}) {
   const [isDelete, setIsDelete] = useState(false);
   const [selectedDeleteId, setSelectedDeleteId] = useState(null);
 
-  console.log('data state cuti', dataCuti);
-  console.log('data state keluar', dataExitPermit);
-
   const fetchData = async () => {
     try {
       setLoading(true);
       const response = await getAllCuti();
-      console.log('data cuti', response.data);
+      console.log('data cuti', response.data.data);
 
       if (response?.message === 'Silahkan login terlebih dahulu') {
         setTokenExpired(true);
@@ -113,7 +110,6 @@ export default function Perizinan({navigation}) {
     try {
       setLoading(true);
       const response = await getAllPerizinanKeluar();
-      console.log('data perizinan keluar', response.data.data);
 
       if (response?.data) {
         const mappedData = response.data.map(item => ({
@@ -244,8 +240,7 @@ export default function Perizinan({navigation}) {
         ) : (
           <FlatList
             data={combinedData}
-            keyExtractor={(item, index) => `${item.id}-${index}`}
-            // keyExtractor={item => item.id.toString()}
+            keyExtractor={item => item.id.toString()}
             renderItem={({item}) => (
               <HistoryItem
                 item={item}

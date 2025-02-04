@@ -58,19 +58,19 @@ export const addYaumiNotes = async (user_id, datas) => {
     return response.data || {};
   } catch (error) {
     console.log('error kirim data', error);
-    // if (error.response?.status === 404) {
-    //   ToastAndroid.show(
-    //     'data tidak ditemukan. Silakan hubungi developer.',
-    //     ToastAndroid.SHORT,
-    //   );
-    // } else if (error.response?.status === 500) {
-    //   ToastAndroid.show(
-    //     'Kesalahan server. Silakan coba lagi nanti.',
-    //     ToastAndroid.SHORT,
-    //   );
-    // } else {
-    //   ToastAndroid.show('Terjadi kesalahan pada amalyaumi', ToastAndroid.LONG);
-    // }
+    if (error.response?.status === 404) {
+      ToastAndroid.show(
+        'data tidak ditemukan. Silakan hubungi developer.',
+        ToastAndroid.SHORT,
+      );
+    } else if (error.response?.status === 500) {
+      ToastAndroid.show(
+        'Kesalahan server. Silakan coba lagi nanti.',
+        ToastAndroid.SHORT,
+      );
+    } else {
+      ToastAndroid.show('Terjadi kesalahan pada amalyaumi', ToastAndroid.LONG);
+    }
     throw error;
   }
 };

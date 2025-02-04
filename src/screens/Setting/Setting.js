@@ -223,6 +223,7 @@ export default function Settings({navigation}) {
         buttonTitle={t('logout')}
         iconModalName={'logout'}
         buttonLoading={loadingLogout}
+        TextColorButton={COLORS.white}
       />
 
       <ModalCustom

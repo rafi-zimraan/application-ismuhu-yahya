@@ -46,11 +46,6 @@ export const login = async (data, navigation, dispatch) => {
         JSON.stringify(responseData),
       );
 
-      // if (responseData.url_photo) {
-      //   await EncryptedStorage.setItem('url_photo', responseData.url_photo);
-      // } else {
-      //   await EncryptedStorage.removeItem('url_photo');
-      // }
       ToastAndroid.show(
         `Selamat Datang ${responseData.name}`,
         ToastAndroid.SHORT,

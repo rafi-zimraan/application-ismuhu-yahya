@@ -7,7 +7,7 @@ import {
   ToastAndroid,
   View,
 } from 'react-native';
-import {CustomTextInput, addCuti} from '..';
+import {TextInputPerizinan, addCuti} from '..';
 import {
   AlertWarning,
   Background,
@@ -23,6 +23,8 @@ import {FecthMe} from '../../authentication';
 
 export default function CreateFormulirPerizinan({navigation, route}) {
   const {division_id, department_id} = route.params;
+  console.log('divisi', division_id);
+  console.log('departman', department_id);
   const [divisionName, setDivisionName] = useState('');
   const [departmentName, setDepartmentName] = useState('');
   const [loadingDivision, setLoadingDivision] = useState(false);
@@ -44,10 +46,12 @@ export default function CreateFormulirPerizinan({navigation, route}) {
       try {
         setLoadingDivision(true);
         const divisions = await getAllDivisions();
+        console.log('divisi', divisions);
         setDivisionName(divisions?.data?.data?.[0]?.name);
         setDivisionId(divisions?.data?.data?.[0]?.id);
         setLoadingDepartment(true);
         const departments = await getAllDepartment();
+        console.log('department', departments);
         setDepartmentName(departments?.data?.data?.[0]?.name);
         setDepartmentId(departments?.data?.data?.[0]?.id);
       } catch (error) {
@@ -116,7 +120,7 @@ export default function CreateFormulirPerizinan({navigation, route}) {
     const fetchUserSession = async () => {
       try {
         const response = await FecthMe();
-        if (response.data.message === 'Silahkan login terlebih dahulu') {
+        if (response?.message === 'Silahkan login terlebih dahulu') {
           setTokenExpired(true);
         }
       } catch (e) {
@@ -143,21 +147,21 @@ export default function CreateFormulirPerizinan({navigation, route}) {
       <AlertWarning show={showWarning} message={warningMessage} />
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         <View style={styles.container}>
-          <CustomTextInput
+          <TextInputPerizinan
             label="Division"
             value={divisionName}
             placeholder="Memuat..."
             isLoading={loadingDivision}
             placeholderTextColor={COLORS.grey}
           />
-          <CustomTextInput
+          <TextInputPerizinan
             label="Department"
             value={departmentName}
             placeholder="Memuat..."
             isLoading={loadingDepartment}
             placeholderTextColor={COLORS.grey}
           />
-          <CustomTextInput
+          <TextInputPerizinan
             label="Deskripsi"
             value={desc}
             onChangeText={setDesc}
@@ -165,21 +169,21 @@ export default function CreateFormulirPerizinan({navigation, route}) {
             placeholderTextColor={COLORS.grey}
             isMultiline={true}
           />
-          <CustomTextInput
+          <TextInputPerizinan
             label="Tanggal Awal Cuti"
             value={startDate.toISOString().split('T')[0]}
             onChangeText={date => setStartDate(new Date(date))}
             placeholder="Pilih tanggal"
             isDatePicker={true}
           />
-          <CustomTextInput
+          <TextInputPerizinan
             label="Tanggal Akhir Cuti"
             value={endDate.toISOString().split('T')[0]}
             onChangeText={date => setEndDate(new Date(date))}
             placeholder="Pilih tanggal"
             isDatePicker={true}
           />
-          <CustomTextInput
+          <TextInputPerizinan
             label="Jumlah Hari"
             value={
               totalDays ? `${totalDays} hari` : 'Jumlah hari belum tersedia'

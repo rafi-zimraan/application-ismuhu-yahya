@@ -41,6 +41,7 @@ export default function Dasboard({navigation}) {
   const [photo, setPhoto] = useState(null);
   const [amountSantri, setAmountSantri] = useState('');
   const [amountSpa, setAmountSpa] = useState('');
+  const [userPosition, setUserPosition] = useState('');
 
   const {
     isOffline,
@@ -59,7 +60,8 @@ export default function Dasboard({navigation}) {
   const fetchUserSession = useCallback(async () => {
     try {
       const response = await FecthMe();
-      if (response.message === 'Silahkan login terlebih dahulu') {
+
+      if (response?.message === 'Silahkan login terlebih dahulu') {
         setTokenExpired(true);
       }
 
@@ -75,6 +77,7 @@ export default function Dasboard({navigation}) {
 
         setAmountSantri(santriTotal);
         setAmountSpa(spaTotal);
+        setUserPosition(response?.position || '');
       } else {
         console.log('Error fetching user session:', response?.message);
       }
@@ -132,17 +135,27 @@ export default function Dasboard({navigation}) {
             iconDashboard={ICON_DASBOARD}
             totalSantri={amountSantri}
             totalSpa={amountSpa}
+            userPosition={userPosition}
           />
 
           <Gap height={15} />
           <View style={styles.menu}>
             <ButtonMenu
-              title="Amal yaumi"
+              title="Amal - yaumi"
               iconName="clipboard-check-multiple"
               color={COLORS.white}
               backgroundColor={COLORS.goldenOrange}
               iconSize={33}
               onPress={() => navigation.navigate('AmalYaumi')}
+            />
+
+            <ButtonMenu
+              title="Task- list"
+              iconName="clipboard-list"
+              color={COLORS.white}
+              backgroundColor={COLORS.goldenOrange}
+              iconSize={33}
+              onPress={() => navigation.navigate('TaskManagement')}
             />
           </View>
 

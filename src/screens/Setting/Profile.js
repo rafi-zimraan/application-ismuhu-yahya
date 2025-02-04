@@ -24,8 +24,6 @@ import {
   ModalCustom,
   ModalLoading,
 } from '../../Component';
-import {getAllDepartment} from '../../features/Departmant';
-import {getAllDivisions} from '../../features/Divisi';
 import {
   getAllDataSpa,
   getCoupleData,
@@ -134,8 +132,6 @@ export default function Profile({navigation}) {
       const userId = JSON.parse(await EncryptedStorage.getItem('idUser'));
 
       const [
-        divisions,
-        departments,
         coupleDataResponse,
         trainingResponse,
         experienceResponse,
@@ -143,8 +139,6 @@ export default function Profile({navigation}) {
         spaResponse,
         userData,
       ] = await Promise.all([
-        getAllDivisions(),
-        getAllDepartment(),
         getCoupleData(userId),
         getTrainingData(userId),
         getExperienceData(userId),
@@ -157,23 +151,14 @@ export default function Profile({navigation}) {
         const baseUrl = 'https://app.simpondok.com/';
         const photoUrl = userData.url_photo
           ? `${baseUrl}${userData.url_photo}?timestamp=${Date.now()}`
-          : null; // Tambahkan timestamp untuk menghindari cache
+          : null;
 
         setPhoto(photoUrl);
-      }
-
-      if (divisions?.message === 'Silahkan login terlebih dahulu') {
-        setTokenExpired(true);
-      } else {
-        setDivisionName(
-          divisions?.data?.data?.[0]?.name || 'Terjadi kesalahan',
-        );
-      }
-      if (departments?.message === 'Silahkan login terlebih dahulu') {
-        setTokenExpired(true);
-      } else {
+        setDivisionName(userData?.division || '-');
         setDepartmentName(
-          departments?.data?.data?.[0]?.name || 'Terjadi kesalahan',
+          userData.department && userData.department.trim() !== ''
+            ? userData.department
+            : userData.position,
         );
       }
 
@@ -668,7 +653,7 @@ export default function Profile({navigation}) {
                   color={COLORS.goldenOrange}
                 />
                 <View style={styles.viewContainerText}>
-                  <Text style={styles.textLabels}>Nama Kakak</Text>
+                  <Text style={styles.textLabels}>Jumlah Saudara</Text>
                   <Text style={styles.TextDatas}>
                     {familyData[0]?.brother || '-'}
                   </Text>

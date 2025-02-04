@@ -7,7 +7,7 @@ import {
   ToastAndroid,
   View,
 } from 'react-native';
-import {CustomTextInput, patchCuti, patchPerizinanKeluar} from '..';
+import {TextInputPerizinan, patchCuti, patchPerizinanKeluar} from '..';
 import {
   Background,
   ButtonAction,
@@ -150,7 +150,7 @@ export default function EditFormulirPerizinan({navigation, route}) {
         onPress={() => navigation.goBack()}
       />
       <ScrollView contentContainerStyle={styles.container}>
-        <CustomTextInput
+        <TextInputPerizinan
           label="Division"
           value={divisionName}
           onChangeText={text => {
@@ -160,7 +160,7 @@ export default function EditFormulirPerizinan({navigation, route}) {
           placeholder="Masukkan Division"
           editable={false}
         />
-        <CustomTextInput
+        <TextInputPerizinan
           label="Department"
           value={departmentName}
           onChangeText={text => {
@@ -170,7 +170,7 @@ export default function EditFormulirPerizinan({navigation, route}) {
           placeholder="Masukkan Department"
           editable={false}
         />
-        <CustomTextInput
+        <TextInputPerizinan
           label="Deskripsi"
           value={desc}
           onChangeText={setDesc}
@@ -179,7 +179,7 @@ export default function EditFormulirPerizinan({navigation, route}) {
         />
         {isExitPermit ? (
           <>
-            <CustomTextInput
+            <TextInputPerizinan
               label="Kategori"
               value={necessity}
               onChangeText={setNecessity}
@@ -190,21 +190,21 @@ export default function EditFormulirPerizinan({navigation, route}) {
                 {label: 'Tugas', value: 'tugas'},
               ]}
             />
-            <CustomTextInput
+            <TextInputPerizinan
               label="Jam Keluar"
               value={outTime}
               onChangeText={setOutTime}
               placeholder="Pilih Jam Keluar"
               isTimePicker
             />
-            <CustomTextInput
+            <TextInputPerizinan
               label="Jam Kembali"
               value={intTime}
               onChangeText={setIntTime}
               placeholder="Pilih Jam Kembali"
               isTimePicker
             />
-            <CustomTextInput
+            <TextInputPerizinan
               label="Durasi Waktu"
               value={totalTime}
               placeholder="Durasi dihitung otomatis"
@@ -213,21 +213,21 @@ export default function EditFormulirPerizinan({navigation, route}) {
           </>
         ) : (
           <>
-            <CustomTextInput
+            <TextInputPerizinan
               label="Tanggal Mulai"
               value={startDate.toISOString().split('T')[0]}
               onChangeText={date => setStartDate(new Date(date))}
               placeholder="Pilih Tanggal Mulai"
               isDatePicker
             />
-            <CustomTextInput
+            <TextInputPerizinan
               label="Tanggal Akhir"
               value={endDate.toISOString().split('T')[0]}
               onChangeText={date => setEndDate(new Date(date))}
               placeholder="Pilih Tanggal Akhir"
               isDatePicker
             />
-            <CustomTextInput
+            <TextInputPerizinan
               label="Jumlah Hari"
               value={`${totalDays} hari`}
               placeholder="Jumlah hari dihitung otomatis"

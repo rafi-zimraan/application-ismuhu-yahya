@@ -74,6 +74,45 @@ export default function NewsComponent() {
                 <TouchableOpacity
                   key={index}
                   onPress={() => handleOnPress(item.id)}>
+                  {/* Periksa apakah thumb bernilai null */}
+                  {item.thumb ? (
+                    <Image
+                      source={{uri: `https://app.simpondok.com/${item.thumb}`}}
+                      style={styles.newsImage}
+                      resizeMode="stretch"
+                      resizeMethod="scale"
+                    />
+                  ) : (
+                    <Image
+                      source={ICON_NOTFOUND_DATA}
+                      style={styles.newsImage}
+                      resizeMode="stretch"
+                      resizeMethod="scale"
+                    />
+                  )}
+                </TouchableOpacity>
+              ))
+            ) : (
+              <View style={styles.notFoundContainer}>
+                <Image
+                  source={ICON_NOTFOUND_DATA}
+                  style={styles.newsImageNotFound}
+                />
+              </View>
+            )}
+          </ScrollView>
+
+          {/* <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            stickyHeaderHiddenOnScroll
+            stickyHeaderIndices={[0]}
+            style={styles.scrollView}>
+            {newsData.length > 0 ? (
+              newsData.map((item, index) => (
+                <TouchableOpacity
+                  key={index}
+                  onPress={() => handleOnPress(item.id)}>
                   <Image
                     source={{uri: `https://app.simpondok.com/${item.thumb}`}}
                     style={styles.newsImage}
@@ -90,7 +129,7 @@ export default function NewsComponent() {
                 />
               </View>
             )}
-          </ScrollView>
+          </ScrollView> */}
           <View style={styles.scrollIndicator} />
         </>
       )}

@@ -34,6 +34,7 @@ import {
   DetailTraining,
   UpdateDataSpa,
 } from '../features/Profile';
+import CreateTaskManagement from '../features/TaskManagement/Components/CreateTaskManagement';
 import {
   AboutApplication,
   AmalYaumi,
@@ -56,6 +57,7 @@ import {
   SignIn,
   SignUp,
   SplashScreen,
+  TaskManagement,
 } from '../screens';
 import BottomTabs from './BottomTabs';
 import TopTapBar from './TopTapBar';
@@ -171,6 +173,13 @@ export default function Navigator() {
       {/* Amal Yaumi */}
       <Stack.Screen name="AmalYaumi" component={AmalYaumi} />
       <Stack.Screen name="ListAmalYaumi" component={ListAmalYaumi} />
+
+      {/* Task Management */}
+      <Stack.Screen name="TaskManagement" component={TaskManagement} />
+      <Stack.Screen
+        name="CreateTaskManagement"
+        component={CreateTaskManagement}
+      />
     </Stack.Navigator>
   );
 }

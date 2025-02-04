@@ -47,7 +47,6 @@ export default function DetailDataSpa({navigation}) {
       }
     } catch (error) {
       ToastAndroid.show('Gagal lihat data pribadi', ToastAndroid.SHORT);
-      // console.log('Error fetching SPA data:', error.message);
     } finally {
       setLoading(false);
     }

@@ -139,7 +139,7 @@ export default function DetailFamily({route, navigation}) {
                     color={COLORS.goldenOrange}
                   />
                   <View style={styles.viewContentText}>
-                    <Text style={styles.textTitle}>Nama Kakak</Text>
+                    <Text style={styles.textTitle}>Jumlah Saudara</Text>
                     <Text style={styles.label}>
                       {editedData.brother || '-'}
                     </Text>
@@ -213,11 +213,12 @@ export default function DetailFamily({route, navigation}) {
             placeholderTextColor={COLORS.grey}
             onChangeText={text => setEditedData({...editedData, mother: text})}
           />
-          <Text style={styles.inputLabel}>Nama Kakak</Text>
+          <Text style={styles.inputLabel}>Jumlah Saudara</Text>
           <Gap height={5} />
           <TextInput
             style={styles.input}
             value={editedData.brother}
+            keyboardType="numeric"
             placeholder="Nama Kakak"
             placeholderTextColor={COLORS.grey}
             onChangeText={text => setEditedData({...editedData, brother: text})}

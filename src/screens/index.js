@@ -20,9 +20,11 @@ import PrivasiSetting from './Setting/PrivasiSetting';
 import Profile from './Setting/Profile';
 import Settings from './Setting/Setting';
 import SplashScreen from './SplashScreen/SplashScreen';
+import TaskManagement from './TaskManagement/TaskManagement';
 import LibDemo from './__test__/LibDemo.test';
 
 export {
+  TaskManagement,
   AmalYaumi,
   FacilityComplaint,
   CarLoan,

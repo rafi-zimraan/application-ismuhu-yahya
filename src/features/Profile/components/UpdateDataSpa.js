@@ -111,7 +111,7 @@ export default function UpdateDataSpa({route, navigation}) {
     ];
     for (const field of requiredFields) {
       if (!formData[field] || formData[field].trim() === '') {
-        ToastAndroid.show(`Field "${field}" harus diisi.`, ToastAndroid.SHORT);
+        ToastAndroid.show(`Data "${field}" harus diisi.`, ToastAndroid.SHORT);
         setAlertVisible(true);
         return false;
       }
@@ -231,8 +231,7 @@ export default function UpdateDataSpa({route, navigation}) {
             placeholder="Tanggal Lahir"
             value={formData.birth_date}
             placeholderTextColor={COLORS.grey}
-            onChangeText={text => handleInputChange('phone', text)}
-            keyboardType="phone-pad"
+            onChangeText={text => handleInputChange('birth_date', text)}
           />
         </View>
         {/* NPWP */}
@@ -245,6 +244,7 @@ export default function UpdateDataSpa({route, navigation}) {
             value={formData.npwp}
             placeholderTextColor={COLORS.grey}
             onChangeText={text => handleInputChange('npwp', text)}
+            keyboardType="numeric"
           />
         </View>
         {/* Hobi */}
@@ -281,6 +281,7 @@ export default function UpdateDataSpa({route, navigation}) {
             value={formData.contact_emergency}
             placeholderTextColor={COLORS.grey}
             onChangeText={text => handleInputChange('contact_emergency', text)}
+            keyboardType="numeric"
           />
         </View>
         {/* BPJS */}
@@ -293,6 +294,7 @@ export default function UpdateDataSpa({route, navigation}) {
             value={formData.bpjs}
             placeholderTextColor={COLORS.grey}
             onChangeText={text => handleInputChange('bpjs', text)}
+            keyboardType="numeric"
           />
         </View>
         {/* Place_of_birth */}
@@ -333,6 +335,7 @@ export default function UpdateDataSpa({route, navigation}) {
             value={formData.nik}
             placeholderTextColor={COLORS.grey}
             onChangeText={text => handleInputChange('nik', text)}
+            keyboardType="numeric"
           />
         </View>
         {/* Address */}
@@ -341,7 +344,7 @@ export default function UpdateDataSpa({route, navigation}) {
           <Icon name="map" size={24} color={COLORS.goldenOrange} />
           <TextInput
             style={styles.input}
-            placeholder="nik"
+            placeholder="Alamat Rumah"
             value={formData.address}
             placeholderTextColor={COLORS.grey}
             onChangeText={text => handleInputChange('address', text)}
@@ -406,7 +409,7 @@ export default function UpdateDataSpa({route, navigation}) {
 
       <ButtonAction
         onPress={handleSubmit}
-        itle={loading ? 'Menyimpan...' : 'Simpan'}
+        title={loading ? 'Menyimpan...' : 'Simpan'}
         loading={loading}
         backgroundColor={COLORS.goldenOrange}
       />

@@ -1,14 +1,23 @@
 import React, {useState} from 'react';
 import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {Gap, Line, ModalCustom} from '../../../Component';
+import {IMG_ISMUHUYAHYA_POTRAIT} from '../../../assets';
 import {COLORS, DIMENS} from '../../../utils';
 
 export default function DataSpaComponent({
   iconDashboard,
   totalSantri,
   totalSpa,
+  userPosition,
 }) {
   const [modalVisible, setModalVisible] = useState(false);
+
+  const isStaffOrKoordinator =
+    userPosition === 'Staff' || userPosition === 'Koordinator';
+  const displayIcon = isStaffOrKoordinator
+    ? IMG_ISMUHUYAHYA_POTRAIT
+    : iconDashboard;
+  const imageStyle = isStaffOrKoordinator ? styles.imgSmall : styles.imgLarge;
 
   const handlePressDashboard = () => {
     setModalVisible(true);
@@ -20,9 +29,9 @@ export default function DataSpaComponent({
 
   return (
     <View style={styles.bodyDataSpa}>
-      <TouchableOpacity activeOpacity={0.8} onPress={handlePressDashboard}>
-        <Image source={iconDashboard} style={styles.imgDasboard} />
-        <Text style={styles.title}>Dasboard</Text>
+      <TouchableOpacity activeOpacity={0.8}>
+        <Image source={displayIcon} style={imageStyle} />
+        {!isStaffOrKoordinator && <Text style={styles.title}>Dasboard</Text>}
       </TouchableOpacity>
 
       <Gap width={45} />
@@ -69,9 +78,13 @@ const styles = StyleSheet.create({
     borderRadius: 6,
     padding: 5,
   },
-  imgDasboard: {
+  imgLarge: {
     width: 65,
     height: 65,
+  },
+  imgSmall: {
+    width: 70,
+    height: 70,
   },
   title: {
     fontSize: DIMENS.m,
