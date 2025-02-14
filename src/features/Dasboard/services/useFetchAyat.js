@@ -11,7 +11,6 @@ export const useFetchAyat = () => {
         const ayatData = await fetchDailyAyah();
         setAyat(ayatData);
       } catch (error) {
-        // ToastAndroid.show(error.message, ToastAndroid.SHORT);
         setAyat({
           arab: 'بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ',
           translation: 'Dengan nama Allah Yang Maha Pengasih, Maha Penyayang.',

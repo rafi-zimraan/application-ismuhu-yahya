@@ -97,13 +97,14 @@ export default function CreateFamily({navigation}) {
             </View>
 
             <View style={styles.inputFieldContainer}>
-              <Text style={styles.inputLabel}>Nama Kakak</Text>
+              <Text style={styles.inputLabel}>Jumlah Saudara</Text>
               <TextInput
                 style={styles.input}
                 value={brother}
                 onChangeText={setBrother}
                 placeholderTextColor={COLORS.grey}
-                placeholder="Nama Kakak"
+                placeholder="Jumlah Saudara"
+                keyboardType="numeric"
               />
             </View>
 

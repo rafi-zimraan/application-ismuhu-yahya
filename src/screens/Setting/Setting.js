@@ -2,7 +2,6 @@ import {useFocusEffect} from '@react-navigation/native';
 import React, {useCallback, useState} from 'react';
 import {
   Image,
-  SafeAreaView,
   ScrollView,
   StatusBar,
   StyleSheet,
@@ -22,7 +21,6 @@ import {DIMENS} from '../../utils/dimens';
 export default function Settings({navigation}) {
   const dispatch = useDispatch();
   const currentLanguage = useSelector(state => state.language.currentLanguage);
-  const [notificationsEnabled, setNotificationsEnabled] = useState(false);
   const [logoutModalVisible, setLogoutModalVisible] = useState(false);
   const [loadingLogout, setLoadingLogout] = useState(false);
   const [userName, setUserName] = useState('');
@@ -57,7 +55,7 @@ export default function Settings({navigation}) {
         setTokenExpired(true);
       }
     } catch (error) {
-      console.log('Error fetching profile data:', error);
+      console.log('err fect data profile', error);
     }
   }, []);
 
@@ -66,7 +64,7 @@ export default function Settings({navigation}) {
     try {
       await logout(navigation, dispatch);
     } catch (error) {
-      console.log('Error during logout:', error);
+      console.log('err fecth logout', error);
     } finally {
       setLoadingLogout(false);
       setLogoutModalVisible(false);
@@ -80,7 +78,7 @@ export default function Settings({navigation}) {
   );
 
   return (
-    <SafeAreaView style={{flex: 1}}>
+    <View style={{flex: 1}}>
       <StatusBar barStyle={'default'} backgroundColor={'transparent'} />
       <View style={styles.navbar}>
         <Text style={styles.navbarTitle}>{t('name_settings')}</Text>
@@ -91,7 +89,6 @@ export default function Settings({navigation}) {
         showsVerticalScrollIndicator={false}>
         <Gap height={15} />
 
-        {/* Bagian Profil */}
         <Text style={styles.sectionHeader}>{t('profile')}</Text>
         <TouchableOpacity
           style={styles.section}
@@ -100,7 +97,7 @@ export default function Settings({navigation}) {
           {photo ? (
             <Image source={{uri: photo}} style={styles.imgPhoto} />
           ) : (
-            <Icon name="account-circle" size={55} color={'#999'} />
+            <Icon name="account-circle" size={55} color={COLORS.mediumGrey} />
           )}
           <View style={styles.sectionTextContainer}>
             <Text style={styles.sectionTitle}>
@@ -110,22 +107,8 @@ export default function Settings({navigation}) {
           </View>
         </TouchableOpacity>
 
-        {/* Pengaturan Akun */}
         <Text style={styles.sectionHeader}>{t('account_settings')}</Text>
-        {/* <TouchableOpacity
-          style={styles.section}
-          activeOpacity={0.6}
-          onPress={() => navigation.navigate('PrivasiSetting')}>
-          <Icon name="lock-outline" size={28} color={COLORS.goldenOrange} />
-          <View style={styles.sectionTextContainer}>
-            <Text style={styles.sectionTitle}>{t('privacy')}</Text>
-            <Text style={styles.sectionSubtitle}>
-              {t('privacy_description')}
-            </Text>
-          </View>
-        </TouchableOpacity> */}
 
-        {/* Ganti Password */}
         <TouchableOpacity
           style={styles.section}
           activeOpacity={0.6}
@@ -139,26 +122,6 @@ export default function Settings({navigation}) {
           </View>
         </TouchableOpacity>
 
-        {/* Notification */}
-        {/* <View style={styles.section}>
-          <Icon name="bell-outline" size={28} color={COLORS.goldenOrange} />
-          <View style={styles.sectionTextContainer}>
-            <Text style={styles.sectionTitle}>{t('notifications')}</Text>
-            <Text style={styles.sectionSubtitle}>
-              {t('notifications_description')}
-            </Text>
-          </View>
-          <View style={styles.viewSwitch}>
-            <Switch
-              value={notificationsEnabled}
-              onValueChange={setNotificationsEnabled}
-              trackColor={{false: COLORS.lightGray, true: COLORS.goldenOrange}}
-              thumbColor={notificationsEnabled ? COLORS.primary : COLORS.gray}
-            />
-          </View>
-        </View> */}
-
-        {/* Dukungan */}
         <Text style={styles.sectionHeader}>{t('help_support')}</Text>
         <TouchableOpacity
           style={styles.section}
@@ -191,9 +154,8 @@ export default function Settings({navigation}) {
           </View>
         </TouchableOpacity>
 
-        {/* Logout */}
         <TouchableOpacity
-          style={[styles.section, {backgroundColor: '#f66'}]}
+          style={[styles.section, {backgroundColor: COLORS.redLight}]}
           activeOpacity={0.8}
           onPress={() => setLogoutModalVisible(true)}>
           <Icon name="logout" size={28} color={COLORS.white} />
@@ -203,11 +165,9 @@ export default function Settings({navigation}) {
             </Text>
           </View>
         </TouchableOpacity>
-
         <Gap height={50} />
       </ScrollView>
 
-      {/* Modal untuk konfirmasi logout */}
       <ModalCustom
         visible={logoutModalVisible}
         onRequestClose={() => setLogoutModalVisible(false)}
@@ -238,7 +198,7 @@ export default function Settings({navigation}) {
         }}
         buttonTitle="Login Ulang"
       />
-    </SafeAreaView>
+    </View>
   );
 }
 
@@ -287,11 +247,11 @@ const styles = StyleSheet.create({
   section: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#fff',
+    backgroundColor: COLORS.white,
     padding: 15,
     borderRadius: 10,
     marginBottom: 8,
-    shadowColor: '#000',
+    shadowColor: COLORS.black,
     shadowOffset: {width: 0, height: 2},
     shadowOpacity: 0.1,
     elevation: 3,
@@ -301,10 +261,10 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: DIMENS.l,
-    color: '#333',
+    color: COLORS.textPrimary,
   },
   sectionSubtitle: {
     fontSize: DIMENS.m,
-    color: '#888',
+    color: COLORS.textSecondary,
   },
 });

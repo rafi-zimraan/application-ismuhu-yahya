@@ -43,17 +43,14 @@ export default function DetailFamily({route, navigation}) {
     try {
       const response = await updateFamilyData(data.id, editedData);
 
-      if (response.message === 'Silahkan login terlebih dahulu') {
+      if (response?.message === 'Silahkan login terlebih dahulu') {
         setTokenExpired(true);
       } else {
-        ToastAndroid.show(
-          'Data keluarga berhasil diperbarui!',
-          ToastAndroid.SHORT,
-        );
+        ToastAndroid.show(response?.message, ToastAndroid.SHORT);
         setEditModalVisible(false);
       }
     } catch (error) {
-      ToastAndroid.show('Gagal memperbarui data keluarga', ToastAndroid.SHORT);
+      console.log('err update data family', error);
     } finally {
       setIsLoading(false);
     }
@@ -66,7 +63,7 @@ export default function DetailFamily({route, navigation}) {
       setIsDeleted(true);
       setDeleteModalVisible(false);
     } catch (error) {
-      ToastAndroid.show('Gagal menghapus data keluarga', ToastAndroid.SHORT);
+      console.log('err delete data family', error);
     } finally {
       setIsLoading(false);
     }
@@ -77,7 +74,7 @@ export default function DetailFamily({route, navigation}) {
     try {
       console.log('Data refreshed');
     } catch (error) {
-      // console.log('Error during refresh:', error);
+      console.log('Error during refresh:', error);
     } finally {
       setRefreshing(false);
     }
@@ -290,7 +287,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.white,
     borderRadius: 15,
     padding: 15,
-    shadowColor: '#000',
+    shadowColor: COLORS.black,
     shadowOffset: {width: 0, height: 2},
     shadowOpacity: 0.1,
     elevation: 2,
@@ -307,11 +304,11 @@ const styles = StyleSheet.create({
   },
   textTitle: {
     fontSize: DIMENS.m,
-    color: '#999',
+    color: COLORS.mediumGrey,
   },
   label: {
     fontSize: DIMENS.l,
-    color: '#333',
+    color: COLORS.textPrimary,
   },
   buttonContainer: {
     flexDirection: 'row',
@@ -321,13 +318,13 @@ const styles = StyleSheet.create({
     right: 20,
   },
   editButton: {
-    backgroundColor: '#4CAF50',
+    backgroundColor: COLORS.greenConfirm,
     padding: 15,
     borderRadius: 50,
     marginRight: 10,
   },
   deleteButton: {
-    backgroundColor: '#F44336',
+    backgroundColor: COLORS.red,
     padding: 15,
     borderRadius: 50,
   },

@@ -123,26 +123,8 @@ export default function CreateFacilityComplaint({navigation}) {
       setLoading(false);
       setModalVisible(true);
     } catch (error) {
+      console.log('Err Create Facility Complaint', error);
       setLoading(false);
-      const statusCode = error.response?.status;
-      const errorMessage = error.response?.data?.message;
-
-      if (statusCode === 404) {
-        ToastAndroid.show(
-          'Data tidak ditemukan. Silakan periksa kembali!',
-          ToastAndroid.SHORT,
-        );
-      } else if (statusCode === 500) {
-        ToastAndroid.show(
-          'Terjadi kesalahan pada server. Silakan hubungi developer!',
-          ToastAndroid.SHORT,
-        );
-      } else {
-        ToastAndroid.show(
-          errorMessage || 'Gagal memperbarui pengaduan!',
-          ToastAndroid.SHORT,
-        );
-      }
     }
   };
 
@@ -211,7 +193,7 @@ export default function CreateFacilityComplaint({navigation}) {
         />
         <TextInput
           style={[styles.input, phone && {borderColor: COLORS.goldenOrange}]}
-          placeholder="Nomor Telepon (+62)"
+          placeholder="Nomor WhastApp (+62)"
           value={phone}
           onChangeText={setPhone}
           placeholderTextColor={COLORS.grey}

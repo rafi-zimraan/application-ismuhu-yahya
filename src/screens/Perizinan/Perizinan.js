@@ -43,15 +43,10 @@ export default function Perizinan({navigation}) {
   const [isDelete, setIsDelete] = useState(false);
   const [selectedDeleteId, setSelectedDeleteId] = useState(null);
 
-  console.log('data state cuti', dataCuti);
-  console.log('data state keluar', dataExitPermit);
-
   const fetchData = async () => {
     try {
       setLoading(true);
       const response = await getAllCuti();
-      console.log('data cuti', response.data);
-
       if (response?.message === 'Silahkan login terlebih dahulu') {
         setTokenExpired(true);
       } else if (response?.data?.data) {
@@ -72,12 +67,9 @@ export default function Perizinan({navigation}) {
           desc: item.desc,
           approve: item.approve,
         }));
-
         setDataCuti(mappedData);
-
         if (mappedData.length > 0) {
           const firstEntry = mappedData[0];
-          console.log('data id', firstEntry);
           setUserDivisionId(firstEntry.division_id);
           setUserDepartmentId(firstEntry.department_id);
         }
@@ -109,12 +101,11 @@ export default function Perizinan({navigation}) {
       const dateB = new Date(b.created_at);
       return dateB - dateA;
     });
+
   const fetchExitPermitData = async () => {
     try {
       setLoading(true);
       const response = await getAllPerizinanKeluar();
-      console.log('data perizinan keluar', response.data.data);
-
       if (response?.data) {
         const mappedData = response.data.map(item => ({
           id: item.id,
@@ -193,10 +184,10 @@ export default function Perizinan({navigation}) {
           ToastAndroid.show('Data berhasil dihapus.', ToastAndroid.SHORT);
           setDeleteModalVisible(false);
         } else {
-          ToastAndroid.show('Gagal menghapus data.', ToastAndroid.SHORT);
+          console.log('Gagal menghapus data ');
         }
       } else {
-        ToastAndroid.show('Data tidak ditemukan.', ToastAndroid.SHORT);
+        console.log('Data yang ingin dihapus tidak ditemukan.');
       }
     } catch (error) {
       console.log('Error deleting data:', error);
@@ -245,7 +236,6 @@ export default function Perizinan({navigation}) {
           <FlatList
             data={combinedData}
             keyExtractor={(item, index) => `${item.id}-${index}`}
-            // keyExtractor={item => item.id.toString()}
             renderItem={({item}) => (
               <HistoryItem
                 item={item}

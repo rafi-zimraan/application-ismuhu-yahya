@@ -25,19 +25,30 @@ export default function ForgotPassword({navigation}) {
       return;
     }
 
+    if (!email.includes('@')) {
+      showToast('Format email tidak valid. Harap masukkan email yang benar.');
+      return;
+    }
+
     try {
       setLoading(true);
       const response = await sendVerificationEmail(email);
-      ToastAndroid.show('Email berhasil dikirim!', ToastAndroid.SHORT);
-      navigation.navigate('CheckOtpEmail', {email});
-    } catch (error) {
-      const statusCode = error.response?.status;
-      if (statusCode === 404) {
-        showToast('Terdapat kesalahan dari server.');
-      } else if (statusCode === 500) {
-        showToast('Harap hubungi developer untuk bantuan lebih lanjut.');
+
+      if (response?.status) {
+        showToast(response?.message);
+        navigation.navigate('CheckOtpEmail', {email});
       } else {
-        console.log('statusCode', statusCode);
+        showToast('Gagal mengirim email. Silakan coba lagi.');
+      }
+    } catch (error) {
+      if (
+        error.response &&
+        error.response.data &&
+        error.response.data.message
+      ) {
+        console.log('Error from server', error.response.data.message);
+      } else {
+        console.log('Err code', error.message);
       }
     } finally {
       setLoading(false);
@@ -124,19 +135,19 @@ const styles = StyleSheet.create({
   },
   description: {
     color: COLORS.grey,
-    fontSize: 18,
+    fontSize: DIMENS.xl,
     fontWeight: '400',
     textAlign: 'center',
     paddingHorizontal: 20,
   },
   body: {
-    backgroundColor: COLORS.white,
     flex: 1,
+    backgroundColor: COLORS.white,
     position: 'relative',
-    top: 120,
     borderTopLeftRadius: 35,
     borderTopRightRadius: 35,
     paddingHorizontal: 20,
+    top: 120,
   },
   container: {
     flex: 1,

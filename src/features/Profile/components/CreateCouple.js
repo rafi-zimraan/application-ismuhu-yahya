@@ -1,13 +1,6 @@
 import React, {useState} from 'react';
 import {useForm} from 'react-hook-form';
-import {
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  ToastAndroid,
-  View,
-} from 'react-native';
+import {ScrollView, StyleSheet, Text, TextInput, View} from 'react-native';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import {addCouple} from '..';
 import {
@@ -34,14 +27,13 @@ export default function CreateCouple({navigation}) {
       const userId = await EncryptedStorage.getItem('idUser');
       const response = await addCouple(userId, data);
 
-      if (response.message === 'Silahkan login terlebih dahulu') {
+      if (response?.message === 'Silahkan login terlebih dahulu') {
         setTokenExpired(true);
       } else if (response) {
         setModalVisible(true);
       }
     } catch (error) {
-      // console.log('error', error.message);
-      ToastAndroid.show('Gagal membuat data pasangan', ToastAndroid.SHORT);
+      console.log('error', error);
     } finally {
       setIsLoading(false);
     }

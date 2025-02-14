@@ -1,5 +1,5 @@
 import {useNavigation} from '@react-navigation/native';
-import React, {useState} from 'react';
+import React, {useRef, useState} from 'react';
 import {
   StyleSheet,
   Text,
@@ -25,6 +25,7 @@ export default function OtpForgotPassword({route}) {
   const [loading, setLoading] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [token, setToken] = useState(null);
+  const inputRefs = useRef([]);
 
   const handleChangeText = (text, index) => {
     const newOtp = [...otp];
@@ -32,11 +33,13 @@ export default function OtpForgotPassword({route}) {
     setOtp(newOtp);
 
     if (text && index < otp.length - 1) {
-      const nextInput = `otp-${index + 1}`;
-      const nextField = global[nextInput];
-      if (nextField) {
-        nextField.focus();
-      }
+      inputRefs.current[index + 1]?.focus();
+    }
+  };
+
+  const handleKeyPress = (event, index) => {
+    if (event.nativeEvent.key === 'Backspace' && index > 0 && !otp[index]) {
+      inputRefs.current[index - 1]?.focus();
     }
   };
 
@@ -66,13 +69,14 @@ export default function OtpForgotPassword({route}) {
         setModalVisible(true);
       }
     } catch (error) {
-      const statusCode = error.response?.status;
-      if (statusCode === 404) {
-        showToast('Terdapat kesalahan dari server.');
-      } else if (statusCode === 500) {
-        showToast('Harap hubungi developer untuk bantuan lebi lanjut.');
+      if (
+        error.response &&
+        error.response.data &&
+        error.response.data.message
+      ) {
+        console.log('Error from server', error.response.data.message);
       } else {
-        showToast(error.message || 'Verifikasi OTP gagal.');
+        console.log('Err code', error.message);
       }
     } finally {
       setLoading(false);
@@ -80,14 +84,22 @@ export default function OtpForgotPassword({route}) {
   };
 
   const handleResendEmail = () => {
-    ToastAndroid.show('Nantinkan fitur terbarunya yaa 🤗', ToastAndroid.SHORT);
+    ToastAndroid.show('Nantikan fitur terbarunya yaa 🤗', ToastAndroid.SHORT);
   };
 
   const handleModalClose = () => {
     setModalVisible(false);
     if (token) {
-      navigation.replace('Dasboard', {token});
+      navigation.replace('Dashboard', {token});
     }
+  };
+
+  const maskEmail = email => {
+    if (!email.includes('@')) return email;
+
+    const [localPart, domain] = email.split('@');
+    const visiblePart = localPart.slice(0, 3);
+    return `${visiblePart}****@${domain}`;
   };
 
   return (
@@ -114,7 +126,7 @@ export default function OtpForgotPassword({route}) {
         <Gap height={10} />
         <Text style={styles.subtitle}>
           Silakan masukkan kode yang kami kirim ke{' '}
-          <Text style={styles.email}>{email}</Text>
+          <Text style={styles.email}>{maskEmail(email)}</Text>
         </Text>
         <Gap height={20} />
 
@@ -122,12 +134,13 @@ export default function OtpForgotPassword({route}) {
           {otp.map((value, index) => (
             <TextInput
               key={index}
-              ref={input => (global[`otp-${index}`] = input)}
+              ref={ref => (inputRefs.current[index] = ref)}
               style={styles.otpInput}
               keyboardType="number-pad"
               maxLength={1}
               value={value}
               onChangeText={text => handleChangeText(text, index)}
+              onKeyPress={event => handleKeyPress(event, index)}
             />
           ))}
         </View>
@@ -205,7 +218,7 @@ const styles = StyleSheet.create({
     borderColor: COLORS.goldenOrange,
     borderRadius: 8,
     textAlign: 'center',
-    fontSize: 20,
+    fontSize: DIMENS.xxl,
     color: COLORS.black,
   },
   resendText: {

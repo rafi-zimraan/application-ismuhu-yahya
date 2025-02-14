@@ -1,4 +1,3 @@
-import {ToastAndroid} from 'react-native';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import api from '../../../utils/axiosInstance';
 
@@ -19,18 +18,10 @@ export const fetchGetYaumi = async (id_user, haid = 0) => {
 
     return response.data || {};
   } catch (error) {
-    if (error.response?.status === 404) {
-      ToastAndroid.show(
-        'data tidak ditemukan. Silakan hubungi developer.',
-        ToastAndroid.SHORT,
-      );
-    } else if (error.response?.status === 500) {
-      ToastAndroid.show(
-        'Kesalahan server. Silakan coba lagi nanti.',
-        ToastAndroid.SHORT,
-      );
+    if (error.response && error.response.data && error.response.data.message) {
+      console.log('Error from server', error.response.data.message);
     } else {
-      ToastAndroid.show('Terjadi kesalahan pada amalyaumi', ToastAndroid.LONG);
+      console.log('Err code', error.message);
     }
     throw error;
   }
@@ -57,19 +48,10 @@ export const addYaumiNotes = async (user_id, datas) => {
 
     return response.data || {};
   } catch (error) {
-    console.log('error kirim data', error);
-    if (error.response?.status === 404) {
-      ToastAndroid.show(
-        'data tidak ditemukan. Silakan hubungi developer.',
-        ToastAndroid.SHORT,
-      );
-    } else if (error.response?.status === 500) {
-      ToastAndroid.show(
-        'Kesalahan server. Silakan coba lagi nanti.',
-        ToastAndroid.SHORT,
-      );
+    if (error.response && error.response.data && error.response.data.message) {
+      console.log('Error from server', error.response.data.message);
     } else {
-      ToastAndroid.show('Terjadi kesalahan pada amalyaumi', ToastAndroid.LONG);
+      console.log('Err code', error.message);
     }
     throw error;
   }
@@ -89,19 +71,10 @@ export const fetchMonthlyReportYaumi = async user_id => {
 
     return response.data || {};
   } catch (error) {
-    console.log('error', error.message);
-    if (error.response?.status === 404) {
-      ToastAndroid.show(
-        'Data tidak ditemukan. Silakan hubungi developer.',
-        ToastAndroid.SHORT,
-      );
-    } else if (error.response?.status === 500) {
-      ToastAndroid.show(
-        'Kesalahan server. Silakan coba lagi nanti.',
-        ToastAndroid.SHORT,
-      );
+    if (error.response && error.response.data && error.response.data.message) {
+      console.log('Error from server', error.response.data.message);
     } else {
-      ToastAndroid.show('Terjadi kesalahan pada amalyaumi', ToastAndroid.LONG);
+      console.log('Err code', error.message);
     }
     throw error;
   }

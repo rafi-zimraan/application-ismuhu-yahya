@@ -41,19 +41,15 @@ export default function ListAmalYaumi({navigation}) {
       const idUser = await EncryptedStorage.getItem('idUser');
 
       const response = await fetchGetYaumi(JSON.parse(idUser), haid);
-      console.log('data list', response.data);
 
       if (response.message === 'Silahkan login terlebih dahulu') {
         setTokenExpired(true);
         return;
       }
-
       if (response.data?.yaumis?.original?.status === false) {
-        const message = response.data?.yaumis?.original?.message;
         setModalVisible(true);
       } else {
         const {yaumis, note_yaumi} = response.data;
-
         const preFilledSelections = {};
         const dropdownVisibility = {};
         const dropdownSelections = {};
@@ -75,13 +71,11 @@ export default function ListAmalYaumi({navigation}) {
             };
           } else if (note.yaumi.type_tag === 'checklist') {
             if (sub_yaumi_note.length === 0) {
-              // Checklist tanpa sub_yaumi, tetapi pernah diisi
               preFilledSelections[yaumiId] = {
-                subs: is_fill ? [yaumiId] : [], // Tetap set checklist jika pernah diisi
+                subs: is_fill ? [yaumiId] : [],
                 is_fill: is_fill,
               };
             } else {
-              // Checklist dengan sub_yaumi
               const selectedSubs = sub_yaumi_note.map(sub =>
                 String(sub.sub_yaumi_id),
               );
@@ -137,7 +131,7 @@ export default function ListAmalYaumi({navigation}) {
         setIsHaid(isHaidValue);
         fetchData(isHaidValue ? 1 : 0);
       } catch (error) {
-        ToastAndroid.show('Gagal load status haid', ToastAndroid.SHORT);
+        console.log('gagal laod statsu haid', error);
       }
     };
 
@@ -148,7 +142,7 @@ export default function ListAmalYaumi({navigation}) {
           setUserGender(userData.gender);
         }
       } catch (error) {
-        ToastAndroid.show('Gagal refresh data', ToastAndroid.SHORT);
+        console.log('err load data', error);
       }
     };
 
@@ -162,7 +156,7 @@ export default function ListAmalYaumi({navigation}) {
       await EncryptedStorage.setItem('isHaid', JSON.stringify(newValue));
       fetchData(newValue ? 1 : 0);
     } catch (error) {
-      console.log('Error saving haid status:', error);
+      console.log('err mengambil data haid', error);
     }
   };
 
@@ -181,11 +175,9 @@ export default function ListAmalYaumi({navigation}) {
         isFill = desc.trim() !== '' ? 1 : 0;
       } else if (type === 'checklist') {
         if (item.sub_yaumi.length > 0) {
-          // Checklist dengan sub_yaumi, kirim subs
           subs = selectedOptions[yaumiId]?.subs || [];
           isFill = subs.length > 0 ? 1 : 0;
         } else {
-          // Checklist tanpa sub_yaumi, kirim subs sebagai array kosong
           isFill = selectedOptions[yaumiId]?.subs?.length > 0 ? 1 : 0;
           subs = [];
         }
@@ -207,7 +199,6 @@ export default function ListAmalYaumi({navigation}) {
       selections.push(selectionData);
     });
 
-    console.log('Data yang dikirim ke server:', selections);
     return selections;
   };
 
@@ -217,7 +208,7 @@ export default function ListAmalYaumi({navigation}) {
       const haidParam = isHaid ? 1 : 0;
       await fetchData(haidParam);
     } catch (error) {
-      ToastAndroid.show('Gagal memperbarui data', ToastAndroid.SHORT);
+      console.log('err load data', error);
     } finally {
       setRefreshing(false);
     }
@@ -613,6 +604,8 @@ const styles = StyleSheet.create({
     color: COLORS.black,
     fontWeight: '500',
     fontSize: DIMENS.m,
+    // backgroundColor: 'red',
+    // maxWidth: 130,
   },
   headerWrapper: {
     flexDirection: 'row',
@@ -630,7 +623,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     padding: 10,
     borderWidth: 1,
-    borderColor: '#ddd',
+    borderColor: COLORS.neutralGrey,
     backgroundColor: COLORS.white,
     borderRadius: 5,
   },
@@ -652,13 +645,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     padding: 10,
-    backgroundColor: '#f0f0f0',
+    backgroundColor: COLORS.paleGrey,
     marginVertical: 5,
     borderRadius: 5,
   },
   optionsWrapper: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    // flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: 5,
     justifyContent: 'space-around',
   },
   optionContainer: {

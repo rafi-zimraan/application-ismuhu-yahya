@@ -5,7 +5,6 @@ import {
   ScrollView,
   StyleSheet,
   Text,
-  ToastAndroid,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -32,9 +31,7 @@ export default function AllDataCouple({navigation}) {
     try {
       const id_user = await EncryptedStorage.getItem('idUser');
       if (!id_user) throw new Error('User ID tidak ditemukan.');
-
       const fetchedData = await getCoupleData(id_user);
-
       if (fetchedData.message === 'Silahkan login terlebih dahulu') {
         setTokenExpired(true);
       } else {
@@ -42,8 +39,7 @@ export default function AllDataCouple({navigation}) {
         setDataCouples(couples);
       }
     } catch (error) {
-      ToastAndroid.show('Server Data Pasangan Error', ToastAndroid.SHORT);
-      console.log('Error fetching couple data:', error.message);
+      console.log('Error fetching couple data:', error);
     } finally {
       setRefreshing(false);
       setIsLoading(false);
@@ -190,11 +186,11 @@ const styles = StyleSheet.create({
   },
   textLabels: {
     fontSize: DIMENS.m,
-    color: '#999',
+    color: COLORS.mediumGrey,
   },
   TextDatas: {
     fontSize: DIMENS.l,
-    color: '#333',
+    color: COLORS.textPrimary,
   },
   viewContainerText: {
     marginLeft: 8,
@@ -212,7 +208,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 15,
     marginVertical: 10,
-    shadowColor: '#000',
+    shadowColor: COLORS.black,
     shadowOffset: {width: 0, height: 2},
     shadowOpacity: 0.1,
     elevation: 3,

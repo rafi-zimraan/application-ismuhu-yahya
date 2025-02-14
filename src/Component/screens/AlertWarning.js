@@ -8,14 +8,12 @@ const AlertWarning = ({show, message, paddingTop = 30, duration = 5000}) => {
 
   React.useEffect(() => {
     if (show) {
-      // Fade in saat show=true
       Animated.timing(fadeAnim, {
         toValue: 1,
         duration: 300,
         useNativeDriver: true,
       }).start();
 
-      // Otomatis fade out setelah beberapa detik
       const timer = setTimeout(() => {
         Animated.timing(fadeAnim, {
           toValue: 0,
@@ -24,12 +22,11 @@ const AlertWarning = ({show, message, paddingTop = 30, duration = 5000}) => {
         }).start();
       }, duration);
 
-      // Clean up timer saat komponen unmount
       return () => clearTimeout(timer);
     }
   }, [show]);
 
-  if (!show) return null; // Jika tidak show, maka tidak render apapun
+  if (!show) return null;
 
   return (
     <Animated.View

@@ -1,8 +1,7 @@
 import {Picker} from '@react-native-picker/picker';
 import {useNavigation} from '@react-navigation/native';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
-  Alert,
   StyleSheet,
   Text,
   ToastAndroid,
@@ -10,44 +9,115 @@ import {
   View,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {TextInputTaskManagement} from '..';
-import {ButtonAction, Gap, HeaderTransparent} from '../../../Component';
+import {TextInputTaskManagement, addTaskManagement} from '..';
+import {
+  AlertWarning,
+  Background,
+  ButtonAction,
+  Gap,
+  HeaderTransparent,
+  ModalCustom,
+} from '../../../Component';
 import {COLORS, DIMENS} from '../../../utils';
+import {FecthMe} from '../../authentication';
 
 export default function CreateTaskManagement({route}) {
   const navigation = useNavigation();
-  const [title, setTitle] = useState('');
+  const [activity, setActivity] = useState('');
   const [startTime, setStartTime] = useState('');
   const [endTime, setEndTime] = useState('');
   const [dueDate, setDueDate] = useState('');
   const [category, setCategory] = useState(null);
-  const [additionalPlan, setAdditionalPlan] = useState(false);
+  const [additionalPlan, setAdditionalPlan] = useState(0);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [loading, setloading] = useState(false);
+  const [taskData, setTaskData] = useState(null);
+  const [showAlert, setShowAlert] = useState(false);
+  const [tokenExpired, setTokenExpired] = useState(false);
 
-  const handleSaveTask = () => {
-    if (!title.trim()) {
-      Alert.alert('Error', 'Judul rencana tidak boleh kosong!');
+  const validateSession = async () => {
+    try {
+      const response = await FecthMe();
+      if (response?.message === 'Silahkan login terlebih dahulu') {
+        setTokenExpired(true);
+      }
+    } catch (error) {
+      console.log('Gagal melakukan validasi sesi:', error);
+    }
+  };
+
+  useEffect(() => {
+    validateSession();
+  }, []);
+
+  const handleAddTask = async () => {
+    if (!activity.trim()) {
+      ToastAndroid.show(
+        'Nama rencana harian tidak boleh kosong!',
+        ToastAndroid.SHORT,
+      );
       return;
     }
 
-    const newTask = {
-      title,
-      startTime,
-      endTime,
-      dueDate,
-      category,
-      additionalPlan,
-    };
-
-    if (route.params?.addTask) {
-      route.params.addTask(newTask);
+    if (!dueDate.trim()) {
+      ToastAndroid.show('Tenggat waktu harus diisi!', ToastAndroid.SHORT);
+      return;
     }
 
-    ToastAndroid.show('Rencana berhasil ditambahkan!', ToastAndroid.SHORT);
-    navigation.goBack();
+    if (!category) {
+      ToastAndroid.show('Kategori harus dipilih!', ToastAndroid.SHORT);
+      return;
+    }
+
+    if ((startTime && !endTime) || (!startTime && endTime)) {
+      setShowAlert(true);
+      return;
+    }
+
+    const formattedCategory = category === 'Rencana' ? 'planned' : 'unplanned';
+
+    let formattedActivity = activity;
+    if (startTime && endTime) {
+      formattedActivity = `(${startTime} - ${endTime}) ${activity}  `;
+    }
+
+    setloading(true);
+    try {
+      const response = await addTaskManagement(
+        formattedActivity,
+        dueDate,
+        additionalPlan,
+        formattedCategory,
+      );
+
+      if (response?.status) {
+        setTaskData({
+          activity: formattedActivity,
+          date: dueDate,
+          addition_task: additionalPlan,
+          category: formattedCategory,
+        });
+        setModalVisible(true);
+      } else {
+        console.log('kesalahan menambah rencana harian');
+      }
+    } catch (error) {
+      ToastAndroid.show(
+        'Gagal menambahkan rencana harian!',
+        ToastAndroid.SHORT,
+      );
+    } finally {
+      setloading(false);
+    }
   };
 
   return (
     <View style={styles.container}>
+      <Background />
+      <AlertWarning
+        show={showAlert}
+        message="Harap isi jam mulai dan jam selesai jika ingin menambahkan waktu!"
+      />
       <View style={styles.headerWrapper}>
         <HeaderTransparent
           title={'Tambah Rencana Harian'}
@@ -60,8 +130,8 @@ export default function CreateTaskManagement({route}) {
         <TextInputTaskManagement
           label="Nama Rencana"
           placeholder="Tulis Rencana Anda"
-          value={title}
-          onChangeText={setTitle}
+          value={activity}
+          onChangeText={setActivity}
           iconName="widgets"
         />
 
@@ -92,9 +162,14 @@ export default function CreateTaskManagement({route}) {
         />
 
         <Text style={styles.label}>Kategori</Text>
-        <View style={styles.pickerContainer}>
+        <View
+          style={[
+            styles.pickerContainer,
+            category && {backgroundColor: COLORS.lightGrey},
+          ]}>
           <Picker
             selectedValue={category}
+            style={styles.dropDown}
             dropdownIconColor={COLORS.black}
             onValueChange={itemValue => setCategory(itemValue)}>
             <Picker.Item label="Pilih Kategori" value={null} />
@@ -106,12 +181,14 @@ export default function CreateTaskManagement({route}) {
         <TouchableOpacity
           style={[
             styles.checkboxContainer,
-            additionalPlan && styles.checkboxActive,
+            additionalPlan === 1 && styles.checkboxActive,
           ]}
-          onPress={() => setAdditionalPlan(!additionalPlan)}>
+          onPress={() => setAdditionalPlan(prev => (prev === 0 ? 1 : 0))}>
           <Icon
             name={
-              additionalPlan ? 'check-circle' : 'checkbox-blank-circle-outline'
+              additionalPlan === 1
+                ? 'check-circle'
+                : 'checkbox-blank-circle-outline'
             }
             size={20}
             color={COLORS.black}
@@ -121,13 +198,47 @@ export default function CreateTaskManagement({route}) {
         </TouchableOpacity>
 
         <Gap height={20} />
-        <ButtonAction title="Simpan" onPress={handleSaveTask} />
+        <ButtonAction
+          title="Simpan"
+          onPress={handleAddTask}
+          loading={loading}
+        />
       </View>
+
+      <ModalCustom
+        visible={modalVisible}
+        onRequestClose={() => setModalVisible(false)}
+        iconModalName="check-circle"
+        title="Sukses membuat rencana harian"
+        description="Data telah ditambahkan"
+        buttonTitle="OK"
+        buttonSubmit={() => {
+          setModalVisible(false);
+          navigation.goBack();
+        }}
+      />
+
+      <ModalCustom
+        visible={tokenExpired}
+        onRequestClose={() => setTokenExpired(false)}
+        iconModalName="alert-circle-outline"
+        title="Sesi Berakhir"
+        description="Sesi Anda telah berakhir. Silakan login ulang untuk memperbarui data."
+        buttonSubmit={() => {
+          setTokenExpired(false);
+          navigation.navigate('SignIn');
+        }}
+        buttonTitle="Login Ulang"
+      />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
+  dropDown: {
+    color: COLORS.black,
+    fontSize: DIMENS.l,
+  },
   headerWrapper: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -137,11 +248,12 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   pickerContainer: {
-    borderWidth: 1,
+    borderWidth: 0.4,
     borderColor: COLORS.black,
     borderRadius: 8,
     padding: 5,
     marginBottom: 15,
+    backgroundColor: COLORS.white,
   },
   container: {
     flex: 1,
@@ -152,7 +264,7 @@ const styles = StyleSheet.create({
     padding: 15,
   },
   label: {
-    fontSize: 16,
+    fontSize: DIMENS.l,
     fontWeight: 'bold',
     marginBottom: 5,
     color: COLORS.black,
@@ -164,7 +276,7 @@ const styles = StyleSheet.create({
   },
   sampaiText: {
     marginHorizontal: 10,
-    fontSize: 16,
+    fontSize: DIMENS.l,
     fontWeight: 'bold',
     color: COLORS.black,
   },

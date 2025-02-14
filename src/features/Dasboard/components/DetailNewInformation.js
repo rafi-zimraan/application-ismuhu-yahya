@@ -6,6 +6,7 @@ import {
   StatusBar,
   StyleSheet,
   Text,
+  ToastAndroid,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -20,9 +21,9 @@ const {width} = Dimensions.get('window');
 
 export default function DetailNewInformation({route, navigation}) {
   const {detailData} = route.params;
+  const data = detailData.data;
   const [currentIndex, setCurrentIndex] = useState(0);
   const [loading, setLoading] = useState(true);
-  const data = detailData.data;
 
   useEffect(() => {
     const timeout = setTimeout(() => setLoading(false), 1000);
@@ -36,8 +37,8 @@ export default function DetailNewInformation({route, navigation}) {
       ? [{path: data.thumb}]
       : [{path: null}];
 
-  const title = data.title;
-  const description = data.desc;
+  const title = data.title || 'Judul berita tidak tersedia';
+  const description = data.desc || 'Deskripsi tidak tersedia';
   const startPublishedAt = data.start_published_at || 'Tanggal tidak tersedia';
   const uploaderName = data.uploader?.name || 'Tidak diketahui';
 
@@ -46,11 +47,14 @@ export default function DetailNewInformation({route, navigation}) {
       await Share.open({
         title: 'Bagikan Informasi',
         message: `Lihat informasi ini: ${title}\n\n${description}`,
-        url: `https://app.simpondok.com/${data.thumb || ''}`,
+        url: `https://app.simpondok.com/${data.thumb}`,
         failOnCancel: false,
       });
     } catch (error) {
-      console.log('Error sharing:', error);
+      ToastAndroid.show(
+        'Terjadi kesalahan saat share data informasi',
+        ToastAndroid.SHORT,
+      );
     }
   };
 
@@ -96,7 +100,6 @@ export default function DetailNewInformation({route, navigation}) {
 
           <Gap height={15} />
 
-          {/* Pagination */}
           <View style={styles.paginationContainer}>
             {images.map((_, index) => (
               <TouchableOpacity
@@ -110,7 +113,6 @@ export default function DetailNewInformation({route, navigation}) {
             ))}
           </View>
 
-          {/* Profile and Share */}
           <View style={styles.profileShareRow}>
             <View style={styles.profileContainer}>
               <Icon name="account" size={20} color={COLORS.grey} />
@@ -140,6 +142,7 @@ export default function DetailNewInformation({route, navigation}) {
           </View>
         </View>
       </ScrollView>
+      <Gap height={15} />
     </View>
   );
 }
@@ -147,7 +150,7 @@ export default function DetailNewInformation({route, navigation}) {
 const styles = StyleSheet.create({
   description: {
     color: COLORS.grey,
-    fontSize: DIMENS.l,
+    fontSize: DIMENS.m,
     fontWeight: '400',
   },
   headerWrapper: {
@@ -164,7 +167,8 @@ const styles = StyleSheet.create({
   },
   image: {
     width: width,
-    borderRadius: 25,
+    marginHorizontal: 3,
+    borderRadius: 20,
     height: 180,
     width: 320,
   },
@@ -244,16 +248,34 @@ const styles = StyleSheet.create({
 const htmlStyles = StyleSheet.create({
   p: {
     fontSize: DIMENS.s,
-    color: COLORS.darkGray,
+    color: COLORS.black,
     marginVertical: 2,
   },
   ol: {
     fontSize: DIMENS.s,
-    color: COLORS.darkGray,
+    color: COLORS.black,
   },
   li: {
     fontSize: DIMENS.s,
-    color: COLORS.darkGray,
+    color: COLORS.black,
     marginVertical: 2,
+  },
+  h1: {
+    fontSize: DIMENS.xxxl,
+    fontWeight: 'bold',
+    color: COLORS.black,
+    marginVertical: 4,
+  },
+  h2: {
+    fontSize: DIMENS.xxl,
+    fontWeight: 'bold',
+    color: COLORS.black,
+    marginVertical: 3,
+  },
+  h3: {
+    fontSize: DIMENS.l,
+    fontWeight: 'bold',
+    color: COLORS.black,
+    marginVertical: 3,
   },
 });

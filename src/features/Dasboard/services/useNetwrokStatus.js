@@ -25,15 +25,14 @@ export const useNetworkStatus = isFocused => {
       const {InternetSettings} = NativeModules;
       if (InternetSettings?.open) {
         InternetSettings.open();
-        ToastAndroid.show('Opening network settings...', ToastAndroid.SHORT);
       } else {
         ToastAndroid.show(
-          'Unable to open network settings',
+          'Tidak dapat membuka pengaturan jaringan',
           ToastAndroid.SHORT,
         );
       }
     } catch (error) {
-      ToastAndroid.show('Error opening network settings', ToastAndroid.SHORT);
+      console.log('Error opening network settings', error);
     } finally {
       setButtonLoading(false);
     }

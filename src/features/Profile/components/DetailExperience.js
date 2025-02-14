@@ -1,7 +1,6 @@
 import React, {useState} from 'react';
 import {
   Image,
-  RefreshControl,
   ScrollView,
   StatusBar,
   StyleSheet,
@@ -42,18 +41,14 @@ export default function DetailExperience({route, navigation}) {
     try {
       const response = await updateExperience(data.id, editedData);
 
-      if (response.message === 'Silahkan login terlebih dahulu') {
+      if (response?.message === 'Silahkan login terlebih dahulu') {
         setTokenExpired(true);
       } else {
-        ToastAndroid.show(
-          'Data pengalaman berhasil diperbarui!',
-          ToastAndroid.SHORT,
-        );
+        ToastAndroid.show(response?.message, ToastAndroid.SHORT);
         setEditModalVisible(false);
       }
     } catch (error) {
-      ToastAndroid.show('Gagal Update data pengalaman', ToastAndroid.SHORT);
-      // console.log('Error updating experience:', error.message);
+      console.log('Error updating experience:', error);
     } finally {
       setIsLoading(false);
     }
@@ -66,20 +61,9 @@ export default function DetailExperience({route, navigation}) {
       setIsDeleted(true);
       setDeleteModalVisible(false);
     } catch (error) {
-      // console.log('Error deleting experience:', error.message);
+      console.log('Error deleting experience:', error);
     } finally {
       setIsLoading(false);
-    }
-  };
-
-  const reloadData = async () => {
-    setRefreshing(true);
-    try {
-      console.log('Data refreshed');
-    } catch (error) {
-      console.log('Error during refresh:', error);
-    } finally {
-      setRefreshing(false);
     }
   };
 
@@ -94,15 +78,7 @@ export default function DetailExperience({route, navigation}) {
           onPress={() => navigation.goBack()}
         />
       </View>
-      <ScrollView
-        refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={reloadData}
-            colors={['#ffd700']}
-          />
-        }
-        contentContainerStyle={{flexGrow: 1}}>
+      <ScrollView contentContainerStyle={{flexGrow: 1}}>
         <View style={styles.container}>
           {!isDeleted ? (
             <>

@@ -23,8 +23,6 @@ import {FecthMe} from '../../authentication';
 
 export default function CreateFormulirPerizinan({navigation, route}) {
   const {division_id, department_id} = route.params;
-  console.log('divisi', division_id);
-  console.log('departman', department_id);
   const [divisionName, setDivisionName] = useState('');
   const [departmentName, setDepartmentName] = useState('');
   const [loadingDivision, setLoadingDivision] = useState(false);
@@ -46,12 +44,10 @@ export default function CreateFormulirPerizinan({navigation, route}) {
       try {
         setLoadingDivision(true);
         const divisions = await getAllDivisions();
-        console.log('divisi', divisions);
         setDivisionName(divisions?.data?.data?.[0]?.name);
         setDivisionId(divisions?.data?.data?.[0]?.id);
         setLoadingDepartment(true);
         const departments = await getAllDepartment();
-        console.log('department', departments);
         setDepartmentName(departments?.data?.data?.[0]?.name);
         setDepartmentId(departments?.data?.data?.[0]?.id);
       } catch (error) {
@@ -97,7 +93,6 @@ export default function CreateFormulirPerizinan({navigation, route}) {
       };
 
       const response = await addCuti(data);
-
       if (response?.status === true) {
         setShowSuccessModal(true);
       } else if (response?.message === 'Silahkan login terlebih dahulu') {
@@ -109,8 +104,7 @@ export default function CreateFormulirPerizinan({navigation, route}) {
         );
       }
     } catch (error) {
-      console.log('err', error.response);
-      ToastAndroid.show('Terjadi kesalahan', ToastAndroid.SHORT);
+      console.log('err create perizinan cuti', error);
     } finally {
       setLoading(false);
     }

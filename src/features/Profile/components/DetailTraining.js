@@ -80,10 +80,10 @@ export default function DetailTraining({route, navigation}) {
     try {
       const response = await updateTraining(data.id, editedData);
 
-      if (response.message === 'Silahkan login terlebih dahulu') {
+      if (response?.message === 'Silahkan login terlebih dahulu') {
         setTokenExpired(true);
       } else {
-        ToastAndroid.show('Data berhasil diperbarui!', ToastAndroid.SHORT);
+        ToastAndroid.show(response?.message, ToastAndroid.SHORT);
         setEditModalVisible(false);
       }
     } catch (error) {
@@ -108,11 +108,11 @@ export default function DetailTraining({route, navigation}) {
   const handleDeleteFile = async () => {
     setIsModalLoading(true);
     try {
-      await deleteTrainingFile(selectedFileId);
+      const response = await deleteTrainingFile(selectedFileId);
       setExistingFiles(prevFiles =>
         prevFiles.filter(file => file.id !== selectedFileId),
       );
-      ToastAndroid.show('File berhasil dihapus!', ToastAndroid.SHORT);
+      ToastAndroid.show(response?.message, ToastAndroid.SHORT);
     } catch (error) {
       ToastAndroid.show('Gagal menghapus file!', ToastAndroid.SHORT);
     } finally {
@@ -157,10 +157,7 @@ export default function DetailTraining({route, navigation}) {
     Alert.alert(
       'Pilih Jenis File',
       '',
-      [
-        {text: 'Gambar', onPress: handleImagePicker},
-        // {text: 'PDF', onPress: pickPDFDocument},
-      ],
+      [{text: 'Gambar', onPress: handleImagePicker}],
       {cancelable: true},
     );
   };
@@ -185,8 +182,8 @@ export default function DetailTraining({route, navigation}) {
       const idFileTraining = data.id;
       const response = await uploadTrainingFile(fileType, file, idFileTraining);
 
-      if (response.message) {
-        ToastAndroid.show('File berhasil diunggah!', ToastAndroid.SHORT);
+      if (response?.message) {
+        ToastAndroid.show(response?.message, ToastAndroid.SHORT);
         setExistingFiles(prevFiles => [
           ...prevFiles,
           {
@@ -233,7 +230,7 @@ export default function DetailTraining({route, navigation}) {
     try {
       await viewDocument({uri});
     } catch (error) {
-      ToastAndroid.show('Terjadi kesalahan', ToastAndroid.SHORT);
+      ToastAndroid.show('Terjadi kesalahan melihat pdf', ToastAndroid.SHORT);
     }
   };
 

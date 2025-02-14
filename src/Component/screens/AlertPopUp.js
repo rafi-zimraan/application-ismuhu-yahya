@@ -16,7 +16,6 @@ if (Platform.OS === 'android') {
 }
 
 let timeout = null;
-let message = '';
 
 export default function AlertPopUp({
   show,

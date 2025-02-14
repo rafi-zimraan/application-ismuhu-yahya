@@ -3,7 +3,7 @@ import {SafeAreaView, StyleSheet, Text, View} from 'react-native';
 import {useSelector} from 'react-redux';
 import {Background, HeaderTransparent} from '../../Component';
 import {Translations} from '../../features/Language';
-import {COLORS} from '../../utils';
+import {COLORS, DIMENS} from '../../utils';
 
 export default function AboutApplication({navigation}) {
   const currentLanguage = useSelector(state => state.language.currentLanguage);
@@ -45,18 +45,18 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   header: {
-    fontSize: 18,
+    fontSize: DIMENS.xl,
     fontWeight: 'bold',
     color: COLORS.darkGray,
   },
   description: {
-    fontSize: 16,
+    fontSize: DIMENS.l,
     color: COLORS.black,
     marginBottom: 20,
     lineHeight: 24,
   },
   detail: {
-    fontSize: 16,
+    fontSize: DIMENS.l,
     color: COLORS.darkGray,
     lineHeight: 24,
   },

@@ -63,11 +63,13 @@ export default function ChangePassword({navigation}) {
         setModalVisible(true);
       }
     } catch (error) {
-      console.log('error', error.message);
+      ToastAndroid.show(
+        'Terjadi kesalahan saat menganti password',
+        ToastAndroid.SHORT,
+      );
     }
   };
 
-  // Function to validate input
   const validatePassword = (key, value) => {
     if (value.length < 6) {
       if (key === 'newPassword') {
@@ -94,7 +96,7 @@ export default function ChangePassword({navigation}) {
       <Background />
       <View style={styles.headerWrapper}>
         <HeaderTransparent
-          title={t('app_settings')}
+          title={t('password_title')}
           icon="arrow-left-circle-outline"
           onPress={() => navigation.goBack()}
         />
@@ -199,7 +201,6 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    backgroundColor: COLORS.lightGray,
   },
   headerWrapper: {
     flexDirection: 'row',
@@ -215,7 +216,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   headerTitle: {
-    fontSize: 18,
+    fontSize: DIMENS.xl,
     fontWeight: '700',
     color: COLORS.darkGray,
   },
@@ -223,7 +224,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   title: {
-    fontSize: 18,
+    fontSize: DIMENS.xl,
     fontWeight: '600',
     color: COLORS.darkGray,
     marginBottom: 5,

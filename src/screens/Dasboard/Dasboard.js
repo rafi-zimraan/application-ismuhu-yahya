@@ -79,11 +79,10 @@ export default function Dasboard({navigation}) {
         setAmountSpa(spaTotal);
         setUserPosition(response?.position || '');
       } else {
-        console.log('Error fetching user session:', response?.message);
+        throw new Error('Gagal mengambil data pengguna');
       }
     } catch (e) {
-      console.log('error checking session', e);
-      setTokenExpired(false);
+      console.log('Terjadi kesalahan checking session', e);
     }
   }, []);
 
@@ -141,8 +140,8 @@ export default function Dasboard({navigation}) {
           <Gap height={15} />
           <View style={styles.menu}>
             <ButtonMenu
-              title="Amal - yaumi"
-              iconName="clipboard-check-multiple"
+              title="Amal yaumi"
+              iconName="calendar-check"
               color={COLORS.white}
               backgroundColor={COLORS.goldenOrange}
               iconSize={33}
@@ -150,8 +149,8 @@ export default function Dasboard({navigation}) {
             />
 
             <ButtonMenu
-              title="Task- list"
-              iconName="clipboard-list"
+              title="Task"
+              iconName="format-list-checks"
               color={COLORS.white}
               backgroundColor={COLORS.goldenOrange}
               iconSize={33}

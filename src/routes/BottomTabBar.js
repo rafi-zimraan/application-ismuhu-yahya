@@ -2,6 +2,7 @@ import React from 'react';
 import {Text, TouchableOpacity, View} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import {COLORS, DIMENS} from '../utils';
 
 export default function BottomTabBar({state, descriptors, navigation}) {
   const iconColorDefault = '#808080';
@@ -25,7 +26,6 @@ export default function BottomTabBar({state, descriptors, navigation}) {
 
         const isFocused = state.index === index;
 
-        // Menentukan ikon berdasarkan nama route
         let iconName;
         if (route.name === 'Beranda') {
           iconName = 'home-variant';
@@ -69,7 +69,6 @@ export default function BottomTabBar({state, descriptors, navigation}) {
               alignItems: 'center',
               marginTop: 2,
             }}>
-            {/* Efek Cahaya */}
             {isFocused && (
               <LinearGradient
                 colors={['rgba(255, 178, 0, 0.5)', 'rgba(255, 178, 0, 0)']}
@@ -83,16 +82,12 @@ export default function BottomTabBar({state, descriptors, navigation}) {
                 }}
               />
             )}
-
-            {/* Icon */}
             <Icon
               name={iconName}
               size={isFocused ? 29 : 23}
               color={isFocused ? iconColorActive : iconColorDefault}
               style={{marginTop: 8}}
             />
-
-            {/* Label */}
             <Text
               style={{
                 color: isFocused ? iconColorActive : iconColorDefault,
@@ -101,20 +96,23 @@ export default function BottomTabBar({state, descriptors, navigation}) {
               }}>
               {label}
             </Text>
-
-            {/* Badge */}
             {options.tabBarBadge != null && (
               <View
                 style={{
                   position: 'absolute',
                   top: 6,
                   right: 44,
-                  backgroundColor: 'red',
+                  backgroundColor: COLORS.red,
                   borderRadius: 10,
                   paddingHorizontal: 5,
                   paddingVertical: 1,
                 }}>
-                <Text style={{color: 'white', fontSize: 10, fontWeight: '800'}}>
+                <Text
+                  style={{
+                    color: COLORS.white,
+                    fontSize: DIMENS.xs,
+                    fontWeight: '800',
+                  }}>
                   {options.tabBarBadge}
                 </Text>
               </View>

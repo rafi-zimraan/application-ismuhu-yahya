@@ -12,7 +12,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useSelector} from 'react-redux';
 import {Background, HeaderTransparent} from '../../Component';
 import {Translations} from '../../features/Language';
-import {COLORS} from '../../utils';
+import {COLORS, DIMENS} from '../../utils';
 
 export default function HelpSetting({navigation}) {
   const currentLanguage = useSelector(state => state.language.currentLanguage);
@@ -118,7 +118,7 @@ const styles = StyleSheet.create({
     marginLeft: 15,
   },
   sectionTitle: {
-    fontSize: 16,
+    fontSize: DIMENS.l,
     color: COLORS.darkGray,
   },
   descriptionContainer: {
@@ -133,7 +133,7 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   description: {
-    fontSize: 14,
+    fontSize: DIMENS.m,
     color: COLORS.darkGray,
     lineHeight: 20,
   },

@@ -6,13 +6,12 @@ import {
   StatusBar,
   StyleSheet,
   Text,
-  ToastAndroid,
   TouchableOpacity,
   View,
 } from 'react-native';
 import {Background, Gap, ModalCustom} from '../../Component';
 import {getAllNotifications} from '../../features/Notification';
-import {COLORS} from '../../utils';
+import {COLORS, DIMENS} from '../../utils';
 
 export default function Notification({navigation}) {
   const [notifications, setNotifications] = useState({
@@ -35,6 +34,7 @@ export default function Notification({navigation}) {
   const fetchNotifications = async () => {
     try {
       const response = await getAllNotifications();
+      console.log('response notif', response.data);
 
       if (response?.message === 'Silahkan login terlebih dahulu') {
         setTokenExpired(true);
@@ -49,10 +49,7 @@ export default function Notification({navigation}) {
         });
       }
     } catch (error) {
-      ToastAndroid.show(
-        'Gagal memuat notifikasi. Silakan coba lagi.',
-        ToastAndroid.SHORT,
-      );
+      console.log('error fecth endpoint notification', error);
       setNotifications({lisences: [], payrol: []});
     }
   };
@@ -62,10 +59,7 @@ export default function Notification({navigation}) {
     try {
       await fetchNotifications();
     } catch (error) {
-      ToastAndroid.show(
-        'Gagal menyegarkan notifikasi. Silakan coba lagi.',
-        ToastAndroid.SHORT,
-      );
+      console.log('Error fecth');
     } finally {
       setRefreshing(false);
     }
@@ -89,7 +83,6 @@ export default function Notification({navigation}) {
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }>
-        {/* Licenses */}
         <TouchableOpacity
           activeOpacity={0.7}
           style={styles.categoryCard}
@@ -113,26 +106,6 @@ export default function Notification({navigation}) {
         </TouchableOpacity>
 
         <Gap height={15} />
-
-        {/* Payroll */}
-        {/* <TouchableOpacity
-          activeOpacity={0.7}
-          style={styles.categoryCard}
-          onPress={() =>
-            navigation.navigate('NotificationFromCategory', {
-              category: 'payrol',
-            })
-          }>
-          <View>
-            <Text style={styles.categoryHeader}>Slip Gaji</Text>
-            <Text style={styles.categoryDescription}>
-              Kumpulan notifikasi berkaitan {'\n'}dengan Slip Gaji.
-            </Text>
-          </View>
-          <View style={styles.countBadge}>
-            <Text style={styles.countText}>{countCategoryItems('payrol')}</Text>
-          </View>
-        </TouchableOpacity> */}
       </ScrollView>
 
       <ModalCustom
@@ -179,12 +152,12 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   categoryHeader: {
-    fontSize: 21,
+    fontSize: DIMENS.xxxl,
     fontWeight: '500',
     color: COLORS.black,
   },
   categoryDescription: {
-    fontSize: 12,
+    fontSize: DIMENS.s,
     fontWeight: '400',
     color: COLORS.grey,
   },
@@ -201,7 +174,7 @@ const styles = StyleSheet.create({
     right: 15,
   },
   countText: {
-    fontSize: 16,
+    fontSize: DIMENS.l,
     color: COLORS.white,
     fontWeight: '700',
   },

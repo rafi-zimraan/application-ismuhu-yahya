@@ -35,18 +35,18 @@ export default function ButtonActionYaumi({
         datas: userSelections,
       };
       const response = await addYaumiNotes(payload.user_id, payload.datas);
-      if (response.status) {
+      if (response?.status) {
+        ToastAndroid.show(response?.message, ToastAndroid.SHORT);
         navigation.goBack();
-        ToastAndroid.show('Data berhasil dikirim!', ToastAndroid.SHORT);
         if (onSuccess) onSuccess();
       } else {
-        ToastAndroid.show('Data gagal dikirim.', ToastAndroid.SHORT);
+        ToastAndroid.show(
+          'Terjadi kesalahan saat mengirim data, Silakan coba lagi.',
+          ToastAndroid.SHORT,
+        );
       }
     } catch (error) {
-      ToastAndroid.show(
-        'Terjadi kesalahan saat mengirim data, Silakan coba lagi.',
-        ToastAndroid.LONG,
-      );
+      console.log('errr create yaumi', error);
     } finally {
       setLoading(false);
     }

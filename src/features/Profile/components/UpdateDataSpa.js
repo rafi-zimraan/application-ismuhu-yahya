@@ -128,25 +128,21 @@ export default function UpdateDataSpa({route, navigation}) {
       const userId = JSON.parse(await EncryptedStorage.getItem('idUser'));
       const response = await updateSpaData(userId, formData);
 
-      if (response.message === 'Silahkan login terlebih dahulu') {
+      if (response?.message === 'Silahkan login terlebih dahulu') {
         setModalDeleteFile(true);
         return;
       }
 
       if (
-        response.status === true &&
-        response.message === 'Data berhasil diupdate'
+        response?.status === true &&
+        response?.message === 'Data berhasil diupdate'
       ) {
         setSuccessModal(true);
       } else {
         ToastAndroid.show('Gagal memperbarui data.', ToastAndroid.SHORT);
       }
     } catch (error) {
-      console.log('Error updating data:', error.message);
-      ToastAndroid.show(
-        'Lengkapi semua data terlebih dahulu',
-        ToastAndroid.SHORT,
-      );
+      console.log('Error updating data:', error);
     } finally {
       setLoading(false);
     }
@@ -166,7 +162,6 @@ export default function UpdateDataSpa({route, navigation}) {
       <ScrollView
         contentContainerStyle={{padding: 20, paddingBottom: 30}}
         showsVerticalScrollIndicator={false}>
-        {/* Nama */}
         <Text style={styles.title}>Username</Text>
         <View style={styles.section}>
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
@@ -180,7 +175,6 @@ export default function UpdateDataSpa({route, navigation}) {
             />
           </View>
         </View>
-        {/* Email */}
         <Text style={styles.title}>Email</Text>
         <View style={styles.section}>
           <Icon name="email" size={24} color={COLORS.goldenOrange} />
@@ -193,7 +187,6 @@ export default function UpdateDataSpa({route, navigation}) {
             keyboardType="email-address"
           />
         </View>
-        {/* Jenis Kelamin */}
         <Text style={styles.title}>Jenis Kelamin</Text>
         <View style={styles.section}>
           <Icon
@@ -209,7 +202,6 @@ export default function UpdateDataSpa({route, navigation}) {
             onChangeText={text => handleInputChange('gender', text)}
           />
         </View>
-        {/* Nomor Telepon */}
         <Text style={styles.title}>Nomor Telepon</Text>
         <View style={styles.section}>
           <Icon name="phone" size={24} color={COLORS.goldenOrange} />
@@ -222,7 +214,6 @@ export default function UpdateDataSpa({route, navigation}) {
             keyboardType="phone-pad"
           />
         </View>
-        {/* Tanggal Lahir */}
         <Text style={styles.title}>Tanggal Lahir</Text>
         <View style={styles.section}>
           <Icon name="calendar" size={24} color={COLORS.goldenOrange} />
@@ -234,7 +225,6 @@ export default function UpdateDataSpa({route, navigation}) {
             onChangeText={text => handleInputChange('birth_date', text)}
           />
         </View>
-        {/* NPWP */}
         <Text style={styles.title}>Npwp</Text>
         <View style={styles.section}>
           <Icon name="file-document" size={24} color={COLORS.goldenOrange} />
@@ -247,7 +237,6 @@ export default function UpdateDataSpa({route, navigation}) {
             keyboardType="numeric"
           />
         </View>
-        {/* Hobi */}
         <Text style={styles.title}>Hobi</Text>
         <View style={styles.section}>
           <Icon name="soccer" size={24} color={COLORS.goldenOrange} />
@@ -259,7 +248,6 @@ export default function UpdateDataSpa({route, navigation}) {
             onChangeText={text => handleInputChange('hoby', text)}
           />
         </View>
-        {/* Status Pernikahan */}
         <Text style={styles.title}>Status Pernikahan</Text>
         <View style={styles.section}>
           <Icon name="heart" size={24} color={COLORS.goldenOrange} />
@@ -271,7 +259,6 @@ export default function UpdateDataSpa({route, navigation}) {
             onChangeText={text => handleInputChange('marital_status', text)}
           />
         </View>
-        {/* Kontak Darurat */}
         <Text style={styles.title}>Kontak darurat</Text>
         <View style={styles.section}>
           <Icon name="phone-in-talk" size={24} color={COLORS.goldenOrange} />
@@ -284,7 +271,6 @@ export default function UpdateDataSpa({route, navigation}) {
             keyboardType="numeric"
           />
         </View>
-        {/* BPJS */}
         <Text style={styles.title}>Bpjs</Text>
         <View style={styles.section}>
           <Icon name="hospital" size={24} color={COLORS.goldenOrange} />
@@ -297,7 +283,6 @@ export default function UpdateDataSpa({route, navigation}) {
             keyboardType="numeric"
           />
         </View>
-        {/* Place_of_birth */}
         <Text style={styles.title}>Tempat Lahir</Text>
         <View style={styles.section}>
           <Icon name="earth" size={24} color={COLORS.goldenOrange} />
@@ -309,7 +294,6 @@ export default function UpdateDataSpa({route, navigation}) {
             onChangeText={text => handleInputChange('place_of_birth', text)}
           />
         </View>
-        {/* Domisili */}
         <Text style={styles.title}>Domisili</Text>
         <View style={styles.section}>
           <Icon
@@ -325,7 +309,6 @@ export default function UpdateDataSpa({route, navigation}) {
             onChangeText={text => handleInputChange('domisili', text)}
           />
         </View>
-        {/* NIK */}
         <Text style={styles.title}>Nik</Text>
         <View style={styles.section}>
           <Icon name="id-card" size={24} color={COLORS.goldenOrange} />
@@ -338,7 +321,6 @@ export default function UpdateDataSpa({route, navigation}) {
             keyboardType="numeric"
           />
         </View>
-        {/* Address */}
         <Text style={styles.title}>Alamat Rumah</Text>
         <View style={styles.section}>
           <Icon name="map" size={24} color={COLORS.goldenOrange} />
@@ -350,61 +332,6 @@ export default function UpdateDataSpa({route, navigation}) {
             onChangeText={text => handleInputChange('address', text)}
           />
         </View>
-
-        {/* <Text style={styles.title}>Provinsi</Text>
-        <View style={styles.section}>
-          <Icon name="city" size={24} color={COLORS.goldenOrange} />
-          {loadingProvinces ? (
-            <ActivityIndicator size="small" color={COLORS.goldenOrange} />
-          ) : (
-            <Picker
-              selectedValue={formData.province_id}
-              style={styles.picker}
-              dropdownIconColor={COLORS.black}
-              onValueChange={value => {
-                console.log('id province', value);
-                handleInputChange('province_id', value);
-                handleInputChange('city_id', null);
-              }}>
-              <Picker.Item
-                label="Pilih Provinsi"
-                value={null}
-                color={COLORS.black}
-              />
-              {provinces.map(province => (
-                <Picker.Item
-                  key={province.id}
-                  label={province.name}
-                  value={province.id}
-                />
-              ))}
-            </Picker>
-          )}
-        </View>
-
-        <Text style={styles.title}>Kota</Text>
-        <View style={styles.section}>
-          <Icon name="city-variant" size={24} color={COLORS.goldenOrange} />
-          {loadingCities ? (
-            <ActivityIndicator size="small" color={COLORS.goldenOrange} />
-          ) : (
-            <Picker
-              selectedValue={formData.city_id}
-              style={styles.picker}
-              dropdownIconColor={COLORS.black}
-              onValueChange={value => handleInputChange('city_id', value)}>
-              <Picker.Item
-                label="Pilih Kota"
-                value={null}
-                color={COLORS.black}
-              />
-              {cities.map(city => (
-                <Picker.Item key={city.id} label={city.name} value={city.id} />
-              ))}
-            </Picker>
-          )}
-        </View
-        */}
       </ScrollView>
 
       <ButtonAction

@@ -1,8 +1,6 @@
-import {ToastAndroid} from 'react-native';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import api from '../../../utils/axiosInstance';
 
-// All Data Perizinan
 export const getAllCuti = async () => {
   try {
     const token = await EncryptedStorage.getItem('token');
@@ -23,15 +21,14 @@ export const getAllCuti = async () => {
       throw new Error('Data cuti tidak ditemukan');
     }
   } catch (error) {
-    if (error.response) {
-      console.log(error.response?.data?.message || 'Terjadi Kesalahan');
+    if (error.response && error.response.data && error.response.data.message) {
+      console.log('Error from server', error.response.data.message);
     } else {
-      console.log(error.message);
+      console.log('Err code', error.message);
     }
   }
 };
 
-// Delete data perizinan
 export const deleteCuti = async id => {
   try {
     const token = await EncryptedStorage.getItem('token');
@@ -51,16 +48,15 @@ export const deleteCuti = async id => {
       throw new Error('Gagal menghapus data cuti');
     }
   } catch (error) {
-    if (error.response) {
-      console.log(error.response?.data?.message || 'Terjadi kesalahan');
+    if (error.response && error.response.data && error.response.data.message) {
+      console.log('Error from server', error.response.data.message);
     } else {
-      console.log(error.message);
+      console.log('Err code', error.message);
     }
     return false;
   }
 };
 
-// Patch edit data perizinan
 export const patchCuti = async (id, data) => {
   try {
     const token = await EncryptedStorage.getItem('token');
@@ -80,16 +76,15 @@ export const patchCuti = async (id, data) => {
       throw new Error('Gagal edit data cuti');
     }
   } catch (error) {
-    if (error.response) {
-      console.log(error.response?.data?.message || 'Terjadi kesalahan');
+    if (error.response && error.response.data && error.response.data.message) {
+      console.log('Error from server', error.response.data.message);
     } else {
-      console.log(error.message, 'error message');
+      console.log('Err code', error.message);
     }
     throw error;
   }
 };
 
-// Tambah data perizinan
 export const addCuti = async data => {
   try {
     const token = await EncryptedStorage.getItem('token');
@@ -109,17 +104,15 @@ export const addCuti = async data => {
       throw new Error(response.data?.message || 'Gagal menambahkan data cuti');
     }
   } catch (error) {
-    if (error.response) {
-      console.log(error.response?.data?.message || 'Terjadi kesalahan');
+    if (error.response && error.response.data && error.response.data.message) {
+      console.log('Error from server', error.response.data.message);
     } else {
-      ToastAndroid.show();
-      console.log(error.message);
+      console.log('Err code', error.message);
     }
     throw error;
   }
 };
 
-// Tambah Data Perizinan Keluar
 export const getAllPerizinanKeluar = async () => {
   try {
     const token = await EncryptedStorage.getItem('token');
@@ -140,15 +133,14 @@ export const getAllPerizinanKeluar = async () => {
       throw new Error('Data tidak ditemukan');
     }
   } catch (error) {
-    if (error.response) {
-      console.log(error.response?.data?.message || 'Terjadi Kesalahan');
+    if (error.response && error.response.data && error.response.data.message) {
+      console.log('Error from server', error.response.data.message);
     } else {
-      console.log(error.message);
+      console.log('Err code', error.message);
     }
   }
 };
 
-// Delete data Perizinan Keluar
 export const deletePerizinanKeluar = async id => {
   try {
     const token = await EncryptedStorage.getItem('token');
@@ -168,16 +160,15 @@ export const deletePerizinanKeluar = async id => {
       throw new Error('Gagal menghapus data');
     }
   } catch (error) {
-    if (error.response) {
-      console.log(error.response?.data?.message || 'Terjadi kesalahan');
+    if (error.response && error.response.data && error.response.data.message) {
+      console.log('Error from server', error.response.data.message);
     } else {
-      console.log(error.message);
+      console.log('Err code', error.message);
     }
     return false;
   }
 };
 
-// Patch edit data Perizinan Keluar
 export const patchPerizinanKeluar = async (id, data) => {
   try {
     const token = await EncryptedStorage.getItem('token');
@@ -197,16 +188,15 @@ export const patchPerizinanKeluar = async (id, data) => {
       throw new Error('Gagal edit perizinan keluar');
     }
   } catch (error) {
-    if (error.response) {
-      console.log(error.response?.data?.message || 'Terjadi kesalahan');
+    if (error.response && error.response.data && error.response.data.message) {
+      console.log('Error from server', error.response.data.message);
     } else {
-      console.log(error.message, 'error message');
+      console.log('Err code', error.message);
     }
     throw error;
   }
 };
 
-// Tambah data Perizinan Keluar
 export const addPerizinanKeluar = async data => {
   try {
     const token = await EncryptedStorage.getItem('token');
@@ -228,11 +218,10 @@ export const addPerizinanKeluar = async data => {
       );
     }
   } catch (error) {
-    if (error.response) {
-      console.log(error.response?.data?.message || 'Terjadi kesalahan');
+    if (error.response && error.response.data && error.response.data.message) {
+      console.log('Error from server', error.response.data.message);
     } else {
-      ToastAndroid.show();
-      console.log(error.message);
+      console.log('Err code', error.message);
     }
     throw error;
   }

@@ -64,7 +64,7 @@ export default function Profile({navigation}) {
         const uploadResponse = await uploadPhotoProfile(userId, selectedImage);
 
         if (uploadResponse?.status) {
-          ToastAndroid.show(uploadResponse?.message, ToastAndroid.SHORT);
+          ToastAndroid.show('Foto berhasil diunggah!', ToastAndroid.SHORT);
 
           const userData = await FecthMe();
           if (userData?.status) {
@@ -74,21 +74,40 @@ export default function Profile({navigation}) {
               : null;
             setPhoto(photoUrl);
           } else {
-            ToastAndroid.show('Gagal memuat data terbaru', ToastAndroid.SHORT);
+            ToastAndroid.show(
+              'Gagal memperbarui foto, coba lagi nanti.',
+              ToastAndroid.SHORT,
+            );
           }
         } else {
           ToastAndroid.show(
-            uploadResponse?.message || 'Terjadi kesalahan',
+            uploadResponse?.message || 'Gagal mengunggah foto. Coba lagi!',
             ToastAndroid.SHORT,
           );
           setModalVisible(true);
         }
       } catch (error) {
         console.log('Error uploading photo:', error);
-        ToastAndroid.show('Gagal mengunggah foto profil', ToastAndroid.SHORT);
+
+        if (error.response) {
+          ToastAndroid.show(
+            error.response.data.message || 'Terjadi kesalahan pada server.',
+            ToastAndroid.LONG,
+          );
+        } else if (error.message.includes('Network Error')) {
+          ToastAndroid.show(
+            'Gagal mengunggah foto. Periksa koneksi internet Anda.',
+            ToastAndroid.LONG,
+          );
+        } else {
+          ToastAndroid.show(
+            'Terjadi kesalahan, coba lagi nanti.',
+            ToastAndroid.SHORT,
+          );
+        }
       }
     } else {
-      ToastAndroid.show('Gambar tidak dipilih', ToastAndroid.SHORT);
+      ToastAndroid.show('Anda belum memilih gambar.', ToastAndroid.SHORT);
     }
   };
 
@@ -200,7 +219,7 @@ export default function Profile({navigation}) {
         setSpaData(null);
       }
     } catch (error) {
-      console.log('Error fetching data in profile:', error.message);
+      console.log('Error fetching data in profile:', error);
     } finally {
       if (showLoading) {
         setModalLoadingVisible(false);
@@ -219,7 +238,7 @@ export default function Profile({navigation}) {
     try {
       await loadData(false);
     } catch (error) {
-      console.log('Error during refresh:', error);
+      console.log('err fecth refresh', error);
     } finally {
       setRefreshing(false);
     }
@@ -256,13 +275,13 @@ export default function Profile({navigation}) {
               <Image source={{uri: photo}} style={styles.profileImage} />
             ) : (
               <View style={styles.placeholderImage}>
-                <Icon name="account" size={40} color="#bbb" />
+                <Icon name="account" size={40} color={COLORS.softGray} />
               </View>
             )}
             <TouchableOpacity
               style={styles.editButton}
               onPress={handleImagePicker}>
-              <Icon name="camera" size={15} color="#fff" />
+              <Icon name="camera" size={15} color={COLORS.white} />
             </TouchableOpacity>
           </TouchableOpacity>
           <Text style={styles.name}>{spaData?.name || '-'}</Text>
@@ -286,7 +305,6 @@ export default function Profile({navigation}) {
           {useNativeDriver: false},
         )}
         scrollEventThrottle={15}>
-        {/* Data SPA */}
         <TouchableOpacity
           activeOpacity={0.9}
           style={styles.contentCouple}
@@ -349,7 +367,6 @@ export default function Profile({navigation}) {
           )}
         </TouchableOpacity>
 
-        {/* Data Couple */}
         <Gap height={15} />
         <TouchableOpacity activeOpacity={0.9} style={styles.contentCouple}>
           <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
@@ -437,7 +454,6 @@ export default function Profile({navigation}) {
           )}
         </TouchableOpacity>
 
-        {/* Data Training */}
         <Gap height={15} />
         <TouchableOpacity activeOpacity={0.9} style={styles.contentCouple}>
           <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
@@ -517,7 +533,6 @@ export default function Profile({navigation}) {
           )}
         </TouchableOpacity>
 
-        {/* Data Experience */}
         <Gap height={15} />
         <TouchableOpacity activeOpacity={0.9} style={styles.contentCouple}>
           <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
@@ -605,7 +620,6 @@ export default function Profile({navigation}) {
           )}
         </TouchableOpacity>
 
-        {/* Data Family */}
         <Gap height={15} />
         <TouchableOpacity activeOpacity={0.9} style={styles.contentCouple}>
           <Text style={styles.sectionHeader}>Data Keluarga</Text>
@@ -617,7 +631,7 @@ export default function Profile({navigation}) {
                 })
               }>
               <View style={styles.sectionWithIcon}>
-                <Icon name="shield-star" size={20} color="#00BFFF" />
+                <Icon name="family-tree" size={20} color="#00BFFF" />
                 <Text style={styles.sectionHeaderText}>Keluarga</Text>
               </View>
               <View style={styles.section}>
@@ -733,7 +747,7 @@ const styles = StyleSheet.create({
     width: 90,
     height: 90,
     borderRadius: 65,
-    backgroundColor: '#e1e1e1',
+    backgroundColor: COLORS.extraLightGrey,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -767,7 +781,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.primary,
     borderRadius: 10,
     alignItems: 'center',
-    shadowColor: '#000',
+    shadowColor: COLORS.black,
     shadowOffset: {width: 0, height: 2},
     shadowOpacity: 0.2,
     elevation: 1,
@@ -785,7 +799,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.white,
     borderRadius: 15,
     padding: 15,
-    shadowColor: '#000',
+    shadowColor: COLORS.black,
     shadowOffset: {width: 0, height: 2},
     shadowOpacity: 0.1,
     elevation: 2,
@@ -796,11 +810,11 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: DIMENS.l,
-    color: '#333',
+    color: COLORS.textPrimary,
   },
   sectionSubtitle: {
     fontSize: DIMENS.m,
-    color: '#888',
+    color: COLORS.textSecondary,
   },
   sectionHeader: {
     fontSize: DIMENS.xl,
@@ -819,7 +833,7 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     borderBottomLeftRadius: 30,
     borderBottomRightRadius: 30,
-    shadowColor: '#000',
+    shadowColor: COLORS.black,
     shadowOffset: {width: 0, height: 10},
     shadowOpacity: 0.3,
     shadowRadius: 10,
@@ -843,22 +857,22 @@ const styles = StyleSheet.create({
   name: {
     fontSize: DIMENS.xxxl,
     fontWeight: 'bold',
-    color: '#333',
+    color: COLORS.textPrimary,
     marginVertical: 5,
   },
   division: {
     fontSize: DIMENS.l,
-    color: '#666',
+    color: COLORS.darkGrey,
     fontWeight: '500',
   },
   department: {
     fontSize: DIMENS.m,
     fontWeight: '500',
-    color: '#666',
+    color: COLORS.darkGrey,
   },
   detailsContainer: {
     marginTop: 3,
-    backgroundColor: '#fff',
+    backgroundColor: COLORS.white,
     borderRadius: 15,
     padding: 15,
     shadowColor: '#000',
@@ -876,10 +890,10 @@ const styles = StyleSheet.create({
   },
   textLabels: {
     fontSize: DIMENS.m,
-    color: '#999',
+    color: COLORS.mediumGrey,
   },
   TextDatas: {
     fontSize: DIMENS.l,
-    color: '#333',
+    color: COLORS.textPrimary,
   },
 });

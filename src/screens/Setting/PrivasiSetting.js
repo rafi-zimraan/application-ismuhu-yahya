@@ -13,14 +13,13 @@ import {Background, Gap, HeaderTransparent, ModalCustom} from '../../Component';
 import {Translations} from '../../features/Language';
 import {setLanguage} from '../../features/Language/services/languageSlice';
 import {toggleTheme} from '../../features/theme/services/themeSlice';
-import {COLORS} from '../../utils';
+import {COLORS, DIMENS} from '../../utils';
 
 export default function PrivasiSetting({navigation}) {
   const dispatch = useDispatch();
   const darkTheme = useSelector(state => state.theme.darkTheme);
   const currentLanguage = useSelector(state => state.language.currentLanguage);
   const [selectedLanguage, setSelectedLanguage] = useState(currentLanguage);
-
   const [isModalVisible, setModalVisible] = useState(false);
   const languages = [
     {code: 'en', label: 'English'},
@@ -58,7 +57,6 @@ export default function PrivasiSetting({navigation}) {
         />
       </View>
       <View style={{padding: 15}}>
-        {/* Tema */}
         <View
           style={[
             styles.section,
@@ -93,7 +91,6 @@ export default function PrivasiSetting({navigation}) {
 
         <Gap height={15} />
 
-        {/* Pilih Bahasa */}
         <TouchableOpacity
           style={[
             styles.section,
@@ -163,7 +160,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   header: {
-    fontSize: 22,
+    fontSize: DIMENS.xxxl,
     fontWeight: '600',
     color: COLORS.black,
   },
@@ -177,11 +174,11 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   sectionTitle: {
-    fontSize: 16,
+    fontSize: DIMENS.l,
     color: COLORS.black,
   },
   sectionSubtitle: {
-    fontSize: 14,
+    fontSize: DIMENS.m,
     color: COLORS.gray,
     marginTop: 5,
   },
@@ -191,7 +188,7 @@ const styles = StyleSheet.create({
     borderBottomColor: COLORS.lightGray,
   },
   languageText: {
-    fontSize: 16,
+    fontSize: DIMENS.l,
     color: COLORS.black,
   },
   selectedLanguage: {

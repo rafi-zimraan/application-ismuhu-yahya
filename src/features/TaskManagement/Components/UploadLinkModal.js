@@ -1,65 +1,116 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {
   Modal,
   StyleSheet,
   Text,
   TextInput,
+  ToastAndroid,
   TouchableOpacity,
   View,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import {addLinkTaskManagement} from '..';
 import {ButtonAction} from '../../../Component';
 import {COLORS, DIMENS} from '../../../utils';
 
-const UploadLinkModal = ({
+export default function UploadLinkModal({
   visible,
   onClose,
-  linkTitle,
-  setLinkTitle,
-  linkUrl,
-  setLinkUrl,
-  linkDescription,
-  setLinkDescription,
-}) => (
-  <Modal visible={visible} transparent={true}>
-    <View style={styles.modalContainer}>
-      <View style={styles.modalContent}>
-        <TouchableOpacity style={styles.closeButton} onPress={onClose}>
-          <Icon name="close" size={24} color="black" />
-        </TouchableOpacity>
-        <Text style={styles.titleTxtUpload}>Upload Link</Text>
-        <TextInput
-          placeholder="Judul Tautan"
-          value={linkTitle}
-          onChangeText={setLinkTitle}
-          placeholderTextColor={COLORS.grey}
-          style={styles.input}
-        />
-        <TextInput
-          placeholder="Tautan / URL"
-          value={linkUrl}
-          onChangeText={setLinkUrl}
-          placeholderTextColor={COLORS.grey}
-          style={styles.input}
-        />
-        <TextInput
-          placeholder="Deskripsi"
-          value={linkDescription}
-          onChangeText={setLinkDescription}
-          placeholderTextColor={COLORS.grey}
-          style={styles.input}
-        />
-        <ButtonAction title="Simpan" onPress={onClose} />
+  linkData,
+  setLinkData,
+  selectedTaskId,
+  setSelectedTaskId,
+  fetchTasks,
+}) {
+  const [loading, setLoading] = useState(false);
+
+  const handleInputChange = (key, value) => {
+    setLinkData(prev => ({...prev, [key]: value}));
+  };
+
+  const handleUploadLink = async () => {
+    const {title, url, description} = linkData;
+
+    if (!selectedTaskId || !title || !url) {
+      ToastAndroid.show('Harap isi semua bidang', ToastAndroid.SHORT);
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const response = await addLinkTaskManagement(
+        selectedTaskId,
+        title,
+        url,
+        description,
+      );
+
+      if (response?.status) {
+        ToastAndroid.show(response?.message, ToastAndroid.SHORT);
+        setLinkData({title: '', url: '', description: ''});
+        setSelectedTaskId(null);
+        onClose();
+        fetchTasks();
+      } else {
+        ToastAndroid.show(
+          'Gagal menambahkan link rencana harian, silahkan hubungi developer',
+          ToastAndroid.SHORT,
+        );
+      }
+    } catch (error) {
+      console.log('Gagal upload link', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <Modal visible={visible} transparent animationType="fade">
+      <View style={styles.modalContainer}>
+        <View style={styles.modalContent}>
+          <TouchableOpacity style={styles.closeButton} onPress={onClose}>
+            <Icon name="close" size={24} color={COLORS.black} />
+          </TouchableOpacity>
+          <Text style={styles.title}>Upload Link</Text>
+          <TextInput
+            placeholder="Judul Tautan"
+            value={linkData.title}
+            onChangeText={text => handleInputChange('title', text)}
+            placeholderTextColor={COLORS.grey}
+            style={styles.input}
+          />
+          <TextInput
+            placeholder="Tautan / URL"
+            value={linkData.url}
+            onChangeText={text => handleInputChange('url', text)}
+            placeholderTextColor={COLORS.grey}
+            style={styles.input}
+          />
+          <TextInput
+            placeholder="Deskripsi"
+            value={linkData.description}
+            onChangeText={text => handleInputChange('description', text)}
+            placeholderTextColor={COLORS.grey}
+            style={styles.input}
+          />
+          <ButtonAction
+            title={loading ? 'Menyimpan...' : 'Simpan'}
+            onPress={handleUploadLink}
+            disabled={loading}
+          />
+        </View>
       </View>
-    </View>
-  </Modal>
-);
+    </Modal>
+  );
+}
 
 const styles = StyleSheet.create({
-  titleTxtUpload: {
+  title: {
     color: COLORS.black,
     fontSize: DIMENS.xl,
     fontWeight: '500',
+    marginBottom: 10,
+    textAlign: 'center',
   },
   closeButton: {
     position: 'absolute',
@@ -74,15 +125,17 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0,0,0,0.5)',
   },
   modalContent: {
-    backgroundColor: 'white',
+    backgroundColor: COLORS.white,
     padding: 20,
     borderRadius: 10,
     width: '80%',
+    elevation: 5,
   },
   input: {
     borderBottomWidth: 1,
-    marginBottom: 10,
+    marginBottom: 15,
+    color: COLORS.black,
+    fontSize: DIMENS.m,
+    paddingVertical: 5,
   },
 });
-
-export default UploadLinkModal;

@@ -1,17 +1,16 @@
-import {useNavigation} from '@react-navigation/native';
-import React, {useEffect, useState} from 'react';
+import {useFocusEffect, useNavigation} from '@react-navigation/native';
+import React, {useCallback, useState} from 'react';
 import {
   ActivityIndicator,
   Image,
   ScrollView,
   StyleSheet,
   Text,
-  ToastAndroid,
   TouchableOpacity,
   View,
 } from 'react-native';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {Gap} from '../../../Component';
-// import {ICON_NOTFOUND_DATA} from '../../../assets';
 import {ICON_NOTFOUND_DATA} from '../../../assets';
 import {COLORS, DIMENS} from '../../../utils';
 import {
@@ -24,38 +23,42 @@ export default function NewsComponent() {
   const [newsData, setNewsData] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    const fetchNewsData = async () => {
-      setLoading(true);
-      try {
-        const response = await getAllImageInformation();
-        setNewsData(response);
-      } catch (error) {
-        ToastAndroid.show(
-          'Berita Harian Sedang error, Silahkan hubungi developer',
-          ToastAndroid.SHORT,
-        );
-        // console.log('Error fetching news data:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchNewsData();
+  const fetchNewsData = useCallback(async () => {
+    setLoading(true);
+    try {
+      const response = await getAllImageInformation();
+      setNewsData(response);
+    } catch (error) {
+      console.log('Terjadi kesalahan saat memuat image information', error);
+    } finally {
+      setLoading(false);
+    }
   }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchNewsData();
+    }, [fetchNewsData]),
+  );
 
   const handleOnPress = async id => {
     try {
       const detailData = await getAllDetailInformation(id);
       navigation.navigate('DetailNewInformation', {detailData});
     } catch (error) {
-      // console.log('Error fetching detail data:', error.message);
+      console.log('Terjadi kesalam memuat data detail informasi', error);
     }
   };
 
   return (
     <View style={{flex: 1}}>
-      <Text style={styles.Title}>Berita Terkini</Text>
+      <View style={styles.titleContainer}>
+        <Text style={styles.titleText}>Berita Terkini</Text>
+        <Icon name="alert" size={24} color={COLORS.redLight} />
+      </View>
+      <Text style={styles.descText}>
+        Dapatkan info terbaru tentang berita dan event masjid ismhuyahya
+      </Text>
       {loading ? (
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color={COLORS.goldenOrange} />
@@ -73,23 +76,50 @@ export default function NewsComponent() {
               newsData.map((item, index) => (
                 <TouchableOpacity
                   key={index}
-                  onPress={() => handleOnPress(item.id)}>
-                  {/* Periksa apakah thumb bernilai null */}
-                  {item.thumb ? (
-                    <Image
-                      source={{uri: `https://app.simpondok.com/${item.thumb}`}}
-                      style={styles.newsImage}
-                      resizeMode="stretch"
-                      resizeMethod="scale"
-                    />
-                  ) : (
-                    <Image
-                      source={ICON_NOTFOUND_DATA}
-                      style={styles.newsImage}
-                      resizeMode="stretch"
-                      resizeMethod="scale"
-                    />
-                  )}
+                  onPress={() => handleOnPress(item.id)}
+                  activeOpacity={0.7}
+                  style={styles.newsContainer}>
+                  <Image
+                    source={
+                      item.thumb
+                        ? {
+                            uri: `https://app.simpondok.com/${item.thumb}`,
+                          }
+                        : ICON_NOTFOUND_DATA
+                    }
+                    style={styles.newsImage}
+                    resizeMode="stretch"
+                    resizeMethod="scale"
+                  />
+                  <View style={styles.textContainer}>
+                    <Text style={styles.newsTitle} numberOfLines={1}>
+                      {item?.title}
+                    </Text>
+                    <Gap height={5} />
+                    {/* 
+                    {item.desc ? (
+                      <HTMLView value={item.desc} stylesheet={htmlStyles} />
+                    ) : (
+                      <Text style={styles.description}>
+                        Deskripsi tidak ada
+                      </Text>
+                    )} */}
+                    <Text style={styles.newsDesc} numberOfLines={1}>
+                      {item?.desc ? item?.desc : 'Tidak ada deskripsi tersedia'}
+                    </Text>
+                    <Gap height={20} />
+
+                    <TouchableOpacity
+                      style={styles.moreButton}
+                      onPress={() => handleOnPress(item.id)}>
+                      <Text style={styles.moreText}>Selengkapnya</Text>
+                      <Icon
+                        name="chevron-right"
+                        size={18}
+                        color={COLORS.black}
+                      />
+                    </TouchableOpacity>
+                  </View>
                 </TouchableOpacity>
               ))
             ) : (
@@ -101,36 +131,6 @@ export default function NewsComponent() {
               </View>
             )}
           </ScrollView>
-
-          {/* <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            stickyHeaderHiddenOnScroll
-            stickyHeaderIndices={[0]}
-            style={styles.scrollView}>
-            {newsData.length > 0 ? (
-              newsData.map((item, index) => (
-                <TouchableOpacity
-                  key={index}
-                  onPress={() => handleOnPress(item.id)}>
-                  <Image
-                    source={{uri: `https://app.simpondok.com/${item.thumb}`}}
-                    style={styles.newsImage}
-                    resizeMode="stretch"
-                    resizeMethod="scale"
-                  />
-                </TouchableOpacity>
-              ))
-            ) : (
-              <View style={styles.notFoundContainer}>
-                <Image
-                  source={ICON_NOTFOUND_DATA}
-                  style={styles.newsImageNotFound}
-                />
-              </View>
-            )}
-          </ScrollView> */}
-          <View style={styles.scrollIndicator} />
         </>
       )}
     </View>
@@ -138,22 +138,71 @@ export default function NewsComponent() {
 }
 
 const styles = StyleSheet.create({
-  scrollIndicator: {
-    height: 3,
-    backgroundColor: COLORS.goldenOrange,
-    width: '80%',
-    alignSelf: 'center',
-    marginTop: -8,
-    borderRadius: 5,
+  titleContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    width: '100%',
+    paddingHorizontal: 10,
+    gap: 6,
   },
+  descText: {
+    fontSize: DIMENS.m,
+    color: COLORS.mediumGrey,
+    width: '100%',
+    flexWrap: 'wrap',
+    textAlign: 'left',
+    paddingHorizontal: 10,
+  },
+  moreButton: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    alignSelf: 'flex-end',
+    borderRadius: 5,
+    paddingHorizontal: 8,
+    paddingVertical: 9,
+    backgroundColor: COLORS.creem,
+  },
+  moreText: {
+    fontSize: DIMENS.m,
+    color: COLORS.black,
+    fontWeight: '700',
+    marginRight: 4,
+  },
+  newsContainer: {
+    width: 250,
+    marginRight: 15,
+    borderRadius: 15,
+    backgroundColor: COLORS.white,
+    borderColor: COLORS.goldenOrange,
+    borderWidth: 0.4,
+    shadowColor: '#000',
+    shadowOffset: {width: 0, height: 2},
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+    overflow: 'hidden',
+  },
+  textContainer: {
+    padding: 8,
+  },
+  newsTitle: {
+    fontSize: DIMENS.xxl,
+    fontWeight: 'bold',
+    color: COLORS.black,
+  },
+  newsDesc: {
+    fontSize: DIMENS.s,
+    color: COLORS.darkGray,
+  },
+
   scrollView: {
     flex: 1,
     alignSelf: 'center',
     paddingBottom: 5,
     paddingHorizontal: 10,
   },
-  Title: {
-    fontSize: DIMENS.xl,
+  titleText: {
+    fontSize: DIMENS.xxl,
     color: COLORS.black,
     fontWeight: '600',
   },
@@ -168,11 +217,10 @@ const styles = StyleSheet.create({
     marginRight: 8,
   },
   newsImage: {
+    width: '100%',
     height: 180,
-    alignItems: 'center',
-    marginRight: 15,
-    borderRadius: 15,
-    aspectRatio: 16 / 9,
+    borderTopLeftRadius: 15,
+    borderTopRightRadius: 15,
   },
   loadingContainer: {
     flex: 1,

@@ -7,7 +7,6 @@ import {
   StatusBar,
   StyleSheet,
   Text,
-  ToastAndroid,
   View,
 } from 'react-native';
 import EncryptedStorage from 'react-native-encrypted-storage/';
@@ -28,7 +27,6 @@ export default function DetailDataSpa({navigation}) {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [tokenExpired, setTokenExpired] = useState(false);
-  console.log('spaData', spaData);
 
   const fetchData = async () => {
     setLoading(true);
@@ -46,7 +44,7 @@ export default function DetailDataSpa({navigation}) {
         setSpaData(null);
       }
     } catch (error) {
-      ToastAndroid.show('Gagal lihat data pribadi', ToastAndroid.SHORT);
+      console.log('err load data spa', error);
     } finally {
       setLoading(false);
     }

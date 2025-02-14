@@ -64,10 +64,6 @@ export default function AmalYaumi({navigation}) {
       }
 
       const idUser = JSON.parse(await EncryptedStorage.getItem('idUser'));
-      if (!idUser) {
-        throw new Error('User ID not found in EncryptedStorage');
-      }
-
       const reportData = await fetchMonthlyReportYaumi(idUser);
 
       if (
@@ -153,13 +149,7 @@ export default function AmalYaumi({navigation}) {
       <View
         style={[
           styles.headerWrapper,
-          {
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            right: 0,
-            zIndex: 10,
-          },
+          {position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10},
         ]}>
         <View style={styles.headerContentWrapper}>
           <HeaderTransparent
@@ -286,7 +276,7 @@ export default function AmalYaumi({navigation}) {
                         width={10}
                         color={COLORS.greenBoy}
                         progress={item.avgPoin}
-                        backgroundColor="#eaeaea"
+                        backgroundColor={COLORS.lightGrey}
                       />
                       <Text style={styles.percentTextAvgPoint}>
                         {item.avgPoin}%
@@ -301,7 +291,7 @@ export default function AmalYaumi({navigation}) {
                         width={10}
                         color={COLORS.Orange}
                         progress={item.percenPoin}
-                        backgroundColor="#eaeaea"
+                        backgroundColor={COLORS.lightGrey}
                       />
                       <Text style={styles.percentTextpercenPoin}>
                         {item.percenPoin}%
@@ -382,7 +372,8 @@ const styles = StyleSheet.create({
   },
   CreateTextAmalYaumi: {
     color: COLORS.black,
-    fontSize: 13,
+    fontSize: DIMENS.s,
+    fontWeight: '500',
   },
   bodyTextTitle: {
     flexDirection: 'row',
@@ -393,7 +384,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.gold,
     borderRadius: 4,
     padding: 3,
-    width: '40%',
+    width: '38%',
     alignItems: 'center',
     flexDirection: 'row',
   },
@@ -456,7 +447,7 @@ const styles = StyleSheet.create({
     textAlign: 'left',
   },
   NameYaumiText: {
-    color: '#666',
+    color: COLORS.darkGrey,
     fontSize: DIMENS.s,
     fontWeight: '500',
     textAlign: 'left',

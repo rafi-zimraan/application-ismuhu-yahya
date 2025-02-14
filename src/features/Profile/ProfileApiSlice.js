@@ -1,7 +1,6 @@
 import EncryptedStorage from 'react-native-encrypted-storage';
 import api from '../../utils/axiosInstance';
 
-// Couple APIs
 export const getCoupleData = async id_user => {
   try {
     const token = await EncryptedStorage.getItem('token');
@@ -16,7 +15,11 @@ export const getCoupleData = async id_user => {
 
     return response.data || [];
   } catch (error) {
-    console.log(error.response?.data?.message || error.message);
+    if (error.response && error.response.data && error.response.data.message) {
+      console.log('Error from server', error.response.data.message);
+    } else {
+      console.log('Err code', error.message);
+    }
     throw error;
   }
 };
@@ -35,7 +38,11 @@ export const addCouple = async (id_user, data) => {
 
     return response.data;
   } catch (error) {
-    console.log(error.response?.data?.message || error.message);
+    if (error.response && error.response.data && error.response.data.message) {
+      console.log('Error from server', error.response.data.message);
+    } else {
+      console.log('Err code', error.message);
+    }
     throw error;
   }
 };
@@ -54,7 +61,11 @@ export const updateCouple = async (id_couple, data) => {
 
     return response.data;
   } catch (error) {
-    console.log(error.response?.data?.message || error.message);
+    if (error.response && error.response.data && error.response.data.message) {
+      console.log('Error from server', error.response.data.message);
+    } else {
+      console.log('Err code', error.message);
+    }
     throw error;
   }
 };
@@ -72,18 +83,20 @@ export const deleteCouple = async id_couple => {
     });
 
     if (response.data?.status === true) {
-      console.log(response.data?.message || 'Data pasangan berhasil dihapus');
       return true;
     } else {
       throw new Error('Gagal menghapus notifikasi');
     }
   } catch (error) {
-    console.log(error.response?.data?.message || error.message);
+    if (error.response && error.response.data && error.response.data.message) {
+      console.log('Error from server', error.response.data.message);
+    } else {
+      console.log('Err code', error.message);
+    }
     throw error;
   }
 };
 
-// Training APIs
 export const getTrainingData = async id_user => {
   try {
     const token = await EncryptedStorage.getItem('token');
@@ -98,7 +111,11 @@ export const getTrainingData = async id_user => {
 
     return response.data || [];
   } catch (error) {
-    console.log(error.response?.data?.message || error.message);
+    if (error.response && error.response.data && error.response.data.message) {
+      console.log('Error from server', error.response.data.message);
+    } else {
+      console.log('Err code', error.message);
+    }
     throw error;
   }
 };
@@ -117,7 +134,11 @@ export const addTraining = async (id_user, data) => {
 
     return response.data;
   } catch (error) {
-    console.log(error.response?.data?.message || error.message);
+    if (error.response && error.response.data && error.response.data.message) {
+      console.log('Error from server', error.response.data.message);
+    } else {
+      console.log('Err code', error.message);
+    }
     throw error;
   }
 };
@@ -136,7 +157,11 @@ export const updateTraining = async (id_training, data) => {
 
     return response.data;
   } catch (error) {
-    console.log(error.response?.data?.message || error.message);
+    if (error.response && error.response.data && error.response.data.message) {
+      console.log('Error from server', error.response.data.message);
+    } else {
+      console.log('Err code', error.message);
+    }
     throw error;
   }
 };
@@ -154,18 +179,20 @@ export const deleteTraining = async id_training => {
     });
 
     if (response.data?.status === true) {
-      console.log(response.data?.message || 'Data training telah dihapus');
       return true;
     } else {
       throw new Error('Gagal menghapus notifikasi');
     }
   } catch (error) {
-    console.log(error.response?.data?.message || error.message);
+    if (error.response && error.response.data && error.response.data.message) {
+      console.log('Error from server', error.response.data.message);
+    } else {
+      console.log('Err code', error.message);
+    }
     throw error;
   }
 };
 
-// Upload Training File API
 export const uploadTrainingFile = async (file_type, file, idFileTraining) => {
   try {
     const token = await EncryptedStorage.getItem('token');
@@ -193,12 +220,15 @@ export const uploadTrainingFile = async (file_type, file, idFileTraining) => {
 
     return response.data;
   } catch (error) {
-    console.log(error.response?.data?.message || error.message);
+    if (error.response && error.response.data && error.response.data.message) {
+      console.log('Error from server', error.response.data.message);
+    } else {
+      console.log('Err code', error.message);
+    }
     throw error;
   }
 };
 
-// Delete Training File API
 export const deleteTrainingFile = async id_file_training => {
   try {
     const token = await EncryptedStorage.getItem('token');
@@ -215,18 +245,20 @@ export const deleteTrainingFile = async id_file_training => {
     );
 
     if (response.data?.status === true) {
-      console.log(response.data?.message || 'File training berhasil dihapus');
       return true;
     } else {
       throw new Error('Gagal menghapus file training');
     }
   } catch (error) {
-    console.log(error.response?.data?.message || error.message);
+    if (error.response && error.response.data && error.response.data.message) {
+      console.log('Error from server', error.response.data.message);
+    } else {
+      console.log('Err code', error.message);
+    }
     throw error;
   }
 };
 
-// Get Training File List API
 export const getTrainingFileList = async id_file_training => {
   try {
     const token = await EncryptedStorage.getItem('token');
@@ -241,12 +273,15 @@ export const getTrainingFileList = async id_file_training => {
 
     return response.data || [];
   } catch (error) {
-    console.log(error.response?.data?.message || error.message);
+    if (error.response && error.response.data && error.response.data.message) {
+      console.log('Error from server', error.response.data.message);
+    } else {
+      console.log('Err code', error.message);
+    }
     throw error;
   }
 };
 
-// Experience APIs
 export const getExperienceData = async id_user => {
   try {
     const token = await EncryptedStorage.getItem('token');
@@ -261,7 +296,11 @@ export const getExperienceData = async id_user => {
 
     return response.data || [];
   } catch (error) {
-    console.log(error.response?.data?.message || error.message);
+    if (error.response && error.response.data && error.response.data.message) {
+      console.log('Error from server', error.response.data.message);
+    } else {
+      console.log('Err code', error.message);
+    }
     throw error;
   }
 };
@@ -280,7 +319,11 @@ export const addExperience = async (id_user, data) => {
 
     return response.data;
   } catch (error) {
-    console.log(error.response?.data?.message || error.message);
+    if (error.response && error.response.data && error.response.data.message) {
+      console.log('Error from server', error.response.data.message);
+    } else {
+      console.log('Err code', error.message);
+    }
     throw error;
   }
 };
@@ -303,7 +346,11 @@ export const updateExperience = async (id_experience, data) => {
 
     return response.data;
   } catch (error) {
-    console.log(error.response?.data?.message || error.message);
+    if (error.response && error.response.data && error.response.data.message) {
+      console.log('Error from server', error.response.data.message);
+    } else {
+      console.log('Err code', error.message);
+    }
     throw error;
   }
 };
@@ -327,12 +374,15 @@ export const deleteExperience = async id_experience => {
       throw new Error('Gagal menghapus notifikasi');
     }
   } catch (error) {
-    console.log(error.response?.data?.message || error.message);
+    if (error.response && error.response.data && error.response.data.message) {
+      console.log('Error from server', error.response.data.message);
+    } else {
+      console.log('Err code', error.message);
+    }
     throw error;
   }
 };
 
-// Upload Photo API
 export const uploadPhotoProfile = async (id_user, photo) => {
   try {
     const token = await EncryptedStorage.getItem('token');
@@ -359,12 +409,15 @@ export const uploadPhotoProfile = async (id_user, photo) => {
 
     return response.data;
   } catch (error) {
-    console.log(error.response?.data?.message || error.message);
+    if (error.response && error.response.data && error.response.data.message) {
+      console.log('Error from server', error.response.data.message);
+    } else {
+      console.log('Err code', error.message);
+    }
     throw error;
   }
 };
 
-// Family APIs
 export const addFamilyData = async (id_user, data) => {
   try {
     const token = await EncryptedStorage.getItem('token');
@@ -379,7 +432,11 @@ export const addFamilyData = async (id_user, data) => {
 
     return response.data;
   } catch (error) {
-    console.log(error.response?.data?.message || error.message);
+    if (error.response && error.response.data && error.response.data.message) {
+      console.log('Error from server', error.response.data.message);
+    } else {
+      console.log('Err code', error.message);
+    }
     throw error;
   }
 };
@@ -398,7 +455,11 @@ export const updateFamilyData = async (id_family, data) => {
 
     return response.data;
   } catch (error) {
-    console.log(error.response?.data?.message || error.message);
+    if (error.response && error.response.data && error.response.data.message) {
+      console.log('Error from server', error.response.data.message);
+    } else {
+      console.log('Err code', error.message);
+    }
     throw error;
   }
 };
@@ -416,13 +477,16 @@ export const deleteFamilyData = async id_family => {
     });
 
     if (response.data?.status === true) {
-      console.log(response.data?.message || 'Data keluarga berhasil dihapus');
       return true;
     } else {
       throw new Error('Gagal menghapus data keluarga');
     }
   } catch (error) {
-    console.log(error.response?.data?.message || error.message);
+    if (error.response && error.response.data && error.response.data.message) {
+      console.log('Error from server', error.response.data.message);
+    } else {
+      console.log('Err code', error.message);
+    }
     throw error;
   }
 };
@@ -440,12 +504,15 @@ export const getFamilyData = async (id_user, data) => {
     });
     return response.data || [];
   } catch (error) {
-    console.log(error.response?.data?.message || error.message);
+    if (error.response && error.response.data && error.response.data.message) {
+      console.log('Error from server', error.response.data.message);
+    } else {
+      console.log('Err code', error.message);
+    }
     throw error;
   }
 };
 
-// Fetch Detail Data SPA
 export const getAllDataSpa = async id_user => {
   try {
     const token = await EncryptedStorage.getItem('token');
@@ -460,12 +527,15 @@ export const getAllDataSpa = async id_user => {
 
     return response.data || {};
   } catch (error) {
-    console.log(error.response?.data?.message || error.message);
+    if (error.response && error.response.data && error.response.data.message) {
+      console.log('Error from server', error.response.data.message);
+    } else {
+      console.log('Err code', error.message);
+    }
     throw error;
   }
 };
 
-// Update SPA Data
 export const updateSpaData = async (id_user, data) => {
   try {
     const token = await EncryptedStorage.getItem('token');
@@ -481,7 +551,11 @@ export const updateSpaData = async (id_user, data) => {
 
     return response.data;
   } catch (error) {
-    console.log(error.response?.data?.message || error.message);
+    if (error.response && error.response.data && error.response.data.message) {
+      console.log('Error from server', error.response.data.message);
+    } else {
+      console.log('Err code', error.message);
+    }
     throw error;
   }
 };
@@ -500,7 +574,11 @@ export const getProvinces = async () => {
 
     return response.data || [];
   } catch (error) {
-    console.log(error.response?.data?.message || error.message);
+    if (error.response && error.response.data && error.response.data.message) {
+      console.log('Error from server', error.response.data.message);
+    } else {
+      console.log('Err code', error.message);
+    }
     throw error;
   }
 };
@@ -519,7 +597,11 @@ export const getCitiesByProvince = async province_id => {
 
     return response.data || [];
   } catch (error) {
-    console.log(error.response?.data?.message || error.message);
+    if (error.response && error.response.data && error.response.data.message) {
+      console.log('Error from server', error.response.data.message);
+    } else {
+      console.log('Err code', error.message);
+    }
     throw error;
   }
 };

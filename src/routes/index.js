@@ -16,10 +16,6 @@ import {
   EditFormulirPerizinan,
 } from '../features/Perizinan';
 import {
-  QrCodeAdmin,
-  ScannerQrCodeByCategoryAbsensi,
-} from '../features/PresenceEmployee';
-import {
   AllDataCouple,
   AllDataExperience,
   AllDataTraining,
@@ -34,7 +30,13 @@ import {
   DetailTraining,
   UpdateDataSpa,
 } from '../features/Profile';
-import CreateTaskManagement from '../features/TaskManagement/Components/CreateTaskManagement';
+import {
+  CreateTaskManagement,
+  FileLinkScreen,
+  FilesScreen,
+  TaskDetailScreen,
+  UpdateTaskManagement,
+} from '../features/TaskManagement';
 import {
   AboutApplication,
   AmalYaumi,
@@ -49,13 +51,10 @@ import {
   NotificationFromCategory,
   OnBoarding,
   Perizinan,
-  Presensi,
   PrivasiSetting,
   Profile,
-  QrCodePresense,
   Settings,
   SignIn,
-  SignUp,
   SplashScreen,
   TaskManagement,
 } from '../screens';
@@ -79,22 +78,12 @@ export default function Navigator() {
       <Stack.Screen name="Onboarding" component={OnBoarding} />
       <Stack.Screen name="SplashScreen" component={SplashScreen} />
       <Stack.Screen name="SignIn" component={SignIn} />
-      <Stack.Screen name="SignUp" component={SignUp} />
       <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
       <Stack.Screen name="CheckOtpEmail" component={CheckOtpEmail} />
       <Stack.Screen name="OtpForgotPassword" component={OtpForgotPassword} />
       <Stack.Screen name="Dasboard" component={BottomTabs} />
       <Stack.Screen name="TopTabBar" component={TopTapBar} />
       <Stack.Screen name="BottomTabs" component={BottomTabs} />
-
-      {/* Presensi */}
-      <Stack.Screen name="Presensi" component={Presensi} />
-      <Stack.Screen name="QrCodePresense" component={QrCodePresense} />
-      <Stack.Screen name="QrCodeAdmin" component={QrCodeAdmin} />
-      <Stack.Screen
-        name="ScannerQrCodeByCategoryAbsensi"
-        component={ScannerQrCodeByCategoryAbsensi}
-      />
 
       {/* Profile */}
       <Stack.Screen name="Profile" component={Profile} />
@@ -180,6 +169,13 @@ export default function Navigator() {
         name="CreateTaskManagement"
         component={CreateTaskManagement}
       />
+      <Stack.Screen
+        name="UpdateTaskManagement"
+        component={UpdateTaskManagement}
+      />
+      <Stack.Screen name="FilesScreen" component={FilesScreen} />
+      <Stack.Screen name="FileLinkScreen" component={FileLinkScreen} />
+      <Stack.Screen name="TaskDetailScreen" component={TaskDetailScreen} />
     </Stack.Navigator>
   );
 }

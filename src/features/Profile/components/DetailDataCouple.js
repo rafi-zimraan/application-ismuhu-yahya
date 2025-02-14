@@ -1,7 +1,6 @@
 import React, {useState} from 'react';
 import {
   Image,
-  RefreshControl,
   ScrollView,
   StatusBar,
   StyleSheet,
@@ -42,15 +41,14 @@ export default function DetailDataCouple({route, navigation}) {
     try {
       const response = await updateCouple(data.id, editedData);
 
-      if (response.message === 'Silahkan login terlebih dahulu') {
+      if (response?.message === 'Silahkan login terlebih dahulu') {
         setTokenExpired(true);
       } else {
-        ToastAndroid.show('Data berhasil diperbarui!', ToastAndroid.SHORT);
+        ToastAndroid.show(response?.message, ToastAndroid.SHORT);
         setEditModalVisible(false);
       }
     } catch (error) {
-      ToastAndroid.show('Berhasil update data pasangan', ToastAndroid.SHORT);
-      console.log('Error updating data:', error.message);
+      console.log('Error updating data:', error);
     } finally {
       setIsLoading(false);
     }
@@ -63,20 +61,9 @@ export default function DetailDataCouple({route, navigation}) {
       setIsDeleted(true);
       setDeleteModalVisible(false);
     } catch (error) {
-      // console.log('Error deleting data:', error.message);
+      console.log('Error deleting data:', error.message);
     } finally {
       setIsLoading(false);
-    }
-  };
-
-  const reloadData = async () => {
-    setRefreshing(true);
-    try {
-      console.log('Data refreshed');
-    } catch (error) {
-      // console.log('Error during refresh:', error);
-    } finally {
-      setRefreshing(false);
     }
   };
 
@@ -91,15 +78,7 @@ export default function DetailDataCouple({route, navigation}) {
           onPress={() => navigation.goBack()}
         />
       </View>
-      <ScrollView
-        refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={reloadData}
-            colors={['#ffd700']}
-          />
-        }
-        contentContainerStyle={{flexGrow: 1}}>
+      <ScrollView contentContainerStyle={{flexGrow: 1}}>
         <View style={styles.container}>
           {!isDeleted ? (
             <>
@@ -163,7 +142,6 @@ export default function DetailDataCouple({route, navigation}) {
         </View>
       </ScrollView>
 
-      {/* Modal Edit */}
       <ModalCustom
         visible={editModalVisible}
         onRequestClose={() => setEditModalVisible(false)}

@@ -58,14 +58,11 @@ export default function DetailFacilityComplaint({navigation, route}) {
   const handleDelete = async () => {
     try {
       setDeleting(true);
-      await deleteSuggestion(id);
-      ToastAndroid.show('Pengaduan berhasil dihapus', ToastAndroid.SHORT);
+      const response = await deleteSuggestion(id);
+      ToastAndroid.show(response?.message, ToastAndroid.SHORT);
       navigation.goBack();
     } catch (error) {
-      ToastAndroid.show(
-        error.response?.data?.message || 'Gagal menghapus pengaduan',
-        ToastAndroid.SHORT,
-      );
+      console.log('err delete detail facility complaint', error);
     } finally {
       setDeleting(false);
     }

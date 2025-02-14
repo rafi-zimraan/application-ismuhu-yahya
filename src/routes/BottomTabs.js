@@ -7,10 +7,9 @@ import BottomTabBar from './BottomTabBar';
 
 const Tab = createBottomTabNavigator();
 
-export default function BottomTabs({navigation}) {
+export default function BottomTabs() {
   const [unreadCount, setUnreadCount] = useState(0);
 
-  // Fungsi untuk mendapatkan jumlah notifikasi yang belum dibaca
   const fetchUnreadCount = async () => {
     try {
       const response = await getAllNotifications();
@@ -33,7 +32,6 @@ export default function BottomTabs({navigation}) {
     }
   };
 
-  // Gunakan useFocusEffect untuk memperbarui jumlah badge saat layar fokus
   useFocusEffect(
     useCallback(() => {
       const updateUnreadCount = async () => {
