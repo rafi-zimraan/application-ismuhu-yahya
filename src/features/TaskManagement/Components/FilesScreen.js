@@ -136,7 +136,10 @@ export default function FilesScreen({route, navigation}) {
       </View>
       <View style={{padding: 10, flex: 1}}>
         {loading ? (
-          <ActivityIndicator size="large" color={COLORS.goldenOrange} />
+          <View style={styles.viewLoadingData}>
+            <Text style={styles.LoadingText}>Loading data...</Text>
+            <ActivityIndicator size={'large'} color={COLORS.goldenOrange} />
+          </View>
         ) : files.length === 0 ? (
           <View style={styles.contentNotFound}>
             <Image
@@ -249,6 +252,16 @@ export default function FilesScreen({route, navigation}) {
 }
 
 const styles = StyleSheet.create({
+  viewLoadingData: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 20,
+  },
+  LoadingText: {
+    color: COLORS.black,
+    fontStyle: 'italic',
+    marginBottom: 10,
+  },
   deleteIcon: {
     position: 'absolute',
     top: 7,

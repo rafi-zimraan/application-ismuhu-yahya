@@ -122,9 +122,6 @@ export default function TaskManagement({navigation}) {
       }));
       const combinedData = [...taskList, ...leaderList];
 
-      console.log('task', taskList);
-      console.log('leader', leaderList);
-
       setTasks(combinedData);
       taskList.forEach(task => {
         fetchFileAndLinkCounts(task.id);
@@ -640,7 +637,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     flex: 1,
   },
-
   closeButton: {
     position: 'absolute',
     top: -31,

@@ -5,7 +5,6 @@ import {
   FlatList,
   Image,
   Linking,
-  Modal,
   RefreshControl,
   StyleSheet,
   Text,
@@ -20,12 +19,7 @@ import {
   getDetailLinkTaskManagement,
   updateLinkTaskManagement,
 } from '..';
-import {
-  Background,
-  HeaderTransparent,
-  ModalCustom,
-  ModalLoading,
-} from '../../../Component';
+import {Background, HeaderTransparent, ModalCustom} from '../../../Component';
 import {ICON_NOTFOUND_DATA} from '../../../assets';
 import {COLORS, DIMENS} from '../../../utils';
 import {FecthMe} from '../../authentication';
@@ -33,11 +27,8 @@ import {FecthMe} from '../../authentication';
 export default function FileLinkScreen({route, navigation}) {
   const {taskId} = route.params;
   const [links, setLinks] = useState([]);
-  const [initialLoading, setInitialLoading] = useState(true);
   const [loading, setLoading] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [isModalVisible, setModalVisible] = useState(false);
-  const [selectedUrl, setSelectedUrl] = useState('');
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [selectedLinkId, setSelectedLinkId] = useState(null);
@@ -58,30 +49,19 @@ export default function FileLinkScreen({route, navigation}) {
     }
   }, []);
 
-  const fetchLinks = useCallback(
-    async (isFirstLoad = false) => {
-      if (isFirstLoad) {
-        setInitialLoading(true);
-      } else {
-        setLoading(true);
+  const fetchLinks = useCallback(async () => {
+    setLoading(true);
+    try {
+      const response = await getDetailLinkTaskManagement(taskId);
+      if (response) {
+        setLinks(response?.data?.links.reverse());
       }
-      try {
-        const response = await getDetailLinkTaskManagement(taskId);
-        if (response) {
-          setLinks(response?.data?.links.reverse());
-        }
-      } catch (error) {
-        console.log('Error fetching links:', error);
-      } finally {
-        if (isFirstLoad) {
-          setInitialLoading(false);
-        } else {
-          setLoading(false);
-        }
-      }
-    },
-    [taskId],
-  );
+    } catch (error) {
+      console.log('Error fetching links:', error);
+    } finally {
+      setLoading(false);
+    }
+  }, [taskId]);
 
   useFocusEffect(
     useCallback(() => {
@@ -115,13 +95,7 @@ export default function FileLinkScreen({route, navigation}) {
       console.log('Gagal membuka link:', err);
     } finally {
       setIsLoading(false);
-      setModalVisible(false);
     }
-  };
-
-  const showBrowserOptions = url => {
-    setSelectedUrl(url);
-    setModalVisible(true);
   };
 
   const confirmDelete = id => {
@@ -209,7 +183,10 @@ export default function FileLinkScreen({route, navigation}) {
       </View>
       <View style={{padding: 15, flex: 1}}>
         {loading ? (
-          <ActivityIndicator size="large" color={COLORS.primary} />
+          <View style={styles.viewLoadingData}>
+            <Text style={styles.LoadingText}>Loading data...</Text>
+            <ActivityIndicator size={'large'} color={COLORS.goldenOrange} />
+          </View>
         ) : links.length === 0 ? (
           <View style={styles.contentNotFound}>
             <Image
@@ -229,7 +206,7 @@ export default function FileLinkScreen({route, navigation}) {
               <View style={styles.linkItem}>
                 <TouchableOpacity
                   style={styles.linkContainer}
-                  onPress={() => showBrowserOptions(item.url)}>
+                  onPress={() => openLink(item.url, 'default')}>
                   <Icon name="link" size={20} color={COLORS.goldenOrange} />
                   <View style={styles.textContainer}>
                     <Text style={styles.linkText}>
@@ -260,29 +237,6 @@ export default function FileLinkScreen({route, navigation}) {
           />
         )}
       </View>
-
-      <Modal visible={isModalVisible} transparent animationType="slide">
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Buka dengan</Text>
-            <TouchableOpacity
-              style={styles.modalButton}
-              onPress={() => openLink(selectedUrl, 'default')}>
-              <Text style={styles.modalButtonText}>Default Browser</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.modalButton}
-              onPress={() => openLink(selectedUrl, 'chrome')}>
-              <Text style={styles.modalButtonText}>Google Chrome</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.modalCancel}
-              onPress={() => setModalVisible(false)}>
-              <Text style={styles.modalCancelText}>Batal</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
 
       <ModalCustom
         visible={editModalVisible}
@@ -343,13 +297,21 @@ export default function FileLinkScreen({route, navigation}) {
         }}
         buttonTitle="Login Ulang"
       />
-
-      <ModalLoading visible={initialLoading} />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
+  viewLoadingData: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 20,
+  },
+  LoadingText: {
+    color: COLORS.black,
+    fontStyle: 'italic',
+    marginBottom: 10,
+  },
   input: {
     width: '100%',
     borderWidth: 1,
@@ -397,8 +359,8 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     backgroundColor: COLORS.white,
     borderRadius: 10,
-    elevation: 3,
-    borderWidth: 0.8,
+    elevation: 4,
+    borderWidth: 0.4,
     borderColor: COLORS.black,
   },
   textContainer: {
@@ -437,42 +399,5 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-end',
     backgroundColor: 'rgba(0,0,0,0.5)',
-  },
-  modalContent: {
-    backgroundColor: COLORS.white,
-    padding: 15,
-    borderTopLeftRadius: 15,
-    borderTopRightRadius: 15,
-    alignItems: 'center',
-  },
-  modalTitle: {
-    fontSize: DIMENS.xl,
-    fontWeight: 'bold',
-    marginBottom: 5,
-    color: COLORS.black,
-  },
-  modalButton: {
-    width: '100%',
-    padding: 13,
-    alignItems: 'center',
-    backgroundColor: COLORS.goldenOrange,
-    marginVertical: 10,
-    borderRadius: 10,
-    elevation: 3,
-  },
-  modalButtonText: {
-    fontSize: DIMENS.l,
-    color: COLORS.white,
-  },
-  modalCancel: {
-    width: '100%',
-    padding: 10,
-    alignItems: 'center',
-    marginTop: 3,
-  },
-  modalCancelText: {
-    fontSize: DIMENS.l,
-    color: COLORS.red,
-    fontWeight: 'bold',
   },
 });
