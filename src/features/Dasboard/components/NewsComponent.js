@@ -9,7 +9,9 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import HTMLView from 'react-native-htmlview';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+
 import {Gap} from '../../../Component';
 import {ICON_NOTFOUND_DATA} from '../../../assets';
 import {COLORS, DIMENS} from '../../../utils';
@@ -69,8 +71,6 @@ export default function NewsComponent() {
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
-            stickyHeaderHiddenOnScroll
-            stickyHeaderIndices={[0]}
             style={styles.scrollView}>
             {newsData.length > 0 ? (
               newsData.map((item, index) => (
@@ -96,19 +96,17 @@ export default function NewsComponent() {
                       {item?.title}
                     </Text>
                     <Gap height={5} />
-                    {/* 
-                    {item.desc ? (
-                      <HTMLView value={item.desc} stylesheet={htmlStyles} />
-                    ) : (
-                      <Text style={styles.description}>
-                        Deskripsi tidak ada
-                      </Text>
-                    )} */}
-                    <Text style={styles.newsDesc} numberOfLines={1}>
-                      {item?.desc ? item?.desc : 'Tidak ada deskripsi tersedia'}
-                    </Text>
-                    <Gap height={20} />
-
+                    <View style={styles.viewDesc}>
+                      <HTMLView
+                        value={
+                          item.desc
+                            ? `<p>${item.desc}</p>`
+                            : '<p>Deskripsi tidak tersedia</p>'
+                        }
+                        stylesheet={htmlStyles}
+                      />
+                    </View>
+                    <Gap height={15} />
                     <TouchableOpacity
                       style={styles.moreButton}
                       onPress={() => handleOnPress(item.id)}>
@@ -138,6 +136,10 @@ export default function NewsComponent() {
 }
 
 const styles = StyleSheet.create({
+  viewDesc: {
+    height: 20,
+    overflow: 'hidden',
+  },
   titleContainer: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -160,13 +162,13 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-end',
     borderRadius: 5,
     paddingHorizontal: 8,
-    paddingVertical: 9,
+    paddingVertical: 5,
     backgroundColor: COLORS.creem,
   },
   moreText: {
-    fontSize: DIMENS.m,
+    fontSize: DIMENS.s,
     color: COLORS.black,
-    fontWeight: '700',
+    fontWeight: '500',
     marginRight: 4,
   },
   newsContainer: {
@@ -191,15 +193,16 @@ const styles = StyleSheet.create({
     color: COLORS.black,
   },
   newsDesc: {
-    fontSize: DIMENS.s,
+    fontSize: DIMENS.xs,
     color: COLORS.darkGray,
+    fontWeight: '500',
   },
-
   scrollView: {
     flex: 1,
     alignSelf: 'center',
     paddingBottom: 5,
     paddingHorizontal: 10,
+    elevation: 5,
   },
   titleText: {
     fontSize: DIMENS.xxl,
@@ -226,5 +229,72 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+});
+
+const htmlStyles = StyleSheet.create({
+  strong: {
+    fontSize: DIMENS.l,
+    fontWeight: 'bold',
+    color: COLORS.black,
+  },
+  a: {
+    fontSize: DIMENS.m,
+    color: COLORS.blue,
+    fontWeight: '500',
+    textDecorationLine: 'underline',
+  },
+  p: {
+    fontSize: DIMENS.xs,
+    color: COLORS.black,
+    fontWeight: '500',
+    marginBottom: 0,
+    numberOfLines: 1,
+    textOverflow: 'ellipsis',
+  },
+  ol: {
+    fontSize: DIMENS.s,
+    color: COLORS.black,
+  },
+  li: {
+    fontSize: DIMENS.s,
+    color: COLORS.black,
+    marginVertical: 2,
+  },
+  h1: {
+    fontSize: DIMENS.xxxl,
+    fontWeight: '800',
+    color: COLORS.black,
+    marginVertical: 4,
+  },
+  h2: {
+    fontSize: DIMENS.xxl,
+    fontWeight: '700',
+    color: COLORS.black,
+    marginVertical: 3,
+  },
+  h3: {
+    fontSize: DIMENS.l,
+    fontWeight: '600',
+    color: COLORS.black,
+    marginVertical: 3,
+  },
+  h4: {
+    fontSize: DIMENS.m,
+    fontWeight: '500',
+    color: COLORS.black,
+    marginVertical: 3,
+  },
+  h5: {
+    fontSize: DIMENS.s,
+    fontWeight: '400',
+    color: COLORS.black,
+    marginVertical: 3,
+  },
+  h5: {
+    fontSize: DIMENS.xs,
+    fontWeight: '300',
+    color: COLORS.black,
+    marginVertical: 3,
   },
 });

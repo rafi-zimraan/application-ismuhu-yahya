@@ -7,15 +7,10 @@ import {
   logout,
   passwordRecovery,
 } from './services/authApiSlice';
-import {
-  setDepartments,
-  setDivisions,
-  setToken,
-  setUserSession,
-} from './services/authSlice';
+import {setToken, setUserSession} from './services/authSlice';
 
 // auth api slice
-export {setToken, setDepartments, setDivisions, setUserSession};
+export {setToken, setUserSession};
 // auth component
 export {FormInput, ModalRecovery, ButtonAuth};
 // api

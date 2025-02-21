@@ -34,8 +34,6 @@ export default function Notification({navigation}) {
   const fetchNotifications = async () => {
     try {
       const response = await getAllNotifications();
-      console.log('response notif', response.data);
-
       if (response?.message === 'Silahkan login terlebih dahulu') {
         setTokenExpired(true);
       } else {
@@ -168,13 +166,10 @@ const styles = StyleSheet.create({
     height: 30,
     justifyContent: 'center',
     alignItems: 'center',
-    position: 'absolute',
-    right: 0,
-    bottom: 15,
-    right: 15,
+    top: 15,
   },
   countText: {
-    fontSize: DIMENS.l,
+    fontSize: DIMENS.m,
     color: COLORS.white,
     fontWeight: '700',
   },

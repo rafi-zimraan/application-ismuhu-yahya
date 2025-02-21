@@ -17,7 +17,6 @@ api.interceptors.request.use(
       if (token) config.headers.Authorization = `Bearer ${JSON.parse(token)}`;
       return config;
     } catch (error) {
-      console.log('INTERCEPTORS ERROR:', error);
       return Promise.reject(error);
     }
   },

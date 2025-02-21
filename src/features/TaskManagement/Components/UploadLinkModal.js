@@ -9,7 +9,8 @@ import {
   View,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {addLinkTaskManagement} from '..';
+import {useDispatch, useSelector} from 'react-redux';
+import {addLinkTaskManagement, getAllTaskManagement, setTasksFilter} from '..';
 import {ButtonAction} from '../../../Component';
 import {COLORS, DIMENS} from '../../../utils';
 
@@ -20,17 +21,17 @@ export default function UploadLinkModal({
   setLinkData,
   selectedTaskId,
   setSelectedTaskId,
-  fetchTasks,
 }) {
+  const {title, url, description} = linkData;
   const [loading, setLoading] = useState(false);
+  const dispacth = useDispatch();
+  const selectedFilter = useSelector(state => state.task_management.filter);
 
   const handleInputChange = (key, value) => {
     setLinkData(prev => ({...prev, [key]: value}));
   };
 
   const handleUploadLink = async () => {
-    const {title, url, description} = linkData;
-
     if (!selectedTaskId || !title || !url) {
       ToastAndroid.show('Harap isi semua bidang', ToastAndroid.SHORT);
       return;
@@ -44,21 +45,22 @@ export default function UploadLinkModal({
         url,
         description,
       );
-
-      if (response?.status) {
-        ToastAndroid.show(response?.message, ToastAndroid.SHORT);
-        setLinkData({title: '', url: '', description: ''});
-        setSelectedTaskId(null);
-        onClose();
-        fetchTasks();
-      } else {
-        ToastAndroid.show(
-          'Gagal menambahkan link rencana harian, silahkan hubungi developer',
-          ToastAndroid.SHORT,
-        );
-      }
+      const updatedTaskLink = await getAllTaskManagement(selectedFilter);
+      dispacth(
+        setTasksFilter({
+          data: updatedTaskLink.data.todos,
+          type: selectedFilter,
+        }),
+      );
+      ToastAndroid.show(response?.message, ToastAndroid.SHORT);
+      setLinkData({title: '', url: '', description: ''});
+      setSelectedTaskId(null);
+      onClose();
     } catch (error) {
-      console.log('Gagal upload link', error);
+      ToastAndroid.show(
+        'Terjadi kesalahan saat uplaod link',
+        ToastAndroid.SHORT,
+      );
     } finally {
       setLoading(false);
     }
@@ -96,7 +98,7 @@ export default function UploadLinkModal({
           <ButtonAction
             title={loading ? 'Menyimpan...' : 'Simpan'}
             onPress={handleUploadLink}
-            disabled={loading}
+            disabled={loading || title == '' || url == ''}
           />
         </View>
       </View>

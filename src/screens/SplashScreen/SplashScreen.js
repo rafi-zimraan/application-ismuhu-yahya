@@ -44,15 +44,17 @@ export default function SplashScreen({navigation}) {
 
   return (
     <SafeAreaView style={styles.background}>
-      <StatusBar barStyle={'default'} backgroundColor={'transparent'} />
+      <StatusBar barStyle={'dark-content'} backgroundColor={'transparent'} />
       <View style={styles.container}>
         <Image source={IMG_ISMUHUYAHYA_POTRAIT} style={styles.img} />
         <Gap height={15} />
-        <ActivityIndicator
-          size={'large'}
-          animating={true}
-          color={COLORS.goldenOrange}
-        />
+        {loading && (
+          <ActivityIndicator
+            size={'large'}
+            animating={true}
+            color={COLORS.goldenOrange}
+          />
+        )}
       </View>
       <AppVersion />
     </SafeAreaView>
@@ -65,14 +67,13 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.white,
   },
   container: {
-    position: 'absolute',
-    top: 230,
-    left: 20,
+    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
   },
   img: {
     width: 320,
     height: 230,
+    resizeMode: 'cover',
   },
 });

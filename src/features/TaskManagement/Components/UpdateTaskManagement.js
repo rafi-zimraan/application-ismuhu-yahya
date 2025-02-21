@@ -1,5 +1,4 @@
 import {Picker} from '@react-native-picker/picker';
-import {useNavigation, useRoute} from '@react-navigation/native';
 import React, {useEffect, useState} from 'react';
 import {
   Keyboard,
@@ -11,9 +10,11 @@ import {
   View,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import {useDispatch, useSelector} from 'react-redux';
 import {
   TextInputTaskManagement,
   getAllTaskManagement,
+  setTasksFilter,
   updateDataTaskManagement,
 } from '..';
 import {
@@ -28,66 +29,62 @@ import {
 import {COLORS, DIMENS} from '../../../utils';
 import {FecthMe} from '../../authentication';
 
-export default function UpdateTaskManagement() {
-  const navigation = useNavigation();
-  const route = useRoute();
-  const {taskId} = route.params;
-  const [task, setTask] = useState(null);
+export default function UpdateTaskManagement({route, navigation}) {
+  const {taskId, taskData} = route.params;
+  const dispatch = useDispatch();
+  const selectedFilter = useSelector(state => state.task_management.filter);
   const [activity, setActivity] = useState('');
   const [startTime, setStartTime] = useState('');
   const [endTime, setEndTime] = useState('');
   const [dueDate, setDueDate] = useState('');
   const [category, setCategory] = useState(null);
-  const [additionalPlan, setAdditionalPlan] = useState(false);
+  const [additionalPlan, setAdditionalPlan] = useState(0);
   const [modalVisible, setModalVisible] = useState(false);
   const [loading, setLoading] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
-  const [isFetchingData, setIsFecthingData] = useState(true);
   const [tokenExpired, setTokenExpired] = useState(false);
-
-  const validateSession = async () => {
-    try {
-      const response = await FecthMe();
-      if (response?.message === 'Silahkan login terlebih dahulu') {
-        setTokenExpired(true);
-      }
-    } catch (error) {
-      console.log('Gagal melakukan validasi sesi:', error);
-    }
-  };
+  const [modalLoading, setModalLoading] = useState(false);
 
   useEffect(() => {
-    validateSession();
-  }, []);
-
-  useEffect(() => {
-    const fetchTask = async () => {
-      setIsFecthingData(true);
+    const initializeData = async () => {
+      setModalLoading(true);
       try {
-        const response = await getAllTaskManagement('all');
-        if (response?.data) {
-          const foundTask = response.data.find(t => t.id === taskId);
-          if (foundTask) {
-            setTask(foundTask);
-            setActivity(foundTask.activity || '');
-            setStartTime(foundTask.startTime || '');
-            setEndTime(foundTask.endTime || '');
-            setDueDate(foundTask.date || '');
-            setCategory(
-              foundTask.category === 'planned' ? 'Rencana' : 'Tidak Rencana',
-            );
-            setAdditionalPlan(foundTask.addition_task ? 1 : 0);
+        const response = await FecthMe();
+        if (response?.message === 'Silahkan login terlebih dahulu') {
+          setTokenExpired(true);
+          return;
+        }
+
+        if (taskData) {
+          const activityRegex = /^\((\d{2}:\d{2}) - (\d{2}:\d{2})\) (.+)$/;
+          const match = taskData.activity.match(activityRegex);
+
+          if (match) {
+            setStartTime(match[1]);
+            setEndTime(match[2]);
+            setActivity(match[3]);
+          } else {
+            setActivity(taskData.activity);
           }
+
+          setDueDate(taskData.date || '');
+          setCategory(
+            taskData.category === 'planned' ? 'Rencana' : 'Tidak Rencana',
+          );
+          setAdditionalPlan(taskData.addition_task === '1');
         }
       } catch (error) {
-        console.log('err mengambil data tasks', error);
+        console.log(
+          'Gagal melakukan validasi sesi atau inisialisasi data:',
+          error,
+        );
       } finally {
-        setIsFecthingData(false);
+        setModalLoading(false);
       }
     };
 
-    fetchTask();
-  }, [taskId]);
+    initializeData();
+  }, [taskData]);
 
   const handleUpdateTask = async () => {
     if (!activity.trim()) {
@@ -114,31 +111,30 @@ export default function UpdateTaskManagement() {
     }
 
     const formattedCategory = category === 'Rencana' ? 'planned' : 'unplanned';
-
     let formattedActivity = activity;
     if (startTime && endTime) {
       formattedActivity = `(${startTime} - ${endTime}) ${activity}`;
     }
-
-    const division_id = task?.division_id || null;
 
     setLoading(true);
     try {
       const response = await updateDataTaskManagement(
         taskId,
         formattedActivity,
-        division_id,
+        null,
         dueDate,
         formattedCategory,
-        additionalPlan,
+        additionalPlan ? '1' : '0',
       );
-
-      if (response?.status === true) {
-        ToastAndroid.show('Task berhasil diperbarui!', ToastAndroid.SHORT);
-        setModalVisible(true);
-      } else {
-        console.log('Kesalahan update rencana harian');
-      }
+      const updatedTaskList = await getAllTaskManagement(selectedFilter);
+      dispatch(
+        setTasksFilter({
+          data: updatedTaskList.data.todos,
+          type: selectedFilter,
+        }),
+      );
+      ToastAndroid.show(response?.message, ToastAndroid.SHORT);
+      setModalVisible(true);
     } catch (error) {
       ToastAndroid.show(
         'Gagal memperbarui rencana harian!',
@@ -152,8 +148,8 @@ export default function UpdateTaskManagement() {
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.container}>
+        <ModalLoading visible={modalLoading} />
         <Background />
-        <ModalLoading visible={isFetchingData} />
         <AlertWarning
           show={showAlert}
           message="Harap isi jam mulai dan jam selesai jika ingin menambahkan waktu!"
@@ -223,17 +219,17 @@ export default function UpdateTaskManagement() {
           <TouchableOpacity
             style={[
               styles.checkboxContainer,
-              additionalPlan === 1 && styles.checkboxActive,
+              additionalPlan && styles.checkboxActive,
             ]}
             onPress={() => setAdditionalPlan(prev => (prev === 0 ? 1 : 0))}>
             <Icon
               name={
-                additionalPlan === 1
+                additionalPlan
                   ? 'check-circle'
                   : 'checkbox-blank-circle-outline'
               }
               size={20}
-              color={COLORS.black}
+              color={additionalPlan ? COLORS.white : COLORS.black}
             />
             <Gap width={5} />
             <Text style={styles.checkboxText}>Rencana Tambahan</Text>
@@ -293,7 +289,6 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    backgroundColor: COLORS.white,
   },
   headerWrapper: {
     flexDirection: 'row',

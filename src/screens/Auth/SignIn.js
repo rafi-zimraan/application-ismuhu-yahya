@@ -85,6 +85,7 @@ export default function SignIn({navigation}) {
               <View style={{height: '40%'}}>
                 <FormInput
                   control={control}
+                  iconColor={COLORS.Orange}
                   name="email"
                   autoCapitalize="none"
                   iconName="gmail"
@@ -98,6 +99,7 @@ export default function SignIn({navigation}) {
                 />
                 <FormInput
                   control={control}
+                  iconColor={COLORS.Orange}
                   name="password"
                   autoCapitalize="none"
                   iconName="lock"
@@ -177,9 +179,9 @@ const styles = StyleSheet.create({
     textAlign: 'left',
   },
   descriptionText: {
-    fontSize: DIMENS.l,
-    fontWeight: '400',
-    color: COLORS.grey,
+    fontSize: DIMENS.m,
+    fontWeight: '500',
+    color: COLORS.mediumGrey,
     textAlign: 'left',
     alignSelf: 'flex-start',
   },

@@ -181,7 +181,7 @@ const styles = StyleSheet.create({
     width: 10,
     height: 10,
     borderRadius: 5,
-    backgroundColor: '#D3D3D3',
+    backgroundColor: COLORS.lightGrey2,
     marginHorizontal: 5,
   },
   paginationDotActive: {
@@ -221,7 +221,7 @@ const styles = StyleSheet.create({
     marginLeft: 8,
   },
   publishedDateContainer: {
-    backgroundColor: '#EFEFEF',
+    backgroundColor: COLORS.extraExtraLightGrey,
     borderRadius: 8,
     marginVertical: 3,
     alignItems: 'center',
@@ -239,16 +239,28 @@ const styles = StyleSheet.create({
     marginVertical: 10,
   },
   descriptionContainer: {
-    backgroundColor: '#EBE8E8',
+    backgroundColor: COLORS.warmGrey,
     padding: 10,
     borderRadius: 8,
   },
 });
 
 const htmlStyles = StyleSheet.create({
+  strong: {
+    fontSize: DIMENS.l,
+    fontWeight: 'bold',
+    color: COLORS.black,
+  },
+  a: {
+    fontSize: DIMENS.m,
+    color: COLORS.blue,
+    fontWeight: '500',
+    textDecorationLine: 'underline',
+  },
   p: {
     fontSize: DIMENS.s,
-    color: COLORS.black,
+    color: COLORS.darkGrey,
+    fontWeight: '500',
     marginVertical: 2,
   },
   ol: {
@@ -262,19 +274,37 @@ const htmlStyles = StyleSheet.create({
   },
   h1: {
     fontSize: DIMENS.xxxl,
-    fontWeight: 'bold',
+    fontWeight: '800',
     color: COLORS.black,
     marginVertical: 4,
   },
   h2: {
     fontSize: DIMENS.xxl,
-    fontWeight: 'bold',
+    fontWeight: '700',
     color: COLORS.black,
     marginVertical: 3,
   },
   h3: {
     fontSize: DIMENS.l,
-    fontWeight: 'bold',
+    fontWeight: '600',
+    color: COLORS.black,
+    marginVertical: 3,
+  },
+  h4: {
+    fontSize: DIMENS.m,
+    fontWeight: '500',
+    color: COLORS.black,
+    marginVertical: 3,
+  },
+  h5: {
+    fontSize: DIMENS.s,
+    fontWeight: '400',
+    color: COLORS.black,
+    marginVertical: 3,
+  },
+  h5: {
+    fontSize: DIMENS.xs,
+    fontWeight: '300',
     color: COLORS.black,
     marginVertical: 3,
   },

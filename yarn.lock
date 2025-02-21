@@ -1275,11 +1275,6 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
-"@notifee/react-native@^9.1.3":
-  version "9.1.3"
-  resolved "https://registry.npmjs.org/@notifee/react-native/-/react-native-9.1.3.tgz"
-  integrity sha512-KUshWu/MCYHCbVIVGwevQc7si0IA76uKGV7a0qbnCZlVFkuQvCUrrHzM2HWBhQ0+8dB1g6jPJxipNeXDWHELVw==
-
 "@react-native-community/blur@^4.4.1":
   version "4.4.1"
   resolved "https://registry.npmjs.org/@react-native-community/blur/-/blur-4.4.1.tgz"
@@ -1427,6 +1422,13 @@
   version "11.4.1"
   resolved "https://registry.npmjs.org/@react-native-community/netinfo/-/netinfo-11.4.1.tgz"
   integrity sha512-B0BYAkghz3Q2V09BF88RA601XursIEA111tnc2JOaN7axJWmNefmfjZqw/KdSxKZp7CZUuPpjBmz/WCR9uaHYg==
+
+"@react-native-community/push-notification-ios@^1.10.1":
+  version "1.11.0"
+  resolved "https://registry.npmjs.org/@react-native-community/push-notification-ios/-/push-notification-ios-1.11.0.tgz"
+  integrity sha512-nfkUs8P2FeydOCR4r7BNmtGxAxI22YuGP6RmqWt6c8EEMUpqvIhNKWkRSFF3pHjkgJk2tpRb9wQhbezsqTyBvA==
+  dependencies:
+    invariant "^2.2.4"
 
 "@react-native-documents/picker@^10.0.1":
   version "10.0.1"
@@ -5322,6 +5324,11 @@ react-native-progress-wheel@^2.1.0:
   resolved "https://registry.npmjs.org/react-native-progress-wheel/-/react-native-progress-wheel-2.1.0.tgz"
   integrity sha512-HXuPKwRNszvFMFlpoVWbn5tdxwkEowJGBNfydU8GGIEJcaZCT4Znraho+cfXbbW/fp9crVXoB8oV+zJr8sTAQQ==
 
+react-native-push-notification@^8.1.1:
+  version "8.1.1"
+  resolved "https://registry.npmjs.org/react-native-push-notification/-/react-native-push-notification-8.1.1.tgz"
+  integrity sha512-XpBtG/w+a6WXTxu6l1dNYyTiHnbgnvjoc3KxPTxYkaIABRmvuJZkFxqruyGvfCw7ELAlZEAJO+dthdTabCe1XA==
+
 react-native-reanimated@*, react-native-reanimated@^3.16.1, react-native-reanimated@>=2.0.0:
   version "3.16.1"
   resolved "https://registry.npmjs.org/react-native-reanimated/-/react-native-reanimated-3.16.1.tgz"
@@ -5401,7 +5408,7 @@ react-native-vision-camera@^4.6.1:
   resolved "https://registry.npmjs.org/react-native-vision-camera/-/react-native-vision-camera-4.6.1.tgz"
   integrity sha512-USp7g+Q/H7nzIS2XBJTWVdzZArxgZu+IFafgswVzxdmr0iSpLjLUtoUp+SUWxZ+nLhJriYYvqg8hfZrJtnpnlw==
 
-react-native@*, "react-native@>= 0.60.2", react-native@>=0.40.0, react-native@>=0.59, react-native@>=0.59.0, react-native@>=0.64, react-native@>=0.65.0, react-native@>=0.70.0, react-native@0.74.4:
+react-native@*, "react-native@>= 0.60.2", react-native@>=0.33, react-native@>=0.40.0, react-native@>=0.58.4, react-native@>=0.59, react-native@>=0.59.0, react-native@>=0.64, react-native@>=0.65.0, react-native@>=0.70.0, react-native@0.74.4:
   version "0.74.4"
   dependencies:
     "@jest/create-cache-key-function" "^29.6.3"
@@ -5474,7 +5481,7 @@ react-test-renderer@18.2.0:
     react-shallow-renderer "^16.15.0"
     scheduler "^0.23.0"
 
-react@*, "react@^16.0.0 || ^17.0.0 || ^18.0.0", "react@^16.8.0 || ^17 || ^18 || ^19", "react@^16.8.0 || ^17.0.0 || ^18.0.0", "react@^16.9.0 || ^17.0.0 || ^18", react@^18.0, react@^18.0.0, react@^18.2.0, react@>=16.8, react@>=16.8.0, react@>=17.0.0, react@>=18.0, react@>=18.1.0, react@18.2.0:
+react@*, "react@^16.0.0 || ^17.0.0 || ^18.0.0", "react@^16.8.0 || ^17 || ^18 || ^19", "react@^16.8.0 || ^17.0.0 || ^18.0.0", "react@^16.9.0 || ^17.0.0 || ^18", react@^18.0, react@^18.0.0, react@^18.2.0, react@>=16.6.3, react@>=16.8, react@>=16.8.0, react@>=17.0.0, react@>=18.0, react@>=18.1.0, react@18.2.0:
   version "18.2.0"
   dependencies:
     loose-envify "^1.1.0"

@@ -84,7 +84,6 @@ export default function CreateFormulirPerizinanExit({navigation, route}) {
 
         setTotalTime(`${hours} jam ${minutes} menit`);
       } catch (error) {
-        console.log('Error calculating total time:', error.message);
         setTotalTime('');
       }
     } else {
@@ -112,8 +111,6 @@ export default function CreateFormulirPerizinanExit({navigation, route}) {
       };
 
       const response = await addPerizinanKeluar(data);
-      console.log('response', response.message);
-
       if (response?.status === true) {
         setShowSuccessModal(true);
       } else if (response?.message === 'Silahkan login terlebih dahulu') {
@@ -125,7 +122,6 @@ export default function CreateFormulirPerizinanExit({navigation, route}) {
         );
       }
     } catch (error) {
-      console.log(error.message || 'Terjadi kesalahan saat menambahkan data');
       ToastAndroid.show(
         error.message || 'Terjadi kesalahan saat menambahkan data',
         ToastAndroid.SHORT,

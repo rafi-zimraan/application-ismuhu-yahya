@@ -52,7 +52,6 @@ export default function CreateTraining({navigation}) {
         setModalVisible(true);
       }
     } catch (error) {
-      console.log('error', error);
       ToastAndroid.show(
         'Gagal menambahkan data pelatihan!',
         ToastAndroid.SHORT,

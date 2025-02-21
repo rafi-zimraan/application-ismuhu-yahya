@@ -46,7 +46,6 @@ export default function TaskDetailScreen({route, navigation}) {
     setRefreshing(true);
     try {
       const response = await getDetailTaskManagement(taskId);
-      console.log('response detail ', response.data);
       if (response?.status) {
         setTaskDetail(response?.data);
       }
@@ -123,8 +122,8 @@ export default function TaskDetailScreen({route, navigation}) {
                 <Icon
                   name={
                     taskDetail?.addition_task === '1'
-                      ? 'calendar-plus-outline'
-                      : 'calendar-check-outline'
+                      ? 'checkbox-marked-circle-plus-outline'
+                      : 'minus-circle-outline'
                   }
                   size={20}
                   color={COLORS.goldenOrange}

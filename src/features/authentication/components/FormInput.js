@@ -18,6 +18,7 @@ export default function FormInput({
   name,
   iconName = 'gmail',
   placeholder = 'Placeholder...',
+  iconColor = COLORS.black,
   control,
   secureText,
   keyboardType,
@@ -66,7 +67,7 @@ export default function FormInput({
             <Text style={{color: 'black'}}>{title}</Text>
             <View style={{borderBottomWidth: 1, paddingHorizontal: 5}}>
               <View style={styles.viewInput}>
-                <Icon name={iconName} color={'black'} size={25} />
+                <Icon name={iconName} color={iconColor} size={25} />
                 {mode == 'text' && (
                   <>
                     <TextInput

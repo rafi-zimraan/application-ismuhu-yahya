@@ -6,29 +6,50 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import {useAnimatedStyle, withSpring} from 'react-native-reanimated';
+import {
+  useAnimatedStyle,
+  useSharedValue,
+  withSpring,
+} from 'react-native-reanimated';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import {useDispatch, useSelector} from 'react-redux';
+import {setFilter} from '..';
 import {COLORS, DIMENS} from '../../../utils';
 
-const TaskFilter = ({
-  filterOptions,
-  selectedFilter,
-  setSelectedFilter,
-  iconScale,
-}) => {
+const filterOptions = [
+  {key: 'all', label: 'Semua', icon: 'format-list-bulleted', color: '#FFFFFF'},
+  {key: 'today', label: 'Hari Ini', icon: 'calendar-today', color: '#FFD54F'},
+  {
+    key: 'addition',
+    label: 'Tambahan',
+    icon: 'plus-circle-outline',
+    color: '#A5D6A7',
+  },
+  {
+    key: 'success',
+    label: 'Selesai',
+    icon: 'check-circle-outline',
+    color: COLORS.greenBoy,
+  },
+];
+
+const TaskFilter = () => {
+  const filter = useSelector(state => state.task_management.filter);
   const handlePressIn = () => {
     iconScale.value = withSpring(1.2, {damping: 10, stiffness: 100});
   };
-
   const handlePressOut = () => {
     iconScale.value = withSpring(1, {damping: 10, stiffness: 100});
   };
 
+  const iconScale = useSharedValue(1);
+  const dispatch = useDispatch();
+
   return (
     <View style={{padding: 15}}>
       <ScrollView horizontal showsHorizontalScrollIndicator={true}>
-        {filterOptions.map((filter, index) => {
-          const isSelected = selectedFilter.key === filter.key;
+        {filterOptions.map((item, index) => {
+          const isSelected = filter === item.key;
           const animatedStyle = useAnimatedStyle(() => ({
             transform: [{scale: isSelected ? iconScale.value : 1}],
           }));
@@ -40,23 +61,24 @@ const TaskFilter = ({
                 styles.filterButton,
                 isSelected && {backgroundColor: COLORS.black},
               ]}
-              onPress={() => setSelectedFilter(filter)}
+              onPress={() => dispatch(setFilter(item.key))}
               onPressIn={handlePressIn}
               onPressOut={handlePressOut}>
               <View style={styles.filterContent}>
                 <View style={animatedStyle}>
                   <Icon
-                    name={filter.icon}
+                    name={item.icon}
                     size={20}
-                    color={isSelected ? filter.color : COLORS.black}
+                    color={isSelected ? item.color : COLORS.black}
                   />
                 </View>
                 <Text
                   style={[
                     styles.filterText,
-                    isSelected ? {color: filter.color} : {color: COLORS.black},
+                    // isSelected ? {color: filter.color} : {color: COLORS.black},
+                    {color: isSelected ? item.color : COLORS.black},
                   ]}>
-                  {filter.label}
+                  {item.label}
                 </Text>
               </View>
             </TouchableOpacity>

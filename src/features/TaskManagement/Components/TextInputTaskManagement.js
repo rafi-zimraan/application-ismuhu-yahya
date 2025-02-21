@@ -10,7 +10,7 @@ import {
   View,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import {COLORS} from '../../../utils';
+import {COLORS, DIMENS} from '../../../utils';
 
 export default function TextInputTaskManagement({
   label,
@@ -185,7 +185,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     borderColor: COLORS.grey,
     borderWidth: 0.4,
-    fontSize: 13,
+    fontSize: DIMENS.m,
     color: COLORS.black,
     textAlignVertical: 'top',
   },
@@ -193,7 +193,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   label: {
-    fontSize: 16,
+    fontSize: DIMENS.l,
     fontWeight: '600',
     color: COLORS.black,
     marginBottom: 5,

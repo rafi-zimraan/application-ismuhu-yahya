@@ -87,8 +87,6 @@ export default function Profile({navigation}) {
           setModalVisible(true);
         }
       } catch (error) {
-        console.log('Error uploading photo:', error);
-
         if (error.response) {
           ToastAndroid.show(
             error.response.data.message || 'Terjadi kesalahan pada server.',

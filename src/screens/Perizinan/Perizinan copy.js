@@ -47,8 +47,6 @@ export default function Perizinan({navigation}) {
     try {
       setLoading(true);
       const response = await getAllCuti();
-      console.log('data cuti', response.data.data);
-
       if (response?.message === 'Silahkan login terlebih dahulu') {
         setTokenExpired(true);
       } else if (response?.data?.data) {
@@ -74,7 +72,6 @@ export default function Perizinan({navigation}) {
 
         if (mappedData.length > 0) {
           const firstEntry = mappedData[0];
-          console.log('data id', firstEntry);
           setUserDivisionId(firstEntry.division_id);
           setUserDepartmentId(firstEntry.department_id);
         }

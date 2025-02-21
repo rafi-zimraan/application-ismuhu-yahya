@@ -2,6 +2,7 @@ import {TaskManagement} from '../../screens';
 import CreateTaskManagement from './Components/CreateTaskManagement';
 import FileLinkScreen from './Components/FileLinkScreen';
 import FilesScreen from './Components/FilesScreen';
+import TargetLeader from './Components/TargetLeader';
 import TaskDetailScreen from './Components/TaskDetailScreen';
 import TaskFilter from './Components/TaskFilter';
 import TaskOptionModal from './Components/TaskOptionModal';
@@ -9,6 +10,13 @@ import TextInputTaskManagement from './Components/TextInputTaskManagement';
 import UpdateTaskManagement from './Components/UpdateTaskManagement';
 import UploadFileModal from './Components/UploadFileModal';
 import UploadLinkModal from './Components/UploadLinkModal';
+import {
+  setDepartment,
+  setFilter,
+  setTargetLeader,
+  setTasksFilter,
+} from './Services/TaskSlice';
+
 import {
   addFileTaskManagement,
   addLinkTaskManagement,
@@ -37,6 +45,7 @@ export {
   FileLinkScreen,
   TaskDetailScreen,
   TaskFilter,
+  TargetLeader,
 };
 // slice
 export {
@@ -55,3 +64,5 @@ export {
   getDetailTaskManagement,
   updateDataTaskManagement,
 };
+// redux
+export {setTargetLeader, setFilter, setDepartment, setTasksFilter};

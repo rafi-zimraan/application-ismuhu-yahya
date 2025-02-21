@@ -63,7 +63,6 @@ export default function OnBoarding({navigation}) {
         'Terjadi kesalahan saat menyimpan status onboarding',
         ToastAndroid.SHORT,
       );
-      // console.log('error saving onboarding status', error);
     }
   };
 

@@ -40,6 +40,9 @@ const COLORS = {
   borderColor: '#E0E0E0',
   paleGrey: '#f0f0f0',
   neutralGrey: '#dddddd',
+  lightGrey2: '#D3D3D3',
+  extraExtraLightGrey: '#EFEFEF',
+  warmGrey: '#EBE8E8',
 
   // Black & White
   black: '#000000',

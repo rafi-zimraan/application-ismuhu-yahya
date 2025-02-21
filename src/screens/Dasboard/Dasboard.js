@@ -1,13 +1,16 @@
 import {useFocusEffect, useIsFocused} from '@react-navigation/native';
-import React, {useCallback, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {
   ActivityIndicator,
   ImageBackground,
+  PermissionsAndroid,
+  Platform,
   RefreshControl,
   SafeAreaView,
   ScrollView,
   StatusBar,
   StyleSheet,
+  ToastAndroid,
   View,
 } from 'react-native';
 import {Gap} from '../../Component';
@@ -42,6 +45,7 @@ export default function Dasboard({navigation}) {
   const [amountSantri, setAmountSantri] = useState('');
   const [amountSpa, setAmountSpa] = useState('');
   const [userPosition, setUserPosition] = useState('');
+  const [permissionRequested, setPermissionRequested] = useState(false);
 
   const {
     isOffline,
@@ -50,6 +54,32 @@ export default function Dasboard({navigation}) {
     buttonLoading,
     openNetworkSettings,
   } = useNetworkStatus(isFocused);
+
+  useEffect(() => {
+    const requestNotificationPermission = async () => {
+      if (
+        Platform.OS === 'android' &&
+        Platform.Version >= 33 &&
+        !permissionRequested
+      ) {
+        const granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS,
+        );
+
+        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+          console.log('Izin notifikasi diberikan');
+        } else {
+          ToastAndroid.show(
+            'Amal Yaumi butuh notifikasi. Aktifkan di pengaturan!',
+            ToastAndroid.LONG,
+          );
+        }
+        setPermissionRequested(true);
+      }
+    };
+
+    requestNotificationPermission();
+  }, [permissionRequested]);
 
   const onRefresh = async () => {
     setRefreshing(true);

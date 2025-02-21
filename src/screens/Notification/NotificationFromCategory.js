@@ -86,9 +86,9 @@ export default function NotificationFromCategory({route, navigation}) {
       if (response?.message === 'Silahkan login terlebih dahulu') {
         setTokenExpired(true);
       } else if (response?.data) {
-        const sortedData = response.data
-          .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
-          .slice(0, 5);
+        const sortedData = response.data.sort(
+          (a, b) => new Date(b.created_at) - new Date(a.created_at),
+        );
         setOriginalData(sortedData);
         setData(sortedData);
       } else {
@@ -154,14 +154,9 @@ export default function NotificationFromCategory({route, navigation}) {
     setIsLoadingFilter(true);
     try {
       const detail = await getNotificationDetail(id);
-
-      if (detail?.data) {
-        navigation.navigate('NotificationDetail', {
-          notificationDetail: detail.data,
-        });
-      } else {
-        console.log('Detail not found for the provided ID:', id);
-      }
+      navigation.navigate('NotificationDetail', {
+        notificationDetail: detail.data,
+      });
     } catch (error) {
       ToastAndroid.show(
         'Terjadi Kesalahan saat memuat detail notification,',
@@ -304,7 +299,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
   },
   dropdownText: {
-    fontSize: 14,
+    fontSize: DIMENS.m,
     color: COLORS.black,
   },
   headerWrapper: {

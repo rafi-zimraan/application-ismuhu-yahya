@@ -6,6 +6,7 @@ import {
   Alert,
   Image,
   Modal,
+  PermissionsAndroid,
   StyleSheet,
   Text,
   TextInput,
@@ -15,7 +16,8 @@ import {
 } from 'react-native';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {addFileTaskManagement} from '..';
+import {useDispatch, useSelector} from 'react-redux';
+import {addFileTaskManagement, getAllTaskManagement, setTasksFilter} from '..';
 import {ButtonAction, Gap} from '../../../Component';
 import {COLORS, DIMENS} from '../../../utils';
 
@@ -24,13 +26,14 @@ export default function UploadFileModal({
   onClose,
   selectedTaskId,
   setSelectedTaskId,
-  fetchTasks,
 }) {
   const [fileTitle, setFileTitle] = useState('');
   const [fileType, setFileType] = useState('');
   const [fileUri, setFileUri] = useState(null);
   const [fileDescription, setFileDescription] = useState('');
   const [isUploading, setIsUploading] = useState(false);
+  const selectedFilter = useSelector(state => state.task_management.filter);
+  const dispacth = useDispatch();
 
   useEffect(() => {
     if (!visible) {
@@ -139,25 +142,24 @@ export default function UploadFileModal({
         fileUri,
         fileDescription,
       );
-      if (response?.status) {
-        ToastAndroid.show(response?.message, ToastAndroid.SHORT);
-        setFileTitle('');
-        setFileType('');
-        setFileDescription('');
-        setFileUri(null);
-        if (typeof selectedTaskId === 'function') {
-          setSelectedTaskId(null);
-        }
-        onClose();
-        fetchTasks();
-      } else {
-        ToastAndroid.show(
-          'Gagal menambahkan file rencana harian, Silahkan hubungi developer',
-          ToastAndroid.SHORT,
-        );
+      const updatedTask = await getAllTaskManagement(selectedFilter);
+      dispacth(
+        setTasksFilter({data: updatedTask.data.todos, type: selectedFilter}),
+      );
+      ToastAndroid.show(response?.message, ToastAndroid.SHORT);
+      setFileTitle('');
+      setFileType('');
+      setFileDescription('');
+      setFileUri(null);
+      if (typeof selectedTaskId === 'function') {
+        setSelectedTaskId(null);
       }
+      onClose();
     } catch (error) {
-      console.log('Gagal uplaod file', error);
+      ToastAndroid.show(
+        'Terjadi kesalahan saat uplaod link',
+        ToastAndroid.SHORT,
+      );
     } finally {
       setIsUploading(false);
     }
@@ -234,9 +236,9 @@ export default function UploadFileModal({
           />
           <Gap height={5} />
           <ButtonAction
-            title="Simpan"
+            title={isUploading ? 'Menyimpan...' : 'Simpan'}
             onPress={handleUploadFile}
-            loading={isUploading}
+            disabled={fileTitle == '' || fileType == ''}
           />
         </View>
       </View>
@@ -297,7 +299,6 @@ const styles = StyleSheet.create({
     marginBottom: 7,
     color: COLORS.black,
   },
-
   fileText: {
     marginVertical: 10,
     color: COLORS.black,

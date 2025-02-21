@@ -84,7 +84,6 @@ export default function NotificationDetail({route, navigation}) {
 
       setSuccessModalVisible(true);
     } catch (error) {
-      console.log('Error updating approval:', error);
       setModalData({
         title: 'Error',
         description:

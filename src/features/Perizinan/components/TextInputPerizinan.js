@@ -29,31 +29,6 @@ export default function TextInputPerizinan({
 }) {
   const [showPicker, setShowPicker] = useState(false);
 
-  // const handleDateChange = (event, selectedDate) => {
-  //   setShowPicker(false);
-  //   if (selectedDate) {
-  //     const formattedDate = selectedDate.toISOString().split('T')[0];
-  //     onChangeText(formattedDate);
-  //   }
-  // };
-
-  // const handleTimeChange = (event, selectedTime) => {
-  //   setShowPicker(false);
-  //   if (selectedTime) {
-  //     try {
-  //       const hours = selectedTime.getHours().toString().padStart(2, '0');
-  //       const minutes = selectedTime.getMinutes().toString().padStart(2, '0');
-  //       const formattedTime = `${hours}:${minutes}`;
-  //       onChangeText(formattedTime);
-  //     } catch (error) {
-  //       console.log('Error formatting time:', error.message);
-  //       onChangeText('');
-  //     }
-  //   } else {
-  //     onChangeText('');
-  //   }
-  // };
-
   return (
     <View style={[styles.container, style]}>
       {label && <Text style={styles.label}>{label}</Text>}

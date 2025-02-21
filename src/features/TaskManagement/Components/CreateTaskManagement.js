@@ -26,7 +26,8 @@ export default function CreateTaskManagement({route}) {
   const [activity, setActivity] = useState('');
   const [startTime, setStartTime] = useState('');
   const [endTime, setEndTime] = useState('');
-  const [dueDate, setDueDate] = useState('');
+  const today = new Date().toISOString().split('T')[0];
+  const [dueDate, setDueDate] = useState(today);
   const [category, setCategory] = useState(null);
   const [additionalPlan, setAdditionalPlan] = useState(0);
   const [modalVisible, setModalVisible] = useState(false);
@@ -73,14 +74,11 @@ export default function CreateTaskManagement({route}) {
       setShowAlert(true);
       return;
     }
-
     const formattedCategory = category === 'Rencana' ? 'planned' : 'unplanned';
-
     let formattedActivity = activity;
     if (startTime && endTime) {
       formattedActivity = `(${startTime} - ${endTime}) ${activity}  `;
     }
-
     setloading(true);
     try {
       const response = await addTaskManagement(
@@ -89,7 +87,6 @@ export default function CreateTaskManagement({route}) {
         additionalPlan,
         formattedCategory,
       );
-
       if (response?.status) {
         setTaskData({
           activity: formattedActivity,
@@ -202,6 +199,7 @@ export default function CreateTaskManagement({route}) {
           title="Simpan"
           onPress={handleAddTask}
           loading={loading}
+          disabled={activity == '' || dueDate == '' || category == ''}
         />
       </View>
 
