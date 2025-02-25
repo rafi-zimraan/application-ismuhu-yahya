@@ -2,6 +2,9 @@ import IMG_WARNING_DEVICE from '../assets//images/warningIlustratitonDevice.png'
 import IMG_BACKGROUND_MORNING from '../assets/background/BackgroundMorning.png';
 import IMG_BACKGROUND_NIGHT from '../assets/background/BackgroundNight.png';
 import IMG_BACKGROUND_AFTERNOON from '../assets/background/Backgroundafternoon.png';
+import BG_IMG_AFTERNOON from '../assets/background/afterNoon.jpg';
+import BG_IMG_MORNING from '../assets/background/morning.jpg';
+import BG_IMG_NIGHT from '../assets/background/night.jpg';
 import IMG_YELLOWWISH_FRIST from '../assets/background/yellowish-1.png';
 import IMG_YELLOWWISH from '../assets/background/yellowish.png';
 import BG_APPLICATION from '../assets/backgroundApp.png';
@@ -29,6 +32,9 @@ import IMG_PONDOK_DIGITAL_WHITE from '../assets/pondok-digital-logo/full-white.p
 import IMG_PONDOK_DIGITAL from '../assets/pondok-digital-logo/full.png';
 
 export {
+  BG_IMG_NIGHT,
+  BG_IMG_MORNING,
+  BG_IMG_AFTERNOON,
   IMG_NAME_CARD_REBORN,
   IMG_REBORN_CAR_ESCAPE,
   IMG_CAR_AMBULANCE,

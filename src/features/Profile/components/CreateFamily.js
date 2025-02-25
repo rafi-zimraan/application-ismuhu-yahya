@@ -32,7 +32,6 @@ export default function CreateFamily({navigation}) {
     try {
       const userId = await EncryptedStorage.getItem('idUser');
       const response = await addFamilyData(userId, data);
-
       if (response.message === 'Silahkan login terlebih dahulu') {
         setTokenExpired(true);
       } else if (response) {
@@ -49,6 +48,10 @@ export default function CreateFamily({navigation}) {
   };
 
   const onSubmit = () => {
+    if (!father || !mother || !brother) {
+      ToastAndroid.show('Harap diisi semua kolom', ToastAndroid.SHORT);
+      return;
+    }
     const data = {
       father,
       mother,
@@ -192,7 +195,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     backgroundColor: COLORS.white,
     borderRadius: 10,
-    borderColor: '#ddd',
+    borderColor: COLORS.neutralGrey,
     borderWidth: 1,
     fontSize: DIMENS.s,
     color: COLORS.black,

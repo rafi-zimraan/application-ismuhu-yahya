@@ -27,7 +27,7 @@ export const useNetworkStatus = isFocused => {
         InternetSettings.open();
       } else {
         ToastAndroid.show(
-          'Tidak dapat membuka pengaturan jaringan',
+          'Tidak dapat membuka pengaturan jaringan, Silahkan bukan dengan manual',
           ToastAndroid.SHORT,
         );
       }

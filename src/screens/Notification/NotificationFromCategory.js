@@ -92,11 +92,9 @@ export default function NotificationFromCategory({route, navigation}) {
         setOriginalData(sortedData);
         setData(sortedData);
       } else {
-        console.warn('Data notifikasi tidak valid:', response?.data);
         setData([]);
       }
     } catch (error) {
-      console.log('Failed to fetch notifications by category', error);
       setOriginalData([]);
       setData([]);
     } finally {

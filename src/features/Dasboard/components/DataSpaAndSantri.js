@@ -6,9 +6,9 @@ import {COLORS, DIMENS} from '../../../utils';
 
 export default function DataSpaComponent({
   iconDashboard,
-  totalSantri,
-  totalSpa,
-  userPosition,
+  totalSantri = 0,
+  totalSpa = 0,
+  userPosition = '',
 }) {
   const [modalVisible, setModalVisible] = useState(false);
 
@@ -18,10 +18,6 @@ export default function DataSpaComponent({
     ? IMG_ISMUHUYAHYA_POTRAIT
     : iconDashboard;
   const imageStyle = isStaffOrKoordinator ? styles.imgSmall : styles.imgLarge;
-
-  const handlePressDashboard = () => {
-    setModalVisible(true);
-  };
 
   const closeModal = () => {
     setModalVisible(false);
@@ -33,13 +29,11 @@ export default function DataSpaComponent({
         <Image source={displayIcon} style={imageStyle} />
         {!isStaffOrKoordinator && <Text style={styles.title}>Dasboard</Text>}
       </TouchableOpacity>
-
       <Gap width={45} />
       <View style={styles.viewSantri}>
         <Text style={styles.titleSantri}>Total Santri</Text>
         <Text style={styles.amountSantri}>{totalSantri}</Text>
       </View>
-
       <Gap width={20} />
       <Line
         height={60}
@@ -47,14 +41,11 @@ export default function DataSpaComponent({
         borderColor={COLORS.black}
         borderWidth={0.7}
       />
-
       <Gap width={20} />
       <View style={styles.viewSpa}>
         <Text style={styles.titleSpa}>Total Spa</Text>
         <Text style={styles.amountSpa}>{totalSpa}</Text>
       </View>
-
-      {/* ModalCustom */}
       <ModalCustom
         visible={modalVisible}
         onRequestClose={closeModal}

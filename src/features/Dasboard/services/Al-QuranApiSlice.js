@@ -7,7 +7,6 @@ const fetchAyat = async (surahNumber, ayahNumber) => {
     const response = await axios.get(`${BASE_URL}/${surahNumber}`);
     const surah = response.data;
     const ayah = surah.ayat?.[ayahNumber - 1];
-
     return {
       arab: ayah?.ar,
       translation: ayah?.idn,

@@ -19,7 +19,7 @@ import {
   HeaderTransparent,
   ModalCustom,
 } from '../../../Component';
-import {COLORS} from '../../../utils';
+import {COLORS, DIMENS} from '../../../utils';
 
 export default function UpdateDataSpa({route, navigation}) {
   const {spaData} = route.params;
@@ -385,7 +385,7 @@ export default function UpdateDataSpa({route, navigation}) {
 
 const styles = StyleSheet.create({
   title: {
-    fontSize: 16,
+    fontSize: DIMENS.l,
     fontWeight: 'bold',
     color: COLORS.darkGray,
     marginBottom: 5,

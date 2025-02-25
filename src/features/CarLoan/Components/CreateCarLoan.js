@@ -2,6 +2,7 @@ import React, {useEffect} from 'react';
 import {useForm} from 'react-hook-form';
 import {
   ScrollView,
+  StatusBar,
   StyleSheet,
   Text,
   TouchableNativeFeedback,
@@ -49,14 +50,18 @@ export default function CreateCarLoan({navigation}) {
 
   return (
     <View style={styles.Conter}>
-      <HeaderTransparent
-        title="Formulir Peminjaman"
-        icon="arrow-left-circle-outline"
-        onPress={() => navigation.goBack()}
-      />
+      <StatusBar barStyle={'default'} backgroundColor={'transparent'} />
+      <View style={styles.headerWrapper}>
+        <HeaderTransparent
+          title="Formulir Peminjaman"
+          icon="arrow-left-circle-outline"
+          onPress={() => navigation.goBack()}
+        />
+      </View>
       <ScrollView>
         <View style={styles.container}>
           <FormInputCar
+            iconColor={COLORS.Orange}
             name="car_id"
             title="Kendaraan"
             iconName="car"
@@ -75,6 +80,7 @@ export default function CreateCarLoan({navigation}) {
           />
           <View style={{flexDirection: 'row'}}>
             <FormInputCar
+              iconColor={COLORS.Orange}
               name="date_pick"
               title="Tanggal Pinjaman"
               control={control}
@@ -82,6 +88,7 @@ export default function CreateCarLoan({navigation}) {
               mode="date"
             />
             <FormInputCar
+              iconColor={COLORS.Orange}
               name="time_pick"
               title="Jam Pinjaman"
               control={control}
@@ -90,6 +97,7 @@ export default function CreateCarLoan({navigation}) {
             />
           </View>
           <FormInputCar
+            iconColor={COLORS.Orange}
             name="date_use"
             title="Tanggal Pakai"
             control={control}
@@ -99,6 +107,7 @@ export default function CreateCarLoan({navigation}) {
           />
           <View style={{flexDirection: 'row'}}>
             <FormInputCar
+              iconColor={COLORS.Orange}
               name="date_back"
               title="Tanggal Kembali"
               control={control}
@@ -107,6 +116,7 @@ export default function CreateCarLoan({navigation}) {
               date={{minimumDate: dateUse}}
             />
             <FormInputCar
+              iconColor={COLORS.Orange}
               name="time_back"
               title="Jam Kembali"
               control={control}
@@ -116,6 +126,7 @@ export default function CreateCarLoan({navigation}) {
           </View>
           <View style={{flexDirection: 'row', flex: 1}}>
             <FormInputCar
+              iconColor={COLORS.Orange}
               name="duration"
               title="Durasi"
               control={control}
@@ -125,6 +136,7 @@ export default function CreateCarLoan({navigation}) {
               disabled
             />
             <FormInputCar
+              iconColor={COLORS.Orange}
               name="necessity"
               title="Keperluan"
               control={control}
@@ -143,6 +155,7 @@ export default function CreateCarLoan({navigation}) {
             />
           </View>
           <FormInputCar
+            iconColor={COLORS.Orange}
             control={control}
             name="reason"
             title="Keterangan Keperluan"
@@ -167,6 +180,14 @@ export default function CreateCarLoan({navigation}) {
 }
 
 const styles = StyleSheet.create({
+  headerWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 10,
+    backgroundColor: COLORS.goldenOrange,
+    elevation: 3,
+  },
   Conter: {
     flex: 1,
     backgroundColor: COLORS.white,

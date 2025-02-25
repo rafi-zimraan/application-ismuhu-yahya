@@ -20,6 +20,7 @@ const COLORS = {
   // Blue Shades
   blue: '#537FE7',
   blueLight: '#67A3F4',
+  softBlue: '#8EACCD',
 
   // Orange & Gold Shades
   Orange: 'orange',

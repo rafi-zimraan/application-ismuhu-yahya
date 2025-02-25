@@ -61,7 +61,6 @@ export default function TaskManagement({navigation}) {
   const [selectedTaskId, setSelectedTaskId] = useState(null);
   const [selectedTaskIdModal, setSelectedTaskIdModal] = useState(null);
   const [modalPosition, setModalPosition] = useState({top: 0, left: 0});
-  const [todayTasks, setTodayTasks] = useState([]);
   const [linkData, setLinkData] = useState({
     title: '',
     url: '',
@@ -79,21 +78,9 @@ export default function TaskManagement({navigation}) {
         return;
       }
       const response = await getAllTaskManagement(selectedFilter);
-      if (response?.data?.todos) {
-        const today = moment().format('YYYY-MM-DD');
-        const todayTasks = response.data.todos.filter(
-          task => moment(task.date).format('YYYY-MM-DD') === today,
-        );
-        const otherTasks = response.data.todos.filter(
-          task => moment(task.date).format('YYYY-MM-DD') !== today,
-        );
-        const orderedTasks = [...todayTasks, ...otherTasks];
-
-        dispatch(setTasksFilter({data: orderedTasks, type: selectedFilter}));
-      }
-      // dispatch(
-      //   setTasksFilter({data: response.data.todos, type: selectedFilter}),
-      // );
+      dispatch(
+        setTasksFilter({data: response.data.todos, type: selectedFilter}),
+      );
     } catch (error) {
       console.log('Error fetching tasks:', error);
     } finally {
@@ -163,21 +150,17 @@ export default function TaskManagement({navigation}) {
     setIsDeleting(true);
     try {
       const response = await deleteTaskManagement(selectedTaskToDelete.id);
-      if (response?.status) {
-        dispatch(
-          setTasksFilter({
-            data: selectedData.filter(
-              task => task.id !== selectedTaskToDelete.id,
-            ),
-            type: selectedFilter,
-          }),
-        );
-        ToastAndroid.show(response?.message, ToastAndroid.SHORT);
-      } else {
-        ToastAndroid.show('Gagal menghapus tugas', ToastAndroid.SHORT);
-      }
+      dispatch(
+        setTasksFilter({
+          data: selectedData.filter(
+            task => task.id !== selectedTaskToDelete.id,
+          ),
+          type: selectedFilter,
+        }),
+      );
+      ToastAndroid.show(response?.message, ToastAndroid.SHORT);
     } catch (error) {
-      console.log('terjadi kesalahan menghapus data rencana harian', error);
+      ToastAndroid.show('Gagal menghapus tugas', ToastAndroid.SHORT);
     } finally {
       setIsDeleting(false);
       setDeleteModalVisible(false);

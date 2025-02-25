@@ -13,6 +13,7 @@ import {
   ToastAndroid,
   View,
 } from 'react-native';
+import {useDispatch, useSelector} from 'react-redux';
 import {Gap} from '../../Component';
 import {ICON_DASBOARD} from '../../assets';
 import {
@@ -24,6 +25,9 @@ import {
   NetworkModal,
   NewsComponent,
   TokenExpiredModal,
+  setAmountSantri,
+  setAmountSpa,
+  setUserPosition,
   useBackgroundImage,
   useFetchAyat,
   useNetworkStatus,
@@ -34,6 +38,10 @@ import {FecthMe} from '../../features/authentication';
 import {COLORS} from '../../utils';
 
 export default function Dasboard({navigation}) {
+  const dispatch = useDispatch();
+  const amountSantri = useSelector(state => state.dasboard.amountSantri);
+  const amountSpa = useSelector(state => state.dasboard.amountSpa);
+  const userPosition = useSelector(state => state.dasboard.userPosition);
   const formatTime = useTime();
   const backgroundImage = useBackgroundImage();
   const welcomeText = useWelcomeMessage();
@@ -42,18 +50,9 @@ export default function Dasboard({navigation}) {
   const [tokenExpired, setTokenExpired] = useState(false);
   const isFocused = useIsFocused();
   const [photo, setPhoto] = useState(null);
-  const [amountSantri, setAmountSantri] = useState('');
-  const [amountSpa, setAmountSpa] = useState('');
-  const [userPosition, setUserPosition] = useState('');
   const [permissionRequested, setPermissionRequested] = useState(false);
-
-  const {
-    isOffline,
-    showModal,
-    setShowModal,
-    buttonLoading,
-    openNetworkSettings,
-  } = useNetworkStatus(isFocused);
+  const {showModal, setShowModal, buttonLoading, openNetworkSettings} =
+    useNetworkStatus(isFocused);
 
   useEffect(() => {
     const requestNotificationPermission = async () => {
@@ -90,27 +89,17 @@ export default function Dasboard({navigation}) {
   const fetchUserSession = useCallback(async () => {
     try {
       const response = await FecthMe();
-
       if (response?.message === 'Silahkan login terlebih dahulu') {
         setTokenExpired(true);
       }
-
-      if (response?.status) {
-        const baseUrl = 'https://app.simpondok.com/';
-        const photoUrl = response?.url_photo
-          ? `${baseUrl}${response.url_photo}`
-          : null;
-
-        setPhoto(photoUrl);
-        const santriTotal = response?.data_users?.santris?.tot_santri || 0;
-        const spaTotal = response?.data_users?.spa?.tot_spa || 0;
-
-        setAmountSantri(santriTotal);
-        setAmountSpa(spaTotal);
-        setUserPosition(response?.position || '');
-      } else {
-        throw new Error('Gagal mengambil data pengguna');
-      }
+      const baseUrl = 'https://app.simpondok.com/';
+      const photoUrl = response?.url_photo
+        ? `${baseUrl}${response.url_photo}`
+        : null;
+      setPhoto(photoUrl);
+      dispatch(setAmountSantri(response.data_users.santris.tot_santri || 0));
+      dispatch(setAmountSpa(response.data_users.spa.tot_spa || 0));
+      dispatch(setUserPosition(response.position || ''));
     } catch (e) {
       console.log('Terjadi kesalahan checking session', e);
     }
@@ -122,10 +111,10 @@ export default function Dasboard({navigation}) {
     }, [fetchUserSession]),
   );
   return (
-    <SafeAreaView style={{flex: 1}}>
+    <SafeAreaView style={{flex: 1, backgroundColor: COLORS.white}}>
       <StatusBar barStyle="default" backgroundColor="transparent" />
       <ScrollView
-        contentContainerStyle={{flexGrow: 1}}
+        contentContainerStyle={{backgroundColor: COLORS.white}}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }>
@@ -134,40 +123,24 @@ export default function Dasboard({navigation}) {
           style={styles.imageContainer}
           resizeMode="cover">
           <Gap height={18} />
-
           <HeaderComponent urlPhoto={photo} welcomeText={welcomeText} />
-
           {loadingAyat ? (
             <View style={styles.viewLoadingAyat}>
-              <ActivityIndicator size="large" color={COLORS.white} />
+              <ActivityIndicator size={16} color={COLORS.white} />
             </View>
           ) : (
             <AyatComponent ayat={ayat} />
           )}
           <Gap height={25} />
           <ClockDasboard formatTime={formatTime} />
-
-          <TokenExpiredModal
-            visible={tokenExpired}
-            setTokenExpired={setTokenExpired}
-            navigation={navigation}
-          />
-          <NetworkModal
-            visible={showModal}
-            setShowModal={setShowModal}
-            openNetworkSettings={openNetworkSettings}
-            buttonLoading={buttonLoading}
-          />
-          <Gap height={15} />
-
+          <Gap height={25} />
           <DataSpaComponent
             iconDashboard={ICON_DASBOARD}
             totalSantri={amountSantri}
             totalSpa={amountSpa}
             userPosition={userPosition}
           />
-
-          <Gap height={15} />
+          <Gap height={25} />
           <View style={styles.menu}>
             <ButtonMenu
               title="Amal yaumi"
@@ -177,7 +150,6 @@ export default function Dasboard({navigation}) {
               iconSize={33}
               onPress={() => navigation.navigate('AmalYaumi')}
             />
-
             <ButtonMenu
               title="Task"
               iconName="format-list-checks"
@@ -186,18 +158,48 @@ export default function Dasboard({navigation}) {
               iconSize={33}
               onPress={() => navigation.navigate('TaskManagement')}
             />
+            <ButtonMenu
+              title="Peminjaman "
+              iconName="car-side"
+              color={COLORS.white}
+              backgroundColor={COLORS.goldenOrange}
+              iconSize={33}
+              onPress={() => navigation.navigate('CarLoan')}
+            />
+            <ButtonMenu
+              title="Pengaduan"
+              iconName="hammer-wrench"
+              color={COLORS.white}
+              backgroundColor={COLORS.goldenOrange}
+              iconSize={33}
+              onPress={() => navigation.navigate('FacilityComplaint')}
+            />
           </View>
-
-          <Gap height={35} />
+          <Gap height={25} />
           <NewsComponent />
         </ImageBackground>
+
+        <TokenExpiredModal
+          visible={tokenExpired}
+          setTokenExpired={setTokenExpired}
+          navigation={navigation}
+        />
+        <NetworkModal
+          visible={showModal}
+          setShowModal={setShowModal}
+          openNetworkSettings={openNetworkSettings}
+          buttonLoading={buttonLoading}
+        />
       </ScrollView>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  imageContainer: {flex: 1, padding: 15},
+  imageContainer: {
+    flex: 1,
+    padding: 15,
+  },
   menu: {
     flexDirection: 'row',
     justifyContent: 'flex-start',

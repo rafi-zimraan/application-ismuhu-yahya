@@ -32,10 +32,7 @@ export default function DetailDataSpa({navigation}) {
     setLoading(true);
     try {
       const userId = await EncryptedStorage.getItem('idUser');
-      if (!userId) throw new Error('User ID not found');
-
       const response = await getAllDataSpa(JSON.parse(userId));
-
       if (response.message === 'Silahkan login terlebih dahulu') {
         setTokenExpired(true);
       } else if (response?.status) {
@@ -77,7 +74,7 @@ export default function DetailDataSpa({navigation}) {
           <RefreshControl
             refreshing={refreshing}
             onRefresh={onRefresh}
-            colors={['#ffd700']}
+            colors={['#FFD700']}
           />
         }
         contentContainerStyle={{flexGrow: 1}}>
@@ -336,7 +333,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.white,
     borderRadius: 15,
     padding: 15,
-    shadowColor: '#000',
+    shadowColor: COLORS.black,
     shadowOffset: {width: 0, height: 2},
     shadowOpacity: 0.1,
     elevation: 2,

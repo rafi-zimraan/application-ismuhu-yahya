@@ -120,7 +120,7 @@ export default function App() {
       BackHandler.exitApp();
       setModalVisible(false);
     } catch (error) {
-      console.log('Error during logout:', error);
+      ToastAndroid.show('Gagal keluar dari applikasi', ToastAndroid.SHORT);
     } finally {
       setLoadingLogout(false);
     }
@@ -144,7 +144,7 @@ export default function App() {
             </Text>
             <Text style={styles.modalDescription}>
               Setelah keluar, kamu harus memasukkan kembali informasi login kamu
-              untuk menggunakan layanan kami
+              untuk menggunakan layanan simpondok
             </Text>
             <TouchableOpacity
               style={styles.cancelButton}

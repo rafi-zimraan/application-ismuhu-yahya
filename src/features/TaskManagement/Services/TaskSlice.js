@@ -1,4 +1,5 @@
 import {createSlice} from '@reduxjs/toolkit';
+import moment from 'moment';
 
 const initialState = {
   department: null,
@@ -24,18 +25,28 @@ const TaskSlice = createSlice({
       state.department = action.payload;
     },
     setTasksFilter(state, action) {
+      const today = moment().format('YYYY-MM-DD');
+      const todayTasks = action.payload.data.filter(
+        task => moment(task.date).format('YYYY-MM-DD') === today,
+      );
+      const otherTasks = action.payload.data.filter(
+        task => moment(task.date).format('YYYY-MM-DD') !== today,
+      );
+      const orderedTasks = [...todayTasks, ...otherTasks];
+
       switch (action.payload.type) {
         case 'all':
-          state.task_all = action.payload.data;
+          state.task_all = orderedTasks;
           break;
         case 'today':
-          state.task_today = action.payload.data;
+          state.task_today = orderedTasks;
+
           break;
         case 'addition':
-          state.task_addition = action.payload.data;
+          state.task_addition = orderedTasks;
           break;
         case 'success':
-          state.task_success = action.payload.data;
+          state.task_success = orderedTasks;
           break;
         default:
           break;

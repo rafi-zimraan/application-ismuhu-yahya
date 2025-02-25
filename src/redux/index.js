@@ -1,5 +1,6 @@
 import {configureStore} from '@reduxjs/toolkit';
 import {
+  DasboardReducer,
   TaskReducer,
   authReducer,
   languageReducer,
@@ -12,5 +13,6 @@ export const store = configureStore({
     theme: themeReducer,
     language: languageReducer,
     task_management: TaskReducer,
+    dasboard: DasboardReducer,
   },
 });

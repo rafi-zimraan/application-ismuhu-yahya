@@ -61,9 +61,11 @@ export default function NewsComponent() {
       <Text style={styles.descText}>
         Dapatkan info terbaru tentang berita dan event masjid ismhuyahya
       </Text>
+      <Gap height={10} />
       {loading ? (
         <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color={COLORS.goldenOrange} />
+          <Text style={styles.LoadingText}>Loading data...</Text>
+          <ActivityIndicator size={25} color={COLORS.goldenOrange} />
         </View>
       ) : (
         <>
@@ -136,6 +138,11 @@ export default function NewsComponent() {
 }
 
 const styles = StyleSheet.create({
+  LoadingText: {
+    color: COLORS.black,
+    fontStyle: 'italic',
+    marginBottom: 10,
+  },
   viewDesc: {
     height: 20,
     overflow: 'hidden',
@@ -226,7 +233,7 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 15,
   },
   loadingContainer: {
-    flex: 1,
+    marginTop: 20,
     justifyContent: 'center',
     alignItems: 'center',
   },

@@ -26,7 +26,6 @@ export default function DetailExperience({route, navigation}) {
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [refreshing, setRefreshing] = useState(false);
   const [isDeleted, setIsDeleted] = useState(false);
   const [tokenExpired, setTokenExpired] = useState(false);
 
@@ -40,7 +39,6 @@ export default function DetailExperience({route, navigation}) {
     setIsLoading(true);
     try {
       const response = await updateExperience(data.id, editedData);
-
       if (response?.message === 'Silahkan login terlebih dahulu') {
         setTokenExpired(true);
       } else {
@@ -122,12 +120,12 @@ export default function DetailExperience({route, navigation}) {
                 <TouchableOpacity
                   style={styles.editButton}
                   onPress={() => setEditModalVisible(true)}>
-                  <Icon name="pencil" size={24} color="#fff" />
+                  <Icon name="pencil" size={24} color={COLORS.white} />
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={styles.deleteButton}
                   onPress={() => setDeleteModalVisible(true)}>
-                  <Icon name="delete" size={24} color="#fff" />
+                  <Icon name="delete" size={24} color={COLORS.white} />
                 </TouchableOpacity>
               </View>
             </>
@@ -205,7 +203,6 @@ export default function DetailExperience({route, navigation}) {
         BackgroundButtonAction={COLORS.red}
         TextColorButton={COLORS.white}
       />
-
       <ModalCustom
         visible={tokenExpired}
         onRequestClose={() => setTokenExpired(false)}
@@ -244,7 +241,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.white,
     borderRadius: 15,
     padding: 15,
-    shadowColor: '#000',
+    shadowColor: COLORS,
     shadowOffset: {width: 0, height: 2},
     shadowOpacity: 0.1,
     elevation: 2,
@@ -261,11 +258,11 @@ const styles = StyleSheet.create({
   },
   textTitle: {
     fontSize: DIMENS.m,
-    color: '#999',
+    color: COLORS.mediumGrey,
   },
   label: {
     fontSize: DIMENS.l,
-    color: '#333',
+    color: COLORS.textPrimary,
   },
   buttonContainer: {
     flexDirection: 'row',
@@ -275,13 +272,13 @@ const styles = StyleSheet.create({
     right: 20,
   },
   editButton: {
-    backgroundColor: '#4CAF50',
+    backgroundColor: COLORS.greenConfirm,
     padding: 15,
     borderRadius: 50,
     marginRight: 10,
   },
   deleteButton: {
-    backgroundColor: '#F44336',
+    backgroundColor: COLORS.red,
     padding: 15,
     borderRadius: 50,
   },

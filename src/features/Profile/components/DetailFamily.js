@@ -1,7 +1,6 @@
 import React, {useState} from 'react';
 import {
   Image,
-  RefreshControl,
   ScrollView,
   StatusBar,
   StyleSheet,
@@ -27,7 +26,6 @@ export default function DetailFamily({route, navigation}) {
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [refreshing, setRefreshing] = useState(false);
   const [isDeleted, setIsDeleted] = useState(false);
   const [tokenExpired, setTokenExpired] = useState(false);
 
@@ -69,17 +67,6 @@ export default function DetailFamily({route, navigation}) {
     }
   };
 
-  const reloadData = async () => {
-    setRefreshing(true);
-    try {
-      console.log('Data refreshed');
-    } catch (error) {
-      console.log('Error during refresh:', error);
-    } finally {
-      setRefreshing(false);
-    }
-  };
-
   return (
     <View style={{flex: 1}}>
       <StatusBar barStyle="default" backgroundColor="transparent" />
@@ -91,15 +78,7 @@ export default function DetailFamily({route, navigation}) {
           onPress={() => navigation.goBack()}
         />
       </View>
-      <ScrollView
-        refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={reloadData}
-            colors={['#ffd700']}
-          />
-        }
-        contentContainerStyle={{flexGrow: 1}}>
+      <ScrollView contentContainerStyle={{flexGrow: 1}}>
         <View style={styles.container}>
           {!isDeleted ? (
             <>
@@ -160,12 +139,12 @@ export default function DetailFamily({route, navigation}) {
                 <TouchableOpacity
                   style={styles.editButton}
                   onPress={() => setEditModalVisible(true)}>
-                  <Icon name="pencil" size={24} color="#fff" />
+                  <Icon name="pencil" size={24} color={COLORS.white} />
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={styles.deleteButton}
                   onPress={() => setDeleteModalVisible(true)}>
-                  <Icon name="delete" size={24} color="#fff" />
+                  <Icon name="delete" size={24} color={COLORS.white} />
                 </TouchableOpacity>
               </View>
             </>
@@ -177,7 +156,6 @@ export default function DetailFamily({route, navigation}) {
         </View>
       </ScrollView>
 
-      {/* Modal Edit */}
       <ModalCustom
         visible={editModalVisible}
         onRequestClose={() => setEditModalVisible(false)}

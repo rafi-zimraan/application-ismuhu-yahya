@@ -31,9 +31,7 @@ export default function AllDataTraining({navigation}) {
     try {
       const id_user = await EncryptedStorage.getItem('idUser');
       if (!id_user) throw new Error('User ID tidak ditemukan.');
-
       const fetchedData = await getTrainingData(id_user);
-
       if (fetchedData.message === 'Silahkan login terlebih dahulu') {
         setTokenExpired(true);
       } else {

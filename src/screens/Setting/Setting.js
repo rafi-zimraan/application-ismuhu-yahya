@@ -42,10 +42,8 @@ export default function Settings({navigation}) {
 
         setPhoto(photoUrl);
         setUserName(userData.username || '-');
-
         const userId = userData.user_id;
         const spaData = await getAllDataSpa(userId);
-
         if (spaData?.status && spaData?.data) {
           setEmail(spaData.data.email || '-');
         } else {

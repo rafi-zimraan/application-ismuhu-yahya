@@ -24,32 +24,17 @@ export default function ForgotPassword({navigation}) {
       showToast('Harap masukkan email Anda.');
       return;
     }
-
     if (!email.includes('@')) {
       showToast('Format email tidak valid. Harap masukkan email yang benar.');
       return;
     }
-
     try {
       setLoading(true);
       const response = await sendVerificationEmail(email);
-
-      if (response?.status) {
-        showToast(response?.message);
-        navigation.navigate('CheckOtpEmail', {email});
-      } else {
-        showToast('Gagal mengirim email. Silakan coba lagi.');
-      }
+      showToast(response?.message);
+      navigation.navigate('CheckOtpEmail', {email});
     } catch (error) {
-      if (
-        error.response &&
-        error.response.data &&
-        error.response.data.message
-      ) {
-        console.log('Error from server', error.response.data.message);
-      } else {
-        console.log('Err code', error.message);
-      }
+      showToast('Gagal mengirim email. Silakan coba lagi.');
     } finally {
       setLoading(false);
     }
@@ -71,13 +56,10 @@ export default function ForgotPassword({navigation}) {
           <Text style={styles.description}>
             Harap verifikasi email Anda untuk melanjutkan
           </Text>
-
           <Gap height={15} />
-
           <Text style={[styles.emailTxt, {alignSelf: 'flex-start'}]}>
             Email
           </Text>
-
           <View style={styles.inputContainer}>
             <TextInput
               style={styles.textInput}

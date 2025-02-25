@@ -11,9 +11,13 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import LinearGradient from 'react-native-linear-gradient';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {Gap, HeaderTransparent, ModalCustom} from '../../Component';
+import {
+  FloatingButton,
+  Gap,
+  HeaderTransparent,
+  ModalCustom,
+} from '../../Component';
 import {ICON_NOTFOUND_DATA} from '../../assets';
 import {getAllSuggestions} from '../../features/FacilityComplaint';
 import {COLORS, DIMENS} from '../../utils';
@@ -33,8 +37,6 @@ export default function FacilityComplaint({navigation}) {
         setTokenExpired(true);
         return;
       }
-
-      // Urutkan data berdasarkan tanggal
       const sortedData = (response.data?.data || []).sort(
         (a, b) => new Date(b.created_at) - new Date(a.created_at),
       );
@@ -102,55 +104,24 @@ export default function FacilityComplaint({navigation}) {
           onPress={() => navigation.goBack()}
         />
       </View>
-
+      <Gap height={10} />
       <View style={styles.content}>
-        <Gap height={10} />
-        <View style={styles.navbarElementPengaduan}>
-          <TouchableOpacity
-            onPress={() => navigation.navigate('Complaints')}
-            activeOpacity={0.8}>
-            <LinearGradient
-              colors={['#FFB200', '#FFD700']}
-              style={[styles.elementFacilityComplaint, styles.enhancedButton]}>
-              <View style={styles.buttonContent}>
-                <Icon
-                  name="account-clock-outline"
-                  size={50}
-                  color={COLORS.black}
-                />
-                <Text style={styles.txtEnhanced}>Lihat Pengaduan Saya</Text>
-              </View>
-            </LinearGradient>
-          </TouchableOpacity>
-
-          <Gap width={15} />
-          <TouchableOpacity
-            onPress={() => navigation.navigate('CreateFacilityComplaint')}
-            activeOpacity={0.8}>
-            <LinearGradient
-              colors={['#FFD700', '#FFA07A']}
-              style={[styles.elementFacilityComplaint, styles.enhancedButton]}>
-              <View style={styles.buttonContent}>
-                <Icon name="plus-box-outline" size={50} color={COLORS.black} />
-                <Text style={styles.txtEnhanced}>Buat Pengaduan Baru</Text>
-              </View>
-            </LinearGradient>
-          </TouchableOpacity>
-        </View>
-
-        <Gap height={15} />
-        <View style={styles.ViewTitlePengaduan}>
+        <View style={styles.viewContentTitle}>
           <Text style={styles.txtHistory}>History Pengaduan</Text>
-          {/* <TouchableOpacity
-            onPress={() => navigation.navigate('AllComplaints')}
-            activeOpacity={0.6}>
-            <Text style={styles.txtSeeAll}>Selengkapnya</Text>
-          </TouchableOpacity> */}
+          <TouchableOpacity
+            activeOpacity={0.7}
+            style={styles.ContentAll}
+            onPress={() => navigation.navigate('Complaints')}>
+            <Text style={styles.viewSelec}>Selengkapnya</Text>
+            <Icon name="menu-right" size={18} color={COLORS.white} />
+          </TouchableOpacity>
         </View>
-        <Gap height={5} />
-
+        <Gap height={10} />
         {loading ? (
-          <ActivityIndicator size="large" color={COLORS.goldenOrange} />
+          <View style={styles.viewLoadingData}>
+            <Text style={styles.LoadingText}>Loading data...</Text>
+            <ActivityIndicator size="large" color={COLORS.goldenOrange} />
+          </View>
         ) : suggestions.length === 0 ? (
           <View style={styles.notFoundContainer}>
             <Image
@@ -174,6 +145,12 @@ export default function FacilityComplaint({navigation}) {
         )}
       </View>
 
+      <FloatingButton
+        onPress={() => navigation.navigate('CreateFacilityComplaint')}
+        label={'Pengaduan baru'}
+        iconName="plus"
+      />
+
       <ModalCustom
         visible={tokenExpired}
         onRequestClose={() => setTokenExpired(false)}
@@ -191,6 +168,37 @@ export default function FacilityComplaint({navigation}) {
 }
 
 const styles = StyleSheet.create({
+  viewLoadingData: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 20,
+  },
+  LoadingText: {
+    color: COLORS.black,
+    fontStyle: 'italic',
+    marginBottom: 10,
+  },
+  ContentAll: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 0.3,
+    borderColor: COLORS.black,
+    elevation: 3,
+    backgroundColor: COLORS.greenSoft,
+    borderRadius: 5,
+    paddingHorizontal: 4,
+  },
+  viewContentTitle: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  viewSelec: {
+    fontSize: DIMENS.s,
+    color: COLORS.white,
+    fontWeight: '500',
+  },
   textRow: {
     flexDirection: 'row',
     alignItems: 'flex-start',
@@ -216,47 +224,10 @@ const styles = StyleSheet.create({
     height: 280,
     resizeMode: 'contain',
   },
-  txtSeeAll: {
-    color: COLORS.goldenOrange,
-    fontSize: DIMENS.s,
-    fontWeight: '500',
-  },
   txtHistory: {
     color: COLORS.black,
     fontSize: DIMENS.xl,
     fontWeight: '500',
-  },
-  ViewTitlePengaduan: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  elementFacilityComplaint: {
-    height: 180,
-    width: 153,
-    borderRadius: 15,
-    elevation: 2,
-    overflow: 'hidden',
-  },
-  enhancedButton: {
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  buttonContent: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 10,
-  },
-  txtEnhanced: {
-    color: COLORS.black,
-    fontWeight: '700',
-    fontSize: DIMENS.m,
-    textAlign: 'center',
-    marginTop: 10,
-  },
-  navbarElementPengaduan: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
   },
   headerWrapper: {
     flexDirection: 'row',
@@ -270,20 +241,20 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 15,
   },
-
   historyItem: {
-    backgroundColor: COLORS.champagne,
+    backgroundColor: COLORS.white,
     padding: 15,
     borderRadius: 10,
     marginBottom: 10,
     elevation: 2,
+    borderColor: COLORS.black,
+    borderWidth: 0.4,
   },
   row: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
   },
-
   historyStatus: {
     top: 30,
     fontSize: DIMENS.s,

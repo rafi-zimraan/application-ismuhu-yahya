@@ -12,12 +12,9 @@ export const useWelcomeMessage = () => {
       'Orang Dermawan',
       'Orang Muslih',
     ];
-
     const todayIndex = new Date().getDate() % message.length;
     const selectedMessage = welcomeMessage + message[todayIndex];
-
     setWelcomeText('');
-
     const typingInterval = setInterval(() => {
       setWelcomeText(prev => prev + selectedMessage[index]);
       index++;

@@ -8,6 +8,11 @@ import NetworkModal from './components/NetworkModal';
 import NewsComponent from './components/NewsComponent';
 import TokenExpiredModal from './components/TokenExpiredModal';
 import fetchAyat, {fetchDailyAyah} from './services/Al-QuranApiSlice';
+import {
+  setAmountSantri,
+  setAmountSpa,
+  setUserPosition,
+} from './services/DasboardSlice';
 import {useBackgroundImage} from './services/useBackgroundImage';
 import {useFetchAyat} from './services/useFetchAyat';
 import {useNetworkStatus} from './services/useNetwrokStatus';
@@ -36,3 +41,5 @@ export {
   useTime,
   useBackgroundImage,
 };
+// redux
+export {setAmountSantri, setAmountSpa, setUserPosition};

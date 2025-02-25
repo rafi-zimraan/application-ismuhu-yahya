@@ -1,6 +1,8 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {useForm} from 'react-hook-form';
 import {
+  Animated,
+  Easing,
   Image,
   Keyboard,
   KeyboardAvoidingView,
@@ -21,9 +23,35 @@ import {ButtonAuth, FormInput, login} from '../../features/authentication';
 import {COLORS, DIMENS} from '../../utils';
 
 export default function SignIn({navigation}) {
+  const animatedValue = useRef(new Animated.Value(0)).current;
   const {control, handleSubmit, setValue} = useForm();
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
+
+  const rotate = animatedValue.interpolate({
+    inputRange: [0, 1, 2, 3, 4, 5, 6, 10],
+    outputRange: [
+      '0deg',
+      '14deg',
+      '-8deg',
+      '14deg',
+      '-4deg',
+      '10deg',
+      '0deg',
+      '0deg',
+    ],
+  });
+
+  useEffect(() => {
+    Animated.loop(
+      Animated.timing(animatedValue, {
+        toValue: 10,
+        useNativeDriver: true,
+        easing: Easing.linear,
+        duration: 2500,
+      }),
+    ).start();
+  }, []);
 
   useEffect(() => {
     const loadUserLogin = async () => {
@@ -75,8 +103,12 @@ export default function SignIn({navigation}) {
             style={styles.viewBody}
             contentContainerStyle={styles.scrollContainer}>
             <View style={styles.viewSignIn}>
-              <Text style={styles.welcomeText}>Selamat Datang 👋</Text>
-              <Gap height={5} />
+              <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                <Text style={styles.welcomeText}>Selamat Datang </Text>
+                <Animated.Text style={{transform: [{rotate}], fontSize: 33}}>
+                  👋
+                </Animated.Text>
+              </View>
               <Text style={styles.descriptionText}>
                 Produktivitas dimulai di sini. {'\n'}Masuk untuk mengatur tugas
                 Anda.

@@ -1,28 +1,23 @@
+import {useNavigation} from '@react-navigation/native';
 import React from 'react';
-import {Image, StyleSheet, Text, View} from 'react-native';
+import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {Gap} from '../../../Component';
 import {COLORS, DIMENS} from '../../../utils';
 
-export default function HeaderComponent({
-  urlPhoto,
-  welcomeText,
-  divisionName,
-  departmentName,
-  loading,
-}) {
+export default function HeaderComponent({urlPhoto, welcomeText}) {
+  const navigation = useNavigation();
   return (
     <View style={styles.headerWrapper}>
+      <Text style={styles.welcomeText}>👋 {welcomeText}</Text>
+      <Gap height={5} />
       {urlPhoto ? (
-        <Image source={{uri: urlPhoto}} style={styles.profileImage} />
+        <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
+          <Image source={{uri: urlPhoto}} style={styles.profileImage} />
+        </TouchableOpacity>
       ) : (
         <Icon name="account-circle" size={31} color={COLORS.white} />
       )}
-      <Gap width={5} />
-      <View style={styles.textWrapper}>
-        <Icon name="hand-wave" size={32} color={COLORS.primary} />
-        <Text style={styles.welcomeText}>{welcomeText}</Text>
-      </View>
     </View>
   );
 }
@@ -30,8 +25,8 @@ export default function HeaderComponent({
 const styles = StyleSheet.create({
   headerWrapper: {
     flexDirection: 'row',
-    alignItems: 'center',
     justifyContent: 'space-between',
+    overflow: 'hidden',
   },
   profileImage: {
     height: 42,
@@ -48,10 +43,9 @@ const styles = StyleSheet.create({
     flexWrap: 'nowrap',
   },
   welcomeText: {
-    marginLeft: 6,
-    fontSize: DIMENS.xxl,
+    fontSize: DIMENS.m,
     fontWeight: '600',
     color: COLORS.white,
-    flex: 1,
+    maxWidth: '100%',
   },
 });

@@ -174,7 +174,7 @@ const styles = StyleSheet.create({
     padding: 15,
   },
   txtDesScreenSecondry: {
-    color: '#333',
+    color: COLORS.textPrimary,
     fontSize: 20,
     fontWeight: '400',
     textAlign: 'center',
@@ -250,7 +250,7 @@ const styles = StyleSheet.create({
     width: 15,
   },
   inactiveDot: {
-    backgroundColor: '#D3D3D3',
+    backgroundColor: COLORS.lightGrey2,
   },
   button: {
     flexDirection: 'row',

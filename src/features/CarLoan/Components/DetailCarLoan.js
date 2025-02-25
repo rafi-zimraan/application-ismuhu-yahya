@@ -15,9 +15,7 @@ import {COLORS, DIMENS} from '../../../utils';
 
 export default function DetailCarLoan({navigation}) {
   const [currentScreen, setCurrentScreen] = useState(0);
-
   const screens = [IMG_REBORN_CAR_ESCAPE, IMG_REBORN_CAR_ESCAPE];
-
   const handleScroll = event => {
     const position = Math.floor(
       event.nativeEvent.contentOffset.x /
@@ -29,18 +27,20 @@ export default function DetailCarLoan({navigation}) {
   return (
     <View style={styles.container}>
       <StatusBar barStyle={'default'} backgroundColor={'transparent'} />
-      <HeaderTransparent
-        icon="arrow-left-circle-outline"
-        title="Detail Pinjam Mobil"
-        onPress={() => navigation.goBack()}
-      />
+      <View style={styles.headerWrapper}>
+        <HeaderTransparent
+          icon="arrow-left-circle-outline"
+          title="Detail Pinjam Mobil"
+          onPress={() => navigation.goBack()}
+        />
+      </View>
       <ScrollView
         showsVerticalScrollIndicator={true}
         contentContainerStyle={{paddingBottom: 20}}
         style={styles.scrollViewContainer}>
         <View style={styles.bodyDetail}>
-          <Text style={styles.txtCategoryCar}>Ambulance Car</Text>
-          <Gap height={5} />
+          <Text style={styles.txtCategoryCar}>Kategori - Ambulance Car</Text>
+          <Gap height={1} />
           <Text style={styles.txtNameCar}>Reborn GT-R NISMO 2019</Text>
           <Gap height={15} />
           <ScrollView
@@ -55,8 +55,6 @@ export default function DetailCarLoan({navigation}) {
               </View>
             ))}
           </ScrollView>
-
-          {/* Pagination */}
           <View style={styles.viewPagination}>
             <View style={styles.paginationWrapper}>
               {screens.map((_, index) => (
@@ -72,40 +70,33 @@ export default function DetailCarLoan({navigation}) {
               ))}
             </View>
           </View>
-
-          <Gap height={20} />
-          <Text style={styles.title}>Detail Mobil</Text>
           <Gap height={10} />
+          <Text style={styles.title}>Detail Mobil</Text>
+          <Gap height={5} />
           <View style={styles.contentCar}>
-            <Image
-              source={IMG_NAME_CARD_REBORN}
-              style={{height: 50, width: 50, borderRadius: 7}}
-            />
+            <Image source={IMG_NAME_CARD_REBORN} style={styles.img} />
             <Gap width={15} />
             <View>
               <Text style={styles.txtTitleCar}>Mobil Reborn</Text>
-              <Text style={styles.txtColorCar}>Hitam Pekat</Text>
-              <Gap height={10} />
-
+              <Text style={styles.txtColorCar}>
+                Hitam Pekat dengan perpaduan description
+              </Text>
               <View style={styles.viewPlatAndDesc}>
-                {/* Icon for Seats */}
                 <View style={styles.row}>
-                  <Icon name="seat" size={16} color={COLORS.black} />
+                  <Icon name="seat" size={16} color={COLORS.redLight} />
                   <Text style={styles.txtDescCar}>2 seat - Manual</Text>
                 </View>
-                {/* Icon for Plate */}
                 <View style={styles.row}>
-                  <Icon name="car-info" size={16} color={COLORS.black} />
+                  <Icon name="car-info" size={16} color={COLORS.blueLight} />
                   <Text style={styles.txtPlatCar}>KB - 1212 - BJH</Text>
                 </View>
               </View>
             </View>
           </View>
 
-          <Gap height={20} />
+          <Gap height={5} />
           <Text style={styles.title}>History Peminjaman</Text>
-          <Gap height={10} />
-
+          <Gap height={5} />
           {Array(7)
             .fill(0)
             .map((_, index) => (
@@ -125,7 +116,6 @@ export default function DetailCarLoan({navigation}) {
             ))}
         </View>
       </ScrollView>
-      {/* Sticky Footer */}
       <View style={styles.footer}>
         <Text style={styles.footerText}>
           Segera pinjam {'\n'}kendaraan pilihan Anda!
@@ -142,6 +132,20 @@ export default function DetailCarLoan({navigation}) {
 }
 
 const styles = StyleSheet.create({
+  img: {
+    height: 50,
+    width: 50,
+    borderRadius: 7,
+    alignSelf: 'center',
+  },
+  headerWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 10,
+    backgroundColor: COLORS.goldenOrange,
+    elevation: 3,
+  },
   contentHistoryCar: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -178,8 +182,8 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   title: {
-    fontSize: DIMENS.m,
-    color: COLORS.grey,
+    fontSize: DIMENS.xl,
+    color: COLORS.black,
     fontWeight: '600',
   },
   row: {
@@ -195,18 +199,18 @@ const styles = StyleSheet.create({
   },
   txtColorCar: {
     fontSize: DIMENS.s,
-    color: '#333',
+    color: COLORS.mediumGrey,
     fontWeight: '400',
   },
   txtPlatCar: {
     fontSize: DIMENS.s,
-    color: COLORS.grey,
+    color: COLORS.textSecondary,
     fontWeight: '400',
   },
   txtTitleCar: {
-    fontSize: DIMENS.xl,
+    fontSize: DIMENS.m,
     color: COLORS.black,
-    fontWeight: '700',
+    fontWeight: '600',
   },
   contentCar: {
     flexDirection: 'row',
@@ -245,8 +249,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
   },
   txtDescCar: {
-    fontSize: DIMENS.m,
-    color: COLORS.grey,
+    fontSize: DIMENS.s,
+    color: COLORS.textSecondary,
     fontWeight: '500',
   },
   txtNameCar: {
@@ -255,8 +259,8 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
   txtCategoryCar: {
-    fontSize: DIMENS.m,
-    color: COLORS.grey,
+    fontSize: DIMENS.s,
+    color: COLORS.softBlue,
     fontWeight: '500',
   },
   bodyDetail: {

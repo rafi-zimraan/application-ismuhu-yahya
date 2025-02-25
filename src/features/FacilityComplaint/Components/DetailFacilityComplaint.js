@@ -90,7 +90,6 @@ export default function DetailFacilityComplaint({navigation, route}) {
       {!loading && data && (
         <>
           <ScrollView style={styles.content}>
-            {/* Images Section */}
             <ScrollView
               horizontal
               pagingEnabled
@@ -127,7 +126,6 @@ export default function DetailFacilityComplaint({navigation, route}) {
               )}
             </ScrollView>
 
-            {/* Pagination */}
             <View style={styles.viewPagination}>
               {data?.images?.map((_, index) => (
                 <TouchableOpacity
@@ -143,7 +141,6 @@ export default function DetailFacilityComplaint({navigation, route}) {
 
             <Gap height={15} />
             <View style={styles.contentWrapper}>
-              {/* Detail Content */}
               <View style={styles.textRow}>
                 <Text style={styles.label}>Nama </Text>
                 <Text style={styles.value}>: {data?.name}</Text>
@@ -295,10 +292,13 @@ const styles = StyleSheet.create({
     color: COLORS.black,
   },
   contentWrapper: {
-    backgroundColor: COLORS.champagne,
+    backgroundColor: COLORS.white,
     borderRadius: 10,
     padding: 15,
-    elevation: 2,
+    elevation: 3,
+    borderColor: COLORS.black,
+    borderWidth: 0.4,
+    overflow: 'hidden',
   },
   label: {
     fontSize: DIMENS.m,
@@ -346,7 +346,7 @@ const styles = StyleSheet.create({
     width: 10,
     height: 10,
     borderRadius: 5,
-    backgroundColor: '#D3D3D3',
+    backgroundColor: COLORS.lightGrey2,
     marginHorizontal: 5,
   },
   activeDot: {

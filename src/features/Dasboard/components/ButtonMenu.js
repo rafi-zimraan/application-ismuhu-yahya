@@ -16,7 +16,7 @@ export default function ButtonMenu({
   title,
   image,
   color = COLORS.white,
-  backgroundColor = '#FFF',
+  backgroundColor = COLORS.white,
   height,
   width,
 }) {
@@ -41,7 +41,7 @@ export default function ButtonMenu({
 const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
-    marginHorizontal: 5,
+    marginHorizontal: 10,
   },
   image: {
     width: 47.5,

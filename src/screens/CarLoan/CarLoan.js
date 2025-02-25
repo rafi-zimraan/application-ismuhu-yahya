@@ -47,7 +47,6 @@ export default function CarLoan({navigation}) {
       </LinearGradient>
 
       <View style={{padding: 15, flex: 1}}>
-        {/* Menu Cars */}
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={true}
@@ -205,12 +204,13 @@ export default function CarLoan({navigation}) {
               <Text style={styles.txtDateLastUse}>Jan 12, 2024 - 08,40</Text>
             </View>
             <View style={styles.viewTime}>
-              <Text style={styles.txtDateLastUse}>Overtime</Text>
+              <Text style={[styles.txtDateLastUse, {color: COLORS.white}]}>
+                Overtime
+              </Text>
             </View>
           </View>
         </View>
 
-        {/* Favorite Cars */}
         <Gap height={19} />
         <View style={styles.viewFavorite}>
           <Text style={styles.titleTextLastUse}>Sering Digunakan</Text>
@@ -293,7 +293,7 @@ const styles = StyleSheet.create({
     borderWidth: 0.3,
   },
   textManual: {
-    color: '#333',
+    color: COLORS.textPrimary,
     fontWeight: '400',
     fontSize: DIMENS.m,
   },
@@ -314,11 +314,11 @@ const styles = StyleSheet.create({
   },
   viewTime: {
     backgroundColor: COLORS.greenBoy,
-    padding: 4,
+    padding: 6,
     borderRadius: 6,
   },
   txtDateLastUse: {
-    color: COLORS.black,
+    color: COLORS.mediumGrey,
     fontWeight: '400',
     fontSize: DIMENS.s,
   },
@@ -339,7 +339,7 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
   contentLastUs: {
-    // marginHorizontal: 10,
+    marginHorizontal: 4,
   },
   imgErtiga: {
     width: 124,
@@ -371,7 +371,7 @@ const styles = StyleSheet.create({
     transform: [{scaleX: -1}],
   },
   textPlat: {
-    color: COLORS.grey,
+    color: COLORS.mediumGrey,
     textAlign: 'left',
     fontSize: DIMENS.xs,
   },

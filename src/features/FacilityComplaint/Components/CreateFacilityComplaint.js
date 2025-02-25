@@ -20,7 +20,7 @@ import {
   HeaderTransparent,
   ModalCustom,
 } from '../../../Component';
-import {COLORS} from '../../../utils';
+import {COLORS, DIMENS} from '../../../utils';
 
 export default function CreateFacilityComplaint({navigation}) {
   const [name, setName] = useState('');
@@ -139,66 +139,96 @@ export default function CreateFacilityComplaint({navigation}) {
         />
       </View>
 
-      <ScrollView style={styles.content}>
-        <TextInput
-          style={[styles.input, name && {borderColor: COLORS.goldenOrange}]}
-          placeholder="Nama"
-          value={name}
-          onChangeText={setName}
-          placeholderTextColor={COLORS.grey}
-        />
-        <TextInput
-          style={[
-            styles.input,
-            goodsBroken && {borderColor: COLORS.goldenOrange},
-          ]}
-          placeholder="Barang yang Rusak"
-          value={goodsBroken}
-          onChangeText={setGoodsBroken}
-          placeholderTextColor={COLORS.grey}
-        />
-        <TextInput
-          style={[styles.input, place && {borderColor: COLORS.goldenOrange}]}
-          placeholder="Tempat"
-          value={place}
-          onChangeText={setPlace}
-          placeholderTextColor={COLORS.grey}
-        />
-        <TextInput
-          style={[styles.input, location && {borderColor: COLORS.goldenOrange}]}
-          placeholder="Lokasi"
-          value={location}
-          onChangeText={setLocation}
-          placeholderTextColor={COLORS.grey}
-        />
-        <TextInput
-          style={[
-            styles.input,
-            suggestion && {borderColor: COLORS.goldenOrange},
-          ]}
-          placeholder="Saran"
-          value={suggestion}
-          onChangeText={setSuggestion}
-          placeholderTextColor={COLORS.grey}
-        />
-        <TextInput
-          style={[
-            styles.input,
-            complaint && {borderColor: COLORS.goldenOrange},
-          ]}
-          placeholder="Keluhan"
-          value={complaint}
-          onChangeText={setComplaint}
-          placeholderTextColor={COLORS.grey}
-        />
-        <TextInput
-          style={[styles.input, phone && {borderColor: COLORS.goldenOrange}]}
-          placeholder="Nomor WhastApp (+62)"
-          value={phone}
-          onChangeText={setPhone}
-          placeholderTextColor={COLORS.grey}
-          keyboardType="phone-pad"
-        />
+      <ScrollView style={styles.content} stickyHeaderHiddenOnScroll>
+        <View style={styles.inputFieldContainer}>
+          <Text style={styles.inputLabel}>Nama</Text>
+          <TextInput
+            style={[styles.input, name && {borderColor: COLORS.goldenOrange}]}
+            placeholder="Nama"
+            value={name}
+            onChangeText={setName}
+            placeholderTextColor={COLORS.grey}
+          />
+        </View>
+
+        <View style={styles.inputFieldContainer}>
+          <Text style={styles.inputLabel}>Barang</Text>
+          <TextInput
+            style={[
+              styles.input,
+              goodsBroken && {borderColor: COLORS.goldenOrange},
+            ]}
+            placeholder="Barang yang Rusak"
+            value={goodsBroken}
+            onChangeText={setGoodsBroken}
+            placeholderTextColor={COLORS.grey}
+          />
+        </View>
+
+        <View style={styles.inputFieldContainer}>
+          <Text style={styles.inputLabel}>Keluhan</Text>
+          <TextInput
+            style={[
+              styles.input,
+              complaint && {borderColor: COLORS.goldenOrange},
+            ]}
+            placeholder="Keluhan"
+            value={complaint}
+            onChangeText={setComplaint}
+            placeholderTextColor={COLORS.grey}
+          />
+        </View>
+
+        <View style={styles.inputFieldContainer}>
+          <Text style={styles.inputLabel}>Tempat</Text>
+          <TextInput
+            style={[styles.input, place && {borderColor: COLORS.goldenOrange}]}
+            placeholder="Tempat"
+            value={place}
+            onChangeText={setPlace}
+            placeholderTextColor={COLORS.grey}
+          />
+        </View>
+
+        <View style={styles.inputFieldContainer}>
+          <Text style={styles.inputLabel}>Lokasi</Text>
+          <TextInput
+            style={[
+              styles.input,
+              location && {borderColor: COLORS.goldenOrange},
+            ]}
+            placeholder="Lokasi"
+            value={location}
+            onChangeText={setLocation}
+            placeholderTextColor={COLORS.grey}
+          />
+        </View>
+
+        <View style={styles.inputFieldContainer}>
+          <Text style={styles.inputLabel}>Saran</Text>
+          <TextInput
+            style={[
+              styles.input,
+              suggestion && {borderColor: COLORS.goldenOrange},
+            ]}
+            placeholder="Saran"
+            value={suggestion}
+            onChangeText={setSuggestion}
+            placeholderTextColor={COLORS.grey}
+          />
+        </View>
+
+        <View style={styles.inputFieldContainer}>
+          <Text style={styles.inputLabel}>Nomor WhastApp</Text>
+          <TextInput
+            style={[styles.input, phone && {borderColor: COLORS.goldenOrange}]}
+            placeholder="Nomor WhastApp (+62)"
+            value={phone}
+            onChangeText={setPhone}
+            placeholderTextColor={COLORS.grey}
+            keyboardType="phone-pad"
+          />
+        </View>
 
         <TouchableOpacity style={styles.fileInput} onPress={handleImagePicker}>
           <Text style={styles.fileInputText}>Input file</Text>
@@ -246,6 +276,15 @@ export default function CreateFacilityComplaint({navigation}) {
 }
 
 const styles = StyleSheet.create({
+  inputFieldContainer: {
+    marginBottom: 3,
+  },
+  inputLabel: {
+    fontSize: DIMENS.m,
+    color: COLORS.textPrimary,
+    marginBottom: 5,
+    fontWeight: '600',
+  },
   headerWrapper: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -263,21 +302,21 @@ const styles = StyleSheet.create({
   },
   input: {
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: COLORS.warmGrey,
     borderRadius: 8,
     padding: 10,
     marginBottom: 15,
     color: COLORS.black,
-    backgroundColor: '#fff',
+    backgroundColor: COLORS.white,
   },
   fileInput: {
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: COLORS.warmGrey,
     borderRadius: 8,
     padding: 2,
     width: 70,
     alignItems: 'center',
-    backgroundColor: '#fff',
+    backgroundColor: COLORS.white,
     marginBottom: 15,
   },
   fileInputText: {
@@ -290,6 +329,6 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     borderRadius: 8,
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: COLORS.warmGrey,
   },
 });

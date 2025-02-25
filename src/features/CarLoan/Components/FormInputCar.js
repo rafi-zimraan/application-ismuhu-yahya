@@ -12,12 +12,14 @@ import {
   View,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import {COLORS} from '../../../utils';
 
 export default function FormInputCar({
   mode = 'text',
   title = 'Field',
   name,
   iconName = 'gmail',
+  iconColor = COLORS.black,
   placeholder = 'Placeholder...',
   control,
   secureText,
@@ -87,7 +89,7 @@ export default function FormInputCar({
             <Text style={{color: 'black'}}>{title}</Text>
             <View style={{borderBottomWidth: 1, paddingHorizontal: 5}}>
               <View style={styles.viewInput}>
-                <Icon name={iconName} color={'black'} size={25} />
+                <Icon name={iconName} color={iconColor} size={25} />
                 {mode === 'text' && (
                   <>
                     <TextInput

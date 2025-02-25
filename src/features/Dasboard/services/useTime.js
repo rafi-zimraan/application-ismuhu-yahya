@@ -8,10 +8,8 @@ export const useTime = () => {
     const Time = setInterval(() => {
       setAllTime(moment().utcOffset(7));
     }, 1000);
-
     return () => clearInterval(Time);
   }, []);
-
   const formatTime = allTime.format('HH:mm:ss') + ' WIB';
   return formatTime;
 };

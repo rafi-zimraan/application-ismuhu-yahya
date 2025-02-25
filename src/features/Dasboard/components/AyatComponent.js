@@ -22,22 +22,20 @@ export default function AyatComponent({ayat}) {
 const styles = StyleSheet.create({
   ayatContainer: {
     alignItems: 'flex-start',
-    marginTop: 35,
-    paddingHorizontal: 10,
+    paddingHorizontal: 5,
   },
   arabText: {
-    fontSize: DIMENS.xs,
+    fontSize: DIMENS.s,
     fontWeight: 'bold',
-    color: COLORS.white,
+    color: COLORS.goldenOrange,
     textAlign: 'center',
-    marginBottom: 5,
   },
   translationText: {
-    fontSize: DIMENS.s,
+    fontSize: DIMENS.xs,
     fontWeight: '300',
     color: COLORS.white,
     textAlign: 'left',
-    maxWidth: 200,
+    maxWidth: 275,
   },
   surahInfo: {
     fontSize: DIMENS.s,

@@ -22,7 +22,7 @@ import {
 import {COLORS, DIMENS} from '../../../utils';
 
 export default function CreateTraining({navigation}) {
-  const {control, handleSubmit} = useForm();
+  const {handleSubmit} = useForm();
   const [title, setTitle] = useState('');
   const [date, setDate] = useState(new Date());
   const [category, setCategory] = useState('');
@@ -45,7 +45,6 @@ export default function CreateTraining({navigation}) {
     try {
       const userId = await EncryptedStorage.getItem('idUser');
       const response = await addTraining(userId, data);
-
       if (response.message === 'Silahkan login terlebih dahulu') {
         setTokenExpired(true);
       } else if (response) {
@@ -62,6 +61,11 @@ export default function CreateTraining({navigation}) {
   };
 
   const onSubmit = () => {
+    if (!title || !date || !cost || !category) {
+      ToastAndroid.show('Harap diisi semua kolom!', ToastAndroid.SHORT);
+      return;
+    }
+
     const data = {
       title,
       date,
@@ -231,7 +235,7 @@ const styles = StyleSheet.create({
   },
   inputLabel: {
     fontSize: DIMENS.m,
-    color: '#333',
+    color: COLORS.textPrimary,
     marginBottom: 5,
     fontWeight: '600',
   },
@@ -240,7 +244,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     backgroundColor: COLORS.white,
     borderRadius: 10,
-    borderColor: '#ddd',
+    borderColor: COLORS.neutralGrey,
     borderWidth: 1,
     fontSize: DIMENS.s,
     borderWidth: 0.4,
@@ -253,7 +257,7 @@ const styles = StyleSheet.create({
     borderColor: COLORS.grey,
     backgroundColor: COLORS.white,
     borderRadius: 10,
-    borderColor: '#ddd',
+    borderColor: COLORS.neutralGrey,
     borderWidth: 1,
     fontSize: DIMENS.s,
     color: COLORS.black,
@@ -265,7 +269,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     backgroundColor: COLORS.white,
     borderRadius: 10,
-    borderColor: '#ddd',
+    borderColor: COLORS.neutralGrey,
     borderWidth: 1,
   },
   dateText: {

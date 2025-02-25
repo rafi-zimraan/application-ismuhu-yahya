@@ -13,7 +13,7 @@ import {
 import {COLORS, DIMENS} from '../../../utils';
 
 export default function CreateCouple({navigation}) {
-  const {control, handleSubmit} = useForm();
+  const {handleSubmit} = useForm();
   const [nameCouple, setNameCouple] = useState('');
   const [coupleDomisili, setCoupleDomisili] = useState('');
   const [children, setChildren] = useState('');
@@ -26,7 +26,6 @@ export default function CreateCouple({navigation}) {
     try {
       const userId = await EncryptedStorage.getItem('idUser');
       const response = await addCouple(userId, data);
-
       if (response?.message === 'Silahkan login terlebih dahulu') {
         setTokenExpired(true);
       } else if (response) {
@@ -103,6 +102,7 @@ export default function CreateCouple({navigation}) {
             backgroundColor={COLORS.goldenOrange}
             loading={isLoading}
             color={COLORS.white}
+            disabled={nameCouple == '' || coupleDomisili == ''}
             onPress={handleSubmit(onSubmit)}
           />
         </ScrollView>

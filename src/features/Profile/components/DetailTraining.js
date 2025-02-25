@@ -57,21 +57,20 @@ export default function DetailTraining({route, navigation}) {
     cost: data.cost,
   });
 
+  const fetchExistingFiles = async () => {
+    setIsModalLoading(true);
+    try {
+      const response = await getTrainingFileList(data.id);
+      setExistingFiles(response.data || []);
+    } catch (error) {
+      setExistingFiles([]);
+    } finally {
+      setIsModalLoading(false);
+    }
+  };
+
   useFocusEffect(
     React.useCallback(() => {
-      const fetchExistingFiles = async () => {
-        setIsModalLoading(true);
-        try {
-          const response = await getTrainingFileList(data.id);
-          setExistingFiles(response.data || []);
-        } catch (error) {
-          console.log('Error fetching files:', error.message);
-          setExistingFiles([]);
-        } finally {
-          setIsModalLoading(false);
-        }
-      };
-
       fetchExistingFiles();
     }, []),
   );
@@ -79,7 +78,6 @@ export default function DetailTraining({route, navigation}) {
   const handleUpdate = async () => {
     try {
       const response = await updateTraining(data.id, editedData);
-
       if (response?.message === 'Silahkan login terlebih dahulu') {
         setTokenExpired(true);
       } else {
@@ -95,7 +93,6 @@ export default function DetailTraining({route, navigation}) {
     setIsLoading(true);
     try {
       await deleteTraining(data.id);
-
       setIsDeleted(true);
       setDeleteModalVisible(false);
     } catch (error) {
@@ -125,7 +122,7 @@ export default function DetailTraining({route, navigation}) {
   const reloadData = async () => {
     setRefreshing(true);
     try {
-      console.log('Data refreshed');
+      fetchExistingFiles();
     } catch (error) {
       console.log('Error during refresh:', error);
     } finally {
@@ -136,7 +133,6 @@ export default function DetailTraining({route, navigation}) {
   const handleImageResponse = async response => {
     if (!response.didCancel && response.assets && response.assets[0]) {
       const {uri, fileName, type} = response.assets[0];
-
       if (uri && fileName && type) {
         setFile({uri, name: fileName, type});
         setFileType('image');
@@ -177,28 +173,21 @@ export default function DetailTraining({route, navigation}) {
       return;
     }
     setIsModalLoading(true);
-
     try {
       const idFileTraining = data.id;
       const response = await uploadTrainingFile(fileType, file, idFileTraining);
-
-      if (response?.message) {
-        ToastAndroid.show(response?.message, ToastAndroid.SHORT);
-        setExistingFiles(prevFiles => [
-          ...prevFiles,
-          {
-            id: response.id,
-            file: response.file,
-            type: fileType,
-            name: file.name,
-            uri: file.uri,
-          },
-        ]);
-
-        navigation.goBack();
-      } else {
-        ToastAndroid.show('Gagal upload file!', ToastAndroid.SHORT);
-      }
+      ToastAndroid.show(response?.message, ToastAndroid.SHORT);
+      setExistingFiles(prevFiles => [
+        ...prevFiles,
+        {
+          id: response.id,
+          file: response.file,
+          type: fileType,
+          name: file.name,
+          uri: file.uri,
+        },
+      ]);
+      navigation.goBack();
     } catch (error) {
       ToastAndroid.show('Gagal mengunggah file!', ToastAndroid.SHORT);
     } finally {
@@ -251,7 +240,7 @@ export default function DetailTraining({route, navigation}) {
           <RefreshControl
             refreshing={refreshing}
             onRefresh={reloadData}
-            colors={['#ffd700']}
+            colors={['#FFD700']}
           />
         }
         contentContainerStyle={{flexGrow: 1}}>
@@ -323,7 +312,7 @@ export default function DetailTraining({route, navigation}) {
                     <TouchableOpacity
                       style={styles.deleteIconWrapper}
                       onPress={() => handleDeleteFile(file.id)}>
-                      <Icon name="close" size={20} color="#fff" />
+                      <Icon name="close" size={20} color={COLORS.white} />
                     </TouchableOpacity>
                   </TouchableOpacity>
                 ) : (
@@ -341,7 +330,7 @@ export default function DetailTraining({route, navigation}) {
                         setModalDeleteFile(true);
                         setSelectedFileId(file.id);
                       }}>
-                      <Icon name="close" size={20} color="#fff" />
+                      <Icon name="close" size={20} color={COLORS.white} />
                     </TouchableOpacity>
                   </View>
                 ),
@@ -351,17 +340,17 @@ export default function DetailTraining({route, navigation}) {
                 <TouchableOpacity
                   style={styles.editButton}
                   onPress={() => setEditModalVisible(true)}>
-                  <Icon name="pencil" size={24} color="#fff" />
+                  <Icon name="pencil" size={24} color={COLORS.white} />
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={styles.deleteButton}
                   onPress={() => setDeleteModalVisible(true)}>
-                  <Icon name="delete" size={24} color="#fff" />
+                  <Icon name="delete" size={24} color={COLORS.white} />
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={styles.uploadButton}
                   onPress={openFileTypeModal}>
-                  <Icon name="upload" size={24} color="#fff" />
+                  <Icon name="upload" size={24} color={COLORS.white} />
                 </TouchableOpacity>
               </View>
             </>
@@ -440,7 +429,6 @@ export default function DetailTraining({route, navigation}) {
         </View>
       </ModalCustom>
 
-      {/* Modal Delete Data */}
       <ModalCustom
         visible={deleteModalVisible}
         onRequestClose={() => setDeleteModalVisible(false)}
@@ -456,7 +444,6 @@ export default function DetailTraining({route, navigation}) {
         TextColorButton={COLORS.white}
       />
 
-      {/* Modal Token kadaluarsa  */}
       <ModalCustom
         visible={tokenExpired}
         onRequestClose={() => setTokenExpired(false)}
@@ -470,7 +457,6 @@ export default function DetailTraining({route, navigation}) {
         buttonTitle="Login Ulang"
       />
 
-      {/* Modal Delete File */}
       <ModalCustom
         visible={modalDeleteFile}
         onRequestClose={() => setDeleteModalVisible(false)}
@@ -505,7 +491,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: COLORS.black,
     marginLeft: 10,
-    flexShrink: 1, // Agar nama file tidak overflow
+    flexShrink: 1,
   },
   fileName: {
     fontSize: 16,
@@ -537,7 +523,7 @@ const styles = StyleSheet.create({
     marginVertical: 10,
   },
   uploadButton: {
-    backgroundColor: '#007BFF',
+    backgroundColor: COLORS.blue,
     padding: 15,
     borderRadius: 50,
   },
@@ -562,7 +548,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.white,
     borderRadius: 15,
     padding: 15,
-    shadowColor: '#000',
+    shadowColor: COLORS.black,
     shadowOffset: {width: 0, height: 2},
     shadowOpacity: 0.1,
     elevation: 3,
@@ -579,11 +565,11 @@ const styles = StyleSheet.create({
   },
   textTitle: {
     fontSize: DIMENS.m,
-    color: '#999',
+    color: COLORS.mediumGrey,
   },
   label: {
     fontSize: DIMENS.l,
-    color: '#333',
+    color: COLORS.textPrimary,
   },
   buttonContainer: {
     flexDirection: 'row',
@@ -593,13 +579,13 @@ const styles = StyleSheet.create({
     right: 20,
   },
   editButton: {
-    backgroundColor: '#4CAF50',
+    backgroundColor: COLORS.greenConfirm,
     padding: 15,
     borderRadius: 50,
     marginRight: 10,
   },
   deleteButton: {
-    backgroundColor: '#F44336',
+    backgroundColor: COLORS.red,
     padding: 15,
     borderRadius: 50,
     marginRight: 10,

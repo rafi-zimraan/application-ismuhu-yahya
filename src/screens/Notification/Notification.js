@@ -47,7 +47,6 @@ export default function Notification({navigation}) {
         });
       }
     } catch (error) {
-      console.log('error fecth endpoint notification', error);
       setNotifications({lisences: [], payrol: []});
     }
   };
