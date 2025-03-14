@@ -34,14 +34,14 @@ export default function OnBoarding({navigation}) {
       text: 'Next 😊',
       description: 'Nikmati kemudahan akses\n dan kelola data dengan lifetime',
       showImage: true,
-      backgroundColor: COLORS.beige,
+      backgroundColor: COLORS.white,
     },
     {
-      text: 'Explore Now',
+      text: 'Explore Now 🙌',
       description:
         'Aplikasi ini dirancang untuk mempermudah pekerjaan Anda dan meningkatkan produktivitas.',
       showImage: true,
-      backgroundColor: COLORS.beige,
+      backgroundColor: COLORS.white,
     },
   ];
 
@@ -76,7 +76,12 @@ export default function OnBoarding({navigation}) {
       {currentScreen === 0 && <BGOnBoarding />}
       {currentScreen === 0 && (
         <View style={styles.navbarLogo}>
-          <Image source={IMG_LOGO} style={styles.imgLogoPondok} />
+          <Image
+            source={IMG_LOGO}
+            style={styles.imgLogoPondok}
+            resizeMethod="resize"
+            resizeMode="cover"
+          />
           <Image source={IMG_PONDOK_DIGITAL} style={styles.imgPondokDigital} />
         </View>
       )}
@@ -92,11 +97,15 @@ export default function OnBoarding({navigation}) {
             <Image
               source={IMG_ONBOARDING_SECONDRY}
               style={styles.imgBoardingSecondry}
+              resizeMethod="resize"
+              resizeMode="cover"
             />
           ) : (
             <Image
               source={IMG_ONBOARDING_TREESECONDRY}
               style={styles.imgBoardingSecondry}
+              resizeMethod="resize"
+              resizeMode="cover"
             />
           )}
           <View style={styles.viewBodyTextOnboard}>

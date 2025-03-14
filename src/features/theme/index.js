@@ -1,4 +1,3 @@
-import themeReducer from './services/themeSlice';
+import {setTheme, toggleTheme} from '../theme/services/themeSlice';
 
-// slice
-export {themeReducer};
+export {toggleTheme, setTheme};

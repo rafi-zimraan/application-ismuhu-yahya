@@ -4,22 +4,23 @@ import {
   RefreshControl,
   ScrollView,
   StyleSheet,
-  Text,
   TouchableOpacity,
-  View,
 } from 'react-native';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import {useSelector} from 'react-redux';
 import {getTrainingData} from '..';
 import {
-  Background,
   FloatingButton,
   HeaderTransparent,
   ModalCustom,
+  Text,
+  View,
 } from '../../../Component';
 import {COLORS, DIMENS} from '../../../utils';
 
 export default function AllDataTraining({navigation}) {
+  const {colors, mode} = useSelector(state => state.theme);
   const [refreshing, setRefreshing] = useState(false);
   const [trainingData, setTrainingData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -74,116 +75,144 @@ export default function AllDataTraining({navigation}) {
 
   return (
     <View style={{flex: 1}}>
-      <Background />
-      <View style={styles.headerWrapper}>
-        <HeaderTransparent
-          title="Semua Data Pelatihan"
-          icon="arrow-left-circle-outline"
-          onPress={() => navigation.goBack()}
-        />
-      </View>
-      <ScrollView
-        refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={reloadData}
-            colors={[COLORS.goldenOrange]}
-          />
-        }
-        contentContainerStyle={{
-          flexGrow: 1,
-          paddingHorizontal: 20,
-          paddingVertical: 10,
-        }}>
-        {isLoading ? (
-          <View style={styles.loadingContainer}>
-            <Text style={styles.loadingText}>Memuat data...</Text>
-          </View>
-        ) : trainingData.length > 0 ? (
-          trainingData.map(training => (
-            <TouchableOpacity
-              key={training.id}
-              style={styles.card}
-              onPress={() =>
-                navigation.navigate('DetailTraining', {data: training})
-              }>
-              <View style={styles.cardContent}>
-                <Text style={styles.title}>Detail Training</Text>
+      <HeaderTransparent
+        title="Semua Data Pelatihan"
+        icon="arrow-left-circle-outline"
+        onPress={() => navigation.goBack()}
+      />
 
-                <View style={styles.section}>
-                  <Icon
-                    name={getIconName('title')}
-                    size={24}
-                    color={COLORS.goldenOrange}
-                  />
-                  <View style={styles.viewContentText}>
-                    <Text style={styles.textTitle}>Title</Text>
-                    <Text style={styles.label}>{training.title || '-'}</Text>
-                  </View>
-                </View>
+      <View style={{flex: 1}} showImageBackground={true}>
+        <ScrollView
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={reloadData}
+              colors={[COLORS.goldenOrange]}
+            />
+          }
+          contentContainerStyle={{flexGrow: 1, padding: 15, paddingBottom: 50}}>
+          {trainingData.length > 0 ? (
+            trainingData.map(training => (
+              <View style={styles.contentMenu} section={true} key={training.id}>
+                <TouchableOpacity
+                  style={styles.card}
+                  onPress={() =>
+                    navigation.navigate('DetailTraining', {data: training})
+                  }>
+                  <View style={styles.cardContent} section={true}>
+                    <Text style={styles.title}>Data Pelatihan</Text>
+                    <View style={styles.section} section={true}>
+                      <Icon
+                        name={getIconName('title')}
+                        size={24}
+                        color={COLORS.goldenOrange}
+                      />
+                      <View style={styles.viewContentText} section={true}>
+                        <Text
+                          style={[
+                            styles.textTitle,
+                            {color: colors[mode].textLabel},
+                          ]}>
+                          Title
+                        </Text>
+                        <Text style={styles.label}>
+                          {training.title || '-'}
+                        </Text>
+                      </View>
+                    </View>
 
-                <View style={styles.section}>
-                  <Icon
-                    name={getIconName('date')}
-                    size={24}
-                    color={COLORS.goldenOrange}
-                  />
-                  <View style={styles.viewContentText}>
-                    <Text style={styles.textTitle}>Date</Text>
-                    <Text style={styles.label}>{training.date || '-'}</Text>
-                  </View>
-                </View>
+                    <View style={styles.section} section={true}>
+                      <Icon
+                        name={getIconName('date')}
+                        size={24}
+                        color={COLORS.goldenOrange}
+                      />
+                      <View style={styles.viewContentText} section={true}>
+                        <Text
+                          style={[
+                            styles.textTitle,
+                            {color: colors[mode].textLabel},
+                          ]}>
+                          Date
+                        </Text>
+                        <Text style={styles.label}>{training.date || '-'}</Text>
+                      </View>
+                    </View>
 
-                <View style={styles.section}>
-                  <Icon
-                    name={getIconName('category')}
-                    size={24}
-                    color={COLORS.goldenOrange}
-                  />
-                  <View style={styles.viewContentText}>
-                    <Text style={styles.textTitle}>Category</Text>
-                    <Text style={styles.label}>{training.category || '-'}</Text>
-                  </View>
-                </View>
+                    <View style={styles.section} section={true}>
+                      <Icon
+                        name={getIconName('category')}
+                        size={24}
+                        color={COLORS.goldenOrange}
+                      />
+                      <View style={styles.viewContentText} section={true}>
+                        <Text
+                          style={[
+                            styles.textTitle,
+                            {color: colors[mode].textLabel},
+                          ]}>
+                          Category
+                        </Text>
+                        <Text style={styles.label}>
+                          {training.category || '-'}
+                        </Text>
+                      </View>
+                    </View>
 
-                <View style={styles.section}>
-                  <Icon
-                    name={getIconName('description')}
-                    size={24}
-                    color={COLORS.goldenOrange}
-                  />
-                  <View style={styles.viewContentText}>
-                    <Text style={styles.textTitle}>Description</Text>
-                    <Text style={styles.label}>{training.desc || '-'}</Text>
-                  </View>
-                </View>
+                    <View style={styles.section} section={true}>
+                      <Icon
+                        name={getIconName('description')}
+                        size={24}
+                        color={COLORS.goldenOrange}
+                      />
+                      <View style={styles.viewContentText} section={true}>
+                        <Text
+                          style={[
+                            styles.textTitle,
+                            {color: colors[mode].textLabel},
+                          ]}>
+                          Description
+                        </Text>
+                        <Text style={styles.label}>{training.desc || '-'}</Text>
+                      </View>
+                    </View>
 
-                <View style={styles.section}>
-                  <Icon
-                    name={getIconName('cost')}
-                    size={24}
-                    color={COLORS.goldenOrange}
-                  />
-                  <View style={styles.viewContentText}>
-                    <Text style={styles.textTitle}>Harga Pelatihan</Text>
-                    <Text style={styles.label}>
-                      {training.cost ? `Rp ${training.cost}` : '-'}
-                    </Text>
+                    <View style={styles.section} section={true}>
+                      <Icon
+                        name={getIconName('cost')}
+                        size={24}
+                        color={COLORS.goldenOrange}
+                      />
+                      <View style={styles.viewContentText} section={true}>
+                        <Text
+                          style={[
+                            styles.textTitle,
+                            {color: colors[mode].textLabel},
+                          ]}>
+                          Harga Pelatihan
+                        </Text>
+                        <Text style={styles.label}>
+                          {training.cost ? `Rp ${training.cost}` : '-'}
+                        </Text>
+                      </View>
+                    </View>
                   </View>
-                </View>
+                </TouchableOpacity>
               </View>
-            </TouchableOpacity>
-          ))
-        ) : (
-          <View style={styles.noDataContainer}>
-            <Icon name="alert-circle-outline" size={50} color={COLORS.grey} />
-            <Text style={styles.noDataText}>Tidak ada data pelatihan.</Text>
-          </View>
-        )}
-      </ScrollView>
+            ))
+          ) : (
+            <View
+              style={styles.noDataContainer}
+              useBackgroundTransparent={true}>
+              <Icon name="alert-circle-outline" size={50} color={COLORS.grey} />
+              <Text style={styles.noDataText}>Tidak ada data pelatihan.</Text>
+            </View>
+          )}
+        </ScrollView>
+      </View>
+
       <FloatingButton
         iconName="plus-circle"
-        label={'Tambah Pelatihan'}
         style={{bottom: 10, right: 13}}
         onPress={() => navigation.navigate('CreateTraining')}
       />
@@ -221,7 +250,7 @@ const styles = StyleSheet.create({
   },
   textTitle: {
     fontSize: DIMENS.m,
-    color: COLORS.darkGray,
+    fontWeight: '500',
     marginBottom: 3,
   },
   label: {
@@ -231,26 +260,22 @@ const styles = StyleSheet.create({
   title: {
     fontSize: DIMENS.l,
     fontWeight: 'bold',
-    color: COLORS.black,
     marginBottom: 10,
   },
-  headerWrapper: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 10,
-    backgroundColor: COLORS.goldenOrange,
+  contentMenu: {
+    padding: 15,
     elevation: 3,
+    borderRadius: 10,
+    marginVertical: 5,
+    borderWidth: 0.3,
+    borderColor: COLORS.black,
+    flexWrap: 'wrap',
   },
   card: {
-    backgroundColor: COLORS.white,
-    borderRadius: 10,
-    padding: 15,
     marginVertical: 10,
     shadowColor: '#000',
     shadowOffset: {width: 0, height: 2},
     shadowOpacity: 0.1,
-    elevation: 3,
   },
   cardContent: {
     flexDirection: 'column',
@@ -263,13 +288,12 @@ const styles = StyleSheet.create({
     marginVertical: 5,
   },
   loadingContainer: {
-    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: 50,
   },
   loadingText: {
     fontSize: DIMENS.m,
-    color: COLORS.darkGray,
+    fontWeight: '500',
   },
 });

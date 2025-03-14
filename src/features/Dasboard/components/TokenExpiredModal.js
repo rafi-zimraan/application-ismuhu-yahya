@@ -11,7 +11,7 @@ const TokenExpiredModal = ({visible, setTokenExpired, navigation}) => {
       description="Sesi Anda telah berakhir. Silakan login ulang untuk memperbarui data Anda dan melanjutkan aktivitas."
       buttonSubmit={() => {
         setTokenExpired(false);
-        navigation.navigate('SignIn');
+        navigation.replace('SignIn');
       }}
       buttonTitle="Login Ulang"
     />

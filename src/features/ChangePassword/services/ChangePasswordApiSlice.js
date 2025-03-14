@@ -1,10 +1,8 @@
 import EncryptedStorage from 'react-native-encrypted-storage';
 import api from '../../../utils/axiosInstance';
 
-// Ubah Password
 export const apiChangePassword = async (password, passwordConfirmation) => {
   try {
-    // Ambil token dan id_user dari EncryptedStorage
     const token = await EncryptedStorage.getItem('token');
     const idUser = await EncryptedStorage.getItem('idUser');
 

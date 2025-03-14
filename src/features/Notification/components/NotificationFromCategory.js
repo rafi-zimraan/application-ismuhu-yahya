@@ -5,27 +5,28 @@ import {
   ScrollView,
   StatusBar,
   StyleSheet,
-  Text,
   ToastAndroid,
   TouchableOpacity,
-  View,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {
-  Background,
-  HeaderTransparent,
-  ModalCustom,
-  ModalLoading,
-} from '../../Component';
+import {useSelector} from 'react-redux';
 import {
   deleteNotification,
   getNotificationCategory,
   getNotificationDetail,
-} from '../../features/Notification';
-import {COLORS, DIMENS} from '../../utils';
+} from '..';
+import {
+  HeaderTransparent,
+  ModalCustom,
+  ModalLoading,
+  Text,
+  View,
+} from '../../../Component';
+import {COLORS, DIMENS} from '../../../utils';
 
 export default function NotificationFromCategory({route, navigation}) {
   const {category} = route.params;
+  const {mode, colors} = useSelector(state => state.theme);
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [modalVisible, setModalVisible] = useState(false);
@@ -167,9 +168,15 @@ export default function NotificationFromCategory({route, navigation}) {
 
   return (
     <View style={{flex: 1}}>
-      <StatusBar barStyle="default" backgroundColor="transparent" />
-      <Background />
-      <View style={styles.headerWrapper}>
+      <StatusBar
+        barStyle={mode == 'light' ? 'default' : 'dark-content'}
+        backgroundColor="transparent"
+      />
+      <View
+        style={[
+          styles.headerWrapper,
+          {backgroundColor: colors[mode].background_header},
+        ]}>
         <HeaderTransparent
           title={'Kategori Notification'}
           icon="arrow-left-circle-outline"
@@ -203,47 +210,58 @@ export default function NotificationFromCategory({route, navigation}) {
         </View>
       </Modal>
 
-      <ScrollView
-        contentContainerStyle={styles.contentContainer}
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-        }>
-        {loading ? (
-          <Text style={styles.loadingText}>Sedang memuat data...</Text>
-        ) : data?.length > 0 ? (
-          <>
-            <Text style={styles.newNotificationText}>Notification Terbaru</Text>
-            {data?.map((item, index) => (
-              <TouchableOpacity
-                key={index}
-                style={styles.notificationCard}
-                onPress={() => viewNotificationDetail(item?.id)}>
-                <View style={styles.titleSection}>
-                  <Text style={styles.titleText}>{item?.title}</Text>
-                  <Text style={styles.dateText}>
-                    {new Date(item?.created_at).toLocaleString()}
-                  </Text>
-                </View>
-                <View style={styles.messageSection}>
-                  <Text style={styles.messageText}>{item?.message}</Text>
-                </View>
-                <View style={styles.actionsSection}>
+      <View style={{flex: 1}} showImageBackground={true}>
+        <ScrollView
+          contentContainerStyle={styles.contentContainer}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }>
+          {loading ? (
+            <View>
+              <Text style={styles.loadingText}>Sedang memuat data...</Text>
+              <ModalLoading visible={loading} />
+            </View>
+          ) : data?.length > 0 ? (
+            <>
+              <Text style={styles.newNotificationText}>
+                Notification Terbaru
+              </Text>
+              {data?.map((item, index) => (
+                <View key={index} section={true} style={styles.viewCard}>
                   <TouchableOpacity
-                    style={styles.deleteButton}
-                    onPress={() => openDeleteModal(item?.id)}>
-                    <Text style={styles.deleteText}>Delete</Text>
+                    style={styles.notificationCard}
+                    onPress={() => viewNotificationDetail(item?.id)}>
+                    <View style={styles.titleSection} section={true}>
+                      <Text style={styles.titleText}>{item?.title}</Text>
+                      <Text
+                        style={[
+                          styles.dateText,
+                          {color: colors[mode].textSectionDescSett},
+                        ]}>
+                        {new Date(item?.created_at).toLocaleString()}
+                      </Text>
+                    </View>
+                    <View style={styles.messageSection} section={true}>
+                      <Text style={styles.messageText}>{item?.message}</Text>
+                    </View>
+                    <View style={styles.actionsSection} section={true}>
+                      <TouchableOpacity
+                        style={styles.deleteButton}
+                        onPress={() => openDeleteModal(item?.id)}>
+                        <Text style={styles.deleteText}>Delete</Text>
+                      </TouchableOpacity>
+                    </View>
                   </TouchableOpacity>
                 </View>
-              </TouchableOpacity>
-            ))}
-          </>
-        ) : (
-          <Text style={styles.emptyText}>
-            Tidak ada notifikasi untuk kategori ini.
-          </Text>
-        )}
-      </ScrollView>
-
+              ))}
+            </>
+          ) : (
+            <Text style={styles.emptyText}>
+              Tidak ada notifikasi untuk kategori ini.
+            </Text>
+          )}
+        </ScrollView>
+      </View>
       <ModalCustom
         visible={modalVisible}
         onRequestClose={() => setModalVisible(false)}
@@ -305,7 +323,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: 10,
-    backgroundColor: COLORS.goldenOrange,
     elevation: 3,
   },
   contentContainer: {
@@ -320,15 +337,15 @@ const styles = StyleSheet.create({
   newNotificationText: {
     fontSize: DIMENS.xl,
     fontWeight: 'bold',
-    color: COLORS.black,
     marginBottom: 10,
   },
-  notificationCard: {
-    marginBottom: 20,
-    backgroundColor: COLORS.white,
+  viewCard: {
     borderRadius: 10,
     elevation: 4,
-    padding: 15,
+    padding: 10,
+  },
+  notificationCard: {
+    marginBottom: 5,
   },
   titleSection: {
     marginBottom: 3,
@@ -336,11 +353,10 @@ const styles = StyleSheet.create({
   titleText: {
     fontSize: DIMENS.xxl,
     fontWeight: 'bold',
-    color: COLORS.black,
   },
   dateText: {
     fontSize: DIMENS.s,
-    color: COLORS.grey,
+    fontWeight: '400',
   },
   messageSection: {
     marginBottom: 2,
@@ -348,7 +364,7 @@ const styles = StyleSheet.create({
   },
   messageText: {
     fontSize: DIMENS.m,
-    color: COLORS.black,
+    fontWeight: '400',
   },
   actionsSection: {
     flexDirection: 'row',
@@ -367,6 +383,5 @@ const styles = StyleSheet.create({
   emptyText: {
     textAlign: 'center',
     fontSize: DIMENS.l,
-    color: COLORS.grey,
   },
 });

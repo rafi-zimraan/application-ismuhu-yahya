@@ -5,15 +5,17 @@ import {
   SafeAreaView,
   StatusBar,
   StyleSheet,
-  ToastAndroid,
   View,
 } from 'react-native';
 import EncryptedStorage from 'react-native-encrypted-storage';
+import {useDispatch} from 'react-redux';
 import {AppVersion, Gap} from '../../Component';
 import {IMG_ISMUHUYAHYA_POTRAIT} from '../../assets';
+import {setTheme} from '../../features/theme';
 import {COLORS} from '../../utils';
 
 export default function SplashScreen({navigation}) {
+  const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -22,6 +24,12 @@ export default function SplashScreen({navigation}) {
       try {
         const storedCredential = await EncryptedStorage.getItem('token');
         const onboarding = await EncryptedStorage.getItem('is_boarding');
+        const theme = await EncryptedStorage.getItem('theme_mode');
+
+        if (theme) {
+          setTheme(dispatch(setTheme(theme)));
+        }
+
         setTimeout(() => {
           if (storedCredential) {
             navigation.replace('Dasboard');
@@ -32,10 +40,7 @@ export default function SplashScreen({navigation}) {
           }
         }, 2000);
       } catch (error) {
-        ToastAndroid.show(
-          'Terjadi kesalahan saat di Splashscreen',
-          ToastAndroid.SHORT,
-        );
+        console.log('err splash', error);
       }
     }
     statusUserChecking();
@@ -45,7 +50,12 @@ export default function SplashScreen({navigation}) {
     <SafeAreaView style={styles.background}>
       <StatusBar barStyle={'dark-content'} backgroundColor={'transparent'} />
       <View style={styles.container}>
-        <Image source={IMG_ISMUHUYAHYA_POTRAIT} style={styles.img} />
+        <Image
+          source={IMG_ISMUHUYAHYA_POTRAIT}
+          style={styles.img}
+          resizeMethod="resize"
+          resizeMode="cover"
+        />
         <Gap height={15} />
         {loading && (
           <ActivityIndicator
@@ -73,6 +83,5 @@ const styles = StyleSheet.create({
   img: {
     width: 320,
     height: 230,
-    resizeMode: 'cover',
   },
 });

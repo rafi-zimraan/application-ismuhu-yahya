@@ -65,6 +65,7 @@ export default function CarLoan({navigation}) {
               source={IMG_CAR_REBORN}
               style={styles.carImage}
               resizeMethod="resize"
+              resizeMode="cover"
             />
             <View style={styles.viewTextCar}>
               <Text style={styles.textCar}>Reborn</Text>
@@ -93,6 +94,7 @@ export default function CarLoan({navigation}) {
               source={IMG_CAR_ERTIGA}
               style={styles.imgErtiga}
               resizeMethod="resize"
+              resizeMode="cover"
             />
             <View style={styles.viewTextCar}>
               <Text style={styles.textCar}>Ertiga</Text>
@@ -121,6 +123,7 @@ export default function CarLoan({navigation}) {
               source={IMG_CAR_AMBULANCE}
               style={styles.imgAmbulance}
               resizeMethod="resize"
+              resizeMode="cover"
             />
             <View style={styles.viewTextCar}>
               <Text style={styles.textCar}>Ambulance</Text>
@@ -149,6 +152,7 @@ export default function CarLoan({navigation}) {
               source={IMG_CAR_PICKUPWHITE}
               style={styles.imgPickWhite}
               resizeMethod="resize"
+              resizeMode="cover"
             />
             <View style={styles.viewTextCar}>
               <Text style={styles.textCar}>Pickup putih</Text>
@@ -177,6 +181,7 @@ export default function CarLoan({navigation}) {
               source={IMG_CAR_PICKUPBLACK}
               style={styles.imgPickBlack}
               resizeMethod="resize"
+              resizeMode="cover"
             />
             <View style={styles.viewTextCar}>
               <Text style={styles.textCar}>Pickup hitam</Text>
@@ -236,6 +241,7 @@ export default function CarLoan({navigation}) {
               source={IMG_CAR_REBORN}
               style={{height: 80, width: 160}}
               resizeMethod="resize"
+              resizeMode="cover"
             />
           </View>
           <Gap height={10} />
@@ -248,6 +254,7 @@ export default function CarLoan({navigation}) {
               source={IMG_CAR_REBORN}
               style={{height: 80, width: 160}}
               resizeMethod="resize"
+              resizeMode="cover"
             />
           </View>
           <Gap height={10} />
@@ -260,6 +267,7 @@ export default function CarLoan({navigation}) {
               source={IMG_CAR_REBORN}
               style={{height: 80, width: 160}}
               resizeMethod="resize"
+              resizeMode="cover"
             />
           </View>
           <Gap height={20} />

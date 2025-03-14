@@ -9,14 +9,13 @@ import {
   ScrollView,
   StatusBar,
   StyleSheet,
-  Text,
   TextInput,
   ToastAndroid,
   TouchableOpacity,
-  View,
 } from 'react-native';
 import {launchImageLibrary} from 'react-native-image-picker';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import {useSelector} from 'react-redux';
 import {
   deleteTraining,
   deleteTrainingFile,
@@ -25,17 +24,19 @@ import {
   uploadTrainingFile,
 } from '..';
 import {
-  Background,
   Gap,
   HeaderTransparent,
   ModalCustom,
   ModalLoading,
+  Text,
+  View,
 } from '../../../Component';
 import {ICON_NOTFOUND_DATA} from '../../../assets';
 import {COLORS, DIMENS} from '../../../utils';
 
 export default function DetailTraining({route, navigation}) {
   const {data} = route.params;
+  const {colors, mode} = useSelector(state => state.theme);
   const [isModalLoading, setIsModalLoading] = useState(false);
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
@@ -225,72 +226,121 @@ export default function DetailTraining({route, navigation}) {
 
   return (
     <View style={{flex: 1}}>
-      <StatusBar barStyle="default" backgroundColor="transparent" />
+      <StatusBar
+        barStyle={mode == 'light' ? 'default' : 'dark-content'}
+        backgroundColor="transparent"
+      />
       <ModalLoading visible={isModalLoading} />
-      <Background />
-      <View style={styles.headerWrapper}>
-        <HeaderTransparent
-          title="Detail Pelatihan"
-          icon="arrow-left-circle-outline"
-          onPress={() => navigation.goBack()}
-        />
-      </View>
-      <ScrollView
-        refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={reloadData}
-            colors={['#FFD700']}
-          />
-        }
-        contentContainerStyle={{flexGrow: 1}}>
-        <View style={styles.container}>
+      <HeaderTransparent
+        title="Detail Data Pelatihan"
+        icon="arrow-left-circle-outline"
+        onPress={() => navigation.goBack()}
+      />
+      <View style={{flex: 1}} showImageBackground={true}>
+        <ScrollView
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={reloadData}
+              colors={['#FFD700']}
+            />
+          }
+          style={styles.container}>
           {!isDeleted ? (
             <>
-              <View style={styles.content}>
-                <Text style={styles.title}>Detail Training</Text>
-                <View style={styles.section}>
+              <View style={styles.content} section={true}>
+                <View style={styles.viewButtonSection} section={true}>
+                  <Text style={styles.title}>Data Pelatihan</Text>
+                  <View style={styles.secondryViewButtonSection} section={true}>
+                    <TouchableOpacity
+                      style={styles.editButton}
+                      onPress={() => setEditModalVisible(true)}>
+                      <Icon name="pencil" size={20} color={COLORS.white} />
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={styles.deleteButton}
+                      onPress={() => setDeleteModalVisible(true)}>
+                      <Icon name="delete" size={20} color={COLORS.white} />
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={styles.uploadButton}
+                      onPress={openFileTypeModal}>
+                      <Icon name="upload" size={20} color={COLORS.white} />
+                    </TouchableOpacity>
+                  </View>
+                </View>
+                <View style={styles.section} section={true}>
                   <Icon name="book" size={24} color={COLORS.goldenOrange} />
-                  <View style={styles.viewContentText}>
-                    <Text style={styles.textTitle}>Title</Text>
+                  <View style={styles.viewContentText} section={true}>
+                    <Text
+                      style={[
+                        styles.textTitle,
+                        {color: colors[mode].textLabel},
+                      ]}>
+                      Title
+                    </Text>
                     <Text style={styles.label}>{editedData.title || '-'}</Text>
                   </View>
                 </View>
-                <View style={styles.section}>
+                <View style={styles.section} section={true}>
                   <Icon name="calendar" size={24} color={COLORS.goldenOrange} />
-                  <View style={styles.viewContentText}>
-                    <Text style={styles.textTitle}>Date</Text>
+                  <View style={styles.viewContentText} section={true}>
+                    <Text
+                      style={[
+                        styles.textTitle,
+                        {color: colors[mode].textLabel},
+                      ]}>
+                      Date
+                    </Text>
                     <Text style={styles.label}>{editedData.date || '-'}</Text>
                   </View>
                 </View>
-                <View style={styles.section}>
+                <View style={styles.section} section={true}>
                   <Icon name="tag" size={24} color={COLORS.goldenOrange} />
-                  <View style={styles.viewContentText}>
-                    <Text style={styles.textTitle}>Category</Text>
+                  <View style={styles.viewContentText} section={true}>
+                    <Text
+                      style={[
+                        styles.textTitle,
+                        {color: colors[mode].textLabel},
+                      ]}>
+                      Category
+                    </Text>
                     <Text style={styles.label}>
                       {editedData.category || '-'}
                     </Text>
                   </View>
                 </View>
-                <View style={styles.section}>
+                <View style={styles.section} section={true}>
                   <Icon
                     name="information-outline"
                     size={24}
                     color={COLORS.goldenOrange}
                   />
-                  <View style={styles.viewContentText}>
-                    <Text style={styles.textTitle}>Description</Text>
+                  <View style={styles.viewContentText} section={true}>
+                    <Text
+                      style={[
+                        styles.textTitle,
+                        {color: colors[mode].textLabel},
+                      ]}>
+                      Description
+                    </Text>
                     <Text style={styles.label}>{editedData.desc || '-'}</Text>
                   </View>
                 </View>
-                <View style={styles.section}>
+                <View style={styles.section} section={true}>
                   <Icon
                     name="currency-usd"
                     size={24}
                     color={COLORS.goldenOrange}
                   />
-                  <View style={styles.viewContentText}>
-                    <Text style={styles.textTitle}>Harga Pelatihan</Text>
+                  <View style={styles.viewContentText} section={true}>
+                    <Text
+                      style={[
+                        styles.textTitle,
+                        {color: colors[mode].textLabel},
+                      ]}>
+                      Harga Pelatihan
+                    </Text>
                     <Text style={styles.label}>
                       {editedData.cost ? `Rp ${editedData.cost}` : '-'}
                     </Text>
@@ -305,7 +355,7 @@ export default function DetailTraining({route, navigation}) {
                     key={index}
                     style={styles.pdfContainer}
                     onPress={() => openPDF(file.uri)}>
-                    <View style={styles.pdfWrapper}>
+                    <View style={styles.pdfWrapper} section={true}>
                       <Icon name="file-pdf-box" size={30} color="red" />
                       <Text style={styles.pdfFileName}>{file.file}</Text>
                     </View>
@@ -323,6 +373,7 @@ export default function DetailTraining({route, navigation}) {
                       source={{uri: `https://app.simpondok.com/${file.file}`}}
                       style={{width: '100%', height: 150, borderRadius: 10}}
                       resizeMethod="resize"
+                      resizeMode="cover"
                     />
                     <TouchableOpacity
                       style={styles.deleteIconWrapper}
@@ -335,32 +386,21 @@ export default function DetailTraining({route, navigation}) {
                   </View>
                 ),
               )}
-
-              <View style={styles.buttonContainer}>
-                <TouchableOpacity
-                  style={styles.editButton}
-                  onPress={() => setEditModalVisible(true)}>
-                  <Icon name="pencil" size={24} color={COLORS.white} />
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={styles.deleteButton}
-                  onPress={() => setDeleteModalVisible(true)}>
-                  <Icon name="delete" size={24} color={COLORS.white} />
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={styles.uploadButton}
-                  onPress={openFileTypeModal}>
-                  <Icon name="upload" size={24} color={COLORS.white} />
-                </TouchableOpacity>
-              </View>
             </>
           ) : (
-            <View style={styles.noDataContainer}>
-              <Image source={ICON_NOTFOUND_DATA} style={styles.notFoundImage} />
+            <View
+              style={styles.noDataContainer}
+              useBackgroundTransparent={true}>
+              <Image
+                source={ICON_NOTFOUND_DATA}
+                style={styles.notFoundImage}
+                resizeMethod="resize"
+                resizeMode="cover"
+              />
             </View>
           )}
-        </View>
-      </ScrollView>
+        </ScrollView>
+      </View>
 
       <ModalCustom
         visible={editModalVisible}
@@ -370,13 +410,17 @@ export default function DetailTraining({route, navigation}) {
         buttonSubmit={handleUpdate}
         buttonDisable={isLoading}
         buttonLoading={isLoading}
+        backgroundColor={mode == 'light' ? COLORS.darkGrey : COLORS.white}
         buttonTitle="Simpan"
         ColorIcon={COLORS.goldenOrange}
         iconModalName="content-save-edit"
         BackgroundButtonAction={COLORS.goldenOrange}
+        TextDescription={mode == 'light' ? COLORS.softGrey : COLORS.mediumGrey}
         TextColorButton={COLORS.white}>
-        <View>
-          <Text style={styles.inputLabel}>Title</Text>
+        <View section={true}>
+          <Text style={[styles.inputLabel, {color: colors[mode].textLabel}]}>
+            Title
+          </Text>
           <Gap height={5} />
           <TextInput
             style={styles.input}
@@ -385,7 +429,9 @@ export default function DetailTraining({route, navigation}) {
             placeholderTextColor={COLORS.grey}
             onChangeText={text => setEditedData({...editedData, title: text})}
           />
-          <Text style={styles.inputLabel}>Date</Text>
+          <Text style={[styles.inputLabel, {color: colors[mode].textLabel}]}>
+            Date
+          </Text>
           <Gap height={5} />
           <TextInput
             style={styles.input}
@@ -394,7 +440,9 @@ export default function DetailTraining({route, navigation}) {
             placeholderTextColor={COLORS.grey}
             onChangeText={text => setEditedData({...editedData, date: text})}
           />
-          <Text style={styles.inputLabel}>Category</Text>
+          <Text style={[styles.inputLabel, {color: colors[mode].textLabel}]}>
+            Category
+          </Text>
           <Gap height={5} />
           <TextInput
             style={styles.input}
@@ -405,7 +453,9 @@ export default function DetailTraining({route, navigation}) {
               setEditedData({...editedData, category: text})
             }
           />
-          <Text style={styles.inputLabel}>Description</Text>
+          <Text style={[styles.inputLabel, {color: colors[mode].textLabel}]}>
+            Description
+          </Text>
           <Gap height={5} />
           <TextInput
             style={styles.input}
@@ -414,7 +464,9 @@ export default function DetailTraining({route, navigation}) {
             placeholderTextColor={COLORS.grey}
             onChangeText={text => setEditedData({...editedData, desc: text})}
           />
-          <Text style={styles.inputLabel}>Harga Pelatihan</Text>
+          <Text style={[styles.inputLabel, {color: colors[mode].textLabel}]}>
+            Harga Pelatihan
+          </Text>
           <Gap height={5} />
           <TextInput
             style={styles.input}
@@ -474,6 +526,14 @@ export default function DetailTraining({route, navigation}) {
 }
 
 const styles = StyleSheet.create({
+  secondryViewButtonSection: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  viewButtonSection: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
   pdfContainer: {
     backgroundColor: COLORS.white,
     borderWidth: 0.4,
@@ -524,16 +584,8 @@ const styles = StyleSheet.create({
   },
   uploadButton: {
     backgroundColor: COLORS.blue,
-    padding: 15,
+    padding: 5,
     borderRadius: 50,
-  },
-  headerWrapper: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 10,
-    backgroundColor: COLORS.goldenOrange,
-    elevation: 3,
   },
   container: {
     flex: 1,
@@ -542,10 +594,8 @@ const styles = StyleSheet.create({
   title: {
     fontSize: DIMENS.xl,
     fontWeight: 'bold',
-    color: COLORS.black,
   },
   content: {
-    backgroundColor: COLORS.white,
     borderRadius: 15,
     padding: 15,
     shadowColor: COLORS.black,
@@ -553,6 +603,9 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     elevation: 3,
     marginTop: 5,
+    borderWidth: 0.3,
+    borderColor: COLORS.black,
+    flexWrap: 'wrap',
   },
   section: {
     flexDirection: 'row',
@@ -571,28 +624,21 @@ const styles = StyleSheet.create({
     fontSize: DIMENS.l,
     color: COLORS.textPrimary,
   },
-  buttonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    position: 'absolute',
-    bottom: 20,
-    right: 20,
-  },
   editButton: {
     backgroundColor: COLORS.greenConfirm,
-    padding: 15,
+    padding: 5,
     borderRadius: 50,
     marginRight: 10,
   },
   deleteButton: {
     backgroundColor: COLORS.red,
-    padding: 15,
+    padding: 5,
     borderRadius: 50,
     marginRight: 10,
   },
   inputLabel: {
     fontSize: DIMENS.m,
-    color: COLORS.darkGray,
+    fontWeight: '500',
     marginTop: 3,
   },
   input: {

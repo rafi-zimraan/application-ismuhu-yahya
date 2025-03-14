@@ -5,13 +5,11 @@ import {
   ScrollView,
   StatusBar,
   StyleSheet,
-  Text,
   TouchableOpacity,
-  View,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useDispatch, useSelector} from 'react-redux';
-import {Background, Gap, ModalCustom} from '../../Component';
+import {Gap, ModalCustom, Text, View} from '../../Component';
 import {Translations} from '../../features/Language';
 import {getAllDataSpa} from '../../features/Profile';
 import {FecthMe, logout} from '../../features/authentication';
@@ -21,6 +19,7 @@ import {DIMENS} from '../../utils/dimens';
 export default function Settings({navigation}) {
   const dispatch = useDispatch();
   const currentLanguage = useSelector(state => state.language.currentLanguage);
+  const {mode, colors} = useSelector(state => state.theme);
   const [logoutModalVisible, setLogoutModalVisible] = useState(false);
   const [loadingLogout, setLoadingLogout] = useState(false);
   const [userName, setUserName] = useState('');
@@ -77,94 +76,197 @@ export default function Settings({navigation}) {
 
   return (
     <View style={{flex: 1}}>
-      <StatusBar barStyle={'default'} backgroundColor={'transparent'} />
-      <View style={styles.navbar}>
+      <StatusBar
+        barStyle={mode == 'light' ? 'default' : 'dark-content'}
+        backgroundColor={'transparent'}
+      />
+      <View
+        style={[
+          styles.navbar,
+          {backgroundColor: colors[mode].background_header},
+        ]}>
         <Text style={styles.navbarTitle}>{t('name_settings')}</Text>
       </View>
-      <Background />
-      <ScrollView
-        contentContainerStyle={styles.scrollContent}
-        showsVerticalScrollIndicator={false}>
-        <Gap height={15} />
+      <View useBackgroundColor={true}>
+        <ScrollView
+          contentContainerStyle={styles.scrollContent}
+          showsVerticalScrollIndicator={false}>
+          <Gap height={15} />
 
-        <Text style={styles.sectionHeader}>{t('profile')}</Text>
-        <TouchableOpacity
-          style={styles.section}
-          activeOpacity={0.6}
-          onPress={() => navigation.navigate('Profile')}>
-          {photo ? (
-            <Image source={{uri: photo}} style={styles.imgPhoto} />
-          ) : (
-            <Icon name="account-circle" size={55} color={COLORS.mediumGrey} />
-          )}
-          <View style={styles.sectionTextContainer}>
-            <Text style={styles.sectionTitle}>
-              {userName || t('name_unavailable')}
-            </Text>
-            <Text style={styles.sectionSubtitle}>{email || ' - '}</Text>
+          <Text style={styles.sectionHeader}>{t('profile')}</Text>
+          <View section={true} style={styles.contentMenu}>
+            <TouchableOpacity
+              style={styles.section}
+              activeOpacity={0.6}
+              onPress={() => navigation.navigate('Profile')}>
+              {photo ? (
+                <Image
+                  source={{uri: photo}}
+                  style={styles.imgPhoto}
+                  resizeMethod="resize"
+                  resizeMode="cover"
+                />
+              ) : (
+                <Icon
+                  name="account-circle"
+                  size={55}
+                  color={mode == 'light' ? COLORS.mediumGrey : COLORS.Orange}
+                />
+              )}
+              <View style={styles.sectionTextContainer} section={true}>
+                <Text
+                  style={[
+                    styles.sectionTitle,
+                    {color: colors[mode].textSectionTitleSett},
+                  ]}>
+                  {userName || t('name_unavailable')}
+                </Text>
+                <Text
+                  style={[
+                    styles.sectionSubtitle,
+                    {color: colors[mode].textSectionDescSett},
+                  ]}>
+                  {email || ' - '}
+                </Text>
+              </View>
+            </TouchableOpacity>
           </View>
-        </TouchableOpacity>
 
-        <Text style={styles.sectionHeader}>{t('account_settings')}</Text>
-
-        <TouchableOpacity
-          style={styles.section}
-          activeOpacity={0.6}
-          onPress={() => navigation.navigate('ChangePassword')}>
-          <Icon name="lock-reset" size={28} color={COLORS.goldenOrange} />
-          <View style={styles.sectionTextContainer}>
-            <Text style={styles.sectionTitle}>{t('change_password')}</Text>
-            <Text style={styles.sectionSubtitle}>
-              {t('change_password_description')}
-            </Text>
+          <Text style={styles.sectionHeader}>{t('account_settings')}</Text>
+          <View section={true} style={styles.contentMenu}>
+            <TouchableOpacity
+              style={styles.section}
+              activeOpacity={0.6}
+              onPress={() => navigation.navigate('PrivasiSetting')}>
+              <Icon name="lock-outline" size={28} color={COLORS.goldenOrange} />
+              <View style={styles.sectionTextContainer} section={true}>
+                <Text
+                  style={[
+                    styles.sectionTitle,
+                    {color: colors[mode].textSectionTitleSett},
+                  ]}>
+                  {t('setting_account')}
+                </Text>
+                <Text
+                  style={[
+                    styles.sectionSubtitle,
+                    {color: colors[mode].textSectionDescSett},
+                  ]}>
+                  {t('privacy_description')}
+                </Text>
+              </View>
+            </TouchableOpacity>
           </View>
-        </TouchableOpacity>
 
-        <Text style={styles.sectionHeader}>{t('help_support')}</Text>
-        <TouchableOpacity
-          style={styles.section}
-          activeOpacity={0.6}
-          onPress={() => navigation.navigate('HelpSetting')}>
-          <Icon
-            name="help-circle-outline"
-            size={28}
-            color={COLORS.goldenOrange}
-          />
-          <View style={styles.sectionTextContainer}>
-            <Text style={styles.sectionTitle}>{t('help')}</Text>
-            <Text style={styles.sectionSubtitle}>{t('faq_description')}</Text>
+          <Gap height={5} />
+          <View section={true} style={styles.contentMenu}>
+            <TouchableOpacity
+              style={styles.section}
+              activeOpacity={0.6}
+              onPress={() => navigation.navigate('ChangePassword')}>
+              <Icon name="lock-reset" size={28} color={COLORS.goldenOrange} />
+              <View style={styles.sectionTextContainer} section={true}>
+                <Text
+                  style={[
+                    styles.sectionTitle,
+                    {color: colors[mode].textSectionTitleSett},
+                  ]}>
+                  {t('change_password')}
+                </Text>
+                <Text
+                  style={[
+                    styles.sectionSubtitle,
+                    {color: colors[mode].textSectionDescSett},
+                  ]}>
+                  {t('change_password_description')}
+                </Text>
+              </View>
+            </TouchableOpacity>
           </View>
-        </TouchableOpacity>
-        <Gap height={5} />
 
-        <TouchableOpacity
-          style={styles.section}
-          activeOpacity={0.6}
-          onPress={() => navigation.navigate('AboutApplication')}>
-          <Icon
-            name="information-outline"
-            size={28}
-            color={COLORS.goldenOrange}
-          />
-          <View style={styles.sectionTextContainer}>
-            <Text style={styles.sectionTitle}>{t('about_app')}</Text>
-            <Text style={styles.sectionSubtitle}>1.0 sidaq-rc</Text>
+          <Text style={styles.sectionHeader}>{t('help_support')}</Text>
+          <View section={true} style={styles.contentMenu}>
+            <TouchableOpacity
+              style={styles.section}
+              activeOpacity={0.6}
+              onPress={() => navigation.navigate('HelpSetting')}>
+              <Icon
+                name="help-circle-outline"
+                size={28}
+                color={COLORS.goldenOrange}
+              />
+              <View style={styles.sectionTextContainer} section={true}>
+                <Text
+                  style={[
+                    styles.sectionTitle,
+                    {color: colors[mode].textSectionTitleSett},
+                  ]}>
+                  {t('help')}
+                </Text>
+                <Text
+                  style={[
+                    styles.sectionSubtitle,
+                    {color: colors[mode].textSectionDescSett},
+                  ]}>
+                  {t('faq_description')}
+                </Text>
+              </View>
+            </TouchableOpacity>
           </View>
-        </TouchableOpacity>
+          <Gap height={5} />
 
-        <TouchableOpacity
-          style={[styles.section, {backgroundColor: COLORS.redLight}]}
-          activeOpacity={0.8}
-          onPress={() => setLogoutModalVisible(true)}>
-          <Icon name="logout" size={28} color={COLORS.white} />
-          <View style={styles.sectionTextContainer}>
-            <Text style={[styles.sectionTitle, {color: COLORS.white}]}>
-              {t('logout')}
-            </Text>
+          <View section={true} style={styles.contentMenu}>
+            <TouchableOpacity
+              style={styles.section}
+              activeOpacity={0.6}
+              onPress={() => navigation.navigate('AboutApplication')}>
+              <Icon
+                name="information-outline"
+                size={28}
+                color={COLORS.goldenOrange}
+              />
+              <View style={styles.sectionTextContainer} section={true}>
+                <Text
+                  style={[
+                    styles.sectionTitle,
+                    {color: colors[mode].textSectionTitleSett},
+                  ]}>
+                  {t('about_app')}
+                </Text>
+                <Text
+                  style={[
+                    styles.sectionSubtitle,
+                    {color: colors[mode].textSectionDescSett},
+                  ]}>
+                  1.0 sidaq-rc
+                </Text>
+              </View>
+            </TouchableOpacity>
           </View>
-        </TouchableOpacity>
-        <Gap height={50} />
-      </ScrollView>
+
+          <Gap height={15} />
+          <View
+            style={[
+              styles.contentMenu,
+              {backgroundColor: colors[mode].buttonLogout},
+            ]}>
+            <TouchableOpacity
+              style={styles.section}
+              activeOpacity={0.8}
+              onPress={() => setLogoutModalVisible(true)}>
+              <Icon
+                name="logout"
+                size={28}
+                color={mode == 'light' ? COLORS.black : COLORS.goldenOrange}
+              />
+              <View style={styles.sectionTextContainer} useSectionLogout={true}>
+                <Text style={styles.sectionTitle}>{t('logout')}</Text>
+              </View>
+            </TouchableOpacity>
+          </View>
+          <Gap height={50} />
+        </ScrollView>
+      </View>
 
       <ModalCustom
         visible={logoutModalVisible}
@@ -201,6 +303,10 @@ export default function Settings({navigation}) {
 }
 
 const styles = StyleSheet.create({
+  contentMenu: {
+    elevation: 3,
+    borderRadius: 10,
+  },
   imgPhoto: {
     height: 54,
     width: 54,
@@ -208,12 +314,7 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: COLORS.goldenOrange,
   },
-  viewSwitch: {
-    position: 'absolute',
-    right: 10,
-  },
   navbar: {
-    backgroundColor: COLORS.goldenOrange,
     paddingVertical: 15,
     alignItems: 'center',
     justifyContent: 'center',
@@ -245,24 +346,18 @@ const styles = StyleSheet.create({
   section: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: COLORS.white,
     padding: 15,
-    borderRadius: 10,
-    marginBottom: 8,
     shadowColor: COLORS.black,
     shadowOffset: {width: 0, height: 2},
     shadowOpacity: 0.1,
-    elevation: 3,
   },
   sectionTextContainer: {
     marginLeft: 15,
   },
   sectionTitle: {
     fontSize: DIMENS.l,
-    color: COLORS.textPrimary,
   },
   sectionSubtitle: {
     fontSize: DIMENS.m,
-    color: COLORS.textSecondary,
   },
 });

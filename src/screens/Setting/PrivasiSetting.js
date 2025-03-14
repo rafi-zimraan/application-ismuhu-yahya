@@ -4,20 +4,19 @@ import {
   StatusBar,
   StyleSheet,
   Switch,
-  Text,
   TouchableOpacity,
-  View,
 } from 'react-native';
+import EncryptedStorage from 'react-native-encrypted-storage';
 import {useDispatch, useSelector} from 'react-redux';
-import {Background, Gap, HeaderTransparent, ModalCustom} from '../../Component';
+import {Gap, HeaderTransparent, ModalCustom, Text, View} from '../../Component';
 import {Translations} from '../../features/Language';
 import {setLanguage} from '../../features/Language/services/languageSlice';
-import {toggleTheme} from '../../features/theme/services/themeSlice';
+import {toggleTheme} from '../../features/theme';
 import {COLORS, DIMENS} from '../../utils';
 
 export default function PrivasiSetting({navigation}) {
   const dispatch = useDispatch();
-  const darkTheme = useSelector(state => state.theme.darkTheme);
+  const {mode, colors} = useSelector(state => state.theme);
   const currentLanguage = useSelector(state => state.language.currentLanguage);
   const [selectedLanguage, setSelectedLanguage] = useState(currentLanguage);
   const [isModalVisible, setModalVisible] = useState(false);
@@ -36,86 +35,51 @@ export default function PrivasiSetting({navigation}) {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar
-        barStyle={darkTheme ? 'default' : 'dark-content'}
+        barStyle={mode == 'light' ? 'default' : 'dark-content'}
         backgroundColor={'transparent'}
       />
-      <Background />
-      <View
-        style={[
-          styles.headerWrapper,
-          {
-            backgroundColor: darkTheme
-              ? COLORS.darkBackground
-              : COLORS.goldenOrange,
-          },
-        ]}>
-        <HeaderTransparent
-          title={t('app_settings')}
-          icon="arrow-left-circle-outline"
-          color={darkTheme ? COLORS.white : COLORS.black}
-          onPress={() => navigation.goBack()}
-        />
-      </View>
-      <View style={{padding: 15}}>
-        <View
-          style={[
-            styles.section,
-            {backgroundColor: darkTheme ? COLORS.darkBackground : COLORS.white},
-          ]}>
-          <View>
-            <Text
-              style={[
-                styles.sectionTitle,
-                {color: darkTheme ? COLORS.goldenOrange : COLORS.black},
-              ]}>
-              {t('dark_theme')}
-            </Text>
-            <Text
-              style={[
-                styles.sectionSubtitle,
-                {color: darkTheme ? COLORS.goldenOrange : COLORS.grey},
-              ]}>
+      <HeaderTransparent
+        title={t('app_settings')}
+        icon="arrow-left-circle-outline"
+        onPress={() => navigation.goBack()}
+      />
+      <View style={{flex: 1}} showImageBackground={true}>
+        <Gap height={15} />
+        <View style={styles.section} section={true}>
+          <View section={true}>
+            <Text style={{fontSize: DIMENS.l}}>{t('dark_theme')}</Text>
+            <Text style={styles.sectionSubtitle}>
               {t('dark_theme_description')}
             </Text>
           </View>
           <Switch
-            value={darkTheme}
-            onValueChange={() => dispatch(toggleTheme())}
-            trackColor={{
-              false: COLORS.lightGray,
-              true: COLORS.goldenOrange,
+            value={mode == 'dark'}
+            onValueChange={async () => {
+              dispatch(toggleTheme());
+              await EncryptedStorage.setItem(
+                'theme_mode',
+                mode == 'light' ? 'dark' : 'light',
+              );
             }}
-            thumbColor={darkTheme ? COLORS.primary : COLORS.gray}
+            trackColor={{
+              false: '#767577',
+              true: '#81b0ff',
+            }}
+            thumbColor={mode == 'light' ? COLORS.softGray : '#f5dd4b'}
           />
         </View>
 
-        <Gap height={15} />
-
-        <TouchableOpacity
-          style={[
-            styles.section,
-            {backgroundColor: darkTheme ? COLORS.darkBackground : COLORS.white},
-          ]}
-          onPress={() => setModalVisible(true)}
-          activeOpacity={0.8}>
-          <View>
-            <Text
-              style={[
-                styles.sectionTitle,
-                {color: darkTheme ? COLORS.goldenOrange : COLORS.black},
-              ]}>
-              {t('select_language')}
-            </Text>
-            <Text
-              style={[
-                styles.sectionSubtitle,
-                {color: darkTheme ? COLORS.goldenOrange : COLORS.grey},
-              ]}>
+        <View style={styles.section} section={true}>
+          <TouchableOpacity
+            onPress={() => setModalVisible(true)}
+            activeOpacity={0.8}>
+            <Text style={styles.sectionTitle}>{t('select_language')}</Text>
+            <Text style={styles.sectionSubtitle}>
               {languages.find(lang => lang.code === currentLanguage)?.label ||
                 t('select_language')}
             </Text>
-          </View>
-        </TouchableOpacity>
+          </TouchableOpacity>
+        </View>
 
         <ModalCustom
           visible={isModalVisible}
@@ -126,22 +90,23 @@ export default function PrivasiSetting({navigation}) {
           iconModalName="translate"
           buttonSubmit={handleLanguageChange}
           buttonTitle={t('confirm')}>
-          <View>
-            {languages.map(lang => (
-              <TouchableOpacity
-                key={lang.code}
-                style={styles.languageOption}
-                onPress={() => setSelectedLanguage(lang.code)}>
-                <Text
-                  style={[
-                    styles.languageText,
-                    selectedLanguage === lang.code && styles.selectedLanguage,
-                  ]}>
-                  {lang.label}
-                </Text>
-              </TouchableOpacity>
-            ))}
-          </View>
+          {languages.map(lang => (
+            <TouchableOpacity
+              key={lang.code}
+              style={[
+                styles.languageOption,
+                {backgroundColor: colors[mode].textInput},
+              ]}
+              onPress={() => setSelectedLanguage(lang.code)}>
+              <Text
+                style={[
+                  styles.languageText,
+                  selectedLanguage === lang.code && styles.selectedLanguage,
+                ]}>
+                {lang.label}
+              </Text>
+            </TouchableOpacity>
+          ))}
         </ModalCustom>
       </View>
     </SafeAreaView>
@@ -149,20 +114,8 @@ export default function PrivasiSetting({navigation}) {
 }
 
 const styles = StyleSheet.create({
-  headerWrapper: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 10,
-    elevation: 3,
-  },
   container: {
     flex: 1,
-  },
-  header: {
-    fontSize: DIMENS.xxxl,
-    fontWeight: '600',
-    color: COLORS.black,
   },
   section: {
     flexDirection: 'row',
@@ -172,20 +125,20 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginBottom: 15,
     elevation: 3,
+    marginHorizontal: 15,
   },
   sectionTitle: {
     fontSize: DIMENS.l,
-    color: COLORS.black,
   },
   sectionSubtitle: {
-    fontSize: DIMENS.m,
-    color: COLORS.gray,
+    fontSize: DIMENS.s,
     marginTop: 5,
   },
   languageOption: {
     paddingVertical: 10,
     borderBottomWidth: 1,
-    borderBottomColor: COLORS.lightGray,
+    borderBottomColor: COLORS.lightGrey,
+    marginVertical: 5,
   },
   languageText: {
     fontSize: DIMENS.l,

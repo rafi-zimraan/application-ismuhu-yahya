@@ -1,18 +1,17 @@
 import {useFocusEffect, useNavigation} from '@react-navigation/native';
+import {decode} from 'html-entities';
 import React, {useCallback, useState} from 'react';
 import {
   ActivityIndicator,
   Image,
   ScrollView,
   StyleSheet,
-  Text,
   TouchableOpacity,
-  View,
 } from 'react-native';
 import HTMLView from 'react-native-htmlview';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-
-import {Gap} from '../../../Component';
+import {useSelector} from 'react-redux';
+import {Gap, Text, View} from '../../../Component';
 import {ICON_NOTFOUND_DATA} from '../../../assets';
 import {COLORS, DIMENS} from '../../../utils';
 import {
@@ -21,9 +20,12 @@ import {
 } from '../../ImageInformation';
 
 export default function NewsComponent() {
+  const {colors, mode} = useSelector(state => state.theme);
   const navigation = useNavigation();
   const [newsData, setNewsData] = useState([]);
   const [loading, setLoading] = useState(false);
+
+  const deskripsi = decode(newsData?.[0]?.desc || 'Deskripsi tidak tersedia');
 
   const fetchNewsData = useCallback(async () => {
     setLoading(true);
@@ -59,7 +61,7 @@ export default function NewsComponent() {
         <Icon name="alert" size={24} color={COLORS.redLight} />
       </View>
       <Text style={styles.descText}>
-        Dapatkan info terbaru tentang berita dan event masjid ismhuyahya
+        Dapatkan info terbaru tentang berita dan event {'\n'}masjid ismhuyahya
       </Text>
       <Gap height={10} />
       {loading ? (
@@ -76,57 +78,57 @@ export default function NewsComponent() {
             style={styles.scrollView}>
             {newsData.length > 0 ? (
               newsData.map((item, index) => (
-                <TouchableOpacity
-                  key={index}
-                  onPress={() => handleOnPress(item.id)}
-                  activeOpacity={0.7}
-                  style={styles.newsContainer}>
-                  <Image
-                    source={
-                      item.thumb
-                        ? {
-                            uri: `https://app.simpondok.com/${item.thumb}`,
-                          }
-                        : ICON_NOTFOUND_DATA
-                    }
-                    style={styles.newsImage}
-                    resizeMode="stretch"
-                    resizeMethod="scale"
-                  />
-                  <View style={styles.textContainer}>
-                    <Text style={styles.newsTitle} numberOfLines={1}>
-                      {item?.title}
-                    </Text>
-                    <Gap height={5} />
-                    <View style={styles.viewDesc}>
-                      <HTMLView
-                        value={
-                          item.desc
-                            ? `<p>${item.desc}</p>`
-                            : '<p>Deskripsi tidak tersedia</p>'
-                        }
-                        stylesheet={htmlStyles}
-                      />
+                <View key={index} useBackgroundTransparent={true}>
+                  <TouchableOpacity
+                    onPress={() => handleOnPress(item.id)}
+                    activeOpacity={0.7}
+                    style={styles.newsContainer}>
+                    <Image
+                      source={
+                        item.thumb
+                          ? {
+                              uri: `https://app.simpondok.com/${item.thumb}`,
+                            }
+                          : ICON_NOTFOUND_DATA
+                      }
+                      style={styles.newsImage}
+                      resizeMode="stretch"
+                      resizeMethod="resize"
+                    />
+                    <View
+                      style={styles.textContainer}
+                      useBackgroundTransparent={true}>
+                      <Text style={styles.newsTitle} numberOfLines={1}>
+                        {item?.title}
+                      </Text>
+                      <Gap height={5} />
+                      <View style={styles.viewDesc}>
+                        <HTMLView value={deskripsi} stylesheet={htmlStyles} />
+                      </View>
+                      <Gap height={15} />
+                      <TouchableOpacity
+                        style={styles.moreButton}
+                        onPress={() => handleOnPress(item.id)}>
+                        <Text style={styles.moreText}>Selengkapnya</Text>
+                        <Icon
+                          name="chevron-right"
+                          size={18}
+                          color={COLORS.black}
+                        />
+                      </TouchableOpacity>
                     </View>
-                    <Gap height={15} />
-                    <TouchableOpacity
-                      style={styles.moreButton}
-                      onPress={() => handleOnPress(item.id)}>
-                      <Text style={styles.moreText}>Selengkapnya</Text>
-                      <Icon
-                        name="chevron-right"
-                        size={18}
-                        color={COLORS.black}
-                      />
-                    </TouchableOpacity>
-                  </View>
-                </TouchableOpacity>
+                  </TouchableOpacity>
+                </View>
               ))
             ) : (
-              <View style={styles.notFoundContainer}>
+              <View
+                style={styles.notFoundContainer}
+                useBackgroundTransparent={true}>
                 <Image
                   source={ICON_NOTFOUND_DATA}
                   style={styles.newsImageNotFound}
+                  resizeMethod="resize"
+                  resizeMode="cover"
                 />
               </View>
             )}
@@ -155,7 +157,7 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   descText: {
-    fontSize: DIMENS.m,
+    fontSize: DIMENS.s,
     color: COLORS.mediumGrey,
     width: '100%',
     flexWrap: 'wrap',
@@ -182,7 +184,6 @@ const styles = StyleSheet.create({
     width: 250,
     marginRight: 15,
     borderRadius: 15,
-    backgroundColor: COLORS.white,
     borderColor: COLORS.goldenOrange,
     borderWidth: 0.4,
     shadowColor: '#000',
@@ -197,7 +198,6 @@ const styles = StyleSheet.create({
   newsTitle: {
     fontSize: DIMENS.xxl,
     fontWeight: 'bold',
-    color: COLORS.black,
   },
   newsDesc: {
     fontSize: DIMENS.xs,
@@ -213,7 +213,6 @@ const styles = StyleSheet.create({
   },
   titleText: {
     fontSize: DIMENS.xxl,
-    color: COLORS.black,
     fontWeight: '600',
   },
   notFoundContainer: {
@@ -231,6 +230,7 @@ const styles = StyleSheet.create({
     height: 180,
     borderTopLeftRadius: 15,
     borderTopRightRadius: 15,
+    backgroundColor: 'red',
   },
   loadingContainer: {
     marginTop: 20,
@@ -252,12 +252,10 @@ const htmlStyles = StyleSheet.create({
     textDecorationLine: 'underline',
   },
   p: {
-    fontSize: DIMENS.xs,
-    color: COLORS.black,
+    fontSize: DIMENS.s,
+    color: COLORS.darkGrey,
     fontWeight: '500',
-    marginBottom: 0,
-    numberOfLines: 1,
-    textOverflow: 'ellipsis',
+    marginVertical: 2,
   },
   ol: {
     fontSize: DIMENS.s,
@@ -269,39 +267,33 @@ const htmlStyles = StyleSheet.create({
     marginVertical: 2,
   },
   h1: {
-    fontSize: DIMENS.xxxl,
+    fontSize: DIMENS.xl,
     fontWeight: '800',
     color: COLORS.black,
-    marginVertical: 4,
   },
   h2: {
     fontSize: DIMENS.xxl,
     fontWeight: '700',
     color: COLORS.black,
-    marginVertical: 3,
   },
   h3: {
     fontSize: DIMENS.l,
     fontWeight: '600',
     color: COLORS.black,
-    marginVertical: 3,
   },
   h4: {
     fontSize: DIMENS.m,
     fontWeight: '500',
     color: COLORS.black,
-    marginVertical: 3,
   },
   h5: {
     fontSize: DIMENS.s,
     fontWeight: '400',
     color: COLORS.black,
-    marginVertical: 3,
   },
   h5: {
     fontSize: DIMENS.xs,
     fontWeight: '300',
     color: COLORS.black,
-    marginVertical: 3,
   },
 });

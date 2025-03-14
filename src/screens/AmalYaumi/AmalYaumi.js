@@ -13,8 +13,6 @@ import {
   View,
 } from 'react-native';
 import EncryptedStorage from 'react-native-encrypted-storage';
-import {LineChart} from 'react-native-gifted-charts';
-import ProgressWheel from 'react-native-progress-wheel';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {
   Gap,
@@ -22,10 +20,11 @@ import {
   ModalCustom,
   ModalLoading,
 } from '../../Component';
-import {ICON_NOTFOUND_DATA} from '../../assets';
 import {
+  ChartComponent,
   DateList,
   MonthSelectorModal,
+  ProgressListComponent,
   fetchMonthlyReportYaumi,
 } from '../../features/AmalYaumi';
 import {FecthMe} from '../../features/authentication';
@@ -160,7 +159,12 @@ export default function AmalYaumi({navigation}) {
         </View>
         <TouchableOpacity style={styles.profileWrapper}>
           {photo ? (
-            <Image source={{uri: photo}} style={styles.imgPhoto} />
+            <Image
+              source={{uri: photo}}
+              style={styles.imgPhoto}
+              resizeMethod="resize"
+              resizeMode="cover"
+            />
           ) : (
             <Icon name="account-circle" size={45} color={COLORS.white} />
           )}
@@ -168,7 +172,7 @@ export default function AmalYaumi({navigation}) {
       </View>
 
       <ScrollView
-        style={[styles.container, {paddingTop: 84}]}
+        style={[styles.container, {marginTop: 75}]}
         refreshControl={
           <RefreshControl
             refreshing={refreshing}
@@ -178,6 +182,7 @@ export default function AmalYaumi({navigation}) {
           />
         }>
         <View style={styles.contentDateAndMonth}>
+          <Gap height={15} />
           <TouchableOpacity
             style={styles.monthWrapper}
             onPress={() => setModalVisible(true)}>
@@ -195,46 +200,9 @@ export default function AmalYaumi({navigation}) {
 
         <View style={styles.viewChart}>
           <Text style={styles.chartTitle}>Grafik Yaumi Bulan Ini</Text>
-          <Gap height={10} />
-          <View style={styles.chartContainer}>
-            <LineChart
-              areaChart
-              curved
-              data={lineData}
-              data2={lineDataPercen}
-              height={170}
-              width={270}
-              showVerticalLines
-              spacing={66}
-              hideDataPoints={false}
-              initialSpacing={24}
-              color1={COLORS.greenBoy}
-              color2={COLORS.Orange}
-              textColor1="green"
-              dataPointsColor1={COLORS.greenSoft}
-              dataPointsColor2="#FF8C00"
-              startFillColor1={COLORS.greenBoy}
-              startFillColor2={COLORS.Orange}
-              startOpacity={0.8}
-              endOpacity={0.3}
-              yAxisValueFormatter={value => Math.round(value).toString()}
-              dataPointsValueFormatter={value => Math.round(value).toString()}
-              yAxisTextStyle={{
-                color: COLORS.black,
-                fontSize: DIMENS.s,
-                fontWeight: '400',
-              }}
-              xAxisLabelTextStyle={{
-                color: COLORS.black,
-                fontSize: DIMENS.xs,
-                fontWeight: '500',
-                fontStyle: 'italic',
-                marginHorizontal: 4,
-              }}
-            />
-          </View>
+          <Gap height={5} />
+          <ChartComponent lineData={lineData} lineDataPercen={lineDataPercen} />
           <Gap height={20} />
-
           <View style={styles.bodyTextTitle}>
             <Text style={styles.ProgresTitle}>Progress Bulan Ini</Text>
             <TouchableOpacity
@@ -251,66 +219,7 @@ export default function AmalYaumi({navigation}) {
             </TouchableOpacity>
           </View>
           <Gap height={4} />
-          <ScrollView
-            showsVerticalScrollIndicator={false}
-            style={styles.ContentSrollView}
-            contentContainerStyle={{flex: 1}}>
-            {scrollData.length > 0 ? (
-              scrollData.map((item, index) => (
-                <View key={index} style={styles.rowContainer}>
-                  <View style={styles.textContainer}>
-                    <Text style={styles.NameTitleYaumiText}>
-                      {item.title || 'Data tidak tersedia'}
-                    </Text>
-                    <Text style={styles.NameYaumiText}>
-                      Target poin bulan ini: {item.target || '0'}
-                    </Text>
-                    <Text style={styles.DateYaumiText}>
-                      Point saat ini: {item.current || '0'}
-                    </Text>
-                  </View>
-                  <View style={styles.wheelContainer}>
-                    <View style={{alignItems: 'center'}}>
-                      <ProgressWheel
-                        size={60}
-                        width={10}
-                        color={COLORS.greenBoy}
-                        progress={item.avgPoin}
-                        backgroundColor={COLORS.lightGrey}
-                      />
-                      <Text style={styles.percentTextAvgPoint}>
-                        {item.avgPoin}%
-                      </Text>
-                      <Text style={styles.wheelLabel}>Rata-rata Poin</Text>
-                    </View>
-
-                    <Gap width={7} />
-                    <View style={{alignItems: 'center'}}>
-                      <ProgressWheel
-                        size={60}
-                        width={10}
-                        color={COLORS.Orange}
-                        progress={item.percenPoin}
-                        backgroundColor={COLORS.lightGrey}
-                      />
-                      <Text style={styles.percentTextpercenPoin}>
-                        {item.percenPoin}%
-                      </Text>
-                      <Text style={styles.wheelLabel}>Persentase Poin</Text>
-                    </View>
-                  </View>
-                </View>
-              ))
-            ) : (
-              <View style={styles.emptyContainer}>
-                <Image
-                  source={ICON_NOTFOUND_DATA}
-                  style={{height: 220, width: 190}}
-                />
-              </View>
-            )}
-            <Gap height={104} />
-          </ScrollView>
+          <ProgressListComponent scrollData={scrollData} />
         </View>
 
         <ModalCustom
@@ -352,24 +261,6 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: COLORS.white,
   },
-  emptyContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingVertical: 20,
-  },
-  emptyText: {
-    fontSize: DIMENS.xxl,
-    color: COLORS.grey,
-    marginTop: 10,
-    textAlign: 'center',
-  },
-  wheelLabel: {
-    fontSize: DIMENS.xs,
-    color: COLORS.black,
-    fontWeight: '500',
-    marginTop: 4,
-  },
   CreateTextAmalYaumi: {
     color: COLORS.black,
     fontSize: DIMENS.s,
@@ -388,70 +279,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
   },
-  ContentSrollView: {
-    flex: 1,
-    padding: 3,
-    width: '100%',
-  },
-  rowContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    padding: 10,
-    borderRadius: 12,
-    backgroundColor: COLORS.white,
-    elevation: 2,
-    shadowColor: COLORS.black,
-    shadowOffset: {width: 0, height: 2},
-    shadowOpacity: 0.1,
-    marginVertical: 5,
-    shadowRadius: 3,
-    zIndex: 10,
-    borderWidth: 0.3,
-  },
-  textContainer: {
-    flex: 1,
-    paddingRight: 5,
-  },
-  wheelContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    alignItems: 'center',
-  },
-  percentTextAvgPoint: {
-    position: 'absolute',
-    textAlign: 'center',
-    top: 20,
-    fontSize: DIMENS.s,
-    fontWeight: 'bold',
-    color: COLORS.greenBoy,
-  },
-  percentTextpercenPoin: {
-    position: 'absolute',
-    textAlign: 'center',
-    top: 20,
-    fontSize: DIMENS.s,
-    fontWeight: 'bold',
-    color: COLORS.Orange,
-  },
-  DateYaumiText: {
-    color: COLORS.greyText,
-    fontSize: DIMENS.s,
-    fontWeight: '500',
-    textAlign: 'left',
-  },
-  NameTitleYaumiText: {
-    color: COLORS.black,
-    fontSize: DIMENS.xl,
-    fontWeight: 'bold',
-    textAlign: 'left',
-  },
-  NameYaumiText: {
-    color: COLORS.darkGrey,
-    fontSize: DIMENS.s,
-    fontWeight: '500',
-    textAlign: 'left',
-  },
   ProgresTitle: {
     color: COLORS.black,
     fontSize: DIMENS.xxl,
@@ -467,12 +294,6 @@ const styles = StyleSheet.create({
     fontSize: DIMENS.xxl,
     fontWeight: '500',
     textAlign: 'left',
-  },
-  chartContainer: {
-    backgroundColor: COLORS.white,
-    elevation: 4,
-    padding: 4,
-    borderRadius: 15,
   },
   profileWrapper: {
     marginRight: 10,
@@ -500,18 +321,17 @@ const styles = StyleSheet.create({
     padding: 6,
     borderBottomLeftRadius: 38,
     borderBottomRightRadius: 38,
-    minHeight: height * 0.25,
+    minHeight: height * 0.21,
   },
   monthWrapper: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 5,
-    paddingVertical: 13,
+    paddingHorizontal: 8,
   },
   monthText: {
-    fontSize: DIMENS.xxxxl,
-    fontWeight: 'bold',
+    fontSize: DIMENS.xxl,
+    fontWeight: '800',
     color: COLORS.black,
-    marginRight: 2,
+    marginRight: 5,
   },
 });

@@ -6,21 +6,22 @@ import {
   ScrollView,
   StatusBar,
   StyleSheet,
-  Text,
   TouchableOpacity,
-  View,
 } from 'react-native';
+import {useSelector} from 'react-redux';
+import {updateApprovalStatus} from '..';
 import {
-  Background,
   HeaderTransparent,
   ModalCustom,
   ModalLoading,
-} from '../../Component';
-import {updateApprovalStatus} from '../../features/Notification';
-import {COLORS, DIMENS} from '../../utils';
+  Text,
+  View,
+} from '../../../Component';
+import {COLORS, DIMENS} from '../../../utils';
 
 export default function NotificationDetail({route, navigation}) {
   const {notificationDetail: initialDetail} = route.params;
+  const {mode, colors} = useSelector(state => state.theme);
   const [notificationDetail, setNotificationDetail] = useState(initialDetail);
   const [modalVisible, setModalVisible] = useState(false);
   const [modalData, setModalData] = useState({});
@@ -107,55 +108,61 @@ export default function NotificationDetail({route, navigation}) {
 
   return (
     <View style={styles.container}>
-      <StatusBar barStyle="default" backgroundColor="transparent" />
-      <Background />
-      <View style={styles.headerWrapper}>
-        <HeaderTransparent
-          title="Detail Notifikasi"
-          icon="arrow-left-circle-outline"
-          onPress={() => navigation.goBack()}
-        />
-      </View>
+      <StatusBar
+        barStyle={mode == 'light' ? 'dark-content' : 'default'}
+        backgroundColor="transparent"
+      />
+      <HeaderTransparent
+        title="Detail Notifikasi"
+        icon="arrow-left-circle-outline"
+        onPress={() => navigation.goBack()}
+      />
       {notificationDetail ? (
-        <ScrollView
-          contentContainerStyle={styles.contentContainer}
-          refreshControl={
-            <RefreshControl
-              refreshing={refreshing}
-              onRefresh={() => {
-                setRefreshing(true);
-                fetchNotificationDetail();
-              }}
-            />
-          }>
-          <View style={styles.detailCard}>
-            {/* Title */}
-            <Text style={styles.title}>{notificationDetail?.title}</Text>
-            <Text style={styles.date}>
-              {new Date(notificationDetail.created_at).toLocaleString()}
-            </Text>
+        <View showImageBackground={true}>
+          <ScrollView
+            contentContainerStyle={styles.contentContainer}
+            refreshControl={
+              <RefreshControl
+                refreshing={refreshing}
+                onRefresh={() => {
+                  setRefreshing(true);
+                  fetchNotificationDetail();
+                }}
+              />
+            }>
+            <View style={styles.detailCard} section={true}>
+              {/* Title */}
+              <Text style={styles.title}>{notificationDetail?.title}</Text>
+              <Text
+                style={[
+                  styles.date,
+                  {color: colors[mode].textSectionDescSett},
+                ]}>
+                {new Date(notificationDetail.created_at).toLocaleString()}
+              </Text>
 
-            {/* Message */}
-            <View style={styles.section}>
-              <Text style={styles.sectionHeader}>Pesan</Text>
-              <Text style={styles.text}>{notificationDetail?.message}</Text>
-            </View>
-
-            {/* Approved Button */}
-            {notificationDetail?.approval?.is_approve === '1' && (
-              <View style={styles.viewApproval}>
-                <TouchableOpacity style={styles.approvedButton}>
-                  <Text style={styles.approvedText}>Approved</Text>
-                </TouchableOpacity>
+              {/* Message */}
+              <View style={styles.section} section={true}>
+                <Text style={styles.sectionHeader}>Pesan</Text>
+                <Text style={styles.text}>{notificationDetail?.message}</Text>
               </View>
-            )}
-          </View>
-        </ScrollView>
+
+              {/* Approved Button */}
+              {notificationDetail?.approval?.is_approve === '1' && (
+                <View style={styles.viewApproval}>
+                  <TouchableOpacity style={styles.approvedButton}>
+                    <Text style={styles.approvedText}>Approved</Text>
+                  </TouchableOpacity>
+                </View>
+              )}
+            </View>
+          </ScrollView>
+        </View>
       ) : null}
 
       {/* Bottom Approval */}
       {notificationDetail?.approval?.is_approve === null && (
-        <View style={styles.bottomContainer}>
+        <View style={styles.bottomContainer} section={true}>
           <TouchableOpacity
             style={[styles.button, styles.rejectButton]}
             onPress={() => handleApproval('reject')}>
@@ -217,24 +224,14 @@ export default function NotificationDetail({route, navigation}) {
 }
 
 const styles = StyleSheet.create({
-  headerWrapper: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 10,
-    backgroundColor: COLORS.goldenOrange,
-    elevation: 3,
-  },
   container: {
     flex: 1,
-    backgroundColor: COLORS.background,
   },
   contentContainer: {
     padding: 20,
     paddingBottom: 120,
   },
   detailCard: {
-    backgroundColor: COLORS.white,
     borderRadius: 10,
     padding: 20,
     elevation: 3,
@@ -242,12 +239,10 @@ const styles = StyleSheet.create({
   title: {
     fontSize: DIMENS.xl,
     fontWeight: 'bold',
-    color: COLORS.black,
     marginBottom: 10,
   },
   date: {
     fontSize: DIMENS.m,
-    color: COLORS.grey,
     marginBottom: 20,
   },
   section: {
@@ -259,12 +254,11 @@ const styles = StyleSheet.create({
   sectionHeader: {
     fontSize: DIMENS.l,
     fontWeight: 'bold',
-    color: COLORS.black,
     marginBottom: 5,
   },
   text: {
     fontSize: DIMENS.m,
-    color: COLORS.grey,
+    fontWeight: '400',
   },
   bottomContainer: {
     flexDirection: 'row',
@@ -273,7 +267,6 @@ const styles = StyleSheet.create({
     bottom: 20,
     left: 20,
     right: 20,
-    backgroundColor: COLORS.white,
     padding: 15,
     borderRadius: 10,
     elevation: 5,

@@ -97,9 +97,9 @@ export default function Dasboard({navigation}) {
         ? `${baseUrl}${response.url_photo}`
         : null;
       setPhoto(photoUrl);
-      dispatch(setAmountSantri(response.data_users.santris.tot_santri || 0));
-      dispatch(setAmountSpa(response.data_users.spa.tot_spa || 0));
-      dispatch(setUserPosition(response.position || ''));
+      dispatch(setAmountSantri(response?.data_users?.santris?.tot_santri || 0));
+      dispatch(setAmountSpa(response?.data_users?.spa?.tot_spa || 0));
+      dispatch(setUserPosition(response?.position || ''));
     } catch (e) {
       console.log('Terjadi kesalahan checking session', e);
     }
@@ -111,10 +111,10 @@ export default function Dasboard({navigation}) {
     }, [fetchUserSession]),
   );
   return (
-    <SafeAreaView style={{flex: 1, backgroundColor: COLORS.white}}>
+    <SafeAreaView style={{flex: 1}}>
       <StatusBar barStyle="default" backgroundColor="transparent" />
       <ScrollView
-        contentContainerStyle={{backgroundColor: COLORS.white}}
+        contentContainerStyle={styles.contentContainer}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }>
@@ -196,6 +196,9 @@ export default function Dasboard({navigation}) {
 }
 
 const styles = StyleSheet.create({
+  contentContainer: {
+    flexGrow: 1,
+  },
   imageContainer: {
     flex: 1,
     padding: 15,

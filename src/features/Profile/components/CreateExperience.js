@@ -1,26 +1,22 @@
 import React, {useState} from 'react';
 import {useForm} from 'react-hook-form';
-import {
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  ToastAndroid,
-  View,
-} from 'react-native';
+import {ScrollView, StyleSheet, TextInput, ToastAndroid} from 'react-native';
 import EncryptedStorage from 'react-native-encrypted-storage';
+import {useSelector} from 'react-redux';
 import {addExperience} from '..';
 import {
-  Background,
   ButtonAction,
   Gap,
   HeaderTransparent,
   ModalCustom,
+  Text,
+  View,
 } from '../../../Component';
 import {COLORS, DIMENS} from '../../../utils';
 
 export default function CreateExperience({navigation}) {
   const {handleSubmit} = useForm();
+  const {mode, colors} = useSelector(state => state.theme);
   const [company, setCompany] = useState('');
   const [lengthOfWork, setLengthOfWork] = useState('');
   const [position, setPosition] = useState('');
@@ -67,61 +63,96 @@ export default function CreateExperience({navigation}) {
 
   return (
     <View style={{flex: 1}}>
-      <Background />
-      <View style={styles.headerWrapper}>
-        <HeaderTransparent
-          title="Tambah Data Pengalaman"
-          icon="arrow-left-circle-outline"
-          onPress={() => navigation.goBack()}
-        />
-      </View>
-      <View style={styles.container}>
+      <HeaderTransparent
+        title="Tambah Data Pengalaman"
+        icon="arrow-left-circle-outline"
+        onPress={() => navigation.goBack()}
+      />
+      <View style={styles.container} showImageBackground={true}>
         <Gap height={15} />
-        <ScrollView
-          contentContainerStyle={styles.scrollContainer}
-          stickyHeaderHiddenOnScroll>
-          <View style={styles.inputContainer}>
-            <View style={styles.inputFieldContainer}>
-              <Text style={styles.inputLabel}>Perusahaan</Text>
+        <ScrollView style={styles.scrollContainer}>
+          <View style={styles.inputContainer} useBackgroundTransparent={true}>
+            <View
+              style={styles.inputFieldContainer}
+              useBackgroundTransparent={true}>
+              <Text
+                style={[styles.inputLabel, {color: colors[mode].textLabel}]}>
+                Perusahaan
+              </Text>
               <TextInput
-                style={styles.input}
+                style={[
+                  styles.input,
+                  {backgroundColor: colors[mode].textInput},
+                ]}
                 value={company}
                 onChangeText={setCompany}
-                placeholderTextColor={COLORS.grey}
+                placeholderTextColor={
+                  mode == 'light' ? COLORS.softGray : COLORS.grey
+                }
                 placeholder="Nama perusahaan"
               />
             </View>
 
-            <View style={styles.inputFieldContainer}>
-              <Text style={styles.inputLabel}>Lama Bekerja (Tahun)</Text>
+            <View
+              style={styles.inputFieldContainer}
+              useBackgroundTransparent={true}>
+              <Text
+                style={[styles.inputLabel, {color: colors[mode].textLabel}]}>
+                Lama Bekerja (Tahun)
+              </Text>
               <TextInput
-                style={styles.input}
+                style={[
+                  styles.input,
+                  {backgroundColor: colors[mode].textInput},
+                ]}
                 value={lengthOfWork}
                 onChangeText={setLengthOfWork}
                 keyboardType="numeric"
-                placeholderTextColor={COLORS.grey}
+                placeholderTextColor={
+                  mode == 'light' ? COLORS.softGray : COLORS.grey
+                }
                 placeholder="Lama bekerja dalam tahun"
               />
             </View>
 
-            <View style={styles.inputFieldContainer}>
-              <Text style={styles.inputLabel}>Posisi</Text>
+            <View
+              style={styles.inputFieldContainer}
+              useBackgroundTransparent={true}>
+              <Text
+                style={[styles.inputLabel, {color: colors[mode].textLabel}]}>
+                Posisi
+              </Text>
               <TextInput
-                style={styles.input}
+                style={[
+                  styles.input,
+                  {backgroundColor: colors[mode].textInput},
+                ]}
                 value={position}
                 onChangeText={setPosition}
-                placeholderTextColor={COLORS.grey}
+                placeholderTextColor={
+                  mode == 'light' ? COLORS.softGray : COLORS.grey
+                }
                 placeholder="Posisi pekerjaan"
               />
             </View>
 
-            <View style={styles.inputFieldContainer}>
-              <Text style={styles.inputLabel}>Deskripsi</Text>
+            <View
+              style={styles.inputFieldContainer}
+              useBackgroundTransparent={true}>
+              <Text
+                style={[styles.inputLabel, {color: colors[mode].textLabel}]}>
+                Deskripsi
+              </Text>
               <TextInput
-                style={styles.inputMultiline}
+                style={[
+                  styles.inputMultiline,
+                  {backgroundColor: colors[mode].textInput},
+                ]}
                 value={description}
                 onChangeText={setDescription}
-                placeholderTextColor={COLORS.grey}
+                placeholderTextColor={
+                  mode == 'light' ? COLORS.softGray : COLORS.grey
+                }
                 placeholder="Deskripsi pekerjaan"
                 multiline
               />
@@ -165,21 +196,12 @@ export default function CreateExperience({navigation}) {
 }
 
 const styles = StyleSheet.create({
-  headerWrapper: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 10,
-    backgroundColor: COLORS.goldenOrange,
-    elevation: 3,
-  },
   container: {
     flex: 1,
-    paddingHorizontal: 24,
   },
   scrollContainer: {
-    flexGrow: 1,
-    alignItems: 'center',
+    flex: 1,
+    padding: 15,
   },
   inputContainer: {
     width: '100%',
@@ -190,14 +212,12 @@ const styles = StyleSheet.create({
   },
   inputLabel: {
     fontSize: DIMENS.m,
-    color: COLORS.textPrimary,
     marginBottom: 5,
     fontWeight: '600',
   },
   input: {
     height: 45,
     paddingHorizontal: 10,
-    backgroundColor: COLORS.white,
     borderRadius: 10,
     borderColor: COLORS.neutralGrey,
     borderWidth: 1,
@@ -207,7 +227,6 @@ const styles = StyleSheet.create({
   inputMultiline: {
     minHeight: 90,
     paddingHorizontal: 10,
-    backgroundColor: COLORS.white,
     borderRadius: 10,
     borderColor: COLORS.neutralGrey,
     borderWidth: 1,

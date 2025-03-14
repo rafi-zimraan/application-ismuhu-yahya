@@ -4,25 +4,26 @@ import {
   Image,
   ScrollView,
   StyleSheet,
-  Text,
   ToastAndroid,
   TouchableOpacity,
-  View,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import {useSelector} from 'react-redux';
 import {deleteSuggestion, getSuggestionDetail} from '..';
 import {
-  Background,
   Gap,
   HeaderTransparent,
   ModalCustom,
   ModalLoading,
+  Text,
+  View,
 } from '../../../Component';
 import {ICON_NOTFOUND_DATA} from '../../../assets';
 import {COLORS, DIMENS} from '../../../utils';
 
 export default function DetailFacilityComplaint({navigation, route}) {
   const {id} = route.params;
+  const {colors, mode} = useSelector(state => state.theme);
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [deleting, setDeleting] = useState(false);
@@ -70,142 +71,148 @@ export default function DetailFacilityComplaint({navigation, route}) {
 
   return (
     <View style={{flex: 1}}>
-      <Background />
-      <View style={styles.headerWrapper}>
-        <HeaderTransparent
-          title="Detail Pengaduan Fasilitas"
-          icon="arrow-left-circle-outline"
-          onPress={() => navigation.goBack()}
-        />
-      </View>
+      <HeaderTransparent
+        title="Detail Pengaduan Fasilitas"
+        icon="arrow-left-circle-outline"
+        onPress={() => navigation.goBack()}
+      />
 
       {loading && <ModalLoading visible={loading} />}
 
       {!loading && !data && (
         <View style={styles.notFoundContainer}>
-          <Image source={ICON_NOTFOUND_DATA} style={styles.newsImageNotFound} />
+          <Image
+            source={ICON_NOTFOUND_DATA}
+            style={styles.newsImageNotFound}
+            resizeMethod="resize"
+            resizeMode="cover"
+          />
         </View>
       )}
 
       {!loading && data && (
         <>
-          <ScrollView style={styles.content}>
-            <ScrollView
-              horizontal
-              pagingEnabled
-              showsHorizontalScrollIndicator={false}
-              scrollEventThrottle={16}
-              style={styles.imageWrapper}
-              onScroll={event => {
-                const index = Math.round(
-                  event.nativeEvent.contentOffset.x / 320,
-                );
-                setCurrentImage(index);
-              }}>
-              {data?.images?.length > 0 ? (
-                data?.images?.map((item, index) => (
-                  <Image
+          <View style={{flex: 1}} showImageBackground={true}>
+            <ScrollView style={styles.content}>
+              <ScrollView
+                horizontal
+                pagingEnabled
+                showsHorizontalScrollIndicator={false}
+                scrollEventThrottle={16}
+                style={styles.imageWrapper}
+                onScroll={event => {
+                  const index = Math.round(
+                    event.nativeEvent.contentOffset.x / 320,
+                  );
+                  setCurrentImage(index);
+                }}>
+                {data?.images?.length > 0 ? (
+                  data?.images?.map((item, index) => (
+                    <Image
+                      key={index}
+                      source={
+                        item.path
+                          ? {uri: `https://app.simpondok.com/${item.path}`}
+                          : ICON_NOTFOUND_DATA
+                      }
+                      style={styles.image}
+                      resizeMethod="resize"
+                      resizeMode="cover"
+                    />
+                  ))
+                ) : (
+                  <View style={styles.notFoundContainer}>
+                    <Image
+                      source={ICON_NOTFOUND_DATA}
+                      style={styles.newsImageNotFound}
+                      resizeMethod="resize"
+                      resizeMode="cover"
+                    />
+                  </View>
+                )}
+              </ScrollView>
+
+              <View style={styles.viewPagination}>
+                {data?.images?.map((_, index) => (
+                  <TouchableOpacity
                     key={index}
-                    source={
-                      item.path
-                        ? {uri: `https://app.simpondok.com/${item.path}`}
-                        : ICON_NOTFOUND_DATA
-                    }
-                    style={styles.image}
-                    resizeMode="cover"
-                    resizeMethod="scale"
+                    style={[
+                      styles.paginationDot,
+                      currentImage === index && styles.activeDot,
+                    ]}
+                    onPress={() => setCurrentImage(index)}
                   />
-                ))
-              ) : (
-                <View style={styles.notFoundContainer}>
-                  <Image
-                    source={ICON_NOTFOUND_DATA}
-                    style={styles.newsImageNotFound}
-                  />
+                ))}
+              </View>
+
+              <Gap height={15} />
+              <View style={styles.contentWrapper} section={true}>
+                <View style={styles.textRow} section={true}>
+                  <Text style={styles.label}>Nama </Text>
+                  <Text style={styles.value}>: {data?.name}</Text>
                 </View>
-              )}
+                <View style={styles.textRow} section={true}>
+                  <Text style={styles.label}>Keluhan </Text>
+                  <Text style={styles.value}>: {data?.complaint}</Text>
+                </View>
+                <View style={styles.textRow} section={true}>
+                  <Text style={styles.label}>Barang yang Rusak </Text>
+                  <Text style={styles.value}>: {data?.goods_broken}</Text>
+                </View>
+                <View style={styles.textRow} section={true}>
+                  <Text style={styles.label}>Tempat </Text>
+                  <Text style={styles.value}>: {data?.place}</Text>
+                </View>
+                <View style={styles.textRow} section={true}>
+                  <Text style={styles.label}>Lokasi </Text>
+                  <Text style={styles.value}>: {data?.location}</Text>
+                </View>
+                <View style={styles.textRow} section={true}>
+                  <Text style={styles.label}>Saran </Text>
+                  <Text style={styles.value}>: {data?.suggestion}</Text>
+                </View>
+                <View style={styles.textRow} section={true}>
+                  <Text style={styles.label}>Nomor Telepon </Text>
+                  <Text style={styles.value}>: {data?.phone}</Text>
+                </View>
+                <View style={styles.textRow} section={true}>
+                  <Text style={styles.label}>Tanggal Pengaduan </Text>
+                  <Text style={styles.value}>
+                    : {data?.created_at.split('T')[0]}
+                  </Text>
+                </View>
+                <View style={styles.textRow} section={true}>
+                  <Text style={styles.label}>Status </Text>
+                  <Text style={styles.value}>
+                    : {data?.is_done === '1' ? 'Selesai' : 'Belum Selesai'}
+                  </Text>
+                </View>
+              </View>
             </ScrollView>
 
-            <View style={styles.viewPagination}>
-              {data?.images?.map((_, index) => (
-                <TouchableOpacity
-                  key={index}
-                  style={[
-                    styles.paginationDot,
-                    currentImage === index && styles.activeDot,
-                  ]}
-                  onPress={() => setCurrentImage(index)}
+            <View style={styles.actionButtonsContainer}>
+              <TouchableOpacity
+                onPress={() =>
+                  navigation.navigate('UpdateFacilityComplaint', {id})
+                }
+                style={[styles.iconButton, {backgroundColor: COLORS.blue}]}>
+                <Icon name="pencil" size={28} color={COLORS.white} />
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                onPress={() => setModalVisible(true)}
+                disabled={deleting}
+                style={[
+                  styles.iconButton,
+                  deleting && styles.iconButtonDisabled,
+                ]}>
+                <Icon
+                  name="delete"
+                  size={28}
+                  color={deleting ? COLORS.lightGrey : COLORS.white}
                 />
-              ))}
+              </TouchableOpacity>
             </View>
-
-            <Gap height={15} />
-            <View style={styles.contentWrapper}>
-              <View style={styles.textRow}>
-                <Text style={styles.label}>Nama </Text>
-                <Text style={styles.value}>: {data?.name}</Text>
-              </View>
-              <View style={styles.textRow}>
-                <Text style={styles.label}>Keluhan </Text>
-                <Text style={styles.value}>: {data?.complaint}</Text>
-              </View>
-              <View style={styles.textRow}>
-                <Text style={styles.label}>Barang yang Rusak </Text>
-                <Text style={styles.value}>: {data?.goods_broken}</Text>
-              </View>
-              <View style={styles.textRow}>
-                <Text style={styles.label}>Tempat </Text>
-                <Text style={styles.value}>: {data?.place}</Text>
-              </View>
-              <View style={styles.textRow}>
-                <Text style={styles.label}>Lokasi </Text>
-                <Text style={styles.value}>: {data?.location}</Text>
-              </View>
-              <View style={styles.textRow}>
-                <Text style={styles.label}>Saran </Text>
-                <Text style={styles.value}>: {data?.suggestion}</Text>
-              </View>
-              <View style={styles.textRow}>
-                <Text style={styles.label}>Nomor Telepon </Text>
-                <Text style={styles.value}>: {data?.phone}</Text>
-              </View>
-              <View style={styles.textRow}>
-                <Text style={styles.label}>Tanggal Pengaduan </Text>
-                <Text style={styles.value}>
-                  : {data?.created_at.split('T')[0]}
-                </Text>
-              </View>
-              <View style={styles.textRow}>
-                <Text style={styles.label}>Status </Text>
-                <Text style={styles.value}>
-                  : {data?.is_done === '1' ? 'Selesai' : 'Belum Selesai'}
-                </Text>
-              </View>
-            </View>
-          </ScrollView>
-
-          <View style={styles.actionButtonsContainer}>
-            <TouchableOpacity
-              onPress={() =>
-                navigation.navigate('UpdateFacilityComplaint', {id})
-              }
-              style={[styles.iconButton, {backgroundColor: COLORS.blue}]}>
-              <Icon name="pencil" size={28} color={COLORS.white} />
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              onPress={() => setModalVisible(true)}
-              disabled={deleting}
-              style={[
-                styles.iconButton,
-                deleting && styles.iconButtonDisabled,
-              ]}>
-              <Icon
-                name="delete"
-                size={28}
-                color={deleting ? COLORS.lightGray : COLORS.white}
-              />
-            </TouchableOpacity>
           </View>
         </>
       )}
@@ -272,14 +279,6 @@ const styles = StyleSheet.create({
   content: {
     padding: 15,
   },
-  headerWrapper: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 10,
-    backgroundColor: COLORS.goldenOrange,
-    elevation: 3,
-  },
   headerWrapperContent: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -292,7 +291,7 @@ const styles = StyleSheet.create({
     color: COLORS.black,
   },
   contentWrapper: {
-    backgroundColor: COLORS.white,
+    // backgroundColor: COLORS.white,
     borderRadius: 10,
     padding: 15,
     elevation: 3,

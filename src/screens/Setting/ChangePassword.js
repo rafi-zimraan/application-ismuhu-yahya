@@ -4,20 +4,19 @@ import {
   SafeAreaView,
   StatusBar,
   StyleSheet,
-  Text,
   TextInput,
   ToastAndroid,
   TouchableOpacity,
-  View,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useSelector} from 'react-redux';
 import {
-  Background,
   ButtonAction,
   Gap,
   HeaderTransparent,
   ModalCustom,
+  Text,
+  View,
 } from '../../Component';
 import {apiChangePassword} from '../../features/ChangePassword';
 import {Translations} from '../../features/Language';
@@ -25,7 +24,8 @@ import {COLORS, DIMENS} from '../../utils';
 
 export default function ChangePassword({navigation}) {
   const currentLanguage = useSelector(state => state.language.currentLanguage);
-  const {control, handleSubmit, setValue, watch} = useForm({
+  const {mode, colors} = useSelector(state => state.theme);
+  const {handleSubmit, setValue, watch} = useForm({
     defaultValues: {
       newPassword: '',
       confirmPassword: '',
@@ -92,23 +92,31 @@ export default function ChangePassword({navigation}) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar barStyle={'default'} backgroundColor={'transparent'} />
-      <Background />
-      <View style={styles.headerWrapper}>
-        <HeaderTransparent
-          title={t('password_title')}
-          icon="arrow-left-circle-outline"
-          onPress={() => navigation.goBack()}
-        />
-      </View>
+      <StatusBar
+        barStyle={mode == 'light' ? 'default' : 'dark-content'}
+        backgroundColor={'transparent'}
+      />
+      <HeaderTransparent
+        title={t('password_title')}
+        icon="arrow-left-circle-outline"
+        onPress={() => navigation.goBack()}
+      />
 
-      <View style={styles.contentWrapper}>
-        <View style={{paddingHorizontal: 20, paddingVertical: 15}}>
+      <View style={styles.contentWrapper} showImageBackground={true}>
+        <View
+          style={{paddingHorizontal: 20, paddingVertical: 15}}
+          useBackgroundTransparent={true}>
           <Text style={styles.title}>{t('change_password_title')}</Text>
 
           <View style={styles.inputContainer}>
             <TextInput
-              style={[styles.textInput, {borderColor: newPasswordBorderColor}]}
+              style={[
+                styles.textInput,
+                {
+                  borderColor: newPasswordBorderColor,
+                  backgroundColor: colors[mode].textInput,
+                },
+              ]}
               secureTextEntry={!showNewPassword}
               onChangeText={text => {
                 setValue('newPassword', text);
@@ -118,7 +126,9 @@ export default function ChangePassword({navigation}) {
               onBlur={() => setNewPasswordBorderColor(COLORS.grey)}
               value={newPassword}
               placeholder={t('new_password_placeholder')}
-              placeholderTextColor={COLORS.grey}
+              placeholderTextColor={
+                mode == 'light' ? COLORS.softGray : COLORS.grey
+              }
             />
 
             <TouchableOpacity
@@ -141,7 +151,10 @@ export default function ChangePassword({navigation}) {
             <TextInput
               style={[
                 styles.textInput,
-                {borderColor: confirmPasswordBorderColor},
+                {
+                  borderColor: confirmPasswordBorderColor,
+                  backgroundColor: colors[mode].textInput,
+                },
               ]}
               secureTextEntry={!showConfirmPassword}
               onChangeText={text => {
@@ -152,7 +165,9 @@ export default function ChangePassword({navigation}) {
               onBlur={() => setConfirmPasswordBorderColor(COLORS.grey)}
               value={confirmPassword}
               placeholder={t('confirm_password_placeholder')}
-              placeholderTextColor={COLORS.grey}
+              placeholderTextColor={
+                mode == 'light' ? COLORS.softGray : COLORS.grey
+              }
             />
 
             <TouchableOpacity
@@ -202,31 +217,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  headerWrapper: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 10,
-    backgroundColor: COLORS.goldenOrange,
-    elevation: 3,
-  },
-  backButton: {
-    color: COLORS.goldenOrange,
-    fontSize: DIMENS.l,
-    fontWeight: '600',
-  },
-  headerTitle: {
-    fontSize: DIMENS.xl,
-    fontWeight: '700',
-    color: COLORS.darkGray,
-  },
   contentWrapper: {
     flex: 1,
   },
   title: {
-    fontSize: DIMENS.xl,
+    fontSize: DIMENS.m,
     fontWeight: '600',
-    color: COLORS.darkGray,
     marginBottom: 5,
   },
   inputContainer: {

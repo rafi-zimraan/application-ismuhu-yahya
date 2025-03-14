@@ -13,7 +13,12 @@ export default function HeaderComponent({urlPhoto, welcomeText}) {
       <Gap height={5} />
       {urlPhoto ? (
         <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
-          <Image source={{uri: urlPhoto}} style={styles.profileImage} />
+          <Image
+            source={{uri: urlPhoto}}
+            style={styles.profileImage}
+            resizeMethod="resize"
+            resizeMode="cover"
+          />
         </TouchableOpacity>
       ) : (
         <Icon name="account-circle" size={31} color={COLORS.white} />

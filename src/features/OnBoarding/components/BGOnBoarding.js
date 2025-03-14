@@ -5,7 +5,8 @@ const BGOnBoarding = () => (
   <Image
     style={styles.bg}
     source={require('../../../assets/onboarding/imgBgOnboard.png')}
-    resizeMethod="scale"
+    resizeMethod="resize"
+    resizeMode="cover"
     fadeDuration={300}
   />
 );

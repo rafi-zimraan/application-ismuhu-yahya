@@ -1,12 +1,6 @@
 import React from 'react';
-import {
-  ActivityIndicator,
-  Modal,
-  Pressable,
-  StatusBar,
-  StyleSheet,
-  View,
-} from 'react-native';
+import {Modal, Pressable, StatusBar, StyleSheet, View} from 'react-native';
+import {AnimasiLoading} from '..';
 import {COLORS} from '../../utils';
 
 export default function ModalLoading({
@@ -29,7 +23,7 @@ export default function ModalLoading({
           children
         ) : (
           <View style={styles.container}>
-            <ActivityIndicator color={COLORS.gold} size="large" />
+            <AnimasiLoading />
           </View>
         )}
       </View>

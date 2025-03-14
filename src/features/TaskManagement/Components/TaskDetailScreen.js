@@ -199,6 +199,7 @@ export default function TaskDetailScreen({route, navigation}) {
                         source={{uri: `https://app.simpondok.com/${item.file}`}}
                         style={styles.imageFile}
                         resizeMethod="resize"
+                        resizeMode="cover"
                       />
                       <Text style={styles.fileTitle}>
                         {item?.title || 'Tanpa Judul'}
@@ -214,6 +215,8 @@ export default function TaskDetailScreen({route, navigation}) {
                   <Image
                     source={ICON_NOTFOUND_DATA}
                     style={styles.notFoundImage}
+                    resizeMethod="resize"
+                    resizeMode="cover"
                   />
                   <Text style={styles.noDataText}>
                     Tidak ada media visual tersedia
@@ -263,6 +266,8 @@ export default function TaskDetailScreen({route, navigation}) {
                   <Image
                     source={ICON_NOTFOUND_DATA}
                     style={styles.notFoundImage}
+                    resizeMethod="resize"
+                    resizeMode="cover"
                   />
                   <Text style={styles.noDataText}>
                     Tidak ada dokumen PDF tersedia
@@ -308,6 +313,8 @@ export default function TaskDetailScreen({route, navigation}) {
                   <Image
                     source={ICON_NOTFOUND_DATA}
                     style={styles.notFoundImage}
+                    resizeMethod="resize"
+                    resizeMode="cover"
                   />
                   <Text style={styles.noDataText}>
                     Tidak ada tautan tersedia
@@ -337,6 +344,8 @@ export default function TaskDetailScreen({route, navigation}) {
                 uri: `https://app.simpondok.com/${selectedImage}`,
               }}
               style={styles.fullscreenImage}
+              resizeMethod="resize"
+              resizeMode="cover"
             />
           </TouchableOpacity>
         </View>

@@ -1,18 +1,3 @@
-import AllDataCouple from './components/AllDataCouple';
-import AllDataExperience from './components/AllDataExperience';
-import AllDataTraining from './components/AllDataTraining';
-import CreateCouple from './components/CreateCouple';
-import CreateExperience from './components/CreateExperience';
-import CreateFamily from './components/CreateFamily';
-import CreateTraining from './components/CreateTraining';
-import DetailDataCouple from './components/DetailDataCouple';
-import DetailDataSpa from './components/DetailDataSpa';
-import DetailExperience from './components/DetailExperience';
-import DetailFamily from './components/DetailFamily';
-import DetailTraining from './components/DetailTraining';
-import SectionWithData from './components/SectionWithData';
-import UpdateDataSpa from './components/UpdateDataSpa';
-
 import {
   addCouple,
   addExperience,
@@ -40,8 +25,33 @@ import {
   uploadTrainingFile,
 } from './ProfileApiSlice';
 
+import AllDataCouple from './components/AllDataCouple';
+import AllDataExperience from './components/AllDataExperience';
+import AllDataTraining from './components/AllDataTraining';
+import CoupleSection from './components/CoupleSection';
+import CreateCouple from './components/CreateCouple';
+import CreateExperience from './components/CreateExperience';
+import CreateFamily from './components/CreateFamily';
+import CreateTraining from './components/CreateTraining';
+import DetailDataCouple from './components/DetailDataCouple';
+import DetailDataSpa from './components/DetailDataSpa';
+import DetailExperience from './components/DetailExperience';
+import DetailFamily from './components/DetailFamily';
+import DetailTraining from './components/DetailTraining';
+import ExperienceSection from './components/ExperienceSection';
+import FamilySection from './components/FamilySection';
+import ProfileSection from './components/ProfileSection';
+import SectionWithData from './components/SectionWithData';
+import TrainingSection from './components/TrainingSection';
+import UpdateDataSpa from './components/UpdateDataSpa';
+
 // component
 export {
+  FamilySection,
+  ExperienceSection,
+  TrainingSection,
+  CoupleSection,
+  ProfileSection,
   UpdateDataSpa,
   AllDataExperience,
   AllDataCouple,

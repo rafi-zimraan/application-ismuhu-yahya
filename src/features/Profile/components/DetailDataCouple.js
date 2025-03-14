@@ -4,25 +4,26 @@ import {
   ScrollView,
   StatusBar,
   StyleSheet,
-  Text,
   TextInput,
   ToastAndroid,
   TouchableOpacity,
-  View,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import {useSelector} from 'react-redux';
 import {deleteCouple, updateCouple} from '..';
 import {
-  Background,
   Gap,
   HeaderTransparent,
   ModalCustom,
+  Text,
+  View,
 } from '../../../Component';
 import {ICON_NOTFOUND_DATA} from '../../../assets';
 import {COLORS, DIMENS} from '../../../utils';
 
 export default function DetailDataCouple({route, navigation}) {
   const {data} = route.params;
+  const {colors, mode} = useSelector(state => state.theme);
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -67,78 +68,103 @@ export default function DetailDataCouple({route, navigation}) {
 
   return (
     <View style={{flex: 1}}>
-      <StatusBar barStyle="default" backgroundColor="transparent" />
-      <Background />
-      <View style={styles.headerWrapper}>
-        <HeaderTransparent
-          title="Detail Data Pasangan"
-          icon="arrow-left-circle-outline"
-          onPress={() => navigation.goBack()}
-        />
-      </View>
-      <ScrollView contentContainerStyle={{flexGrow: 1}}>
-        <View style={styles.container}>
+      <StatusBar
+        barStyle={mode == 'light' ? 'default' : 'dark-content'}
+        backgroundColor="transparent"
+      />
+      <HeaderTransparent
+        title="Detail Data Pasangan"
+        icon="arrow-left-circle-outline"
+        onPress={() => navigation.goBack()}
+      />
+      <View style={{flex: 1}} showImageBackground={true}>
+        <ScrollView style={styles.container}>
           {!isDeleted ? (
             <>
-              <View style={styles.content}>
-                <Text style={styles.title}>Data Pasangan</Text>
-                <View style={styles.section}>
+              <View style={styles.content} section={true}>
+                <View style={styles.viewButtonSection} section={true}>
+                  <Text style={styles.title}>Data Pasangan</Text>
+                  <TouchableOpacity
+                    style={styles.editButton}
+                    onPress={() => setEditModalVisible(true)}>
+                    <Icon name="pencil" size={20} color={COLORS.white} />
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={styles.deleteButton}
+                    onPress={() => setDeleteModalVisible(true)}>
+                    <Icon name="delete" size={20} color={COLORS.white} />
+                  </TouchableOpacity>
+                </View>
+                <View style={styles.section} section={true}>
                   <Icon name="account" size={24} color={COLORS.goldenOrange} />
-                  <View style={styles.viewContentText}>
-                    <Text style={styles.textTitle}>Nama Pasangan</Text>
+                  <View style={styles.viewContentText} section={true}>
+                    <Text
+                      style={[
+                        styles.textTitle,
+                        {color: colors[mode].textLabel},
+                      ]}>
+                      Nama Pasangan
+                    </Text>
                     <Text style={styles.label}>
                       {editedData?.name_couple || '-'}
                     </Text>
                   </View>
                 </View>
 
-                <View style={styles.section}>
+                <View style={styles.section} section={true}>
                   <Icon
                     name="account-child"
                     size={24}
                     color={COLORS.goldenOrange}
                   />
-                  <View style={styles.viewContentText}>
-                    <Text style={styles.textTitle}>Jumlah Anak</Text>
+                  <View style={styles.viewContentText} section={true}>
+                    <Text
+                      style={[
+                        styles.textTitle,
+                        {color: colors[mode].textLabel},
+                      ]}>
+                      Jumlah Anak
+                    </Text>
                     <Text style={styles.label}>
                       {editedData?.children || '-'}
                     </Text>
                   </View>
                 </View>
-                <View style={styles.section}>
+                <View style={styles.section} section={true}>
                   <Icon
                     name="map-marker"
                     size={24}
                     color={COLORS.goldenOrange}
                   />
-                  <View style={styles.viewContentText}>
-                    <Text style={styles.textTitle}>Domisili</Text>
+                  <View style={styles.viewContentText} section={true}>
+                    <Text
+                      style={[
+                        styles.textTitle,
+                        {color: colors[mode].textLabel},
+                      ]}>
+                      Domisili
+                    </Text>
                     <Text style={styles.label}>
                       {editedData?.couple_domisili || '-'}
                     </Text>
                   </View>
                 </View>
               </View>
-              <View style={styles.buttonContainer}>
-                <TouchableOpacity
-                  style={styles.editButton}
-                  onPress={() => setEditModalVisible(true)}>
-                  <Icon name="pencil" size={24} color={COLORS.white} />
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={styles.deleteButton}
-                  onPress={() => setDeleteModalVisible(true)}>
-                  <Icon name="delete" size={24} color={COLORS.white} />
-                </TouchableOpacity>
-              </View>
             </>
           ) : (
-            <View style={styles.noDataContainer}>
-              <Image source={ICON_NOTFOUND_DATA} style={styles.notFoundImage} />
+            <View
+              style={styles.noDataContainer}
+              useBackgroundTransparent={true}>
+              <Image
+                source={ICON_NOTFOUND_DATA}
+                style={styles.notFoundImage}
+                resizeMethod="resize"
+                resizeMode="cover"
+              />
             </View>
           )}
-        </View>
-      </ScrollView>
+        </ScrollView>
+      </View>
 
       <ModalCustom
         visible={editModalVisible}
@@ -153,8 +179,10 @@ export default function DetailDataCouple({route, navigation}) {
         iconModalName="content-save-edit"
         BackgroundButtonAction={COLORS.goldenOrange}
         TextColorButton={COLORS.white}>
-        <View>
-          <Text style={styles.inputLabel}>Nama</Text>
+        <View section={true}>
+          <Text style={[styles.inputLabel, {color: colors[mode].textLabel}]}>
+            Nama
+          </Text>
           <Gap height={5} />
           <TextInput
             style={styles.input}
@@ -165,7 +193,9 @@ export default function DetailDataCouple({route, navigation}) {
               setEditedData({...editedData, name_couple: text})
             }
           />
-          <Text style={styles.inputLabel}>Domisili</Text>
+          <Text style={[styles.inputLabel, {color: colors[mode].textLabel}]}>
+            Domisili
+          </Text>
           <Gap height={5} />
           <TextInput
             style={styles.input}
@@ -176,7 +206,9 @@ export default function DetailDataCouple({route, navigation}) {
               setEditedData({...editedData, couple_domisili: text})
             }
           />
-          <Text style={styles.inputLabel}>Jumlah Anak</Text>
+          <Text style={[styles.inputLabel, {color: colors[mode].textLabel}]}>
+            Jumlah Anak
+          </Text>
           <Gap height={5} />
           <TextInput
             style={styles.input}
@@ -223,14 +255,6 @@ export default function DetailDataCouple({route, navigation}) {
 }
 
 const styles = StyleSheet.create({
-  headerWrapper: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 10,
-    backgroundColor: COLORS.goldenOrange,
-    elevation: 3,
-  },
   container: {
     flex: 1,
     padding: 20,
@@ -238,10 +262,12 @@ const styles = StyleSheet.create({
   title: {
     fontSize: DIMENS.xl,
     fontWeight: 'bold',
-    color: COLORS.black,
+  },
+  viewButtonSection: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
   content: {
-    backgroundColor: COLORS.white,
     borderRadius: 15,
     padding: 15,
     shadowColor: COLORS.black,
@@ -249,6 +275,9 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     elevation: 2,
     marginTop: 5,
+    borderWidth: 0.3,
+    borderColor: COLORS.black,
+    flexWrap: 'wrap',
   },
   section: {
     flexDirection: 'row',
@@ -267,22 +296,15 @@ const styles = StyleSheet.create({
     fontSize: DIMENS.l,
     color: COLORS.textPrimary,
   },
-  buttonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    position: 'absolute',
-    bottom: 20,
-    right: 20,
-  },
   editButton: {
     backgroundColor: COLORS.greenConfirm,
-    padding: 15,
+    padding: 5,
     borderRadius: 50,
-    marginRight: 10,
+    marginLeft: 90,
   },
   deleteButton: {
     backgroundColor: COLORS.red,
-    padding: 15,
+    padding: 5,
     borderRadius: 50,
   },
   inputLabel: {

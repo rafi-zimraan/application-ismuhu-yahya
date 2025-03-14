@@ -4,25 +4,26 @@ import {
   ScrollView,
   StatusBar,
   StyleSheet,
-  Text,
   TextInput,
   ToastAndroid,
   TouchableOpacity,
-  View,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import {useSelector} from 'react-redux';
 import {deleteExperience, updateExperience} from '..';
 import {
-  Background,
   Gap,
   HeaderTransparent,
   ModalCustom,
+  Text,
+  View,
 } from '../../../Component';
 import {ICON_NOTFOUND_DATA} from '../../../assets';
 import {COLORS, DIMENS} from '../../../utils';
 
 export default function DetailExperience({route, navigation}) {
   const {data} = route.params;
+  const {colors, mode} = useSelector(state => state.theme);
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -67,38 +68,62 @@ export default function DetailExperience({route, navigation}) {
 
   return (
     <View style={{flex: 1}}>
-      <StatusBar barStyle="default" backgroundColor="transparent" />
-      <Background />
-      <View style={styles.headerWrapper}>
-        <HeaderTransparent
-          title="Detail Pengalaman"
-          icon="arrow-left-circle-outline"
-          onPress={() => navigation.goBack()}
-        />
-      </View>
-      <ScrollView contentContainerStyle={{flexGrow: 1}}>
-        <View style={styles.container}>
+      <StatusBar
+        barStyle={mode == 'light' ? 'default' : 'dark-content'}
+        backgroundColor="transparent"
+      />
+      <HeaderTransparent
+        title="Detail Data Pengalaman"
+        icon="arrow-left-circle-outline"
+        onPress={() => navigation.goBack()}
+      />
+      <View style={{flex: 1}} showImageBackground={true}>
+        <ScrollView style={styles.container}>
           {!isDeleted ? (
             <>
-              <View style={styles.content}>
-                <Text style={styles.title}>Detail Experience</Text>
-                <View style={styles.section}>
+              <View style={styles.content} section={true}>
+                <View style={styles.viewButtonMore} section={true}>
+                  <Text style={styles.title}>Data Pengalaman Kerja</Text>
+                  <TouchableOpacity
+                    style={styles.editButton}
+                    onPress={() => setEditModalVisible(true)}>
+                    <Icon name="pencil" size={24} color={COLORS.white} />
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={styles.deleteButton}
+                    onPress={() => setDeleteModalVisible(true)}>
+                    <Icon name="delete" size={24} color={COLORS.white} />
+                  </TouchableOpacity>
+                </View>
+                <View style={styles.section} section={true}>
                   <Icon
                     name="office-building"
                     size={24}
                     color={COLORS.goldenOrange}
                   />
-                  <View style={styles.viewContentText}>
-                    <Text style={styles.textTitle}>Nama Perusahaan</Text>
+                  <View style={styles.viewContentText} section={true}>
+                    <Text
+                      style={[
+                        styles.textTitle,
+                        {color: colors[mode].textLabel},
+                      ]}>
+                      Nama Perusahaan
+                    </Text>
                     <Text style={styles.label}>
                       {editedData.company || '-'}
                     </Text>
                   </View>
                 </View>
-                <View style={styles.section}>
+                <View style={styles.section} section={true}>
                   <Icon name="timer" size={24} color={COLORS.goldenOrange} />
-                  <View style={styles.viewContentText}>
-                    <Text style={styles.textTitle}>Lama Bekerja</Text>
+                  <View style={styles.viewContentText} section={true}>
+                    <Text
+                      style={[
+                        styles.textTitle,
+                        {color: colors[mode].textLabel},
+                      ]}>
+                      Lama Bekerja
+                    </Text>
                     <Text style={styles.label}>
                       {editedData.length_of_work
                         ? `${editedData.length_of_work} Tahun`
@@ -106,36 +131,37 @@ export default function DetailExperience({route, navigation}) {
                     </Text>
                   </View>
                 </View>
-                <View style={styles.section}>
+                <View style={styles.section} section={true}>
                   <Icon name="account" size={24} color={COLORS.goldenOrange} />
-                  <View style={styles.viewContentText}>
-                    <Text style={styles.textTitle}>Posisi</Text>
+                  <View style={styles.viewContentText} section={true}>
+                    <Text
+                      style={[
+                        styles.textTitle,
+                        {color: colors[mode].textLabel},
+                      ]}>
+                      Posisi
+                    </Text>
                     <Text style={styles.label}>
                       {editedData.position || '-'}
                     </Text>
                   </View>
                 </View>
               </View>
-              <View style={styles.buttonContainer}>
-                <TouchableOpacity
-                  style={styles.editButton}
-                  onPress={() => setEditModalVisible(true)}>
-                  <Icon name="pencil" size={24} color={COLORS.white} />
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={styles.deleteButton}
-                  onPress={() => setDeleteModalVisible(true)}>
-                  <Icon name="delete" size={24} color={COLORS.white} />
-                </TouchableOpacity>
-              </View>
             </>
           ) : (
-            <View style={styles.noDataContainer}>
-              <Image source={ICON_NOTFOUND_DATA} style={styles.notFoundImage} />
+            <View
+              style={styles.noDataContainer}
+              useBackgroundTransparent={true}>
+              <Image
+                source={ICON_NOTFOUND_DATA}
+                style={styles.notFoundImage}
+                resizeMethod="resize"
+                resizeMode="cover"
+              />
             </View>
           )}
-        </View>
-      </ScrollView>
+        </ScrollView>
+      </View>
 
       <ModalCustom
         visible={editModalVisible}
@@ -150,8 +176,10 @@ export default function DetailExperience({route, navigation}) {
         iconModalName="content-save-edit"
         BackgroundButtonAction={COLORS.goldenOrange}
         TextColorButton={COLORS.white}>
-        <View>
-          <Text style={styles.inputLabel}>Nama Perusahan</Text>
+        <View section={true}>
+          <Text style={[styles.inputLabel, {color: colors[mode].textLabel}]}>
+            Nama Perusahan
+          </Text>
           <Gap height={5} />
           <TextInput
             style={styles.input}
@@ -160,7 +188,9 @@ export default function DetailExperience({route, navigation}) {
             placeholderTextColor={COLORS.grey}
             onChangeText={text => setEditedData({...editedData, company: text})}
           />
-          <Text style={styles.inputLabel}>Lama Bekerja</Text>
+          <Text style={[styles.inputLabel, {color: colors[mode].textLabel}]}>
+            Lama Bekerja
+          </Text>
           <Gap height={5} />
           <TextInput
             style={styles.input}
@@ -175,7 +205,9 @@ export default function DetailExperience({route, navigation}) {
               })
             }
           />
-          <Text style={styles.inputLabel}>Posisi</Text>
+          <Text style={[styles.inputLabel, {color: colors[mode].textLabel}]}>
+            Posisi
+          </Text>
           <Gap height={5} />
           <TextInput
             style={styles.input}
@@ -220,13 +252,9 @@ export default function DetailExperience({route, navigation}) {
 }
 
 const styles = StyleSheet.create({
-  headerWrapper: {
+  viewButtonMore: {
     flexDirection: 'row',
-    alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: 10,
-    backgroundColor: COLORS.goldenOrange,
-    elevation: 3,
   },
   container: {
     flex: 1,
@@ -235,10 +263,8 @@ const styles = StyleSheet.create({
   title: {
     fontSize: DIMENS.xl,
     fontWeight: 'bold',
-    color: COLORS.black,
   },
   content: {
-    backgroundColor: COLORS.white,
     borderRadius: 15,
     padding: 15,
     shadowColor: COLORS,
@@ -246,6 +272,9 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     elevation: 2,
     marginTop: 5,
+    borderWidth: 0.3,
+    borderColor: COLORS.black,
+    flexWrap: 'wrap',
   },
   section: {
     flexDirection: 'row',
@@ -264,27 +293,20 @@ const styles = StyleSheet.create({
     fontSize: DIMENS.l,
     color: COLORS.textPrimary,
   },
-  buttonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    position: 'absolute',
-    bottom: 20,
-    right: 20,
-  },
+
   editButton: {
     backgroundColor: COLORS.greenConfirm,
-    padding: 15,
+    padding: 3,
     borderRadius: 50,
-    marginRight: 10,
+    marginLeft: 20,
   },
   deleteButton: {
     backgroundColor: COLORS.red,
-    padding: 15,
+    padding: 3,
     borderRadius: 50,
   },
   inputLabel: {
     fontSize: DIMENS.m,
-    color: COLORS.darkGray,
     marginTop: 3,
   },
   input: {
@@ -300,6 +322,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor: 'transparent',
   },
   notFoundImage: {
     width: 250,

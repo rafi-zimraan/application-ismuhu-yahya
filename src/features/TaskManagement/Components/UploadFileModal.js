@@ -219,7 +219,12 @@ export default function UploadFileModal({
           )}
 
           {fileUri && fileType === 'image' && (
-            <Image source={{uri: fileUri.uri}} style={styles.previewImage} />
+            <Image
+              source={{uri: fileUri.uri}}
+              style={styles.previewImage}
+              resizeMethod="resize"
+              resizeMode="cover"
+            />
           )}
 
           {fileUri && fileType === 'pdf' && (

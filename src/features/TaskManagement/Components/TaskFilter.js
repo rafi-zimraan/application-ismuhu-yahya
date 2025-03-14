@@ -34,6 +34,7 @@ const filterOptions = [
 ];
 
 const TaskFilter = () => {
+  const {colors, mode} = useSelector(state => state.theme);
   const filter = useSelector(state => state.task_management.filter);
   const handlePressIn = () => {
     iconScale.value = withSpring(1.2, {damping: 10, stiffness: 100});
@@ -59,7 +60,10 @@ const TaskFilter = () => {
               key={index}
               style={[
                 styles.filterButton,
-                isSelected && {backgroundColor: COLORS.black},
+                isSelected && {
+                  backgroundColor:
+                    mode == 'light' ? COLORS.black : COLORS.softRed,
+                },
               ]}
               onPress={() => dispatch(setFilter(item.key))}
               onPressIn={handlePressIn}
@@ -75,7 +79,6 @@ const TaskFilter = () => {
                 <Text
                   style={[
                     styles.filterText,
-                    // isSelected ? {color: filter.color} : {color: COLORS.black},
                     {color: isSelected ? item.color : COLORS.black},
                   ]}>
                   {item.label}

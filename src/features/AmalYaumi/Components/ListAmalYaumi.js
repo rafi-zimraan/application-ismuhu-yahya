@@ -240,7 +240,9 @@ export default function ListAmalYaumi({navigation}) {
           <View style={styles.emptyWrapper}>
             <Image
               source={ICON_NOTFOUND_DATA}
-              style={{height: 250, width: 230}}
+              resizeMethod="resize"
+              resizeMode="cover"
+              style={styles.imgNotFound}
             />
           </View>
         ) : (
@@ -542,6 +544,10 @@ export default function ListAmalYaumi({navigation}) {
 }
 
 const styles = StyleSheet.create({
+  imgNotFound: {
+    height: 250,
+    width: 230,
+  },
   titleChecklistNotSubYaumi: {
     fontSize: DIMENS.m,
     color: COLORS.black,

@@ -27,7 +27,12 @@ export default function HistoryCuti({
       <View style={{padding: 10}}>
         {filteredData.length === 0 ? (
           <View style={styles.emptyContainer}>
-            <Image source={ICON_NOTFOUND_DATA} style={styles.image} />
+            <Image
+              source={ICON_NOTFOUND_DATA}
+              style={styles.image}
+              resizeMethod="resize"
+              resizeMode="cover"
+            />
             <Text style={styles.emptyText}>Data tidak ditemukan</Text>
           </View>
         ) : (

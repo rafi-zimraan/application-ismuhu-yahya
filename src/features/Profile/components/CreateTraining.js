@@ -4,24 +4,25 @@ import {useForm} from 'react-hook-form';
 import {
   ScrollView,
   StyleSheet,
-  Text,
   TextInput,
   ToastAndroid,
   TouchableOpacity,
-  View,
 } from 'react-native';
 import EncryptedStorage from 'react-native-encrypted-storage';
+import {useSelector} from 'react-redux';
 import {addTraining} from '..';
 import {
-  Background,
   ButtonAction,
   Gap,
   HeaderTransparent,
   ModalCustom,
+  Text,
+  View,
 } from '../../../Component';
 import {COLORS, DIMENS} from '../../../utils';
 
 export default function CreateTraining({navigation}) {
+  const {mode, colors} = useSelector(state => state.theme);
   const {handleSubmit} = useForm();
   const [title, setTitle] = useState('');
   const [date, setDate] = useState(new Date());
@@ -78,84 +79,111 @@ export default function CreateTraining({navigation}) {
 
   return (
     <View style={{flex: 1}}>
-      <Background />
-      <View style={styles.headerWrapper}>
-        <HeaderTransparent
-          title="Tambah Data Pelatihan"
-          icon="arrow-left-circle-outline"
-          onPress={() => navigation.goBack()}
-        />
-      </View>
-      <View style={styles.container}>
+      <HeaderTransparent
+        title="Tambah Data Pelatihan"
+        icon="arrow-left-circle-outline"
+        onPress={() => navigation.goBack()}
+      />
+      <View style={styles.container} showImageBackground={true}>
         <Gap height={15} />
-        <ScrollView
-          contentContainerStyle={styles.scrollContainer}
-          stickyHeaderHiddenOnScroll>
-          <View style={styles.inputContainer}>
-            <View style={styles.inputFieldContainer}>
-              <Text style={styles.inputLabel}>Judul</Text>
-              <TextInput
-                style={styles.input}
-                value={title}
-                onChangeText={setTitle}
-                placeholderTextColor={COLORS.grey}
-                placeholder="Judul training"
-              />
-            </View>
+        <ScrollView style={styles.scrollContainer}>
+          <View
+            style={styles.inputFieldContainer}
+            useBackgroundTransparent={true}>
+            <Text style={[styles.inputLabel, {color: colors[mode].textLabel}]}>
+              Judul
+            </Text>
+            <TextInput
+              style={[styles.input, {backgroundColor: colors[mode].textInput}]}
+              value={title}
+              onChangeText={setTitle}
+              placeholderTextColor={
+                mode == 'light' ? COLORS.softGray : COLORS.grey
+              }
+              placeholder="Judul training"
+            />
+          </View>
 
-            <View style={styles.inputFieldContainer}>
-              <Text style={styles.inputLabel}>Tanggal</Text>
-              <TouchableOpacity
-                onPress={() => setShowDatePicker(true)}
-                style={styles.datePickerContainer}>
-                <Text style={styles.dateText}>
-                  {date.toISOString().split('T')[0]}
-                </Text>
-              </TouchableOpacity>
-              {showDatePicker && (
-                <DateTimePicker
-                  value={date}
-                  mode="date"
-                  display="default"
-                  onChange={handleDateChange}
-                />
-              )}
-            </View>
-
-            <View style={styles.inputFieldContainer}>
-              <Text style={styles.inputLabel}>Kategori</Text>
-              <TextInput
-                style={styles.input}
-                value={category}
-                onChangeText={setCategory}
-                placeholderTextColor={COLORS.grey}
-                placeholder="Kategori training"
+          <View
+            style={styles.inputFieldContainer}
+            useBackgroundTransparent={true}>
+            <Text style={[styles.inputLabel, {color: colors[mode].textLabel}]}>
+              Tanggal
+            </Text>
+            <TouchableOpacity
+              onPress={() => setShowDatePicker(true)}
+              style={[
+                styles.datePickerContainer,
+                {backgroundColor: colors[mode].textInput},
+              ]}>
+              <Text style={[styles.dateText]}>
+                {date.toISOString().split('T')[0]}
+              </Text>
+            </TouchableOpacity>
+            {showDatePicker && (
+              <DateTimePicker
+                value={date}
+                mode="date"
+                display="default"
+                onChange={handleDateChange}
               />
-            </View>
+            )}
+          </View>
 
-            <View style={styles.inputFieldContainer}>
-              <Text style={styles.inputLabel}>Harga Pelatihan</Text>
-              <TextInput
-                style={styles.input}
-                value={cost}
-                onChangeText={setCost}
-                keyboardType="numeric"
-                placeholderTextColor={COLORS.grey}
-                placeholder="Harga Pelatihan"
-              />
-            </View>
+          <View
+            style={styles.inputFieldContainer}
+            useBackgroundTransparent={true}>
+            <Text style={[styles.inputLabel, {color: colors[mode].textLabel}]}>
+              Kategori
+            </Text>
+            <TextInput
+              style={[styles.input, {backgroundColor: colors[mode].textInput}]}
+              value={category}
+              onChangeText={setCategory}
+              placeholderTextColor={
+                mode == 'light' ? COLORS.softGray : COLORS.grey
+              }
+              placeholder="Kategori training"
+            />
+          </View>
 
-            <View style={styles.inputFieldContainer}>
-              <Text style={styles.inputLabel}>Deskripsi</Text>
-              <TextInput
-                style={styles.inputMultiline}
-                value={desc}
-                onChangeText={setDesc}
-                placeholderTextColor={COLORS.grey}
-                placeholder="Deskripsi training"
-                multiline
-              />
-            </View>
+          <View
+            style={styles.inputFieldContainer}
+            useBackgroundTransparent={true}>
+            <Text style={[styles.inputLabel, {color: colors[mode].textLabel}]}>
+              Harga Pelatihan
+            </Text>
+            <TextInput
+              style={[styles.input, {backgroundColor: colors[mode].textInput}]}
+              value={cost}
+              onChangeText={setCost}
+              keyboardType="numeric"
+              placeholderTextColor={
+                mode == 'light' ? COLORS.softGray : COLORS.grey
+              }
+              placeholder="Harga Pelatihan"
+            />
+          </View>
+
+          <View
+            style={styles.inputFieldContainer}
+            useBackgroundTransparent={true}>
+            <Text style={[styles.inputLabel, {color: colors[mode].textLabel}]}>
+              Deskripsi
+            </Text>
+            <TextInput
+              style={[
+                styles.inputMultiline,
+                {backgroundColor: colors[mode].textInput},
+              ]}
+              value={desc}
+              onChangeText={setDesc}
+              placeholderTextColor={
+                mode == 'light' ? COLORS.softGray : COLORS.grey
+              }
+              placeholder="Deskripsi training"
+              multiline
+            />
           </View>
           <Gap height={15} />
           <ButtonAction
@@ -219,12 +247,11 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    paddingHorizontal: 24,
   },
   scrollContainer: {
-    flexGrow: 1,
-    alignItems: 'center',
+    flex: 1,
     paddingBottom: 30,
+    padding: 15,
   },
   inputContainer: {
     width: '100%',
@@ -235,14 +262,12 @@ const styles = StyleSheet.create({
   },
   inputLabel: {
     fontSize: DIMENS.m,
-    color: COLORS.textPrimary,
     marginBottom: 5,
     fontWeight: '600',
   },
   input: {
     height: 45,
     paddingHorizontal: 10,
-    backgroundColor: COLORS.white,
     borderRadius: 10,
     borderColor: COLORS.neutralGrey,
     borderWidth: 1,
@@ -255,7 +280,6 @@ const styles = StyleSheet.create({
     minHeight: 90,
     paddingHorizontal: 10,
     borderColor: COLORS.grey,
-    backgroundColor: COLORS.white,
     borderRadius: 10,
     borderColor: COLORS.neutralGrey,
     borderWidth: 1,
@@ -267,13 +291,13 @@ const styles = StyleSheet.create({
     height: 45,
     justifyContent: 'center',
     paddingHorizontal: 10,
-    backgroundColor: COLORS.white,
     borderRadius: 10,
-    borderColor: COLORS.neutralGrey,
-    borderWidth: 1,
+    borderWidth: 0.4,
+    borderColor: COLORS.grey,
   },
   dateText: {
     fontSize: DIMENS.s,
+    fontWeight: '400',
     color: COLORS.black,
   },
 });

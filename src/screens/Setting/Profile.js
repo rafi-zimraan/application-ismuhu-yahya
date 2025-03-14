@@ -1,5 +1,5 @@
 import {useFocusEffect} from '@react-navigation/native';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   Alert,
   Animated,
@@ -8,23 +8,28 @@ import {
   RefreshControl,
   ScrollView,
   StyleSheet,
-  Text,
   ToastAndroid,
   TouchableOpacity,
-  View,
 } from 'react-native';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import LinearGradient from 'react-native-linear-gradient';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import {useSelector} from 'react-redux';
 import {
-  Background,
   Gap,
   HeaderTransparent,
   ModalCustom,
   ModalLoading,
+  Text,
+  View,
 } from '../../Component';
 import {
+  CoupleSection,
+  ExperienceSection,
+  FamilySection,
+  ProfileSection,
+  TrainingSection,
   getAllDataSpa,
   getCoupleData,
   getExperienceData,
@@ -36,6 +41,7 @@ import {FecthMe} from '../../features/authentication';
 import {COLORS, DIMENS} from '../../utils';
 
 export default function Profile({navigation}) {
+  const {colors, mode} = useSelector(state => state.theme);
   const [divisionName, setDivisionName] = useState('');
   const [departmentName, setDepartmentName] = useState('');
   const [tokenExpired, setTokenExpired] = useState(false);
@@ -48,6 +54,21 @@ export default function Profile({navigation}) {
   const [familyData, setFamilyData] = useState([]);
   const [spaData, setSpaData] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
+
+  const CheckToken = async () => {
+    try {
+      const response = await FecthMe();
+      if (response.message === 'Silahkan login terlebih dahulu') {
+        setTokenExpired(true);
+      }
+    } catch (error) {
+      console.log('err token', error);
+    }
+  };
+
+  useEffect(() => {
+    CheckToken();
+  }, []);
 
   const handleImageResponse = async response => {
     if (!response.didCancel && response.assets) {
@@ -256,9 +277,8 @@ export default function Profile({navigation}) {
         visible={modalLoadingVisible}
         onRequestClose={() => setModalLoadingVisible(false)}
       />
-      <Background />
       <LinearGradient
-        colors={['#FFD700', '#FFB200']}
+        colors={colors[mode].linearGardenProfile}
         start={{x: 0, y: 0}}
         end={{x: 1, y: 1}}
         style={styles.header}>
@@ -266,11 +286,18 @@ export default function Profile({navigation}) {
           title="Profile"
           icon="arrow-left-circle-outline"
           onPress={() => navigation.goBack()}
+          linearGardenProfile={true}
         />
-        <View style={{alignItems: 'center', justifyContent: 'center'}}>
+        <View style={styles.content} useSectionProfile={true}>
           <TouchableOpacity activeOpacity={0.7} onPress={handleImagePicker}>
+            <Gap height={5} />
             {photo ? (
-              <Image source={{uri: photo}} style={styles.profileImage} />
+              <Image
+                source={{uri: photo}}
+                style={styles.profileImage}
+                resizeMethod="resize"
+                resizeMode="cover"
+              />
             ) : (
               <View style={styles.placeholderImage}>
                 <Icon name="account" size={40} color={COLORS.softGray} />
@@ -282,412 +309,78 @@ export default function Profile({navigation}) {
               <Icon name="camera" size={15} color={COLORS.white} />
             </TouchableOpacity>
           </TouchableOpacity>
-          <Text style={styles.name}>{spaData?.name || '-'}</Text>
+          <Text style={[styles.name, {color: colors[mode].text}]}>
+            {spaData?.name || '-'}
+          </Text>
           <Text style={styles.division}>{divisionName || '-'}</Text>
           <Text style={styles.department}>{departmentName || '-'}</Text>
         </View>
       </LinearGradient>
 
-      <ScrollView
-        refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={onRefresh}
-            colors={['#ffd700']}
+      <View showImageBackground={true} style={{flex: 1}}>
+        <ScrollView
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+              colors={['#ffd700']}
+            />
+          }
+          stickyHeaderHiddenOnScroll
+          contentContainerStyle={styles.scrollContainer}
+          onScroll={Animated.event(
+            [{nativeEvent: {contentOffset: {y: scrollY}}}],
+            {useNativeDriver: false},
+          )}
+          scrollEventThrottle={15}>
+          <ProfileSection
+            title="Data Pribadi"
+            data={spaData}
+            navigation={navigation}
+            navTargetDetail="DetailDataSpa"
+            navTargetCreate="CreateDataSpa"
           />
-        }
-        stickyHeaderHiddenOnScroll
-        contentContainerStyle={styles.scrollContainer}
-        onScroll={Animated.event(
-          [{nativeEvent: {contentOffset: {y: scrollY}}}],
-          {useNativeDriver: false},
-        )}
-        scrollEventThrottle={15}>
-        <TouchableOpacity
-          activeOpacity={0.9}
-          style={styles.contentCouple}
-          onPress={() => {
-            if (spaData) {
-              navigation.navigate('DetailDataSpa', {
-                data: spaData,
-              });
-            }
-          }}>
-          <Text style={styles.sectionHeader}>Data Pribadi</Text>
-          {spaData ? (
-            <View>
-              <View style={styles.sectionWithIcon}>
-                <Icon name="account-circle" size={20} color="#FFD700" />
-                <Text style={styles.sectionHeaderText}>Pribadi</Text>
-              </View>
-              <View style={styles.section}>
-                <Icon name="account" size={24} color={COLORS.goldenOrange} />
-                <View style={styles.viewContainerText}>
-                  <Text style={styles.textLabels}>Username</Text>
-                  <Text style={styles.TextDatas}>{spaData?.name || '-'}</Text>
-                </View>
-              </View>
-              <View style={styles.section}>
-                <Icon name="email" size={24} color={COLORS.goldenOrange} />
-                <View style={styles.sectionTextContainer}>
-                  <Text style={styles.textLabels}>email</Text>
-                  <Text style={styles.sectionTitle}>
-                    {spaData?.email || '-'}
-                  </Text>
-                </View>
-              </View>
-              <View style={styles.section}>
-                <Icon
-                  name="gender-male-female"
-                  size={24}
-                  color={COLORS.goldenOrange}
-                />
-                <View style={styles.sectionTextContainer}>
-                  <Text style={styles.textLabels}>Jenis Kelamin</Text>
-                  <Text style={styles.sectionTitle}>
-                    {spaData?.gender || '-'}
-                  </Text>
-                </View>
-              </View>
-            </View>
-          ) : (
-            <View>
-              <Text style={styles.sectionSubtitle}>
-                Data spa tidak tersedia.
-              </Text>
-              <TouchableOpacity
-                style={styles.createButton}
-                activeOpacity={0.7}
-                onPress={() => navigation.navigate('CreateDataSpa')}>
-                <Icon name="plus-circle" size={25} color={COLORS.black} />
-              </TouchableOpacity>
-            </View>
-          )}
-        </TouchableOpacity>
 
-        <Gap height={15} />
-        <TouchableOpacity activeOpacity={0.9} style={styles.contentCouple}>
-          <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-            <Text style={styles.sectionHeader}>Data Pasangan</Text>
-            <View style={{flexDirection: 'row', alignItems: 'center'}}>
-              {coupleData?.length > 1 && (
-                <TouchableOpacity
-                  style={styles.moreButton}
-                  onPress={() => navigation.navigate('AllDataCouple')}>
-                  <Text style={styles.moreText}>Selengkapnya</Text>
-                </TouchableOpacity>
-              )}
-              {coupleData?.length > 0 && (
-                <TouchableOpacity
-                  style={styles.addButton}
-                  onPress={() => navigation.navigate('CreateCouple')}>
-                  <Icon
-                    name="plus-circle"
-                    size={45}
-                    color={COLORS.goldenOrange}
-                  />
-                </TouchableOpacity>
-              )}
-            </View>
-          </View>
-          {coupleData?.length > 0 ? (
-            <TouchableOpacity
-              onPress={() =>
-                navigation.navigate('DetailDataCouple', {
-                  data: coupleData[0],
-                })
-              }>
-              <View style={styles.sectionWithIcon}>
-                <Icon name="heart" size={20} color="#FFD700" />
-                <Text style={styles.sectionHeaderText}>Pasangan</Text>
-              </View>
-              <View style={styles.section}>
-                <Icon
-                  name="human-female"
-                  size={24}
-                  color={COLORS.goldenOrange}
-                />
-                <View style={styles.viewContainerText}>
-                  <Text style={styles.textLabels}>Nama Pasangan</Text>
-                  <Text style={styles.TextDatas}>
-                    {coupleData[0]?.name_couple || '-'}
-                  </Text>
-                </View>
-              </View>
-              <View style={styles.section}>
-                <Icon name="map-marker" size={24} color={COLORS.goldenOrange} />
-                <View style={styles.viewContainerText}>
-                  <Text style={styles.textLabels}>Asal Daerah</Text>
-                  <Text style={styles.TextDatas}>
-                    {coupleData[0]?.couple_domisili || '-'}
-                  </Text>
-                </View>
-              </View>
-              <View style={styles.section}>
-                <Icon
-                  name="account-child"
-                  size={24}
-                  color={COLORS.goldenOrange}
-                />
-                <View style={styles.viewContainerText}>
-                  <Text style={styles.textLabels}>Jumlah Anak</Text>
-                  <Text style={styles.TextDatas}>
-                    {coupleData[0]?.children || '-'}
-                  </Text>
-                </View>
-              </View>
-            </TouchableOpacity>
-          ) : (
-            <View>
-              <Text style={styles.sectionSubtitle}>
-                Data pasangan tidak tersedia.
-              </Text>
-              <TouchableOpacity
-                style={styles.createButton}
-                activeOpacity={0.7}
-                onPress={() => navigation.navigate('CreateCouple')}>
-                <Icon name="plus-circle" size={25} color={COLORS.black} />
-              </TouchableOpacity>
-            </View>
-          )}
-        </TouchableOpacity>
+          <Gap height={15} />
+          <CoupleSection
+            title="Data Pasangan"
+            coupleData={coupleData}
+            navigation={navigation}
+            navTargetDetail="DetailDataCouple"
+            navTargetCreate="CreateCouple"
+            navTargetAllData="AllDataCouple"
+          />
 
-        <Gap height={15} />
-        <TouchableOpacity activeOpacity={0.9} style={styles.contentCouple}>
-          <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-            <Text style={styles.sectionHeader}>Data Pelatihan</Text>
-            <View style={{flexDirection: 'row', alignItems: 'center'}}>
-              {trainingData?.length > 1 && (
-                <TouchableOpacity
-                  style={styles.moreButton}
-                  onPress={() => navigation.navigate('AllDataTraining')}>
-                  <Text style={styles.moreText}>Selengkapnya</Text>
-                </TouchableOpacity>
-              )}
-              {trainingData?.length > 0 && (
-                <TouchableOpacity
-                  style={styles.addButton}
-                  onPress={() => navigation.navigate('CreateTraining')}>
-                  <Icon
-                    name="plus-circle"
-                    size={45}
-                    color={COLORS.goldenOrange}
-                  />
-                </TouchableOpacity>
-              )}
-            </View>
-          </View>
-          {trainingData?.length > 0 ? (
-            <TouchableOpacity
-              onPress={() =>
-                navigation.navigate('DetailTraining', {
-                  data: trainingData[0],
-                })
-              }>
-              <View style={styles.sectionWithIcon}>
-                <Icon name="star-circle" size={20} color="#FFD700" />
-                <Text style={styles.sectionHeaderText}>Pelatihan </Text>
-              </View>
-              <View style={styles.section}>
-                <Icon name="book" size={24} color={COLORS.goldenOrange} />
-                <View style={styles.viewContainerText}>
-                  <Text style={styles.textLabels}>Judul</Text>
-                  <Text style={styles.TextDatas}>
-                    {trainingData[0]?.title || '-'}
-                  </Text>
-                </View>
-              </View>
-              <View style={styles.section}>
-                <Icon name="calendar" size={24} color={COLORS.goldenOrange} />
-                <View style={styles.viewContainerText}>
-                  <Text style={styles.textLabels}>Tanggal</Text>
-                  <Text style={styles.TextDatas}>
-                    {trainingData[0]?.date || '-'}
-                  </Text>
-                </View>
-              </View>
-              <View style={styles.section}>
-                <Icon name="tag" size={24} color={COLORS.goldenOrange} />
-                <View style={styles.viewContainerText}>
-                  <Text style={styles.textLabels}>Kategory</Text>
-                  <Text style={styles.TextDatas}>
-                    {trainingData[0]?.category || '-'}
-                  </Text>
-                </View>
-              </View>
-            </TouchableOpacity>
-          ) : (
-            <View>
-              <Text style={styles.sectionSubtitle}>
-                Data Pelatihan tidak tersedia.
-              </Text>
-              <TouchableOpacity
-                style={styles.createButton}
-                activeOpacity={0.7}
-                onPress={() => navigation.navigate('CreateTraining')}>
-                <Icon name="plus-circle" size={25} color={COLORS.black} />
-              </TouchableOpacity>
-            </View>
-          )}
-        </TouchableOpacity>
+          <Gap height={15} />
+          <TrainingSection
+            title="Data Pelatihan"
+            navigation={navigation}
+            trainingData={trainingData}
+            navTargetAllData="AllDataTraining"
+            navTargetCreate="CreateTraining"
+            navTargetDetail="DetailTraining"
+          />
 
-        <Gap height={15} />
-        <TouchableOpacity activeOpacity={0.9} style={styles.contentCouple}>
-          <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-            <Text style={styles.sectionHeader}>Data Pengalaman</Text>
-            <View
-              style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-              {experienceData?.length > 1 && (
-                <TouchableOpacity
-                  style={styles.moreButton}
-                  onPress={() => navigation.navigate('AllDataExperience')}>
-                  <Text style={styles.moreText}>Selengkapnya</Text>
-                </TouchableOpacity>
-              )}
-              {experienceData?.length > 0 && (
-                <TouchableOpacity
-                  style={styles.addButton}
-                  onPress={() => navigation.navigate('CreateExperience')}>
-                  <Icon
-                    name="plus-circle"
-                    size={45}
-                    color={COLORS.goldenOrange}
-                  />
-                </TouchableOpacity>
-              )}
-            </View>
-          </View>
-          {experienceData?.length > 0 ? (
-            <TouchableOpacity
-              onPress={() =>
-                navigation.navigate('DetailExperience', {
-                  data: experienceData[0],
-                })
-              }>
-              <View style={styles.sectionWithIcon}>
-                <Icon name="shield-star" size={20} color="#00BFFF" />
-                <Text style={styles.sectionHeaderText}>Pengalaman </Text>
-              </View>
-              <View style={styles.section}>
-                <Icon
-                  name="office-building"
-                  size={24}
-                  color={COLORS.goldenOrange}
-                />
-                <View style={styles.viewContainerText}>
-                  <Text style={styles.textLabels}>Perusahaan</Text>
-                  <Text style={styles.TextDatas}>
-                    {experienceData[0]?.company || '-'}
-                  </Text>
-                </View>
-              </View>
-              <View style={styles.section}>
-                <Icon name="timer" size={24} color={COLORS.goldenOrange} />
-                <View style={styles.viewContainerText}>
-                  <Text style={styles.textLabels}>Lama Bekerja</Text>
-                  <Text style={styles.TextDatas}>
-                    {experienceData[0]?.length_of_work
-                      ? `${experienceData[0]?.length_of_work} Tahun`
-                      : '-'}
-                  </Text>
-                </View>
-              </View>
-              <View style={styles.section}>
-                <Icon name="account" size={24} color={COLORS.goldenOrange} />
-                <View style={styles.viewContainerText}>
-                  <Text style={styles.textLabels}>Posisi</Text>
-                  <Text style={styles.TextDatas}>
-                    {experienceData[0]?.position || '-'}
-                  </Text>
-                </View>
-              </View>
-            </TouchableOpacity>
-          ) : (
-            <View>
-              <Text style={styles.sectionSubtitle}>
-                Data Pengalaman tidak tersedia.
-              </Text>
-              <TouchableOpacity
-                style={styles.createButton}
-                activeOpacity={0.7}
-                TouchableOpacity
-                onPress={() => navigation.navigate('CreateExperience')}>
-                <Icon name="plus-circle" size={25} color={COLORS.black} />
-              </TouchableOpacity>
-            </View>
-          )}
-        </TouchableOpacity>
+          <Gap height={15} />
+          <ExperienceSection
+            title="Data Pengalaman"
+            navigation={navigation}
+            experienceData={experienceData}
+            navTargetAllData="AllDataExperience"
+            navTargetCreate="CreateExperience"
+            navTargetDetail="DetailExperience"
+          />
 
-        <Gap height={15} />
-        <TouchableOpacity activeOpacity={0.9} style={styles.contentCouple}>
-          <Text style={styles.sectionHeader}>Data Keluarga</Text>
-          {familyData?.length > 0 ? (
-            <TouchableOpacity
-              onPress={() =>
-                navigation.navigate('DetailFamily', {
-                  data: familyData[0],
-                })
-              }>
-              <View style={styles.sectionWithIcon}>
-                <Icon name="family-tree" size={20} color="#00BFFF" />
-                <Text style={styles.sectionHeaderText}>Keluarga</Text>
-              </View>
-              <View style={styles.section}>
-                <Icon
-                  name="account-tie"
-                  size={24}
-                  color={COLORS.goldenOrange}
-                />
-                <View style={styles.viewContainerText}>
-                  <Text style={styles.textLabels}>Nama Ayah</Text>
-                  <Text style={styles.TextDatas}>
-                    {familyData[0]?.father || '-'}
-                  </Text>
-                </View>
-              </View>
-              <View style={styles.section}>
-                <Icon
-                  name="account-tie-outline"
-                  size={24}
-                  color={COLORS.goldenOrange}
-                />
-                <View style={styles.viewContainerText}>
-                  <Text style={styles.textLabels}>Nama Ibu</Text>
-                  <Text style={styles.TextDatas}>
-                    {familyData[0]?.mother || '-'}
-                  </Text>
-                </View>
-              </View>
-              <View style={styles.section}>
-                <Icon
-                  name="account-multiple"
-                  size={24}
-                  color={COLORS.goldenOrange}
-                />
-                <View style={styles.viewContainerText}>
-                  <Text style={styles.textLabels}>Jumlah Saudara</Text>
-                  <Text style={styles.TextDatas}>
-                    {familyData[0]?.brother || '-'}
-                  </Text>
-                </View>
-              </View>
-            </TouchableOpacity>
-          ) : (
-            <View>
-              <Text style={styles.sectionSubtitle}>
-                Data Keluarga tidak tersedia.
-              </Text>
-              <TouchableOpacity
-                style={styles.createButton}
-                activeOpacity={0.7}
-                TouchableOpacity
-                onPress={() => navigation.navigate('CreateFamily')}>
-                <Icon name="plus-circle" size={25} color={COLORS.black} />
-              </TouchableOpacity>
-            </View>
-          )}
-        </TouchableOpacity>
-      </ScrollView>
+          <Gap height={15} />
+          <FamilySection
+            title="Data Keluarga"
+            familyData={familyData}
+            navigation={navigation}
+            navTargetCreate="CreateFamily"
+            navTargetDetaiil="DetailFamily"
+          />
+        </ScrollView>
+      </View>
 
       <ModalCustom
         visible={tokenExpired}
@@ -721,17 +414,9 @@ export default function Profile({navigation}) {
 }
 
 const styles = StyleSheet.create({
-  moreButton: {
-    alignSelf: 'flex-end',
-    paddingHorizontal: 13,
-    paddingVertical: 7,
-    backgroundColor: COLORS.goldenOrange,
-    borderRadius: 10,
-  },
-  moreText: {
-    fontSize: DIMENS.m,
-    color: COLORS.white,
-    fontWeight: 'bold',
+  content: {
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   editButton: {
     position: 'absolute',
@@ -756,74 +441,6 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: COLORS.white,
   },
-  addButton: {
-    position: 'absolute',
-    top: 163,
-    right: 0,
-    zIndex: 10,
-  },
-  sectionWithIcon: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 10,
-  },
-  sectionHeaderText: {
-    fontSize: DIMENS.m,
-    fontWeight: 'bold',
-    color: COLORS.primary,
-    marginLeft: 10,
-  },
-  createButton: {
-    marginTop: 3,
-    padding: 5,
-    backgroundColor: COLORS.primary,
-    borderRadius: 10,
-    alignItems: 'center',
-    shadowColor: COLORS.black,
-    shadowOffset: {width: 0, height: 2},
-    shadowOpacity: 0.2,
-    elevation: 1,
-  },
-  createButtonText: {
-    color: COLORS.white,
-    fontSize: DIMENS.l,
-    fontWeight: 'bold',
-  },
-  profileIcon: {
-    alignSelf: 'center',
-    marginTop: 30,
-  },
-  contentCouple: {
-    backgroundColor: COLORS.white,
-    borderRadius: 15,
-    padding: 15,
-    shadowColor: COLORS.black,
-    shadowOffset: {width: 0, height: 2},
-    shadowOpacity: 0.1,
-    elevation: 2,
-    marginTop: 5,
-  },
-  sectionTextContainer: {
-    marginLeft: 15,
-  },
-  sectionTitle: {
-    fontSize: DIMENS.l,
-    color: COLORS.textPrimary,
-  },
-  sectionSubtitle: {
-    fontSize: DIMENS.m,
-    color: COLORS.textSecondary,
-  },
-  sectionHeader: {
-    fontSize: DIMENS.xl,
-    fontWeight: '600',
-    color: COLORS.darkGray,
-  },
-  section: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 5,
-  },
   container: {
     flex: 1,
   },
@@ -836,26 +453,14 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 10,
     elevation: 5,
-    height: 272,
-  },
-  gradientBackground: {
-    ...StyleSheet.absoluteFillObject,
-  },
-
-  headerTransparent: {
-    position: 'relative',
-    left: 20,
-    right: 20,
-    zIndex: 10,
-    justifyContent: 'center',
+    height: 283,
   },
   scrollContainer: {
     padding: 20,
   },
   name: {
-    fontSize: DIMENS.xxxl,
+    fontSize: DIMENS.xxl,
     fontWeight: 'bold',
-    color: COLORS.textPrimary,
     marginVertical: 5,
   },
   division: {
@@ -867,31 +472,5 @@ const styles = StyleSheet.create({
     fontSize: DIMENS.m,
     fontWeight: '500',
     color: COLORS.darkGrey,
-  },
-  detailsContainer: {
-    marginTop: 3,
-    backgroundColor: COLORS.white,
-    borderRadius: 15,
-    padding: 15,
-    shadowColor: '#000',
-    shadowOffset: {width: 0, height: 2},
-    shadowOpacity: 0.2,
-    elevation: 3,
-  },
-  detailRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 15,
-  },
-  viewContainerText: {
-    marginLeft: 15,
-  },
-  textLabels: {
-    fontSize: DIMENS.m,
-    color: COLORS.mediumGrey,
-  },
-  TextDatas: {
-    fontSize: DIMENS.l,
-    color: COLORS.textPrimary,
   },
 });

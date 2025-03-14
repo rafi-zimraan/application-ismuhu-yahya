@@ -50,11 +50,10 @@ export function DateList({
       initialScrollIndex={todayIndex}
       getItemLayout={(data, index) => ({
         length: 50,
-        offset: 53 * index,
+        offset: 50.3 * index,
         index,
       })}
       contentContainerStyle={{
-        alignItems: 'center',
         paddingVertical: 10,
       }}
       renderItem={({item, index}) => {
@@ -98,7 +97,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     padding: 10,
-    marginHorizontal: 4,
+    marginHorizontal: 3,
     backgroundColor: COLORS.lightGrey,
     borderRadius: 25,
   },

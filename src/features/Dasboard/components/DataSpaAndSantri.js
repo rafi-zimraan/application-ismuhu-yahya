@@ -26,7 +26,12 @@ export default function DataSpaComponent({
   return (
     <View style={styles.bodyDataSpa}>
       <TouchableOpacity activeOpacity={0.8}>
-        <Image source={displayIcon} style={imageStyle} />
+        <Image
+          source={displayIcon}
+          style={imageStyle}
+          resizeMethod="resize"
+          resizeMode="cover"
+        />
         {!isStaffOrKoordinator && <Text style={styles.title}>Dasboard</Text>}
       </TouchableOpacity>
       <Gap width={45} />

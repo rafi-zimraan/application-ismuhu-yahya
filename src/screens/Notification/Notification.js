@@ -5,15 +5,15 @@ import {
   ScrollView,
   StatusBar,
   StyleSheet,
-  Text,
   TouchableOpacity,
-  View,
 } from 'react-native';
-import {Background, Gap, ModalCustom} from '../../Component';
+import {useSelector} from 'react-redux';
+import {Gap, ModalCustom, Text, View} from '../../Component';
 import {getAllNotifications} from '../../features/Notification';
 import {COLORS, DIMENS} from '../../utils';
 
 export default function Notification({navigation}) {
+  const {colors, mode} = useSelector(state => state.theme);
   const [notifications, setNotifications] = useState({
     lisences: [],
     payrol: [],
@@ -69,41 +69,48 @@ export default function Notification({navigation}) {
   };
 
   return (
-    <View style={{flex: 1}}>
+    <View style={{flex: 1, backgroundColor: COLORS.white}}>
       <StatusBar barStyle="default" backgroundColor="transparent" />
-      <Background />
-      <View style={styles.navbarContainer}>
+      <View
+        style={[
+          styles.navbarContainer,
+          {backgroundColor: colors[mode].background_header},
+        ]}>
         <Text style={styles.navbarTitle}>Notification</Text>
       </View>
-      <ScrollView
-        contentContainerStyle={{padding: 15}}
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-        }>
-        <TouchableOpacity
-          activeOpacity={0.7}
-          style={styles.categoryCard}
-          onPress={() =>
-            navigation.navigate('NotificationFromCategory', {
-              category: 'lisences',
-            })
+      <View style={{flex: 1}} useBackgroundColor={true}>
+        <ScrollView
+          contentContainerStyle={{padding: 15}}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           }>
-          <View>
-            <Text style={styles.categoryHeader}>Perizinan</Text>
-            <Gap height={5} />
-            <Text style={styles.categoryDescription}>
-              Kumpulan notifikasi berkaitan {'\n'}dengan perizinan.
-            </Text>
+          <View style={styles.viewCard} section={true}>
+            <TouchableOpacity
+              activeOpacity={0.7}
+              style={styles.categoryCard}
+              onPress={() =>
+                navigation.navigate('NotificationFromCategory', {
+                  category: 'lisences',
+                })
+              }>
+              <View section={true}>
+                <Text style={styles.categoryHeader}>Perizinan</Text>
+                <Gap height={5} />
+                <Text style={styles.categoryDescription}>
+                  Kumpulan notifikasi berkaitan {'\n'}dengan perizinan.
+                </Text>
+              </View>
+              <View style={styles.countBadge}>
+                <Text style={styles.countText}>
+                  {countCategoryItems('lisences')}
+                </Text>
+              </View>
+            </TouchableOpacity>
           </View>
-          <View style={styles.countBadge}>
-            <Text style={styles.countText}>
-              {countCategoryItems('lisences')}
-            </Text>
-          </View>
-        </TouchableOpacity>
 
-        <Gap height={15} />
-      </ScrollView>
+          <Gap height={15} />
+        </ScrollView>
+      </View>
 
       <ModalCustom
         visible={tokenExpired}
@@ -128,7 +135,6 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   navbarContainer: {
-    backgroundColor: COLORS.goldenOrange,
     padding: 15,
     height: '12%',
   },
@@ -139,24 +145,25 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     top: 30,
   },
-  categoryCard: {
-    backgroundColor: COLORS.white,
+  viewCard: {
     borderRadius: 15,
     elevation: 5,
-    padding: 15,
-    marginBottom: 15,
+    padding: 5,
+    marginHorizontal: 5,
+  },
+  categoryCard: {
+    marginBottom: 10,
     flexDirection: 'row',
     justifyContent: 'space-between',
+    marginHorizontal: 10,
   },
   categoryHeader: {
-    fontSize: DIMENS.xxxl,
+    fontSize: DIMENS.xxl,
     fontWeight: '500',
-    color: COLORS.black,
   },
   categoryDescription: {
     fontSize: DIMENS.s,
     fontWeight: '400',
-    color: COLORS.grey,
   },
   countBadge: {
     backgroundColor: COLORS.goldenOrange,

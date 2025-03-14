@@ -9,7 +9,12 @@ export default function ClockDasboard({formatTime}) {
     <View style={styles.bodyClockWrapper}>
       <View style={styles.bodyClock}>
         <View style={styles.viewBody}>
-          <Image source={IMG_LOGO} style={styles.imgLogoClock} />
+          <Image
+            source={IMG_LOGO}
+            style={styles.imgLogoClock}
+            resizeMethod="resize"
+            resizeMode="cover"
+          />
           <Text style={styles.txtClock}>{formatTime}</Text>
         </View>
       </View>

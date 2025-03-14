@@ -1,20 +1,17 @@
 import React from 'react';
-import {Text, TouchableOpacity, View} from 'react-native';
+import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import {useSelector} from 'react-redux';
 import {COLORS, DIMENS} from '../utils';
 
 export default function BottomTabBar({state, descriptors, navigation}) {
+  const {colors, mode} = useSelector(state => state.theme);
   const iconColorDefault = '#808080';
   const iconColorActive = '#FFB200';
 
   return (
-    <View
-      style={{
-        flexDirection: 'row',
-        backgroundColor: '#fff',
-        paddingVertical: 1,
-      }}>
+    <View style={[style.container, {backgroundColor: colors[mode].background}]}>
       {state.routes.map((route, index) => {
         const {options} = descriptors[route.key];
         const label =
@@ -123,3 +120,10 @@ export default function BottomTabBar({state, descriptors, navigation}) {
     </View>
   );
 }
+
+const style = StyleSheet.create({
+  container: {
+    flexDirection: 'row',
+    paddingVertical: 1,
+  },
+});

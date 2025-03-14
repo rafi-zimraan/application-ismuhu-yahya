@@ -51,7 +51,12 @@ export default function DetailCarLoan({navigation}) {
             style={styles.scrollView}>
             {screens.map((image, index) => (
               <View key={index} style={styles.viewCar}>
-                <Image source={image} style={{height: 120, width: 300}} />
+                <Image
+                  source={image}
+                  style={styles.imgCarLoan}
+                  resizeMethod="resize"
+                  resizeMode="cover"
+                />
               </View>
             ))}
           </ScrollView>
@@ -74,7 +79,12 @@ export default function DetailCarLoan({navigation}) {
           <Text style={styles.title}>Detail Mobil</Text>
           <Gap height={5} />
           <View style={styles.contentCar}>
-            <Image source={IMG_NAME_CARD_REBORN} style={styles.img} />
+            <Image
+              source={IMG_NAME_CARD_REBORN}
+              style={styles.img}
+              resizeMethod="resize"
+              resizeMode="cover"
+            />
             <Gap width={15} />
             <View>
               <Text style={styles.txtTitleCar}>Mobil Reborn</Text>
@@ -132,6 +142,10 @@ export default function DetailCarLoan({navigation}) {
 }
 
 const styles = StyleSheet.create({
+  imgCarLoan: {
+    height: 120,
+    width: 300,
+  },
   img: {
     height: 50,
     width: 50,

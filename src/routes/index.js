@@ -11,6 +11,10 @@ import {
 } from '../features/FacilityComplaint';
 import {CheckOtpEmail, OtpForgotPassword} from '../features/ForgotPassword';
 import {
+  NotificationDetail,
+  NotificationFromCategory,
+} from '../features/Notification';
+import {
   CreateFormulirPerizinan,
   CreateFormulirPerizinanExit,
   EditFormulirPerizinan,
@@ -47,8 +51,6 @@ import {
   HelpSetting,
   LibDemo,
   Notification,
-  NotificationDetail,
-  NotificationFromCategory,
   OnBoarding,
   Perizinan,
   PrivasiSetting,

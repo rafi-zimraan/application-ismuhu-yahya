@@ -6,12 +6,13 @@ import {
   Pressable,
   StatusBar,
   StyleSheet,
-  Text,
   TouchableNativeFeedback,
   TouchableOpacity,
   View,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import {useSelector} from 'react-redux';
+import {Text} from '..';
 import {COLORS} from '../../utils';
 import {DIMENS} from '../../utils/dimens';
 import Gap from './Gap';
@@ -22,6 +23,7 @@ export default function ModalCustom({
   onRequestClose,
   onOutContentPress,
   absoluteChildren,
+  backgroundColor = COLORS.white,
   backgroundColorStatusBar = '#00000036',
   iconModalName = 'gmail',
   title = 'Judul Modal',
@@ -34,8 +36,9 @@ export default function ModalCustom({
   ColorIcon = COLORS.greenBoy,
   BackgroundButtonAction = COLORS.primary,
   TextColorButton = COLORS.black,
-  TextDescription = COLORS.grey,
+  TextDescription = COLORS.mediumGrey,
 }) {
+  const {mode, colors} = useSelector(state => state.theme);
   return (
     <Modal
       animationType="fade"
@@ -45,9 +48,8 @@ export default function ModalCustom({
       <StatusBar backgroundColor={backgroundColorStatusBar} animated />
       <BlurView style={styles.absolute} blurType="light" blurAmount={10} />
       <Pressable onPress={onOutContentPress} style={styles.pressable} />
-
       <View style={styles.alignment}>
-        <View style={styles.container}>
+        <View style={[styles.container, {backgroundColor: colors[mode].modal}]}>
           {showHeader && (
             <>
               <View style={styles.headerContainer}>
@@ -57,9 +59,7 @@ export default function ModalCustom({
                 </TouchableOpacity>
               </View>
               <Text style={styles.title}>{title}</Text>
-              <Text style={{...styles.description, color: TextDescription}}>
-                {description}
-              </Text>
+              <Text style={styles.description}>{description}</Text>
               <Gap height={10} />
             </>
           )}

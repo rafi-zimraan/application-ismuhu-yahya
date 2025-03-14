@@ -7,28 +7,33 @@ import {
   RefreshControl,
   StatusBar,
   StyleSheet,
-  Text,
   TouchableOpacity,
-  View,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import {useSelector} from 'react-redux';
 import {
   FloatingButton,
   Gap,
   HeaderTransparent,
   ModalCustom,
+  ModalLoading,
+  Text,
+  View,
 } from '../../Component';
 import {ICON_NOTFOUND_DATA} from '../../assets';
 import {getAllSuggestions} from '../../features/FacilityComplaint';
 import {COLORS, DIMENS} from '../../utils';
 
 export default function FacilityComplaint({navigation}) {
+  const {colors, mode} = useSelector(state => state.theme);
   const [suggestions, setSuggestions] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [isModalLoading, setIsModalLoading] = useState(false);
   const [tokenExpired, setTokenExpired] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
 
   const fetchSuggestions = async (isRefresh = false) => {
+    setIsModalLoading(true);
     try {
       if (!isRefresh) setLoading(true);
 
@@ -46,6 +51,7 @@ export default function FacilityComplaint({navigation}) {
     } finally {
       setLoading(false);
       if (isRefresh) setRefreshing(false);
+      setIsModalLoading(false);
     }
   };
 
@@ -68,14 +74,14 @@ export default function FacilityComplaint({navigation}) {
     <TouchableOpacity
       onPress={() => handlePressItem(item.id)}
       activeOpacity={0.9}>
-      <View style={styles.historyItem}>
-        <View style={styles.row}>
-          <View style={{flex: 1}}>
-            <View style={styles.textRow}>
+      <View style={styles.historyItem} section={true}>
+        <View style={styles.row} section={true}>
+          <View style={{flex: 1}} section={true}>
+            <View style={styles.textRow} section={true}>
               <Text style={styles.label}>Nama </Text>
               <Text style={styles.value}>: {item.name}</Text>
             </View>
-            <View style={styles.textRow}>
+            <View style={styles.textRow} section={true}>
               <Text style={styles.label}>Keluhan </Text>
               <Text style={styles.value}>: {item.complaint}</Text>
             </View>
@@ -85,7 +91,7 @@ export default function FacilityComplaint({navigation}) {
             {item.is_done === '1' ? 'Completed' : 'Pending'}
           </Text>
         </View>
-        <View>
+        <View section={true}>
           <Text style={styles.historyDate}>
             {item?.created_at.split('T')[0]}
           </Text>
@@ -95,17 +101,19 @@ export default function FacilityComplaint({navigation}) {
   );
 
   return (
-    <View style={{flex: 1, backgroundColor: COLORS.white}}>
-      <StatusBar barStyle={'default'} backgroundColor={'transparent'} />
-      <View style={styles.headerWrapper}>
-        <HeaderTransparent
-          title="Pengaduan Fasilitas"
-          icon="arrow-left-circle-outline"
-          onPress={() => navigation.goBack()}
-        />
-      </View>
+    <View style={{flex: 1}}>
+      <StatusBar
+        barStyle={mode == 'light' ? 'dark-content' : 'default'}
+        backgroundColor={'transparent'}
+      />
+      <ModalLoading visible={isModalLoading} />
+      <HeaderTransparent
+        title="Pengaduan Fasilitas"
+        icon="arrow-left-circle-outline"
+        onPress={() => navigation.goBack()}
+      />
       <Gap height={10} />
-      <View style={styles.content}>
+      <View style={styles.content} useBackgroundTransparent={true}>
         <View style={styles.viewContentTitle}>
           <Text style={styles.txtHistory}>History Pengaduan</Text>
           <TouchableOpacity
@@ -123,10 +131,14 @@ export default function FacilityComplaint({navigation}) {
             <ActivityIndicator size="large" color={COLORS.goldenOrange} />
           </View>
         ) : suggestions.length === 0 ? (
-          <View style={styles.notFoundContainer}>
+          <View
+            style={styles.notFoundContainer}
+            useBackgroundTransparent={true}>
             <Image
               source={ICON_NOTFOUND_DATA}
               style={styles.newsImageNotFound}
+              resizeMethod="resize"
+              resizeMode="cover"
             />
           </View>
         ) : (
@@ -147,7 +159,6 @@ export default function FacilityComplaint({navigation}) {
 
       <FloatingButton
         onPress={() => navigation.navigate('CreateFacilityComplaint')}
-        label={'Pengaduan baru'}
         iconName="plus"
       />
 
@@ -225,30 +236,20 @@ const styles = StyleSheet.create({
     resizeMode: 'contain',
   },
   txtHistory: {
-    color: COLORS.black,
     fontSize: DIMENS.xl,
     fontWeight: '500',
-  },
-  headerWrapper: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 10,
-    backgroundColor: COLORS.goldenOrange,
-    elevation: 3,
   },
   content: {
     flex: 1,
     padding: 15,
   },
   historyItem: {
-    backgroundColor: COLORS.white,
     padding: 15,
-    borderRadius: 10,
     marginBottom: 10,
-    elevation: 2,
-    borderColor: COLORS.black,
+    borderRadius: 15,
+    elevation: 3,
     borderWidth: 0.4,
+    borderColor: COLORS.goldenOrange,
   },
   row: {
     flexDirection: 'row',

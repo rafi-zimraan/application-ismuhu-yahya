@@ -1,21 +1,19 @@
 import React, {useState} from 'react';
 import {
   SafeAreaView,
-  ScrollView,
   StatusBar,
   StyleSheet,
-  Text,
   TouchableOpacity,
-  View,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useSelector} from 'react-redux';
-import {Background, HeaderTransparent} from '../../Component';
+import {HeaderTransparent, Text, View} from '../../Component';
 import {Translations} from '../../features/Language';
 import {COLORS, DIMENS} from '../../utils';
 
 export default function HelpSetting({navigation}) {
   const currentLanguage = useSelector(state => state.language.currentLanguage);
+  const {mode} = useSelector(state => state.theme);
   const t = key => Translations[currentLanguage][key];
 
   const [expandedIndex, setExpandedIndex] = useState(null);
@@ -45,72 +43,68 @@ export default function HelpSetting({navigation}) {
 
   return (
     <SafeAreaView style={{flex: 1}}>
-      <StatusBar barStyle={'default'} backgroundColor={'transparent'} />
-      <Background />
-      <View style={styles.headerWrapper}>
-        <HeaderTransparent
-          title={t('help_title')}
-          icon="arrow-left-circle-outline"
-          onPress={() => navigation.goBack()}
-        />
-      </View>
-      <ScrollView style={styles.container}>
+      <StatusBar
+        barStyle={mode == 'light' ? 'dark-content' : 'default'}
+        backgroundColor={'transparent'}
+      />
+      <HeaderTransparent
+        title={t('help_title')}
+        icon="arrow-left-circle-outline"
+        onPress={() => navigation.goBack()}
+      />
+      <View style={styles.container} showImageBackground={true}>
         {helpData.map((item, index) => (
-          <View key={index}>
-            <TouchableOpacity
-              style={styles.section}
-              activeOpacity={0.6}
-              onPress={() => toggleDescription(index)}>
-              <Icon
-                name="help-circle-outline"
-                size={28}
-                color={COLORS.goldenOrange}
-              />
-              <View style={styles.sectionTextContainer}>
-                <Text style={styles.sectionTitle}>{item.title}</Text>
-              </View>
-              <Icon
-                name={expandedIndex === index ? 'chevron-up' : 'chevron-down'}
-                size={24}
-                color={COLORS.goldenOrange}
-              />
-            </TouchableOpacity>
-            {expandedIndex === index && (
-              <View style={styles.descriptionContainer}>
-                <Text style={styles.description}>{item.description}</Text>
-              </View>
-            )}
+          <View
+            style={{padding: 15}}
+            key={index}
+            useBackgroundTransparent={true}>
+            <View section={true} style={styles.contentHelp}>
+              <TouchableOpacity
+                style={styles.section}
+                activeOpacity={0.6}
+                onPress={() => toggleDescription(index)}>
+                <Icon
+                  name="help-circle-outline"
+                  size={28}
+                  color={COLORS.goldenOrange}
+                />
+                <View style={styles.sectionTextContainer} section={true}>
+                  <Text style={styles.sectionTitle}>{item.title}</Text>
+                </View>
+                <Icon
+                  name={expandedIndex === index ? 'chevron-up' : 'chevron-down'}
+                  size={24}
+                  color={COLORS.goldenOrange}
+                />
+              </TouchableOpacity>
+              {expandedIndex === index && (
+                <View style={styles.descriptionContainer}>
+                  <Text style={styles.description}>{item.description}</Text>
+                </View>
+              )}
+            </View>
           </View>
         ))}
-      </ScrollView>
+      </View>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  headerWrapper: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 10,
-    backgroundColor: COLORS.goldenOrange,
+  contentHelp: {
+    borderRadius: 10,
     elevation: 3,
   },
   container: {
     flex: 1,
-    padding: 20,
   },
   section: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: COLORS.white,
     padding: 15,
-    borderRadius: 10,
     marginBottom: 10,
-    shadowColor: '#000',
     shadowOffset: {width: 0, height: 2},
     shadowOpacity: 0.1,
-    elevation: 3,
     justifyContent: 'space-between',
   },
   sectionTextContainer: {
@@ -118,7 +112,7 @@ const styles = StyleSheet.create({
     marginLeft: 15,
   },
   sectionTitle: {
-    fontSize: DIMENS.l,
+    fontSize: DIMENS.m,
     color: COLORS.darkGray,
   },
   descriptionContainer: {
@@ -127,7 +121,7 @@ const styles = StyleSheet.create({
     marginTop: -10,
     marginBottom: 10,
     borderRadius: 10,
-    shadowColor: '#000',
+    shadowColor: COLORS.black,
     shadowOffset: {width: 0, height: 1},
     shadowOpacity: 0.1,
     elevation: 2,

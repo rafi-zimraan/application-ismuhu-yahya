@@ -1,24 +1,26 @@
 import React, {useState} from 'react';
 import {
   ScrollView,
+  StatusBar,
   StyleSheet,
-  Text,
   TextInput,
   ToastAndroid,
-  View,
 } from 'react-native';
 import EncryptedStorage from 'react-native-encrypted-storage';
+import {useSelector} from 'react-redux';
 import {addFamilyData} from '..';
 import {
-  Background,
   ButtonAction,
   Gap,
   HeaderTransparent,
   ModalCustom,
+  Text,
+  View,
 } from '../../../Component';
 import {COLORS, DIMENS} from '../../../utils';
 
 export default function CreateFamily({navigation}) {
+  const {mode, colors} = useSelector(state => state.theme);
   const [father, setFather] = useState('');
   const [mother, setMother] = useState('');
   const [brother, setBrother] = useState('');
@@ -63,67 +65,105 @@ export default function CreateFamily({navigation}) {
 
   return (
     <View style={{flex: 1}}>
-      <Background />
-      <View style={styles.headerWrapper}>
-        <HeaderTransparent
-          title="Tambah Data Keluarga"
-          icon="arrow-left-circle-outline"
-          onPress={() => navigation.goBack()}
-        />
-      </View>
-      <View style={styles.container}>
-        <Gap height={15} />
-        <ScrollView
-          contentContainerStyle={styles.scrollContainer}
-          stickyHeaderHiddenOnScroll>
-          <View style={styles.inputContainer}>
-            <View style={styles.inputFieldContainer}>
-              <Text style={styles.inputLabel}>Nama Ayah</Text>
-              <TextInput
-                style={styles.input}
-                value={father}
-                onChangeText={setFather}
-                placeholderTextColor={COLORS.grey}
-                placeholder="Nama Ayah"
-              />
-            </View>
+      <StatusBar
+        barStyle={mode == 'light' ? 'default' : 'dark-content'}
+        backgroundColor={'transparent'}
+      />
+      <HeaderTransparent
+        title="Tambah Data Keluarga"
+        icon="arrow-left-circle-outline"
+        onPress={() => navigation.goBack()}
+      />
+      <View style={{flex: 1}} showImageBackground={true}>
+        <ScrollView style={styles.container}>
+          <Gap height={15} />
+          <View style={styles.contentData} useBackgroundTransparent={true}>
+            <View style={styles.inputContainer} useBackgroundTransparent={true}>
+              <View style={styles.inputFieldContainer}>
+                <Text
+                  style={[styles.inputLabel, {color: colors[mode].textLabel}]}>
+                  Nama Ayah
+                </Text>
+                <TextInput
+                  style={[
+                    styles.input,
+                    {backgroundColor: colors[mode].textInput},
+                  ]}
+                  value={father}
+                  onChangeText={setFather}
+                  placeholderTextColor={
+                    mode == 'light' ? COLORS.softGray : COLORS.grey
+                  }
+                  placeholder="Nama Ayah"
+                />
+              </View>
 
-            <View style={styles.inputFieldContainer}>
-              <Text style={styles.inputLabel}>Nama Ibu</Text>
-              <TextInput
-                style={styles.input}
-                value={mother}
-                onChangeText={setMother}
-                placeholderTextColor={COLORS.grey}
-                placeholder="Nama Ibu"
-              />
-            </View>
+              <View
+                style={styles.inputFieldContainer}
+                useBackgroundTransparent={true}>
+                <Text
+                  style={[styles.inputLabel, {color: colors[mode].textLabel}]}>
+                  Nama Ibu
+                </Text>
+                <TextInput
+                  style={[
+                    styles.input,
+                    {backgroundColor: colors[mode].textInput},
+                  ]}
+                  value={mother}
+                  onChangeText={setMother}
+                  placeholderTextColor={
+                    mode == 'light' ? COLORS.softGray : COLORS.grey
+                  }
+                  placeholder="Nama Ibu"
+                />
+              </View>
 
-            <View style={styles.inputFieldContainer}>
-              <Text style={styles.inputLabel}>Jumlah Saudara</Text>
-              <TextInput
-                style={styles.input}
-                value={brother}
-                onChangeText={setBrother}
-                placeholderTextColor={COLORS.grey}
-                placeholder="Jumlah Saudara"
-                keyboardType="numeric"
-              />
-            </View>
+              <View
+                style={styles.inputFieldContainer}
+                useBackgroundTransparent={true}>
+                <Text
+                  style={[styles.inputLabel, {color: colors[mode].textLabel}]}>
+                  Jumlah Saudara
+                </Text>
+                <TextInput
+                  style={[
+                    styles.input,
+                    {backgroundColor: colors[mode].textInput},
+                  ]}
+                  value={brother}
+                  onChangeText={setBrother}
+                  placeholderTextColor={
+                    mode == 'light' ? COLORS.softGray : COLORS.grey
+                  }
+                  placeholder="Jumlah Saudara"
+                  keyboardType="numeric"
+                />
+              </View>
 
-            <View style={styles.inputFieldContainer}>
-              <Text style={styles.inputLabel}>Urutan Anak</Text>
-              <TextInput
-                style={styles.input}
-                value={child}
-                onChangeText={setChild}
-                placeholderTextColor={COLORS.grey}
-                placeholder="Anak ke"
-                keyboardType="numeric"
-              />
+              <View
+                style={styles.inputFieldContainer}
+                useBackgroundTransparent={true}>
+                <Text
+                  style={[styles.inputLabel, {color: colors[mode].textLabel}]}>
+                  Urutan Anak
+                </Text>
+                <TextInput
+                  style={[
+                    styles.input,
+                    {backgroundColor: colors[mode].textInput},
+                  ]}
+                  value={child}
+                  onChangeText={setChild}
+                  placeholderTextColor={
+                    mode == 'light' ? COLORS.softGray : COLORS.grey
+                  }
+                  placeholder="Anak ke"
+                  keyboardType="numeric"
+                />
+              </View>
             </View>
           </View>
-          <Gap height={15} />
           <ButtonAction
             title="Simpan"
             backgroundColor={COLORS.goldenOrange}
@@ -133,7 +173,6 @@ export default function CreateFamily({navigation}) {
           />
         </ScrollView>
       </View>
-
       <ModalCustom
         visible={modalVisible}
         onRequestClose={() => setModalVisible(false)}
@@ -161,20 +200,11 @@ export default function CreateFamily({navigation}) {
 }
 
 const styles = StyleSheet.create({
-  headerWrapper: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 10,
-    backgroundColor: COLORS.goldenOrange,
-    elevation: 3,
-  },
   container: {
     flex: 1,
-    paddingHorizontal: 24,
+    padding: 15,
   },
-  scrollContainer: {
-    flexGrow: 1,
+  contentData: {
     alignItems: 'center',
   },
   inputContainer: {
@@ -193,7 +223,6 @@ const styles = StyleSheet.create({
   input: {
     height: 45,
     paddingHorizontal: 10,
-    backgroundColor: COLORS.white,
     borderRadius: 10,
     borderColor: COLORS.neutralGrey,
     borderWidth: 1,

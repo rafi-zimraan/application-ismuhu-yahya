@@ -144,7 +144,9 @@ export default function FilesScreen({route, navigation}) {
           <View style={styles.contentNotFound}>
             <Image
               source={ICON_NOTFOUND_DATA}
-              style={{height: 250, width: 230}}
+              style={styles.imgNotFound}
+              resizeMethod="resize"
+              resizeMode="cover"
             />
           </View>
         ) : (
@@ -174,6 +176,7 @@ export default function FilesScreen({route, navigation}) {
                           : ICON_NOTFOUND_DATA
                       }
                       resizeMethod="resize"
+                      resizeMode="cover"
                       style={styles.image}
                     />
                   </TouchableOpacity>
@@ -243,6 +246,8 @@ export default function FilesScreen({route, navigation}) {
                 uri: `https://app.simpondok.com/${selectedImage}`,
               }}
               style={styles.fullscreenImage}
+              resizeMethod="resize"
+              resizeMode="cover"
             />
           </TouchableOpacity>
         </View>
@@ -252,6 +257,10 @@ export default function FilesScreen({route, navigation}) {
 }
 
 const styles = StyleSheet.create({
+  imgNotFound: {
+    height: 250,
+    width: 230,
+  },
   viewLoadingData: {
     alignItems: 'center',
     justifyContent: 'center',

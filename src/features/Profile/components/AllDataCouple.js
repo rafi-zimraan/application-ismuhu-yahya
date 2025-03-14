@@ -4,22 +4,23 @@ import {
   RefreshControl,
   ScrollView,
   StyleSheet,
-  Text,
   TouchableOpacity,
-  View,
 } from 'react-native';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import {useSelector} from 'react-redux';
 import {getCoupleData} from '..';
 import {
-  Background,
   FloatingButton,
   HeaderTransparent,
   ModalCustom,
+  Text,
+  View,
 } from '../../../Component';
 import {COLORS, DIMENS} from '../../../utils';
 
 export default function AllDataCouple({navigation}) {
+  const {colors, mode} = useSelector(state => state.theme);
   const [refreshing, setRefreshing] = useState(false);
   const [dataCouples, setDataCouples] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -44,6 +45,7 @@ export default function AllDataCouple({navigation}) {
       setIsLoading(false);
     }
   };
+
   useFocusEffect(
     useCallback(() => {
       loadCouples();
@@ -68,95 +70,108 @@ export default function AllDataCouple({navigation}) {
 
   return (
     <View style={{flex: 1}}>
-      <Background />
-      <View style={styles.headerWrapper}>
-        <HeaderTransparent
-          title="Semua Data Pasangan"
-          icon="arrow-left-circle-outline"
-          onPress={() => navigation.goBack()}
-        />
-      </View>
-      <ScrollView
-        refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={reloadData}
-            colors={[COLORS.goldenOrange]}
-          />
-        }
-        contentContainerStyle={{
-          flexGrow: 1,
-          paddingHorizontal: 20,
-          paddingVertical: 10,
-        }}>
-        {isLoading ? (
-          <View style={styles.loadingContainer}>
-            <Text style={styles.loadingText}>Memuat data...</Text>
-          </View>
-        ) : dataCouples?.length > 0 ? (
-          dataCouples?.map(couple => (
-            <TouchableOpacity
-              key={couple.id}
-              style={styles.card}
-              onPress={() =>
-                navigation.navigate('DetailDataCouple', {data: couple})
-              }>
-              <View style={styles.cardContent}>
-                <Icon name="heart" size={24} color={COLORS.goldenOrange} />
-                <View style={styles.btnContainer}>
-                  <View style={styles.section}>
-                    <Icon
-                      name={getIconName('name')}
-                      size={24}
-                      color={COLORS.goldenOrange}
-                    />
-                    <View style={styles.viewContainerText}>
-                      <Text style={styles.textLabels}>Nama Pasangan</Text>
-                      <Text style={styles.TextDatas}>
-                        {couple?.name_couple || '-'}
-                      </Text>
+      <HeaderTransparent
+        title="Semua Data Pasangan"
+        icon="arrow-left-circle-outline"
+        onPress={() => navigation.goBack()}
+      />
+
+      <View style={{flex: 1}} showImageBackground={true}>
+        <ScrollView
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={reloadData}
+              colors={[COLORS.goldenOrange]}
+            />
+          }
+          style={styles.container}>
+          {dataCouples?.length > 0 ? (
+            dataCouples?.map(couple => (
+              <View style={styles.contentData} key={couple.id} section={true}>
+                <TouchableOpacity
+                  style={styles.card}
+                  onPress={() =>
+                    navigation.navigate('DetailDataCouple', {data: couple})
+                  }>
+                  <View style={styles.cardContent} section={true}>
+                    <Text style={styles.title}>Data Pasangan</Text>
+                    <View style={styles.btnContainer} section={true}>
+                      <View style={styles.section} section={true}>
+                        <Icon
+                          name={getIconName('name')}
+                          size={24}
+                          color={COLORS.goldenOrange}
+                        />
+                        <View style={styles.viewContainerText} section={true}>
+                          <Text
+                            style={[
+                              styles.textLabels,
+                              {color: colors[mode].textLabel},
+                            ]}>
+                            Nama Pasangan
+                          </Text>
+                          <Text style={styles.TextDatas}>
+                            {couple?.name_couple || '-'}
+                          </Text>
+                        </View>
+                      </View>
+                      <View style={styles.section} section={true}>
+                        <Icon
+                          name={getIconName('domisili')}
+                          size={24}
+                          color={COLORS.goldenOrange}
+                        />
+                        <View style={styles.viewContainerText} section={true}>
+                          <Text
+                            style={[
+                              styles.textLabels,
+                              {color: colors[mode].textLabel},
+                            ]}>
+                            Domisili
+                          </Text>
+                          <Text style={styles.TextDatas}>
+                            {couple?.couple_domisili || '-'}
+                          </Text>
+                        </View>
+                      </View>
+                      <View style={styles.section} section={true}>
+                        <Icon
+                          name={getIconName('children')}
+                          size={24}
+                          color={COLORS.goldenOrange}
+                        />
+                        <View style={styles.viewContainerText} section={true}>
+                          <Text
+                            style={[
+                              styles.textLabels,
+                              {color: colors[mode].textLabel},
+                            ]}>
+                            Jumlah Anak
+                          </Text>
+                          <Text style={styles.TextDatas}>
+                            {couple?.children || '0'}
+                          </Text>
+                        </View>
+                      </View>
                     </View>
                   </View>
-                  <View style={styles.section}>
-                    <Icon
-                      name={getIconName('domisili')}
-                      size={24}
-                      color={COLORS.goldenOrange}
-                    />
-                    <View style={styles.viewContainerText}>
-                      <Text style={styles.textLabels}>Domisili</Text>
-                      <Text style={styles.TextDatas}>
-                        {couple?.couple_domisili || '-'}
-                      </Text>
-                    </View>
-                  </View>
-                  <View style={styles.section}>
-                    <Icon
-                      name={getIconName('children')}
-                      size={24}
-                      color={COLORS.goldenOrange}
-                    />
-                    <View style={styles.viewContainerText}>
-                      <Text style={styles.textLabels}>Jumlah Anak</Text>
-                      <Text style={styles.TextDatas}>
-                        {couple?.children || '0'}
-                      </Text>
-                    </View>
-                  </View>
-                </View>
+                </TouchableOpacity>
               </View>
-            </TouchableOpacity>
-          ))
-        ) : (
-          <View style={styles.noDataContainer}>
-            <Icon name="alert-circle-outline" size={50} color={COLORS.grey} />
-            <Text style={styles.noDataText}>Tidak ada data pasangan.</Text>
-          </View>
-        )}
-      </ScrollView>
+            ))
+          ) : (
+            <View
+              style={styles.noDataContainer}
+              useBackgroundTransparent={true}>
+              <Icon name="alert-circle-outline" size={50} color={COLORS.grey} />
+              <Text style={styles.noDataText}>Tidak ada data pasangan.</Text>
+            </View>
+          )}
+        </ScrollView>
+      </View>
+
       <FloatingButton
         iconName="plus-circle"
-        label={'Buat data pasangan'}
         style={{bottom: 10, right: 13}}
         onPress={() => navigation.navigate('CreateCouple')}
       />
@@ -178,6 +193,10 @@ export default function AllDataCouple({navigation}) {
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 15,
+  },
   section: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -194,26 +213,27 @@ const styles = StyleSheet.create({
   viewContainerText: {
     marginLeft: 8,
   },
-  headerWrapper: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 10,
-    backgroundColor: COLORS.goldenOrange,
+  contentData: {
+    padding: 15,
     elevation: 3,
+    borderRadius: 10,
+    marginVertical: 10,
+    borderWidth: 0.3,
+    borderColor: COLORS.black,
+    flexWrap: 'wrap',
   },
   card: {
-    backgroundColor: COLORS.white,
-    borderRadius: 10,
-    padding: 15,
-    marginVertical: 10,
     shadowColor: COLORS.black,
     shadowOffset: {width: 0, height: 2},
     shadowOpacity: 0.1,
-    elevation: 3,
   },
   cardContent: {
     padding: 2,
+  },
+  title: {
+    fontSize: DIMENS.l,
+    fontWeight: 'bold',
+    marginBottom: 10,
   },
   btnContainer: {
     marginLeft: 5,
@@ -228,15 +248,5 @@ const styles = StyleSheet.create({
     fontSize: DIMENS.l,
     color: COLORS.grey,
     marginTop: 10,
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: 50,
-  },
-  loadingText: {
-    fontSize: DIMENS.m,
-    color: COLORS.darkGray,
   },
 });

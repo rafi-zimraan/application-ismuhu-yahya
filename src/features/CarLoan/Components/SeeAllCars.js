@@ -35,8 +35,9 @@ export default function SeeAllCars({navigation}) {
             </View>
             <Image
               source={car.image}
-              style={{height: 80, width: 160}}
+              style={styles.img}
               resizeMethod="resize"
+              resizeMode="cover"
             />
           </View>
         ))}
@@ -47,6 +48,10 @@ export default function SeeAllCars({navigation}) {
 }
 
 const styles = StyleSheet.create({
+  img: {
+    height: 80,
+    width: 160,
+  },
   container: {
     flex: 1,
   },

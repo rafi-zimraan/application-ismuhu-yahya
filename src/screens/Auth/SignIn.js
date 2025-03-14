@@ -11,15 +11,19 @@ import {
   StatusBar,
   StyleSheet,
   Text,
-  TouchableOpacity,
   TouchableWithoutFeedback,
   View,
 } from 'react-native';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import {useDispatch} from 'react-redux';
-import {Gap} from '../../Component';
+import {AppVersion, Gap} from '../../Component';
 import {IMG_LOGIN} from '../../assets';
-import {ButtonAuth, FormInput, login} from '../../features/authentication';
+import {
+  ButtonAuth,
+  FormInput,
+  ResetPassword,
+  login,
+} from '../../features/authentication';
 import {COLORS, DIMENS} from '../../utils';
 
 export default function SignIn({navigation}) {
@@ -96,7 +100,12 @@ export default function SignIn({navigation}) {
           <StatusBar barStyle="default" backgroundColor={'transparent'} />
           <Gap height={45} />
           <View style={{padding: 15}}>
-            <Image source={IMG_LOGIN} style={styles.image} />
+            <Image
+              source={IMG_LOGIN}
+              style={styles.image}
+              resizeMethod="resize"
+              resizeMode="cover"
+            />
           </View>
 
           <ScrollView
@@ -151,21 +160,12 @@ export default function SignIn({navigation}) {
                   loading={loading}
                 />
               </View>
-              <Gap height={15} />
-              <View style={styles.forgotPassword}>
-                <Text style={styles.forgotPasswordText}>Lupa kata sandi?</Text>
-                <TouchableOpacity
-                  activeOpacity={0.7}
-                  onPress={() => navigation.navigate('ForgotPassword')}>
-                  <Text style={styles.resetText}> Atur ulang disini!</Text>
-                </TouchableOpacity>
-              </View>
+              <Gap height={13} />
+              <ResetPassword
+                onPress={() => navigation.navigate('ForgotPassword')}
+              />
 
-              <View style={styles.viewCopyRight}>
-                <Text style={styles.textCopyRight}>
-                  Copyright@2024IsmuhuYahya
-                </Text>
-              </View>
+              <AppVersion />
             </View>
           </ScrollView>
         </View>
@@ -178,17 +178,6 @@ const styles = StyleSheet.create({
   viewSignIn: {
     padding: 15,
     height: '100%',
-  },
-  viewCopyRight: {
-    position: 'absolute',
-    bottom: 15,
-    alignSelf: 'center',
-  },
-  textCopyRight: {
-    fontSize: DIMENS.s,
-    fontWeight: '400',
-    color: COLORS.grey,
-    alignSelf: 'center',
   },
   viewBody: {
     backgroundColor: COLORS.white,
@@ -216,21 +205,6 @@ const styles = StyleSheet.create({
     color: COLORS.mediumGrey,
     textAlign: 'left',
     alignSelf: 'flex-start',
-  },
-  forgotPassword: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  forgotPasswordText: {
-    fontSize: DIMENS.m,
-    color: COLORS.black,
-    textAlign: 'center',
-  },
-  resetText: {
-    color: COLORS.goldenOrange,
-    fontWeight: '600',
-    textAlign: 'center',
   },
   scrollContainer: {
     flexGrow: 1,

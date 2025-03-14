@@ -5,24 +5,25 @@ import {
   PermissionsAndroid,
   ScrollView,
   StyleSheet,
-  Text,
   TextInput,
   ToastAndroid,
   TouchableOpacity,
-  View,
 } from 'react-native';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+import {useSelector} from 'react-redux';
 import {addSuggestion} from '..';
 import {
-  Background,
   ButtonAction,
   Gap,
   HeaderTransparent,
   ModalCustom,
+  Text,
+  View,
 } from '../../../Component';
 import {COLORS, DIMENS} from '../../../utils';
 
 export default function CreateFacilityComplaint({navigation}) {
+  const {colors, mode} = useSelector(state => state.theme);
   const [name, setName] = useState('');
   const [goodsBroken, setGoodsBroken] = useState('');
   const [place, setPlace] = useState('');
@@ -130,122 +131,179 @@ export default function CreateFacilityComplaint({navigation}) {
 
   return (
     <View style={styles.container}>
-      <Background />
-      <View style={styles.headerWrapper}>
-        <HeaderTransparent
-          title="Formulir Pengaduan "
-          icon="arrow-left-circle-outline"
-          onPress={() => navigation.goBack()}
-        />
+      <HeaderTransparent
+        title="Formulir Pengaduan "
+        icon="arrow-left-circle-outline"
+        onPress={() => navigation.goBack()}
+      />
+
+      <View style={{flex: 1}} showImageBackground={true}>
+        <ScrollView style={styles.content} stickyHeaderHiddenOnScroll>
+          <View
+            style={styles.inputFieldContainer}
+            useBackgroundTransparent={true}>
+            <Text style={[styles.inputLabel, {color: colors[mode].textLabel}]}>
+              Nama
+            </Text>
+            <TextInput
+              style={[
+                styles.input,
+                {backgroundColor: colors[mode].textInput},
+                name && {
+                  borderColor: COLORS.goldenOrange,
+                },
+              ]}
+              placeholder="Nama"
+              value={name}
+              onChangeText={setName}
+              placeholderTextColor={COLORS.grey}
+            />
+          </View>
+
+          <View
+            style={styles.inputFieldContainer}
+            useBackgroundTransparent={true}>
+            <Text style={[styles.inputLabel, {color: colors[mode].textLabel}]}>
+              Barang
+            </Text>
+            <TextInput
+              style={[
+                styles.input,
+                {backgroundColor: colors[mode].textInput},
+
+                goodsBroken && {borderColor: COLORS.goldenOrange},
+              ]}
+              placeholder="Barang yang Rusak"
+              value={goodsBroken}
+              onChangeText={setGoodsBroken}
+              placeholderTextColor={COLORS.grey}
+            />
+          </View>
+
+          <View
+            style={styles.inputFieldContainer}
+            useBackgroundTransparent={true}>
+            <Text style={[styles.inputLabel, {color: colors[mode].textLabel}]}>
+              Keluhan
+            </Text>
+            <TextInput
+              style={[
+                styles.input,
+                {backgroundColor: colors[mode].textInput},
+
+                complaint && {borderColor: COLORS.goldenOrange},
+              ]}
+              placeholder="Keluhan"
+              value={complaint}
+              onChangeText={setComplaint}
+              placeholderTextColor={COLORS.grey}
+            />
+          </View>
+
+          <View
+            style={styles.inputFieldContainer}
+            useBackgroundTransparent={true}>
+            <Text style={[styles.inputLabel, {color: colors[mode].textLabel}]}>
+              Tempat
+            </Text>
+            <TextInput
+              style={[
+                styles.input,
+                {backgroundColor: colors[mode].textInput},
+
+                place && {borderColor: COLORS.goldenOrange},
+              ]}
+              placeholder="Tempat"
+              value={place}
+              onChangeText={setPlace}
+              placeholderTextColor={COLORS.grey}
+            />
+          </View>
+
+          <View
+            style={styles.inputFieldContainer}
+            useBackgroundTransparent={true}>
+            <Text style={[styles.inputLabel, {color: colors[mode].textLabel}]}>
+              Lokasi
+            </Text>
+            <TextInput
+              style={[
+                styles.input,
+                {backgroundColor: colors[mode].textInput},
+
+                location && {borderColor: COLORS.goldenOrange},
+              ]}
+              placeholder="Lokasi"
+              value={location}
+              onChangeText={setLocation}
+              placeholderTextColor={COLORS.grey}
+            />
+          </View>
+
+          <View
+            style={styles.inputFieldContainer}
+            useBackgroundTransparent={true}>
+            <Text style={[styles.inputLabel, {color: colors[mode].textLabel}]}>
+              Saran
+            </Text>
+            <TextInput
+              style={[
+                styles.input,
+                {backgroundColor: colors[mode].textInput},
+
+                suggestion && {borderColor: COLORS.goldenOrange},
+              ]}
+              placeholder="Saran"
+              value={suggestion}
+              onChangeText={setSuggestion}
+              placeholderTextColor={COLORS.grey}
+            />
+          </View>
+
+          <View
+            style={styles.inputFieldContainer}
+            useBackgroundTransparent={true}>
+            <Text style={[styles.inputLabel, {color: colors[mode].textLabel}]}>
+              Nomor WhastApp
+            </Text>
+            <TextInput
+              style={[
+                styles.input,
+                {backgroundColor: colors[mode].textInput},
+
+                phone && {borderColor: COLORS.goldenOrange},
+              ]}
+              placeholder="Nomor WhastApp (+62)"
+              value={phone}
+              onChangeText={setPhone}
+              placeholderTextColor={COLORS.grey}
+              keyboardType="phone-pad"
+            />
+          </View>
+
+          <TouchableOpacity
+            style={styles.fileInput}
+            onPress={handleImagePicker}>
+            <Text style={styles.fileInputText}>Input file</Text>
+          </TouchableOpacity>
+
+          {image?.uri && (
+            <Image
+              source={{uri: image.uri}}
+              style={styles.imagePreview}
+              resizeMethod="resize"
+              resizeMode="cover"
+            />
+          )}
+
+          <ButtonAction
+            onPress={handleSubmit}
+            title="Kirim"
+            loading={loading}
+          />
+          <Gap height={35} />
+        </ScrollView>
       </View>
-
-      <ScrollView style={styles.content} stickyHeaderHiddenOnScroll>
-        <View style={styles.inputFieldContainer}>
-          <Text style={styles.inputLabel}>Nama</Text>
-          <TextInput
-            style={[styles.input, name && {borderColor: COLORS.goldenOrange}]}
-            placeholder="Nama"
-            value={name}
-            onChangeText={setName}
-            placeholderTextColor={COLORS.grey}
-          />
-        </View>
-
-        <View style={styles.inputFieldContainer}>
-          <Text style={styles.inputLabel}>Barang</Text>
-          <TextInput
-            style={[
-              styles.input,
-              goodsBroken && {borderColor: COLORS.goldenOrange},
-            ]}
-            placeholder="Barang yang Rusak"
-            value={goodsBroken}
-            onChangeText={setGoodsBroken}
-            placeholderTextColor={COLORS.grey}
-          />
-        </View>
-
-        <View style={styles.inputFieldContainer}>
-          <Text style={styles.inputLabel}>Keluhan</Text>
-          <TextInput
-            style={[
-              styles.input,
-              complaint && {borderColor: COLORS.goldenOrange},
-            ]}
-            placeholder="Keluhan"
-            value={complaint}
-            onChangeText={setComplaint}
-            placeholderTextColor={COLORS.grey}
-          />
-        </View>
-
-        <View style={styles.inputFieldContainer}>
-          <Text style={styles.inputLabel}>Tempat</Text>
-          <TextInput
-            style={[styles.input, place && {borderColor: COLORS.goldenOrange}]}
-            placeholder="Tempat"
-            value={place}
-            onChangeText={setPlace}
-            placeholderTextColor={COLORS.grey}
-          />
-        </View>
-
-        <View style={styles.inputFieldContainer}>
-          <Text style={styles.inputLabel}>Lokasi</Text>
-          <TextInput
-            style={[
-              styles.input,
-              location && {borderColor: COLORS.goldenOrange},
-            ]}
-            placeholder="Lokasi"
-            value={location}
-            onChangeText={setLocation}
-            placeholderTextColor={COLORS.grey}
-          />
-        </View>
-
-        <View style={styles.inputFieldContainer}>
-          <Text style={styles.inputLabel}>Saran</Text>
-          <TextInput
-            style={[
-              styles.input,
-              suggestion && {borderColor: COLORS.goldenOrange},
-            ]}
-            placeholder="Saran"
-            value={suggestion}
-            onChangeText={setSuggestion}
-            placeholderTextColor={COLORS.grey}
-          />
-        </View>
-
-        <View style={styles.inputFieldContainer}>
-          <Text style={styles.inputLabel}>Nomor WhastApp</Text>
-          <TextInput
-            style={[styles.input, phone && {borderColor: COLORS.goldenOrange}]}
-            placeholder="Nomor WhastApp (+62)"
-            value={phone}
-            onChangeText={setPhone}
-            placeholderTextColor={COLORS.grey}
-            keyboardType="phone-pad"
-          />
-        </View>
-
-        <TouchableOpacity style={styles.fileInput} onPress={handleImagePicker}>
-          <Text style={styles.fileInputText}>Input file</Text>
-        </TouchableOpacity>
-
-        {image?.uri && (
-          <Image
-            source={{uri: image.uri}}
-            style={styles.imagePreview}
-            resizeMethod="scale"
-          />
-        )}
-
-        <ButtonAction onPress={handleSubmit} title="Kirim" loading={loading} />
-        <Gap height={35} />
-      </ScrollView>
-
       <ModalCustom
         visible={modalVisible}
         onRequestClose={() => setModalVisible(false)}
@@ -281,24 +339,14 @@ const styles = StyleSheet.create({
   },
   inputLabel: {
     fontSize: DIMENS.m,
-    color: COLORS.textPrimary,
     marginBottom: 5,
     fontWeight: '600',
-  },
-  headerWrapper: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 10,
-    backgroundColor: COLORS.goldenOrange,
-    elevation: 3,
   },
   content: {
     padding: 15,
   },
   container: {
     flex: 1,
-    backgroundColor: COLORS.white,
   },
   input: {
     borderWidth: 1,
@@ -307,7 +355,6 @@ const styles = StyleSheet.create({
     padding: 10,
     marginBottom: 15,
     color: COLORS.black,
-    backgroundColor: COLORS.white,
   },
   fileInput: {
     borderWidth: 1,

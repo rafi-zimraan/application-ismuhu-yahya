@@ -5,8 +5,6 @@ import Dashboard from './Dasboard/Dasboard';
 import FacilityComplaint from './FacilityComplaint/FacilityComplaint';
 import ForgotPassword from './ForgotPassword/ForgotPassword';
 import Notification from './Notification/Notification';
-import NotificationDetail from './Notification/NotificationDetail';
-import NotificationFromCategory from './Notification/NotificationFromCategory';
 import OnBoarding from './Onboarding/Onboarding';
 import Perizinan from './Perizinan/Perizinan';
 import AboutApplication from './Setting/AboutApplication';
@@ -25,14 +23,12 @@ export {
   FacilityComplaint,
   CarLoan,
   ForgotPassword,
-  NotificationDetail,
   ChangePassword,
   HelpSetting,
   AboutApplication,
   PrivasiSetting,
   OnBoarding,
   Profile,
-  NotificationFromCategory,
   Perizinan,
   Notification,
   Settings,

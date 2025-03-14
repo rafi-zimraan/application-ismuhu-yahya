@@ -15,7 +15,6 @@ export default function CheckOtpEmail({route}) {
         navigation.navigate('OtpForgotPassword', {email});
       })
       .catch(err => {
-        console.log('Gagal membuka aplikasi email:', err);
         ToastAndroid.show(
           'Gagal membuka aplikasi email. Silakan buka secara manual.',
           ToastAndroid.SHORT,
@@ -40,11 +39,8 @@ export default function CheckOtpEmail({route}) {
             Silakan ketuk tautan tersebut untuk memverifikasi email Anda dan
             masuk ke aplikasi.
           </Text>
-
           <Gap height={25} />
-
           <ButtonAction title="Buka email Anda" onPress={handleOpenInbox} />
-
           <Gap height={20} />
           <Text style={styles.footerText}>
             Kami telah mengirim email verifikasi ke alamat yang Anda masukkan

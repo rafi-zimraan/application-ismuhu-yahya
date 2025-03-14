@@ -259,7 +259,9 @@ export default function Perizinan({navigation}) {
               <View style={styles.emptyContainer}>
                 <Image
                   source={IMG_NOTHING_DATA_HISTORY_PERIZINA}
-                  style={{height: 210, width: 180}}
+                  style={styles.imgNotFound}
+                  resizeMethod="resize"
+                  resizeMode="cover"
                 />
               </View>
             }
@@ -323,6 +325,10 @@ export default function Perizinan({navigation}) {
 }
 
 const styles = StyleSheet.create({
+  imgNotFound: {
+    height: 210,
+    width: 180,
+  },
   headerWrapper: {
     flexDirection: 'row',
     alignItems: 'center',

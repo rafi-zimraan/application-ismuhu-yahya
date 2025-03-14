@@ -57,12 +57,10 @@ export default function OtpForgotPassword({route}) {
     try {
       setLoading(true);
       const response = await verifyOtpCode(email, otpCode);
-
       if (response?.used) {
         showToast('Kode OTP telah digunakan. Silakan minta kode baru.');
         return;
       }
-
       if (response?.token) {
         await EncryptedStorage.setItem('token', JSON.stringify(response.token));
         setToken(response.token);
@@ -154,7 +152,7 @@ export default function OtpForgotPassword({route}) {
 
         <Gap height={15} />
         <View style={styles.resendContainer}>
-          <Text style={styles.resendText}>Tidak menerima? </Text>
+          <Text style={styles.resendText}>Tidak menerima otp? </Text>
           <TouchableOpacity onPress={handleResendEmail}>
             <Text
               style={[
@@ -196,14 +194,15 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   subtitle: {
-    color: COLORS.grey,
+    color: COLORS.mediumGrey,
     fontSize: DIMENS.m,
     textAlign: 'center',
     paddingHorizontal: 20,
   },
   email: {
-    color: COLORS.primary,
+    color: COLORS.textPrimary,
     fontWeight: 'bold',
+    fontSize: DIMENS.m,
   },
   otpContainer: {
     flexDirection: 'row',

@@ -5,16 +5,16 @@ import {
   Image,
   RefreshControl,
   StyleSheet,
-  Text,
   TouchableOpacity,
-  View,
 } from 'react-native';
+import {useSelector} from 'react-redux';
 import {getAllSuggestions} from '..';
-import {Background, HeaderTransparent, ModalCustom} from '../../../Component';
+import {HeaderTransparent, ModalCustom, Text, View} from '../../../Component';
 import {ICON_NOTFOUND_DATA} from '../../../assets';
 import {COLORS, DIMENS} from '../../../utils';
 
 export default function Complaints({navigation}) {
+  const {colors, mode} = useSelector(state => state.theme);
   const [suggestions, setSuggestions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [tokenExpired, setTokenExpired] = useState(false);
@@ -55,14 +55,14 @@ export default function Complaints({navigation}) {
     <TouchableOpacity
       onPress={() => handlePressItem(item.id)}
       activeOpacity={0.9}>
-      <View style={styles.historyItem}>
-        <View style={styles.row}>
-          <View style={{flex: 1}}>
-            <View style={styles.textRow}>
+      <View style={styles.historyItem} section={true}>
+        <View style={styles.row} section={true}>
+          <View style={{flex: 1}} section={true}>
+            <View style={styles.textRow} section={true}>
               <Text style={styles.label}>Nama </Text>
               <Text style={styles.value}>: {item.name}</Text>
             </View>
-            <View style={styles.textRow}>
+            <View style={styles.textRow} section={true}>
               <Text style={styles.label}>Keluhan </Text>
               <Text style={styles.value}>: {item.complaint}</Text>
             </View>
@@ -72,7 +72,7 @@ export default function Complaints({navigation}) {
             {item.is_done === '1' ? 'Completed' : 'Pending'}
           </Text>
         </View>
-        <View>
+        <View section={true}>
           <Text style={styles.historyDate}>
             {item?.created_at.split('T')[0]}
           </Text>
@@ -82,16 +82,13 @@ export default function Complaints({navigation}) {
   );
 
   return (
-    <View style={styles.container}>
-      <Background />
-      <View style={styles.headerWrapper}>
-        <HeaderTransparent
-          title="Pengaduan Saya"
-          icon="arrow-left-circle-outline"
-          onPress={() => navigation.goBack()}
-        />
-      </View>
-      <View style={{padding: 15}}>
+    <View style={styles.container} showImageBackground={true}>
+      <HeaderTransparent
+        title="Pengaduan Saya"
+        icon="arrow-left-circle-outline"
+        onPress={() => navigation.goBack()}
+      />
+      <View style={{padding: 15}} useBackgroundTransparent={true}>
         {loading ? (
           <ActivityIndicator size="large" color={COLORS.goldenOrange} />
         ) : suggestions.length === 0 ? (
@@ -99,6 +96,8 @@ export default function Complaints({navigation}) {
             <Image
               source={ICON_NOTFOUND_DATA}
               style={styles.newsImageNotFound}
+              resizeMethod="resize"
+              resizeMode="cover"
             />
           </View>
         ) : (
@@ -206,14 +205,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
-  headerWrapper: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 10,
-    backgroundColor: COLORS.goldenOrange,
-    elevation: 3,
-  },
   content: {
     padding: 15,
   },
@@ -222,10 +213,11 @@ const styles = StyleSheet.create({
     padding: 5,
   },
   historyItem: {
-    backgroundColor: COLORS.champagne,
     padding: 15,
     borderRadius: 10,
     marginBottom: 10,
+    borderWidth: 0.4,
+    borderColor: COLORS.goldenOrange,
     elevation: 2,
   },
   row: {

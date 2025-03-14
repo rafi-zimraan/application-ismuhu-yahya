@@ -5,6 +5,8 @@ import FilesScreen from './Components/FilesScreen';
 import TargetLeader from './Components/TargetLeader';
 import TaskDetailScreen from './Components/TaskDetailScreen';
 import TaskFilter from './Components/TaskFilter';
+import TaskItem from './Components/TaskItem';
+import TaskList from './Components/TaskList';
 import TaskOptionModal from './Components/TaskOptionModal';
 import TextInputTaskManagement from './Components/TextInputTaskManagement';
 import UpdateTaskManagement from './Components/UpdateTaskManagement';
@@ -35,6 +37,8 @@ import {
 
 // component
 export {
+  TaskItem,
+  TaskList,
   TaskManagement,
   UploadLinkModal,
   UploadFileModal,

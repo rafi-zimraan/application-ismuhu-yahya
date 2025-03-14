@@ -6,23 +6,24 @@ import {
   ScrollView,
   StatusBar,
   StyleSheet,
-  Text,
-  View,
 } from 'react-native';
 import EncryptedStorage from 'react-native-encrypted-storage/';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import {useSelector} from 'react-redux';
 import {getAllDataSpa} from '..';
 import {
-  Background,
   FloatingButton,
   HeaderTransparent,
   ModalCustom,
   ModalLoading,
+  Text,
+  View,
 } from '../../../Component';
 import {ICON_NOTFOUND_DATA} from '../../../assets';
 import {COLORS, DIMENS} from '../../../utils';
 
 export default function DetailDataSpa({navigation}) {
+  const {colors, mode} = useSelector(state => state.theme);
   const [spaData, setSpaData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -60,56 +61,67 @@ export default function DetailDataSpa({navigation}) {
   return (
     <View style={{flex: 1}}>
       <ModalLoading visible={loading} />
-      <StatusBar barStyle="default" backgroundColor="transparent" />
-      <Background />
-      <View style={styles.headerWrapper}>
-        <HeaderTransparent
-          title="Detail Data SPA"
-          icon="arrow-left-circle-outline"
-          onPress={() => navigation.goBack()}
-        />
-      </View>
-      <ScrollView
-        refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={onRefresh}
-            colors={['#FFD700']}
-          />
-        }
-        contentContainerStyle={{flexGrow: 1}}>
-        <View style={styles.container}>
+      <StatusBar
+        barStyle={mode == 'light' ? 'dark-content' : 'default'}
+        backgroundColor="transparent"
+      />
+      <HeaderTransparent
+        title="Detail Data SPA"
+        icon="arrow-left-circle-outline"
+        onPress={() => navigation.goBack()}
+      />
+
+      <View style={{flex: 1}} showImageBackground={true}>
+        <ScrollView
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+              colors={['#FFD700']}
+            />
+          }
+          contentContainerStyle={{flexGrow: 1, paddingBottom: 50}}
+          style={styles.container}>
           {spaData ? (
-            <View style={styles.content}>
+            <View style={styles.content} section={true}>
               <Text style={styles.title}>Detail Data Pribadi</Text>
 
               {/* Nama */}
-              <View style={styles.section}>
+              <View style={styles.section} section={true}>
                 <Icon name="account" size={24} color={COLORS.goldenOrange} />
-                <View style={styles.viewContentText}>
-                  <Text style={styles.textTitle}>Nama</Text>
+                <View style={styles.viewContentText} section={true}>
+                  <Text
+                    style={[styles.textTitle, {color: colors[mode].textLabel}]}>
+                    Nama
+                  </Text>
                   <Text style={styles.label}>{spaData?.name || '-'}</Text>
                 </View>
               </View>
 
               {/* Email */}
-              <View style={styles.section}>
+              <View style={styles.section} section={true}>
                 <Icon name="email" size={24} color={COLORS.goldenOrange} />
-                <View style={styles.viewContentText}>
-                  <Text style={styles.textTitle}>Email</Text>
+                <View style={styles.viewContentText} section={true}>
+                  <Text
+                    style={[styles.textTitle, {color: colors[mode].textLabel}]}>
+                    Email
+                  </Text>
                   <Text style={styles.label}>{spaData?.email || '-'}</Text>
                 </View>
               </View>
 
               {/* Jenis Kelamin */}
-              <View style={styles.section}>
+              <View style={styles.section} section={true}>
                 <Icon
                   name="gender-male-female"
                   size={24}
                   color={COLORS.goldenOrange}
                 />
-                <View style={styles.viewContentText}>
-                  <Text style={styles.textTitle}>Jenis Kelamin</Text>
+                <View style={styles.viewContentText} section={true}>
+                  <Text
+                    style={[styles.textTitle, {color: colors[mode].textLabel}]}>
+                    Jenis Kelamin
+                  </Text>
                   <Text style={styles.label}>
                     {spaData?.spa_profile?.gender || '-'}
                   </Text>
@@ -117,10 +129,13 @@ export default function DetailDataSpa({navigation}) {
               </View>
 
               {/* Nomor Telepon */}
-              <View style={styles.section}>
+              <View style={styles.section} section={true}>
                 <Icon name="phone" size={24} color={COLORS.goldenOrange} />
-                <View style={styles.viewContentText}>
-                  <Text style={styles.textTitle}>Nomor Telepon</Text>
+                <View style={styles.viewContentText} section={true}>
+                  <Text
+                    style={[styles.textTitle, {color: colors[mode].textLabel}]}>
+                    Nomor Telepon
+                  </Text>
                   <Text style={styles.label}>
                     {spaData?.spa_profile?.phone || '-'}
                   </Text>
@@ -128,10 +143,13 @@ export default function DetailDataSpa({navigation}) {
               </View>
 
               {/* Tanggal Lahir */}
-              <View style={styles.section}>
+              <View style={styles.section} section={true}>
                 <Icon name="calendar" size={24} color={COLORS.goldenOrange} />
-                <View style={styles.viewContentText}>
-                  <Text style={styles.textTitle}>Tanggal Lahir</Text>
+                <View style={styles.viewContentText} section={true}>
+                  <Text
+                    style={[styles.textTitle, {color: colors[mode].textLabel}]}>
+                    Tanggal Lahir
+                  </Text>
                   <Text style={styles.label}>
                     {spaData?.spa_profile?.birth_date || '-'}
                   </Text>
@@ -139,10 +157,13 @@ export default function DetailDataSpa({navigation}) {
               </View>
 
               {/* Tempat Lahir */}
-              <View style={styles.section}>
+              <View style={styles.section} section={true}>
                 <Icon name="earth" size={24} color={COLORS.goldenOrange} />
-                <View style={styles.viewContentText}>
-                  <Text style={styles.textTitle}>Tempat Lahir</Text>
+                <View style={styles.viewContentText} section={true}>
+                  <Text
+                    style={[styles.textTitle, {color: colors[mode].textLabel}]}>
+                    Tempat Lahir
+                  </Text>
                   <Text style={styles.label}>
                     {spaData?.spa_profile?.place_of_birth || '-'}
                   </Text>
@@ -150,14 +171,17 @@ export default function DetailDataSpa({navigation}) {
               </View>
 
               {/* DOMISILI */}
-              <View style={styles.section}>
+              <View style={styles.section} section={true}>
                 <Icon
                   name="city-variant-outline"
                   size={24}
                   color={COLORS.goldenOrange}
                 />
-                <View style={styles.viewContentText}>
-                  <Text style={styles.textTitle}>Domisili</Text>
+                <View style={styles.viewContentText} section={true}>
+                  <Text
+                    style={[styles.textTitle, {color: colors[mode].textLabel}]}>
+                    Domisili
+                  </Text>
                   <Text style={styles.label}>
                     {spaData?.spa_profile?.domisili || '-'}
                   </Text>
@@ -165,10 +189,13 @@ export default function DetailDataSpa({navigation}) {
               </View>
 
               {/* Address */}
-              <View style={styles.section}>
+              <View style={styles.section} section={true}>
                 <Icon name="map" size={24} color={COLORS.goldenOrange} />
-                <View style={styles.viewContentText}>
-                  <Text style={styles.textTitle}>Alamat Rumah</Text>
+                <View style={styles.viewContentText} section={true}>
+                  <Text
+                    style={[styles.textTitle, {color: colors[mode].textLabel}]}>
+                    Alamat Rumah
+                  </Text>
                   <Text style={styles.label}>
                     {spaData?.spa_profile?.address || '-'}
                   </Text>
@@ -176,14 +203,17 @@ export default function DetailDataSpa({navigation}) {
               </View>
 
               {/* NPWP */}
-              <View style={styles.section}>
+              <View style={styles.section} section={true}>
                 <Icon
                   name="file-document"
                   size={24}
                   color={COLORS.goldenOrange}
                 />
-                <View style={styles.viewContentText}>
-                  <Text style={styles.textTitle}>NPWP</Text>
+                <View style={styles.viewContentText} section={true}>
+                  <Text
+                    style={[styles.textTitle, {color: colors[mode].textLabel}]}>
+                    NPWP
+                  </Text>
                   <Text style={styles.label}>
                     {spaData?.spa_profile?.npwp || '-'}
                   </Text>
@@ -191,10 +221,13 @@ export default function DetailDataSpa({navigation}) {
               </View>
 
               {/* NIK */}
-              <View style={styles.section}>
+              <View style={styles.section} section={true}>
                 <Icon name="id-card" size={24} color={COLORS.goldenOrange} />
-                <View style={styles.viewContentText}>
-                  <Text style={styles.textTitle}>NIK</Text>
+                <View style={styles.viewContentText} section={true}>
+                  <Text
+                    style={[styles.textTitle, {color: colors[mode].textLabel}]}>
+                    NIK
+                  </Text>
                   <Text style={styles.label}>
                     {spaData?.spa_profile?.nik || '-'}
                   </Text>
@@ -202,10 +235,13 @@ export default function DetailDataSpa({navigation}) {
               </View>
 
               {/* Hobi */}
-              <View style={styles.section}>
+              <View style={styles.section} section={true}>
                 <Icon name="soccer" size={24} color={COLORS.goldenOrange} />
-                <View style={styles.viewContentText}>
-                  <Text style={styles.textTitle}>Hobi</Text>
+                <View style={styles.viewContentText} section={true}>
+                  <Text
+                    style={[styles.textTitle, {color: colors[mode].textLabel}]}>
+                    Hobi
+                  </Text>
                   <Text style={styles.label}>
                     {spaData?.spa_profile?.hoby || '-'}
                   </Text>
@@ -213,10 +249,13 @@ export default function DetailDataSpa({navigation}) {
               </View>
 
               {/* Status Pernikahan */}
-              <View style={styles.section}>
+              <View style={styles.section} section={true}>
                 <Icon name="heart" size={24} color={COLORS.goldenOrange} />
-                <View style={styles.viewContentText}>
-                  <Text style={styles.textTitle}>Status Pernikahan</Text>
+                <View style={styles.viewContentText} section={true}>
+                  <Text
+                    style={[styles.textTitle, {color: colors[mode].textLabel}]}>
+                    Status Pernikahan
+                  </Text>
                   <Text style={styles.label}>
                     {spaData?.spa_profile?.marital_status || '-'}
                   </Text>
@@ -224,14 +263,17 @@ export default function DetailDataSpa({navigation}) {
               </View>
 
               {/* Kontak Darurat */}
-              <View style={styles.section}>
+              <View style={styles.section} section={true}>
                 <Icon
                   name="phone-in-talk"
                   size={24}
                   color={COLORS.goldenOrange}
                 />
-                <View style={styles.viewContentText}>
-                  <Text style={styles.textTitle}>Kontak Darurat</Text>
+                <View style={styles.viewContentText} section={true}>
+                  <Text
+                    style={[styles.textTitle, {color: colors[mode].textLabel}]}>
+                    Kontak Darurat
+                  </Text>
                   <Text style={styles.label}>
                     {spaData?.spa_profile?.contact_emergency || '-'}
                   </Text>
@@ -239,10 +281,13 @@ export default function DetailDataSpa({navigation}) {
               </View>
 
               {/* BPJS */}
-              <View style={styles.section}>
+              <View style={styles.section} section={true}>
                 <Icon name="hospital" size={24} color={COLORS.goldenOrange} />
-                <View style={styles.viewContentText}>
-                  <Text style={styles.textTitle}>BPJS</Text>
+                <View style={styles.viewContentText} section={true}>
+                  <Text
+                    style={[styles.textTitle, {color: colors[mode].textLabel}]}>
+                    BPJS
+                  </Text>
                   <Text style={styles.label}>
                     {spaData?.spa_profile?.bpjs || '-'}
                   </Text>
@@ -250,10 +295,13 @@ export default function DetailDataSpa({navigation}) {
               </View>
 
               {/* Provinsi */}
-              <View style={styles.section}>
+              <View style={styles.section} section={true}>
                 <Icon name="city" size={24} color={COLORS.goldenOrange} />
-                <View style={styles.viewContentText}>
-                  <Text style={styles.textTitle}>Provinsi</Text>
+                <View style={styles.viewContentText} section={true}>
+                  <Text
+                    style={[styles.textTitle, {color: colors[mode].textLabel}]}>
+                    Provinsi
+                  </Text>
                   <Text style={styles.label}>
                     {spaData?.spa_profile?.province || '-'}
                   </Text>
@@ -261,14 +309,17 @@ export default function DetailDataSpa({navigation}) {
               </View>
 
               {/* Kabupaten */}
-              <View style={styles.section}>
+              <View style={styles.section} section={true}>
                 <Icon
                   name="city-variant"
                   size={24}
                   color={COLORS.goldenOrange}
                 />
-                <View style={styles.viewContentText}>
-                  <Text style={styles.textTitle}>Kabupaten</Text>
+                <View style={styles.viewContentText} section={true}>
+                  <Text
+                    style={[styles.textTitle, {color: colors[mode].textLabel}]}>
+                    Kabupaten
+                  </Text>
                   <Text style={styles.label}>
                     {spaData?.spa_profile?.city || '-'}
                   </Text>
@@ -276,22 +327,25 @@ export default function DetailDataSpa({navigation}) {
               </View>
             </View>
           ) : (
-            <View style={styles.viewImgNotFound}>
+            <View
+              style={styles.viewImgNotFound}
+              useBackgroundTransparent={true}>
               <Image
                 source={ICON_NOTFOUND_DATA}
                 style={styles.newsImageNotFound}
+                resizeMethod="resize"
+                resizeMode="cover"
               />
               <Text style={styles.noDataText}>Data tidak tersedia.</Text>
             </View>
           )}
-        </View>
-      </ScrollView>
+        </ScrollView>
+      </View>
 
       <FloatingButton
         iconName="plus-circle"
         backgroundColor={COLORS.goldenOrange}
         onPress={() => navigation.navigate('UpdateDataSpa', {spaData})}
-        label={'Edit Data'}
       />
 
       <ModalCustom
@@ -320,23 +374,19 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  headerWrapper: {
-    paddingHorizontal: 10,
-    backgroundColor: COLORS.goldenOrange,
-    elevation: 3,
-  },
   container: {
     flex: 1,
-    padding: 20,
+    padding: 15,
   },
   content: {
-    backgroundColor: COLORS.white,
     borderRadius: 15,
     padding: 15,
     shadowColor: COLORS.black,
     shadowOffset: {width: 0, height: 2},
     shadowOpacity: 0.1,
     elevation: 2,
+    borderWidth: 0.4,
+    borderColor: COLORS.black,
   },
   title: {
     fontSize: DIMENS.xl,
@@ -354,7 +404,7 @@ const styles = StyleSheet.create({
   },
   textTitle: {
     fontSize: DIMENS.m,
-    color: COLORS.grey,
+    fontWeight: '500',
   },
   label: {
     fontSize: DIMENS.l,

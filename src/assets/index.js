@@ -1,10 +1,10 @@
 import IMG_WARNING_DEVICE from '../assets//images/warningIlustratitonDevice.png';
+import IMG_BACKGROUND_MORNING_DARK from '../assets/background/BG_Dark_Morning.png';
 import IMG_BACKGROUND_MORNING from '../assets/background/BackgroundMorning.png';
 import IMG_BACKGROUND_NIGHT from '../assets/background/BackgroundNight.png';
 import IMG_BACKGROUND_AFTERNOON from '../assets/background/Backgroundafternoon.png';
-import BG_IMG_AFTERNOON from '../assets/background/afterNoon.jpg';
-import BG_IMG_MORNING from '../assets/background/morning.jpg';
-import BG_IMG_NIGHT from '../assets/background/night.jpg';
+import IMG_BACKGROUND_AFTERNOON_DARK from '../assets/background/Bg_Dark_Afternoon.png';
+import IMG_BACKGROUND_NIGHT_DARK from '../assets/background/Bg_Dark_Night.png';
 import IMG_YELLOWWISH_FRIST from '../assets/background/yellowish-1.png';
 import IMG_YELLOWWISH from '../assets/background/yellowish.png';
 import BG_APPLICATION from '../assets/backgroundApp.png';
@@ -16,9 +16,6 @@ import IMG_CAR_PICKUPBLACK from '../assets/cars/carPickupBlack.png';
 import IMG_CAR_ERTIGA from '../assets/cars/ertiga.png';
 import IMG_CAR_REBORN from '../assets/cars/reborn.png';
 import ICON_DASBOARD from '../assets/icons/IconDasboard.png';
-import ICON_DASBOARD_PERIZINAN from '../assets/icons/IlustrationDasboardPerizinan.png';
-import ICON_SCANNER from '../assets/icons/IlustrationQR.png';
-import ICON_ILUSTRATION_SCAAN_QR_CODE from '../assets/icons/IlustrationsScannQr-Code.png';
 import ICON_NOTFOUND_DATA from '../assets/icons/ilustrationNothingData.png';
 import IMG_NOTHING_DATA_HISTORY_PERIZINA from '../assets/images/nothingDataHistory.png';
 import IMG_LOGO from '../assets/logo-masjid-ismuhuyahya/LOGO.png';
@@ -32,9 +29,9 @@ import IMG_PONDOK_DIGITAL_WHITE from '../assets/pondok-digital-logo/full-white.p
 import IMG_PONDOK_DIGITAL from '../assets/pondok-digital-logo/full.png';
 
 export {
-  BG_IMG_NIGHT,
-  BG_IMG_MORNING,
-  BG_IMG_AFTERNOON,
+  IMG_BACKGROUND_AFTERNOON_DARK,
+  IMG_BACKGROUND_MORNING_DARK,
+  IMG_BACKGROUND_NIGHT_DARK,
   IMG_NAME_CARD_REBORN,
   IMG_REBORN_CAR_ESCAPE,
   IMG_CAR_AMBULANCE,
@@ -61,7 +58,4 @@ export {
   BG_APPLICATION,
   ICON_NOTFOUND_DATA,
   ICON_DASBOARD,
-  ICON_ILUSTRATION_SCAAN_QR_CODE,
-  ICON_SCANNER,
-  ICON_DASBOARD_PERIZINAN,
 };

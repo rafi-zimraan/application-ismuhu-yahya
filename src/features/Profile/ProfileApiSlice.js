@@ -368,7 +368,6 @@ export const deleteExperience = async id_experience => {
     });
 
     if (response.data?.status === true) {
-      console.log(response.data?.message || 'Data pengalaman telah dihapu');
       return true;
     } else {
       throw new Error('Gagal menghapus notifikasi');

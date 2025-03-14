@@ -1,19 +1,22 @@
 import React, {useState} from 'react';
 import {useForm} from 'react-hook-form';
-import {ScrollView, StyleSheet, Text, TextInput, View} from 'react-native';
+import {ScrollView, StatusBar, StyleSheet, TextInput} from 'react-native';
 import EncryptedStorage from 'react-native-encrypted-storage';
+import {useSelector} from 'react-redux';
 import {addCouple} from '..';
 import {
-  Background,
   ButtonAction,
   Gap,
   HeaderTransparent,
   ModalCustom,
+  Text,
+  View,
 } from '../../../Component';
 import {COLORS, DIMENS} from '../../../utils';
 
 export default function CreateCouple({navigation}) {
   const {handleSubmit} = useForm();
+  const {colors, mode} = useSelector(state => state.theme);
   const [nameCouple, setNameCouple] = useState('');
   const [coupleDomisili, setCoupleDomisili] = useState('');
   const [children, setChildren] = useState('');
@@ -46,52 +49,87 @@ export default function CreateCouple({navigation}) {
     };
     handleAPI(data);
   };
+
   return (
     <View style={{flex: 1}}>
-      <Background />
-      <View style={styles.headerWrapper}>
-        <HeaderTransparent
-          title="Tambah Data Pasangan"
-          icon="arrow-left-circle-outline"
-          onPress={() => navigation.goBack()}
-        />
-      </View>
-      <View style={styles.container}>
+      <StatusBar barStyle={mode == 'light' ? 'dark-content' : 'default'} />
+      <HeaderTransparent
+        title="Tambah Data Pasangan"
+        icon="arrow-left-circle-outline"
+        onPress={() => navigation.goBack()}
+      />
+      <View style={styles.container} showImageBackground={true}>
         <Gap height={15} />
         <ScrollView
           contentContainerStyle={styles.scrollContainer}
           stickyHeaderHiddenOnScroll>
-          <View style={styles.inputContainer}>
-            <View style={styles.inputFieldContainer}>
-              <Text style={styles.inputLabel}>Nama Pasangan</Text>
+          <View style={styles.inputContainer} useBackgroundTransparent={true}>
+            <View
+              style={styles.inputFieldContainer}
+              useBackgroundTransparent={true}>
+              <Text
+                style={[styles.inputLabel, {color: colors[mode].textLabel}]}>
+                Nama Pasangan
+              </Text>
               <TextInput
-                style={styles.input}
+                style={[
+                  styles.input,
+                  {
+                    backgroundColor: colors[mode].textInput,
+                  },
+                ]}
                 value={nameCouple}
                 onChangeText={setNameCouple}
-                placeholderTextColor={COLORS.grey}
+                placeholderTextColor={
+                  mode == 'light' ? COLORS.softGray : COLORS.grey
+                }
                 placeholder="nama"
               />
             </View>
 
-            <View style={styles.inputFieldContainer}>
-              <Text style={styles.inputLabel}>Domisili</Text>
+            <View
+              style={styles.inputFieldContainer}
+              useBackgroundTransparent={true}>
+              <Text
+                style={[styles.inputLabel, {color: colors[mode].textLabel}]}>
+                Domisili
+              </Text>
               <TextInput
-                style={styles.input}
+                style={[
+                  styles.input,
+                  {
+                    backgroundColor: colors[mode].textInput,
+                  },
+                ]}
                 value={coupleDomisili}
                 onChangeText={setCoupleDomisili}
-                placeholderTextColor={COLORS.grey}
+                placeholderTextColor={
+                  mode == 'light' ? COLORS.softGray : COLORS.grey
+                }
                 placeholder="Domisili"
               />
             </View>
 
-            <View style={styles.inputFieldContainer}>
-              <Text style={styles.inputLabel}>Jumlah Anak</Text>
+            <View
+              style={styles.inputFieldContainer}
+              useBackgroundTransparent={true}>
+              <Text
+                style={[styles.inputLabel, {color: colors[mode].textLabel}]}>
+                Jumlah Anak
+              </Text>
               <TextInput
-                style={styles.input}
+                style={[
+                  styles.input,
+                  {
+                    backgroundColor: colors[mode].textInput,
+                  },
+                ]}
                 value={children}
                 onChangeText={setChildren}
                 keyboardType="numeric"
-                placeholderTextColor={COLORS.grey}
+                placeholderTextColor={
+                  mode == 'light' ? COLORS.softGray : COLORS.grey
+                }
                 placeholder="berapa anak anda"
               />
             </View>
@@ -135,17 +173,8 @@ export default function CreateCouple({navigation}) {
 }
 
 const styles = StyleSheet.create({
-  headerWrapper: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 10,
-    backgroundColor: COLORS.goldenOrange,
-    elevation: 3,
-  },
   container: {
     flex: 1,
-    paddingHorizontal: 24,
   },
   scrollContainer: {
     flexGrow: 1,
@@ -153,14 +182,13 @@ const styles = StyleSheet.create({
   },
   inputContainer: {
     width: '100%',
-    marginTop: 8,
+    padding: 15,
   },
   inputFieldContainer: {
     marginBottom: 15,
   },
   inputLabel: {
     fontSize: DIMENS.m,
-    color: '#333',
     marginBottom: 5,
     fontWeight: '600',
   },
@@ -169,7 +197,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     backgroundColor: COLORS.white,
     borderRadius: 10,
-    borderColor: '#ddd',
+    borderColor: COLORS.neutralGrey,
     borderWidth: 1,
     fontSize: DIMENS.s,
     color: COLORS.black,
@@ -181,7 +209,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: 8,
     marginTop: 20,
-    shadowColor: '#000',
+    shadowColor: COLORS.black,
     shadowOffset: {width: 0, height: 4},
     shadowOpacity: 0.2,
     shadowRadius: 4,

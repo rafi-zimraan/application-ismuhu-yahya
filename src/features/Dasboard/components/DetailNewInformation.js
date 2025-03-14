@@ -1,3 +1,4 @@
+import {decode} from 'html-entities';
 import React, {useEffect, useState} from 'react';
 import {
   Dimensions,
@@ -5,15 +6,20 @@ import {
   ScrollView,
   StatusBar,
   StyleSheet,
-  Text,
   ToastAndroid,
   TouchableOpacity,
-  View,
 } from 'react-native';
 import HTMLView from 'react-native-htmlview';
 import Share from 'react-native-share';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {Gap, HeaderTransparent, ModalLoading} from '../../../Component';
+import {useSelector} from 'react-redux';
+import {
+  Gap,
+  HeaderTransparent,
+  ModalLoading,
+  Text,
+  View,
+} from '../../../Component';
 import {ICON_NOTFOUND_DATA} from '../../../assets';
 import {COLORS, DIMENS} from '../../../utils';
 
@@ -22,6 +28,7 @@ const {width} = Dimensions.get('window');
 export default function DetailNewInformation({route, navigation}) {
   const {detailData} = route.params;
   const data = detailData.data;
+  const {colors, mode} = useSelector(state => state.theme);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [loading, setLoading] = useState(true);
 
@@ -38,7 +45,7 @@ export default function DetailNewInformation({route, navigation}) {
       : [{path: null}];
 
   const title = data.title || 'Judul berita tidak tersedia';
-  const description = data.desc || 'Deskripsi tidak tersedia';
+  const description = decode(data.desc || 'Deskripsi tidak tersedia');
   const startPublishedAt = data.start_published_at || 'Tanggal tidak tersedia';
   const uploaderName = data.uploader?.name || 'Tidak diketahui';
 
@@ -60,88 +67,105 @@ export default function DetailNewInformation({route, navigation}) {
 
   return (
     <View style={styles.container}>
-      <StatusBar barStyle={'default'} backgroundColor={'transparent'} />
+      <StatusBar
+        barStyle={mode == 'light' ? 'dark-content' : 'default'}
+        backgroundColor={'transparent'}
+      />
       <ModalLoading visible={loading} />
-      <View style={styles.headerWrapper}>
-        <HeaderTransparent
-          title="Detail Informasi"
-          icon="arrow-left-circle-outline"
-          onPress={() => navigation.goBack()}
-          rightIcon="information-outline"
-        />
-      </View>
+      <HeaderTransparent
+        title="Detail Informasi"
+        icon="arrow-left-circle-outline"
+        onPress={() => navigation.goBack()}
+        rightIcon="information-outline"
+      />
       <Gap height={10} />
-      <ScrollView>
-        <View style={styles.body}>
-          <ScrollView
-            horizontal
-            pagingEnabled
-            showsHorizontalScrollIndicator={false}
-            onScroll={event => {
-              const newIndex = Math.round(
-                event.nativeEvent.contentOffset.x / width,
-              );
-              setCurrentIndex(newIndex);
-            }}
-            scrollEventThrottle={16}>
-            {images.map((image, index) => (
-              <Image
-                key={index}
-                source={
-                  image.path
-                    ? {uri: `https://app.simpondok.com/${image.path}`}
-                    : ICON_NOTFOUND_DATA
-                }
-                style={styles.image}
-                resizeMode="contain"
-              />
-            ))}
-          </ScrollView>
+      <View style={{flex: 1}} useBackgroundTransparent={true}>
+        <ScrollView
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={{flexGrow: 1}}>
+          <View style={styles.body}>
+            <ScrollView
+              horizontal
+              pagingEnabled
+              showsHorizontalScrollIndicator={false}
+              onScroll={event => {
+                const newIndex = Math.round(
+                  event.nativeEvent.contentOffset.x / width,
+                );
+                setCurrentIndex(newIndex);
+              }}
+              scrollEventThrottle={16}>
+              {images.map((image, index) => (
+                <Image
+                  key={index}
+                  source={
+                    image.path
+                      ? {uri: `https://app.simpondok.com/${image.path}`}
+                      : ICON_NOTFOUND_DATA
+                  }
+                  style={styles.image}
+                  resizeMethod="resize"
+                  resizeMode="contain"
+                />
+              ))}
+            </ScrollView>
 
-          <Gap height={15} />
+            <Gap height={15} />
 
-          <View style={styles.paginationContainer}>
-            {images.map((_, index) => (
-              <TouchableOpacity
-                key={index}
+            <View style={styles.paginationContainer}>
+              {images.map((_, index) => (
+                <TouchableOpacity
+                  key={index}
+                  style={[
+                    styles.paginationDot,
+                    currentIndex === index && styles.paginationDotActive,
+                  ]}
+                  onPress={() => setCurrentIndex(index)}
+                />
+              ))}
+            </View>
+
+            <View
+              style={styles.profileShareRow}
+              useBackgroundTransparent={true}>
+              <View
                 style={[
-                  styles.paginationDot,
-                  currentIndex === index && styles.paginationDotActive,
+                  styles.profileContainer,
+                  {backgroundColor: colors[mode].buttonAuthor},
+                ]}>
+                <Icon name="account" size={20} color={COLORS.grey} />
+                {data.title ? (
+                  <Text style={styles.publisherText}>{uploaderName}</Text>
+                ) : (
+                  <Text style={styles.publisherText}>Judul tidak tersedia</Text>
+                )}
+              </View>
+              <TouchableOpacity
+                style={[
+                  styles.shareContainer,
+                  {backgroundColor: colors[mode].buttonShare},
                 ]}
-                onPress={() => setCurrentIndex(index)}
-              />
-            ))}
-          </View>
-
-          <View style={styles.profileShareRow}>
-            <View style={styles.profileContainer}>
-              <Icon name="account" size={20} color={COLORS.grey} />
-              {data.title ? (
-                <Text style={styles.publisherText}>{uploaderName}</Text>
+                onPress={handleShare}>
+                <Icon name="share-variant" size={17} color={COLORS.white} />
+                <Text style={styles.shareText}>Share</Text>
+              </TouchableOpacity>
+            </View>
+            <View
+              style={styles.publishedDateContainer}
+              useBackgroundTransparent={true}>
+              <Text style={styles.publishedDateText}>{startPublishedAt}</Text>
+            </View>
+            <Text style={styles.title}>{title}</Text>
+            <View style={styles.descriptionContainer}>
+              {data.desc ? (
+                <HTMLView value={description} stylesheet={htmlStyles} />
               ) : (
-                <Text style={styles.publisherText}>Judul tidak tersedia</Text>
+                <Text style={styles.description}>Deskripsi tidak ada</Text>
               )}
             </View>
-            <TouchableOpacity
-              style={styles.shareContainer}
-              onPress={handleShare}>
-              <Icon name="share-variant" size={17} color={COLORS.white} />
-              <Text style={styles.shareText}>Share</Text>
-            </TouchableOpacity>
           </View>
-          <View style={styles.publishedDateContainer}>
-            <Text style={styles.publishedDateText}>{startPublishedAt}</Text>
-          </View>
-          <Text style={styles.title}>{title}</Text>
-          <View style={styles.descriptionContainer}>
-            {data.desc ? (
-              <HTMLView value={description} stylesheet={htmlStyles} />
-            ) : (
-              <Text style={styles.description}>Deskripsi tidak ada</Text>
-            )}
-          </View>
-        </View>
-      </ScrollView>
+        </ScrollView>
+      </View>
       <Gap height={15} />
     </View>
   );
@@ -149,19 +173,12 @@ export default function DetailNewInformation({route, navigation}) {
 
 const styles = StyleSheet.create({
   description: {
-    color: COLORS.grey,
     fontSize: DIMENS.m,
     fontWeight: '400',
   },
-  headerWrapper: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 10,
-    backgroundColor: COLORS.goldenOrange,
-    elevation: 3,
+  container: {
+    flex: 1,
   },
-  container: {flex: 1, backgroundColor: COLORS.white},
   body: {
     paddingHorizontal: 16,
   },
@@ -197,7 +214,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: COLORS.blueLight,
     borderRadius: 8,
     paddingVertical: 3,
     paddingHorizontal: 4,
@@ -210,7 +226,6 @@ const styles = StyleSheet.create({
   shareContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: COLORS.goldenOrange,
     paddingVertical: 5,
     paddingHorizontal: 7,
     borderRadius: 8,
@@ -228,9 +243,10 @@ const styles = StyleSheet.create({
     width: '28%',
   },
   publishedDateText: {
-    fontSize: DIMENS.m,
+    fontSize: DIMENS.s,
     color: COLORS.black,
     textAlign: 'left',
+    fontWeight: '400',
   },
   title: {
     fontSize: DIMENS.xxxxl,
@@ -276,36 +292,30 @@ const htmlStyles = StyleSheet.create({
     fontSize: DIMENS.xxxl,
     fontWeight: '800',
     color: COLORS.black,
-    marginVertical: 4,
   },
   h2: {
     fontSize: DIMENS.xxl,
     fontWeight: '700',
     color: COLORS.black,
-    marginVertical: 3,
   },
   h3: {
     fontSize: DIMENS.l,
     fontWeight: '600',
     color: COLORS.black,
-    marginVertical: 3,
   },
   h4: {
     fontSize: DIMENS.m,
     fontWeight: '500',
     color: COLORS.black,
-    marginVertical: 3,
   },
   h5: {
     fontSize: DIMENS.s,
     fontWeight: '400',
     color: COLORS.black,
-    marginVertical: 3,
   },
   h5: {
     fontSize: DIMENS.xs,
     fontWeight: '300',
     color: COLORS.black,
-    marginVertical: 3,
   },
 });

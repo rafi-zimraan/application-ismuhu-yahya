@@ -191,7 +191,9 @@ export default function FileLinkScreen({route, navigation}) {
           <View style={styles.contentNotFound}>
             <Image
               source={ICON_NOTFOUND_DATA}
-              style={{height: 250, width: 230}}
+              style={styles.imgNotFound}
+              resizeMethod="resize"
+              resizeMode="cover"
             />
           </View>
         ) : (
@@ -302,6 +304,10 @@ export default function FileLinkScreen({route, navigation}) {
 }
 
 const styles = StyleSheet.create({
+  imgNotFound: {
+    height: 250,
+    width: 230,
+  },
   viewLoadingData: {
     alignItems: 'center',
     justifyContent: 'center',

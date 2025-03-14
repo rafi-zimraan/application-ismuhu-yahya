@@ -2,30 +2,24 @@ import {useFocusEffect} from '@react-navigation/native';
 import moment from 'moment';
 import React, {useCallback, useState} from 'react';
 import {
-  ActivityIndicator,
   Dimensions,
-  FlatList,
-  Image,
   LayoutAnimation,
   StatusBar,
   StyleSheet,
-  Text,
   ToastAndroid,
-  TouchableOpacity,
-  View,
 } from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useDispatch, useSelector} from 'react-redux';
 import {
   FloatingButton,
   Gap,
   HeaderTransparent,
   ModalCustom,
+  View,
 } from '../../Component';
-import {ICON_NOTFOUND_DATA} from '../../assets';
 import {
   TargetLeader,
   TaskFilter,
+  TaskList,
   TaskOptionModal,
   UploadFileModal,
   UploadLinkModal,
@@ -34,12 +28,13 @@ import {
   setTasksFilter,
 } from '../../features/TaskManagement';
 import {FecthMe} from '../../features/authentication';
-import {COLORS, DIMENS} from '../../utils';
+import {COLORS} from '../../utils';
 
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
 
 export default function TaskManagement({navigation}) {
+  const {colors, mode} = useSelector(state => state.theme);
   const dispatch = useDispatch();
   const {
     task_all,
@@ -52,6 +47,7 @@ export default function TaskManagement({navigation}) {
   const [modalVisible, setModalVisible] = useState(false);
   const [modalTaskIndex, setModalTaskIndex] = useState(null);
   const [modalUploadVisible, setModalUploadVisible] = useState(false);
+  const [modalLoading, setModalLoading] = useState(false);
   const [loading, setLoading] = useState(false);
   const [modalLinkVisible, setModalLinkVisible] = useState(false);
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
@@ -170,136 +166,34 @@ export default function TaskManagement({navigation}) {
 
   return (
     <View style={styles.container}>
-      <StatusBar barStyle={'default'} component={'transparent'} />
-      <View style={styles.headerWrapper}>
-        <HeaderTransparent
-          title={'Task Management'}
-          icon="arrow-left-circle-outline"
-          onPress={() => navigation.goBack()}
-        />
-      </View>
+      <StatusBar
+        barStyle={mode == 'light' ? 'dark-content' : 'default'}
+        component={'transparent'}
+      />
+      <HeaderTransparent
+        title={'Task Management'}
+        icon="arrow-left-circle-outline"
+        onPress={() => navigation.goBack()}
+      />
 
       <Gap height={15} />
-      <TargetLeader />
-      <TaskFilter />
+      <View>
+        <TargetLeader />
+        <TaskFilter />
+      </View>
 
       <View style={{flex: 1, padding: 15}}>
-        <FlatList
+        <TaskList
           data={selectedData}
-          style={{flex: 1}}
-          keyExtractor={(item, index) => index.toString()}
-          ListEmptyComponent={
-            <>
-              {loading ? (
-                <View style={styles.viewLoadingData}>
-                  <Text style={styles.LoadingText}>Loading data...</Text>
-                  <ActivityIndicator
-                    size={'large'}
-                    color={COLORS.goldenOrange}
-                  />
-                </View>
-              ) : (
-                <View style={styles.viewImageNotFound}>
-                  <Image
-                    source={ICON_NOTFOUND_DATA}
-                    style={{width: 220, height: 220}}
-                  />
-                </View>
-              )}
-            </>
-          }
-          refreshing={loading && selectedData.length > 0}
-          onRefresh={fetchTasks}
-          renderItem={({item, index}) => (
-            <TouchableOpacity
-              activeOpacity={0.6}
-              onPress={() =>
-                navigation.navigate('TaskDetailScreen', {taskId: item.id})
-              }
-              onLongPress={e => handleLongPress(index, e, item.id)}>
-              <View
-                style={[
-                  styles.card,
-                  {
-                    backgroundColor:
-                      selectedTaskIdModal === item.id && modalVisible
-                        ? COLORS.mediumGrey
-                        : item.status === '1'
-                        ? COLORS.greenLight
-                        : COLORS.white,
-                  },
-                ]}>
-                <Text style={styles.cardTitle}>{item?.activity}</Text>
-                <Gap height={10} />
-                <View style={styles.leftContainer}>
-                  <TouchableOpacity
-                    style={styles.uploadButton}
-                    onPress={() => {
-                      setSelectedTaskId(item.id);
-                      setModalUploadVisible(true);
-                    }}>
-                    <Icon name="cloud-upload" size={20} color={COLORS.black} />
-                    <Text style={styles.buttonText}>Upload</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    style={styles.uploadButton}
-                    onPress={() => {
-                      setModalLinkVisible(true);
-                      setSelectedTaskId(item.id);
-                    }}>
-                    <Icon name="link" size={20} color={COLORS.black} />
-                    <Text style={styles.buttonText}>Link</Text>
-                  </TouchableOpacity>
-                </View>
-                <Gap height={3} />
-                <View style={styles.footer}>
-                  <View style={styles.countContainer}>
-                    <TouchableOpacity
-                      style={styles.countButton}
-                      onPress={async () => {
-                        await navigation.navigate('FilesScreen', {
-                          taskId: item.id,
-                        });
-                      }}>
-                      <Icon name="file" size={16} color={COLORS.black} />
-                      <Text style={styles.countText}>{item.files.length}</Text>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity
-                      style={styles.countButton}
-                      onPress={async () => {
-                        await navigation.navigate('FileLinkScreen', {
-                          taskId: item.id,
-                        });
-                      }}>
-                      <Icon name="attachment" size={16} color={COLORS.black} />
-                      <Text style={styles.countText}>{item.links.length}</Text>
-                    </TouchableOpacity>
-
-                    {item.addition_task === '1' && (
-                      <TouchableOpacity style={styles.additionTaskButton}>
-                        <Icon
-                          name="check-circle"
-                          size={16}
-                          color={COLORS.white}
-                        />
-                        <Text style={styles.additionTaskText}>Tambahan</Text>
-                      </TouchableOpacity>
-                    )}
-                  </View>
-                  <View style={styles.rightContainer}>
-                    <Icon
-                      name="calendar-month"
-                      size={16}
-                      color={COLORS.black}
-                    />
-                    <Gap width={5} />
-                    <Text style={styles.textDate}>{item?.date}</Text>
-                  </View>
-                </View>
-              </View>
-            </TouchableOpacity>
-          )}
+          loading={loading}
+          fetchTasks={fetchTasks}
+          navigation={navigation}
+          handleLongPress={handleLongPress}
+          selectedTaskIdModal={selectedTaskIdModal}
+          modalVisible={modalVisible}
+          setModalLinkVisible={setModalLinkVisible}
+          setModalUploadVisible={setModalUploadVisible}
+          setSelectedTaskId={setSelectedTaskId}
         />
       </View>
 
@@ -372,119 +266,7 @@ export default function TaskManagement({navigation}) {
 }
 
 const styles = StyleSheet.create({
-  additionTaskButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: COLORS.blueLight,
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: 5,
-    marginLeft: 8,
-  },
-  additionTaskText: {
-    color: COLORS.white,
-    fontSize: DIMENS.s,
-    fontWeight: '500',
-    marginLeft: 5,
-  },
-  viewLoadingData: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: 20,
-  },
-  LoadingText: {
-    color: COLORS.black,
-    fontStyle: 'italic',
-    marginBottom: 10,
-  },
-  viewImageNotFound: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    flex: 1,
-  },
-  countButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4,
-    backgroundColor: COLORS.white,
-    elevation: 3,
-    borderWidth: 0.4,
-    borderColor: COLORS.black,
-    padding: 5,
-    borderRadius: 5,
-  },
-  countContainer: {
-    flexDirection: 'row',
-    gap: 8,
-  },
-  countText: {
-    fontSize: DIMENS.s,
-    fontWeight: '500',
-    color: COLORS.black,
-  },
-  buttonText: {
-    fontSize: DIMENS.s,
-    fontWeight: '500',
-    color: COLORS.black,
-  },
-  rightContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    borderWidth: 0.4,
-    borderRadius: 5,
-    borderColor: COLORS.black,
-    padding: 2,
-    marginVertical: 3,
-    paddingHorizontal: 4,
-  },
-  uploadButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 5,
-    backgroundColor: COLORS.goldenOrange,
-    padding: 5,
-    borderRadius: 5,
-    elevation: 3,
-  },
-  leftContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 10,
-  },
-  textDate: {
-    color: COLORS.black,
-    fontSize: DIMENS.s,
-    fontWeight: '500',
-  },
-  headerWrapper: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 10,
-    backgroundColor: COLORS.goldenOrange,
-    elevation: 1,
-  },
   container: {
     flex: 1,
-    backgroundColor: COLORS.white,
-  },
-  card: {
-    padding: DIMENS.l,
-    borderRadius: 8,
-    marginBottom: 12,
-    backgroundColor: COLORS.white,
-    borderWidth: 0.4,
-    borderColor: COLORS.black,
-    elevation: 4,
-  },
-  cardTitle: {
-    fontSize: DIMENS.l,
-    fontWeight: 'bold',
-    color: COLORS.black,
-  },
-  footer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginTop: 8,
   },
 });

@@ -5,27 +5,28 @@ import {
   PermissionsAndroid,
   ScrollView,
   StyleSheet,
-  Text,
   TextInput,
   ToastAndroid,
   TouchableOpacity,
-  View,
 } from 'react-native';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import {useSelector} from 'react-redux';
 import {deleteSuggestionFile, getSuggestionDetail, updateSuggestion} from '..';
 import {
-  Background,
   ButtonAction,
   Gap,
   HeaderTransparent,
   ModalCustom,
   ModalLoading,
+  Text,
+  View,
 } from '../../../Component';
 import {COLORS, DIMENS} from '../../../utils';
 
 export default function UpdateFacilityComplaint({navigation, route}) {
   const {id} = route.params;
+  const {colors, mode} = useSelector(state => state.theme);
   const [name, setName] = useState('');
   const [goodsBroken, setGoodsBroken] = useState('');
   const [place, setPlace] = useState('');
@@ -240,92 +241,97 @@ export default function UpdateFacilityComplaint({navigation, route}) {
 
   return (
     <View style={{flex: 1}}>
-      <Background />
-      <View style={styles.headerWrapper}>
-        <HeaderTransparent
-          title="Update Pengaduan"
-          icon="arrow-left-circle-outline"
-          onPress={() => navigation.goBack()}
-        />
-      </View>
+      <HeaderTransparent
+        title="Update Pengaduan"
+        icon="arrow-left-circle-outline"
+        onPress={() => navigation.goBack()}
+      />
 
       {loading && <ModalLoading visible={loading} />}
+      <View style={{flex: 1}} showImageBackground={true}>
+        <ScrollView style={styles.content}>
+          <TextInput
+            style={[styles.input, {backgroundColor: colors[mode].textInput}]}
+            placeholder="Nama"
+            value={name}
+            onChangeText={setName}
+            placeholderTextColor={COLORS.grey}
+          />
+          <TextInput
+            style={[styles.input, {backgroundColor: colors[mode].textInput}]}
+            placeholder="Barang yang Rusak"
+            value={goodsBroken}
+            onChangeText={setGoodsBroken}
+            placeholderTextColor={COLORS.grey}
+          />
+          <TextInput
+            style={[styles.input, {backgroundColor: colors[mode].textInput}]}
+            placeholder="Tempat"
+            value={place}
+            onChangeText={setPlace}
+            placeholderTextColor={COLORS.grey}
+          />
+          <TextInput
+            style={[styles.input, {backgroundColor: colors[mode].textInput}]}
+            placeholder="Lokasi"
+            value={location}
+            onChangeText={setLocation}
+            placeholderTextColor={COLORS.grey}
+          />
+          <TextInput
+            style={[styles.input, {backgroundColor: colors[mode].textInput}]}
+            placeholder="Saran"
+            value={suggestion}
+            onChangeText={setSuggestion}
+            placeholderTextColor={COLORS.grey}
+          />
+          <TextInput
+            style={[styles.input, {backgroundColor: colors[mode].textInput}]}
+            placeholder="Keluhan"
+            value={complaint}
+            onChangeText={setComplaint}
+            placeholderTextColor={COLORS.grey}
+          />
+          <TextInput
+            style={[styles.input, {backgroundColor: colors[mode].textInput}]}
+            placeholder="Nomor Telepon (+62)"
+            value={phone}
+            onChangeText={setPhone}
+            keyboardType="phone-pad"
+            placeholderTextColor={COLORS.grey}
+          />
 
-      <ScrollView style={styles.content}>
-        <TextInput
-          style={styles.input}
-          placeholder="Nama"
-          value={name}
-          onChangeText={setName}
-          placeholderTextColor={COLORS.grey}
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Barang yang Rusak"
-          value={goodsBroken}
-          onChangeText={setGoodsBroken}
-          placeholderTextColor={COLORS.grey}
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Tempat"
-          value={place}
-          onChangeText={setPlace}
-          placeholderTextColor={COLORS.grey}
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Lokasi"
-          value={location}
-          onChangeText={setLocation}
-          placeholderTextColor={COLORS.grey}
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Saran"
-          value={suggestion}
-          onChangeText={setSuggestion}
-          placeholderTextColor={COLORS.grey}
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Keluhan"
-          value={complaint}
-          onChangeText={setComplaint}
-          placeholderTextColor={COLORS.grey}
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Nomor Telepon (+62)"
-          value={phone}
-          onChangeText={setPhone}
-          keyboardType="phone-pad"
-          placeholderTextColor={COLORS.grey}
-        />
+          {Array.isArray(image) &&
+            image.map((img, index) => (
+              <View key={index} style={styles.imageContainer}>
+                <Image
+                  source={{uri: img.uri}}
+                  style={styles.imagePreview}
+                  resizeMethod="resize"
+                  resizeMode="cover"
+                />
+                <TouchableOpacity
+                  style={styles.deleteIcon}
+                  onPress={() => removeImage(img.id)}>
+                  <Icon name="close-circle" size={24} color={COLORS.red} />
+                </TouchableOpacity>
+              </View>
+            ))}
 
-        {Array.isArray(image) &&
-          image.map((img, index) => (
-            <View key={index} style={styles.imageContainer}>
-              <Image
-                source={{uri: img.uri}}
-                style={styles.imagePreview}
-                resizeMethod="scale"
-              />
-              <TouchableOpacity
-                style={styles.deleteIcon}
-                onPress={() => removeImage(img.id)}>
-                <Icon name="close-circle" size={24} color={COLORS.red} />
-              </TouchableOpacity>
-            </View>
-          ))}
+          <TouchableOpacity
+            style={styles.fileInput}
+            onPress={handleImagePicker}>
+            <Text style={styles.fileInputText}>Input file</Text>
+          </TouchableOpacity>
 
-        <TouchableOpacity style={styles.fileInput} onPress={handleImagePicker}>
-          <Text style={styles.fileInputText}>Input file</Text>
-        </TouchableOpacity>
-
-        <ButtonAction onPress={handleSubmit} title="Update" loading={loading} />
-        <Gap height={35} />
-      </ScrollView>
+          <ButtonAction
+            onPress={handleSubmit}
+            title="Update"
+            loading={loading}
+          />
+          <Gap height={35} />
+        </ScrollView>
+      </View>
 
       <ModalCustom
         visible={modalVisible}
@@ -357,14 +363,6 @@ export default function UpdateFacilityComplaint({navigation, route}) {
 }
 
 const styles = StyleSheet.create({
-  headerWrapper: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 10,
-    backgroundColor: COLORS.goldenOrange,
-    elevation: 3,
-  },
   content: {
     padding: 15,
   },
@@ -375,7 +373,6 @@ const styles = StyleSheet.create({
     padding: 10,
     marginBottom: 15,
     color: COLORS.black,
-    backgroundColor: '#fff',
   },
   fileInput: {
     borderWidth: 1,
