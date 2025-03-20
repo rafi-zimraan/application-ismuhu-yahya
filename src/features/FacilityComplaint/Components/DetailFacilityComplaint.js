@@ -190,7 +190,9 @@ export default function DetailFacilityComplaint({navigation, route}) {
               </View>
             </ScrollView>
 
-            <View style={styles.actionButtonsContainer}>
+            <View
+              style={styles.actionButtonsContainer}
+              useBackgroundTransparent={true}>
               <TouchableOpacity
                 onPress={() =>
                   navigation.navigate('UpdateFacilityComplaint', {id})

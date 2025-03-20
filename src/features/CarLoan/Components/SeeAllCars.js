@@ -1,10 +1,12 @@
 import React from 'react';
-import {Image, ScrollView, StyleSheet, Text, View} from 'react-native';
-import {Background, Gap, HeaderTransparent} from '../../../Component';
+import {Image, ScrollView, StyleSheet} from 'react-native';
+import {useSelector} from 'react-redux';
+import {Gap, HeaderTransparent, Text, View} from '../../../Component';
 import {IMG_CAR_REBORN} from '../../../assets';
 import {COLORS, DIMENS} from '../../../utils';
 
 export default function SeeAllCars({navigation}) {
+  const {colors, mode} = useSelector(state => state.theme);
   const cars = [
     {id: 1, name: 'Reborn-Car', type: '4 seat-manual', image: IMG_CAR_REBORN},
     {id: 2, name: 'Ertiga', type: '4 seat-manual', image: IMG_CAR_REBORN},
@@ -15,34 +17,34 @@ export default function SeeAllCars({navigation}) {
 
   return (
     <View style={styles.container}>
-      <Background />
-      <View style={styles.headerWrapper}>
-        <HeaderTransparent
-          title="Daftar Mobil"
-          icon="arrow-left-circle-outline"
-          onPress={() => navigation.goBack()}
-        />
-      </View>
-
+      <HeaderTransparent
+        title="Daftar Mobil"
+        icon="arrow-left-circle-outline"
+        onPress={() => navigation.goBack()}
+      />
       <Gap height={10} />
-      <Text style={styles.title}>Daftar mobil yang sering digunakan</Text>
-      <ScrollView style={styles.scrollView}>
-        {cars.map(car => (
-          <View key={car.id} style={styles.viewBodyFavorite}>
-            <View style={styles.ViewFavoriteText}>
-              <Text style={styles.textTitleCar}>{car.name}</Text>
-              <Text style={styles.textManual}>{car.type}</Text>
+      <Text style={[styles.title, {color: colors[mode].textSectionTitleSett}]}>
+        Daftar mobil yang sering digunakan
+      </Text>
+      <View style={{flex: 1}} showImageBackground={true}>
+        <ScrollView style={styles.scrollView}>
+          {cars.map(car => (
+            <View key={car.id} style={styles.viewBodyFavorite} section={true}>
+              <View style={styles.ViewFavoriteText} section={true}>
+                <Text style={styles.textTitleCar}>{car.name}</Text>
+                <Text style={styles.textManual}>{car.type}</Text>
+              </View>
+              <Image
+                source={car.image}
+                style={styles.img}
+                resizeMethod="resize"
+                resizeMode="cover"
+              />
             </View>
-            <Image
-              source={car.image}
-              style={styles.img}
-              resizeMethod="resize"
-              resizeMode="cover"
-            />
-          </View>
-        ))}
-        <Gap height={20} />
-      </ScrollView>
+          ))}
+          <Gap height={20} />
+        </ScrollView>
+      </View>
     </View>
   );
 }
@@ -55,24 +57,15 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  headerWrapper: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 10,
-    backgroundColor: COLORS.goldenOrange,
-    elevation: 3,
-  },
+
   title: {
     fontSize: DIMENS.xl,
-    color: COLORS.black,
     fontWeight: '500',
     marginVertical: 10,
     textAlign: 'left',
     marginHorizontal: 10,
   },
   scrollView: {
-    // marginHorizontal: 10,
     padding: 15,
   },
   viewBodyFavorite: {
@@ -81,7 +74,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     padding: 10,
     borderRadius: 12,
-    backgroundColor: COLORS.white,
     elevation: 2,
     shadowColor: COLORS.black,
     shadowOffset: {width: 0, height: 2},

@@ -5,11 +5,9 @@ import {
   ScrollView,
   StyleSheet,
   Switch,
-  Text,
   TextInput,
   ToastAndroid,
   TouchableOpacity,
-  View,
 } from 'react-native';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -19,6 +17,8 @@ import {
   HeaderTransparent,
   ModalCustom,
   ModalLoading,
+  Text,
+  View,
 } from '../../../Component';
 import {ICON_NOTFOUND_DATA} from '../../../assets';
 import {COLORS, DIMENS} from '../../../utils';
@@ -214,13 +214,11 @@ export default function ListAmalYaumi({navigation}) {
 
   return (
     <View style={styles.container}>
-      <View style={styles.headerWrapper}>
-        <HeaderTransparent
-          title="List Amal Yaumi"
-          icon="arrow-left-circle-outline"
-          onPress={() => navigation.goBack()}
-        />
-      </View>
+      <HeaderTransparent
+        title="List Amal Yaumi"
+        icon="arrow-left-circle-outline"
+        onPress={() => navigation.goBack()}
+      />
       <ModalLoading visible={loading} />
 
       {userGender === 'Perempuan' && (
@@ -237,7 +235,7 @@ export default function ListAmalYaumi({navigation}) {
 
       <View style={{padding: 15, flex: 1}}>
         {data.length === 0 ? (
-          <View style={styles.emptyWrapper}>
+          <View style={styles.emptyWrapper} useBackgroundTransparent={true}>
             <Image
               source={ICON_NOTFOUND_DATA}
               resizeMethod="resize"
@@ -256,7 +254,7 @@ export default function ListAmalYaumi({navigation}) {
                 />
               }>
               {data.map((item, index) => (
-                <View style={styles.itemWrapper} key={index}>
+                <View style={styles.itemWrapper} key={index} section={true}>
                   {item.type_tag === 'text' && (
                     <>
                       <Text style={styles.title}>{item.title}</Text>
@@ -354,7 +352,7 @@ export default function ListAmalYaumi({navigation}) {
                   {item.type_tag === 'options' && (
                     <>
                       <Text style={styles.title}>{item.title}</Text>
-                      <View style={styles.optionsWrapper}>
+                      <View style={styles.optionsWrapper} section={true}>
                         {item.sub_yaumi.map(sub => (
                           <TouchableOpacity
                             key={sub.id}
@@ -608,27 +606,15 @@ const styles = StyleSheet.create({
     color: COLORS.black,
     fontWeight: '500',
     fontSize: DIMENS.m,
-    // backgroundColor: 'red',
-    // maxWidth: 130,
-  },
-  headerWrapper: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 10,
-    backgroundColor: COLORS.goldenOrange,
-    elevation: 1,
   },
   container: {
     flex: 1,
-    backgroundColor: COLORS.white,
   },
   itemWrapper: {
     marginBottom: 20,
     padding: 10,
     borderWidth: 1,
     borderColor: COLORS.neutralGrey,
-    backgroundColor: COLORS.white,
     borderRadius: 5,
   },
   title: {
@@ -654,7 +640,6 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   optionsWrapper: {
-    // flexDirection: 'row',
     alignItems: 'flex-start',
     gap: 5,
     justifyContent: 'space-around',
@@ -671,7 +656,7 @@ const styles = StyleSheet.create({
     color: COLORS.grey,
   },
   textDefault: {
-    color: COLORS.grey,
+    color: COLORS.darkGray,
   },
   textSelected: {
     color: COLORS.goldenOrange,

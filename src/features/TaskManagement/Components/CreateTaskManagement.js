@@ -2,26 +2,28 @@ import {Picker} from '@react-native-picker/picker';
 import {useNavigation} from '@react-navigation/native';
 import React, {useEffect, useState} from 'react';
 import {
+  ScrollView,
   StyleSheet,
-  Text,
   ToastAndroid,
   TouchableOpacity,
-  View,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import {useSelector} from 'react-redux';
 import {TextInputTaskManagement, addTaskManagement} from '..';
 import {
   AlertWarning,
-  Background,
   ButtonAction,
   Gap,
   HeaderTransparent,
   ModalCustom,
+  Text,
+  View,
 } from '../../../Component';
 import {COLORS, DIMENS} from '../../../utils';
 import {FecthMe} from '../../authentication';
 
 export default function CreateTaskManagement({route}) {
+  const {colors, mode} = useSelector(state => state.theme);
   const navigation = useNavigation();
   const [activity, setActivity] = useState('');
   const [startTime, setStartTime] = useState('');
@@ -110,97 +112,102 @@ export default function CreateTaskManagement({route}) {
 
   return (
     <View style={styles.container}>
-      <Background />
       <AlertWarning
         show={showAlert}
         message="Harap isi jam mulai dan jam selesai jika ingin menambahkan waktu!"
       />
-      <View style={styles.headerWrapper}>
-        <HeaderTransparent
-          title={'Tambah Rencana Harian'}
-          icon="arrow-left-circle-outline"
-          onPress={() => navigation.goBack()}
-        />
-      </View>
+      <HeaderTransparent
+        title={'Tambah Rencana Harian'}
+        icon="arrow-left-circle-outline"
+        onPress={() => navigation.goBack()}
+      />
 
-      <View style={styles.formContainer}>
-        <TextInputTaskManagement
-          label="Nama Rencana"
-          placeholder="Tulis Rencana Anda"
-          value={activity}
-          onChangeText={setActivity}
-          iconName="widgets"
-        />
-
-        <Text style={styles.label}>Waktu Pengerjaan (Opsional)</Text>
-        <View style={styles.timeContainer}>
+      <View style={styles.formContainer} showImageBackground={true}>
+        <ScrollView contentContainerStyle={{padding: 15}}>
+          <Text style={styles.label}>Nama Rencana</Text>
           <TextInputTaskManagement
-            isTimePicker
-            placeholder="--:--"
-            value={startTime}
-            onChangeText={setStartTime}
+            placeholder="Tulis Rencana Anda"
+            value={activity}
+            onChangeText={setActivity}
+            iconName="widgets"
+            backgroundColorTextInput={colors[mode].textInput}
           />
-          <Text style={styles.sampaiText}> sampai </Text>
+
+          <Text style={styles.label}>Waktu Pengerjaan (Opsional)</Text>
+          <View style={styles.timeContainer} useBackgroundTransparent={true}>
+            <TextInputTaskManagement
+              isTimePicker
+              placeholder="--:--"
+              value={startTime}
+              onChangeText={setStartTime}
+              backgroundColorTextInput={colors[mode].textInput}
+            />
+            <Text style={styles.sampaiText}> sampai </Text>
+            <TextInputTaskManagement
+              isTimePicker
+              placeholder="--:--"
+              value={endTime}
+              onChangeText={setEndTime}
+              backgroundColorTextInput={colors[mode].textInput}
+            />
+          </View>
+
+          <Text style={styles.label}>Tenggat Waktu</Text>
           <TextInputTaskManagement
-            isTimePicker
-            placeholder="--:--"
-            value={endTime}
-            onChangeText={setEndTime}
+            isDatePicker
+            placeholder="Pilih Tanggal"
+            value={dueDate}
+            onChangeText={setDueDate}
+            iconName="calendar-month"
+            backgroundColorTextInput={colors[mode].textInput}
           />
-        </View>
 
-        <TextInputTaskManagement
-          label="Tenggat Waktu"
-          isDatePicker
-          placeholder="Pilih Tanggal"
-          value={dueDate}
-          onChangeText={setDueDate}
-          iconName="calendar-month"
-        />
+          <Text style={styles.label}>Kategori</Text>
+          <View
+            style={[
+              styles.pickerContainer,
+              {backgroundColor: colors[mode].textInput},
+            ]}>
+            <Picker
+              selectedValue={category}
+              style={styles.dropDown}
+              dropdownIconColor={COLORS.black}
+              onValueChange={itemValue => setCategory(itemValue)}>
+              <Picker.Item label="Pilih Kategori" value={null} />
+              <Picker.Item label="Rencana" value="Rencana" />
+              <Picker.Item label="Tidak Rencana" value="Tidak Rencana" />
+            </Picker>
+          </View>
 
-        <Text style={styles.label}>Kategori</Text>
-        <View
-          style={[
-            styles.pickerContainer,
-            category && {backgroundColor: COLORS.lightGrey},
-          ]}>
-          <Picker
-            selectedValue={category}
-            style={styles.dropDown}
-            dropdownIconColor={COLORS.black}
-            onValueChange={itemValue => setCategory(itemValue)}>
-            <Picker.Item label="Pilih Kategori" value={null} />
-            <Picker.Item label="Rencana" value="Rencana" />
-            <Picker.Item label="Tidak Rencana" value="Tidak Rencana" />
-          </Picker>
-        </View>
+          <TouchableOpacity
+            style={[
+              styles.checkboxContainer,
+              additionalPlan === 1 && styles.checkboxActive,
+              ,
+              {backgroundColor: colors[mode].textInput},
+            ]}
+            onPress={() => setAdditionalPlan(prev => (prev === 0 ? 1 : 0))}>
+            <Icon
+              name={
+                additionalPlan === 1
+                  ? 'check-circle'
+                  : 'checkbox-blank-circle-outline'
+              }
+              size={20}
+              color={additionalPlan === 1 ? COLORS.Orange : COLORS.black}
+            />
+            <Gap width={5} />
+            <Text style={styles.checkboxText}>Rencana Tambahan</Text>
+          </TouchableOpacity>
 
-        <TouchableOpacity
-          style={[
-            styles.checkboxContainer,
-            additionalPlan === 1 && styles.checkboxActive,
-          ]}
-          onPress={() => setAdditionalPlan(prev => (prev === 0 ? 1 : 0))}>
-          <Icon
-            name={
-              additionalPlan === 1
-                ? 'check-circle'
-                : 'checkbox-blank-circle-outline'
-            }
-            size={20}
-            color={COLORS.black}
+          <Gap height={20} />
+          <ButtonAction
+            title="Simpan"
+            onPress={handleAddTask}
+            loading={loading}
+            disabled={activity == '' || dueDate == '' || category == ''}
           />
-          <Gap width={5} />
-          <Text style={styles.checkboxText}>Rencana Tambahan</Text>
-        </TouchableOpacity>
-
-        <Gap height={20} />
-        <ButtonAction
-          title="Simpan"
-          onPress={handleAddTask}
-          loading={loading}
-          disabled={activity == '' || dueDate == '' || category == ''}
-        />
+        </ScrollView>
       </View>
 
       <ModalCustom
@@ -237,35 +244,23 @@ const styles = StyleSheet.create({
     color: COLORS.black,
     fontSize: DIMENS.l,
   },
-  headerWrapper: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 10,
-    backgroundColor: COLORS.goldenOrange,
-    elevation: 3,
-  },
   pickerContainer: {
     borderWidth: 0.4,
     borderColor: COLORS.black,
     borderRadius: 8,
     padding: 5,
     marginBottom: 15,
-    backgroundColor: COLORS.white,
   },
   container: {
     flex: 1,
-    backgroundColor: COLORS.white,
   },
   formContainer: {
-    marginTop: 15,
-    padding: 15,
+    flex: 1,
   },
   label: {
     fontSize: DIMENS.l,
     fontWeight: 'bold',
     marginBottom: 5,
-    color: COLORS.black,
   },
   timeContainer: {
     flexDirection: 'row',
@@ -274,15 +269,14 @@ const styles = StyleSheet.create({
   },
   sampaiText: {
     marginHorizontal: 10,
-    fontSize: DIMENS.l,
-    fontWeight: 'bold',
-    color: COLORS.black,
+    fontSize: DIMENS.s,
+    fontWeight: '400',
+    textAlign: 'center',
   },
   checkboxContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     padding: 10,
-    backgroundColor: COLORS.white,
     borderRadius: 7,
     borderWidth: 0.4,
     borderColor: COLORS.black,

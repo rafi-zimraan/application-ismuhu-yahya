@@ -39,6 +39,7 @@ import {COLORS} from '../../utils';
 
 export default function Dasboard({navigation}) {
   const dispatch = useDispatch();
+  const {colors, mode} = useSelector(state => state.theme);
   const amountSantri = useSelector(state => state.dasboard.amountSantri);
   const amountSpa = useSelector(state => state.dasboard.amountSpa);
   const userPosition = useSelector(state => state.dasboard.userPosition);
@@ -149,6 +150,8 @@ export default function Dasboard({navigation}) {
               backgroundColor={COLORS.goldenOrange}
               iconSize={33}
               onPress={() => navigation.navigate('AmalYaumi')}
+              colors={colors}
+              mode={mode}
             />
             <ButtonMenu
               title="Task"
@@ -157,6 +160,8 @@ export default function Dasboard({navigation}) {
               backgroundColor={COLORS.goldenOrange}
               iconSize={33}
               onPress={() => navigation.navigate('TaskManagement')}
+              colors={colors}
+              mode={mode}
             />
             <ButtonMenu
               title="Peminjaman "
@@ -165,6 +170,8 @@ export default function Dasboard({navigation}) {
               backgroundColor={COLORS.goldenOrange}
               iconSize={33}
               onPress={() => navigation.navigate('CarLoan')}
+              colors={colors}
+              mode={mode}
             />
             <ButtonMenu
               title="Pengaduan"
@@ -173,6 +180,8 @@ export default function Dasboard({navigation}) {
               backgroundColor={COLORS.goldenOrange}
               iconSize={33}
               onPress={() => navigation.navigate('FacilityComplaint')}
+              colors={colors}
+              mode={mode}
             />
           </View>
           <Gap height={25} />

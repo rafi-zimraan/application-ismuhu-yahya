@@ -1,6 +1,7 @@
 import moment from 'moment';
 import React from 'react';
-import {Modal, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {Modal, StyleSheet, TouchableOpacity} from 'react-native';
+import {Text, View} from '../../../Component';
 import {COLORS, DIMENS} from '../../../utils';
 
 export function MonthSelectorModal({
@@ -8,6 +9,8 @@ export function MonthSelectorModal({
   selectedMonth,
   onClose,
   onSelect,
+  colors,
+  mode,
 }) {
   return (
     <Modal
@@ -16,7 +19,8 @@ export function MonthSelectorModal({
       visible={visible}
       onRequestClose={onClose}>
       <View style={styles.modalWrapper}>
-        <View style={styles.modalBox}>
+        <View
+          style={[styles.modalBox, {backgroundColor: colors[mode].background}]}>
           <TouchableOpacity style={styles.closeButton} onPress={onClose}>
             <Text style={styles.closeButtonText}>×</Text>
           </TouchableOpacity>
@@ -57,7 +61,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   modalBox: {
-    backgroundColor: COLORS.white,
     borderRadius: 10,
     paddingVertical: 20,
     paddingHorizontal: 10,
@@ -91,11 +94,11 @@ const styles = StyleSheet.create({
   },
   modalText: {
     fontSize: DIMENS.l,
-    color: COLORS.black,
+    fontWeight: '400',
   },
   selectedModalText: {
     fontSize: DIMENS.xl,
-    color: COLORS.white,
+    color: COLORS.turquoiseGreen,
     fontWeight: 'bold',
   },
 });

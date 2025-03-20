@@ -10,15 +10,16 @@ import {
   Text,
   ToastAndroid,
   TouchableOpacity,
-  View,
 } from 'react-native';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import {useSelector} from 'react-redux';
 import {
   Gap,
   HeaderTransparent,
   ModalCustom,
   ModalLoading,
+  View,
 } from '../../Component';
 import {
   ChartComponent,
@@ -34,6 +35,7 @@ const {height} = Dimensions.get('window');
 
 export default function AmalYaumi({navigation}) {
   const today = moment().format('YYYY-MM-DD');
+  const {colors, mode} = useSelector(state => state.theme);
   const [selectedDate, setSelectedDate] = useState(today);
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedMonth, setSelectedMonth] = useState(moment().format('MMMM'));
@@ -147,113 +149,159 @@ export default function AmalYaumi({navigation}) {
       <ModalLoading visible={loading} />
       <View
         style={[
-          styles.headerWrapper,
-          {position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10},
+          styles.viewNavbar,
+          {backgroundColor: colors[mode].background_header},
         ]}>
-        <View style={styles.headerContentWrapper}>
-          <HeaderTransparent
-            title="Amal Yaumi"
-            icon="arrow-left-circle-outline"
-            onPress={() => navigation.goBack()}
-          />
+        <HeaderTransparent
+          title="Amal Yaumi"
+          icon="arrow-left-circle-outline"
+          onPress={() => navigation.goBack()}
+        />
+        <View
+          section={true}
+          style={[
+            styles.profileWrapper,
+            {
+              backgroundColor: colors[mode].background_header,
+            },
+          ]}>
+          <TouchableOpacity>
+            {photo ? (
+              <Image
+                source={{uri: photo}}
+                style={styles.imgPhoto}
+                resizeMethod="resize"
+                resizeMode="cover"
+              />
+            ) : (
+              <Icon name="account-circle" size={45} color={COLORS.white} />
+            )}
+          </TouchableOpacity>
         </View>
-        <TouchableOpacity style={styles.profileWrapper}>
-          {photo ? (
-            <Image
-              source={{uri: photo}}
-              style={styles.imgPhoto}
-              resizeMethod="resize"
-              resizeMode="cover"
-            />
-          ) : (
-            <Icon name="account-circle" size={45} color={COLORS.white} />
-          )}
-        </TouchableOpacity>
       </View>
 
-      <ScrollView
-        style={[styles.container, {marginTop: 75}]}
-        refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={onRefresh}
-            colors={[COLORS.goldenOrange]}
-            tintColor={COLORS.goldenOrange}
-          />
-        }>
-        <View style={styles.contentDateAndMonth}>
-          <Gap height={15} />
-          <TouchableOpacity
-            style={styles.monthWrapper}
-            onPress={() => setModalVisible(true)}>
-            <Text style={styles.monthText}>{selectedMonth}</Text>
-            <Icon name="menu-down" size={24} color={COLORS.black} />
-          </TouchableOpacity>
-          <DateList
-            days={days}
-            selectedDate={selectedDate}
-            todayIndex={todayIndex}
-            onSelect={setSelectedDate}
-            dataMonth={daysData}
-          />
-        </View>
-
-        <View style={styles.viewChart}>
-          <Text style={styles.chartTitle}>Grafik Yaumi Bulan Ini</Text>
-          <Gap height={5} />
-          <ChartComponent lineData={lineData} lineDataPercen={lineDataPercen} />
-          <Gap height={20} />
-          <View style={styles.bodyTextTitle}>
-            <Text style={styles.ProgresTitle}>Progress Bulan Ini</Text>
+      <View style={{flex: 1}}>
+        <ScrollView
+          style={styles.container}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+              colors={[COLORS.goldenOrange]}
+              tintColor={COLORS.goldenOrange}
+            />
+          }>
+          <View
+            style={[
+              styles.contentDateAndMonth,
+              {backgroundColor: colors[mode].background_header},
+            ]}>
+            <Gap height={15} />
             <TouchableOpacity
-              activeOpacity={0.4}
-              onPress={() => navigation.navigate('ListAmalYaumi')}
-              style={styles.viewButtonCreateAmalYaumi}>
+              style={styles.monthWrapper}
+              onPress={() => setModalVisible(true)}>
+              <Text
+                style={[
+                  styles.monthText,
+                  {color: colors[mode].textSectionTitleSett},
+                ]}>
+                {selectedMonth}
+              </Text>
               <Icon
-                name={'plus-circle-outline'}
-                size={18}
-                color={COLORS.black}
+                name="menu-down"
+                size={24}
+                color={colors[mode].iconPicker}
               />
-              <Gap width={3} />
-              <Text style={styles.CreateTextAmalYaumi}>Catat Amal Yaumi</Text>
             </TouchableOpacity>
+            <DateList
+              days={days}
+              selectedDate={selectedDate}
+              todayIndex={todayIndex}
+              onSelect={setSelectedDate}
+              dataMonth={daysData}
+            />
           </View>
-          <Gap height={4} />
-          <ProgressListComponent scrollData={scrollData} />
-        </View>
 
-        <ModalCustom
-          visible={modalGender}
-          onRequestClose={() => setModalGender(false)}
-          iconModalName="alert-circle-outline"
-          title="Profile Belum Lengkap"
-          description={'Silahkan lengkapi data profile & Jenis kelamin anda!'}
-          buttonSubmit={() => {
-            setModalGender(false);
-            navigation.navigate('DetailDataSpa');
-          }}
-          buttonTitle="Pergi Ke Profile"
-          ColorIcon={COLORS.red}
-          TextDescription={COLORS.red}
-        />
+          <View style={styles.viewChart}>
+            <Text
+              style={[
+                styles.chartTitle,
+                {color: colors[mode].textSectionTitleSett},
+              ]}>
+              Grafik Yaumi Bulan Ini
+            </Text>
+            <Gap height={5} />
+            <ChartComponent
+              lineData={lineData}
+              lineDataPercen={lineDataPercen}
+            />
+            <Gap height={20} />
+            <View style={styles.bodyTextTitle}>
+              <Text
+                style={[
+                  styles.ProgresTitle,
+                  {color: colors[mode].textSectionTitleSett},
+                ]}>
+                Progress Bulan Ini
+              </Text>
+              <TouchableOpacity
+                activeOpacity={0.4}
+                onPress={() => navigation.navigate('ListAmalYaumi')}
+                style={styles.viewButtonCreateAmalYaumi}>
+                <Icon
+                  name={'plus-circle-outline'}
+                  size={18}
+                  color={COLORS.black}
+                />
+                <Gap width={3} />
+                <Text style={styles.CreateTextAmalYaumi}>Catat Amal Yaumi</Text>
+              </TouchableOpacity>
+            </View>
+            <Gap height={4} />
+            <ProgressListComponent scrollData={scrollData} />
+          </View>
 
-        <MonthSelectorModal
-          visible={modalVisible}
-          selectedMonth={selectedMonth}
-          onClose={() => setModalVisible(false)}
-          onSelect={month => {
-            setSelectedMonth(month);
-            setSelectedDate(
-              moment().month(month).startOf('month').format('YYYY-MM-DD'),
-            );
-          }}
-        />
-      </ScrollView>
+          <ModalCustom
+            visible={modalGender}
+            onRequestClose={() => setModalGender(false)}
+            iconModalName="alert-circle-outline"
+            title="Profile Belum Lengkap"
+            description={'Silahkan lengkapi data profile & Jenis kelamin anda!'}
+            buttonSubmit={() => {
+              setModalGender(false);
+              navigation.navigate('DetailDataSpa');
+            }}
+            buttonTitle="Pergi Ke Profile"
+            ColorIcon={COLORS.red}
+            TextDescription={COLORS.red}
+          />
+
+          <MonthSelectorModal
+            visible={modalVisible}
+            selectedMonth={selectedMonth}
+            onClose={() => setModalVisible(false)}
+            onSelect={month => {
+              setSelectedMonth(month);
+              setSelectedDate(
+                moment().month(month).startOf('month').format('YYYY-MM-DD'),
+              );
+            }}
+            colors={colors}
+            mode={mode}
+          />
+        </ScrollView>
+      </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
+  viewNavbar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    height: '13%',
+  },
   imgPhoto: {
     height: 48,
     width: 48,
@@ -280,7 +328,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   ProgresTitle: {
-    color: COLORS.black,
     fontSize: DIMENS.xxl,
     fontWeight: '500',
     textAlign: 'left',
@@ -290,33 +337,19 @@ const styles = StyleSheet.create({
     padding: 15,
   },
   chartTitle: {
-    color: COLORS.black,
     fontSize: DIMENS.xxl,
     fontWeight: '500',
     textAlign: 'left',
   },
   profileWrapper: {
     marginRight: 10,
-    top: 13,
+    marginTop: 34,
   },
-  headerWrapper: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    backgroundColor: COLORS.goldenOrange,
-    elevation: 3,
-  },
-  headerContentWrapper: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
+
   container: {
     flex: 1,
-    backgroundColor: COLORS.white,
   },
   contentDateAndMonth: {
-    backgroundColor: COLORS.goldenOrange,
     flex: 1,
     padding: 6,
     borderBottomLeftRadius: 38,
@@ -331,7 +364,7 @@ const styles = StyleSheet.create({
   monthText: {
     fontSize: DIMENS.xxl,
     fontWeight: '800',
-    color: COLORS.black,
+    // color: COLORS.black,
     marginRight: 5,
   },
 });

@@ -20,6 +20,7 @@ const initialState = {
       placeholderTextColor: COLORS.softGray,
       buttonShare: COLORS.goldenOrange,
       buttonAuthor: COLORS.blueLight,
+      iconPicker: COLORS.black,
     },
     dark: {
       text: COLORS.white,
@@ -38,6 +39,7 @@ const initialState = {
       transparent: 'transparent',
       buttonShare: '#E69C00',
       buttonAuthor: '#4A90E2',
+      iconPicker: COLORS.softGrey,
     },
   },
 };

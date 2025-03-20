@@ -62,7 +62,7 @@ const TaskFilter = () => {
                 styles.filterButton,
                 isSelected && {
                   backgroundColor:
-                    mode == 'light' ? COLORS.black : COLORS.softRed,
+                    mode == 'light' ? COLORS.black : COLORS.textSecondary,
                 },
               ]}
               onPress={() => dispatch(setFilter(item.key))}

@@ -17,6 +17,7 @@ export default function TextInputTaskManagement({
   value,
   onChangeText,
   placeholder,
+  backgroundColorTextInput,
   placeholderTextColor = COLORS.grey,
   isLoading = false,
   isTimePicker = false,
@@ -43,7 +44,11 @@ export default function TextInputTaskManagement({
                 onOpenPicker();
               }
             }}
-            style={[styles.input, styles.touchableInput]}>
+            style={[
+              styles.input,
+              styles.touchableInput,
+              {backgroundColor: backgroundColorTextInput},
+            ]}>
             {iconName && (
               <Icon
                 name={iconName}
@@ -138,6 +143,7 @@ export default function TextInputTaskManagement({
           <TextInput
             style={[
               styles.input,
+              {backgroundColor: backgroundColorTextInput},
               isMultiline ? styles.inputDesc : styles.textInput,
               {
                 color:

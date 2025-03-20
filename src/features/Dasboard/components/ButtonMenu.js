@@ -19,6 +19,8 @@ export default function ButtonMenu({
   backgroundColor = COLORS.white,
   height,
   width,
+  mode,
+  colors,
 }) {
   return (
     <View style={styles.container}>
@@ -31,7 +33,9 @@ export default function ButtonMenu({
           {iconName && <Icon name={iconName} size={iconSize} color={color} />}
         </View>
       </TouchableNativeFeedback>
-      <Text style={styles.textTitle} numberOfLines={1}>
+      <Text
+        style={[styles.textTitle, {color: colors[mode].text}]}
+        numberOfLines={1}>
         {title}
       </Text>
     </View>
@@ -60,7 +64,7 @@ const styles = StyleSheet.create({
   },
   textTitle: {
     fontWeight: '500',
-    color: 'black',
+    // color: 'black',
     fontSize: DIMENS.s,
     top: 2,
     textAlign: 'center',
