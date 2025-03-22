@@ -124,6 +124,7 @@ export default function DetailCarLoan({navigation}) {
                 <Gap height={20} />
               </View>
             ))}
+          <Gap height={15} />
         </View>
       </ScrollView>
       <View style={styles.footer}>

@@ -230,7 +230,6 @@ const styles = StyleSheet.create({
     height: 180,
     borderTopLeftRadius: 15,
     borderTopRightRadius: 15,
-    backgroundColor: 'red',
   },
   loadingContainer: {
     marginTop: 20,

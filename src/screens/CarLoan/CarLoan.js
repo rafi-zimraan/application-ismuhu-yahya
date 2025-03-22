@@ -1,15 +1,16 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {Image, ScrollView, StyleSheet, TouchableOpacity} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useSelector} from 'react-redux';
 import {Gap, HeaderTransparent, Text, View} from '../../Component';
 import {IMG_CAR_ERTIGA, IMG_CAR_REBORN} from '../../assets';
-import {CustomSearchInput} from '../../features/CarLoan';
+import {CustomSearchInput, SopModal} from '../../features/CarLoan';
 import {COLORS, DIMENS} from '../../utils';
 
 export default function CarLoan({navigation}) {
   const {colors, mode} = useSelector(state => state.theme);
+  const [modalSop, setModalSop] = useState(false);
   return (
     <View style={styles.ContentView}>
       <LinearGradient
@@ -36,12 +37,7 @@ export default function CarLoan({navigation}) {
       </LinearGradient>
 
       <View style={{padding: 15, flex: 1}}>
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          style={{
-            height: '13%',
-          }}>
+        <ScrollView horizontal contentContainerStyle={{flex: 1}}>
           <Gap width={5} />
           <View section={true} style={styles.viewContentMenuCar}>
             <TouchableOpacity
@@ -51,6 +47,7 @@ export default function CarLoan({navigation}) {
               <View style={styles.viewActiveText}>
                 <Text style={styles.textActive}>Tersedia</Text>
               </View>
+              <Gap height={10} />
               <Image
                 source={IMG_CAR_REBORN}
                 style={styles.carImage}
@@ -64,13 +61,25 @@ export default function CarLoan({navigation}) {
               <View style={styles.viewNoPlat} section={true}>
                 <Text style={styles.textPlat}>KB-2232-RFI</Text>
               </View>
+              <Gap height={5} />
               <TouchableOpacity
                 activeOpacity={0.7}
                 style={styles.viewContentRent}
-                onPress={() => navigation.navigate('CreateCarLoan')}>
+                onPress={() => setModalSop(true)}>
                 <Text style={styles.textRent}>Pinjam sekarang</Text>
               </TouchableOpacity>
             </TouchableOpacity>
+
+            <SopModal
+              isVisible={modalSop}
+              onPress={() => {
+                setModalSop(false);
+                navigation.navigate('CreateCarLoan');
+              }}
+              onClose={() => {
+                setModalSop(false);
+              }}
+            />
           </View>
           <Gap width={15} />
 
@@ -82,6 +91,7 @@ export default function CarLoan({navigation}) {
               <View style={styles.viewActiveText}>
                 <Text style={styles.textActive}>Tersedia</Text>
               </View>
+              <Gap height={10} />
               <Image
                 source={IMG_CAR_ERTIGA}
                 style={styles.imgErtiga}
@@ -95,17 +105,30 @@ export default function CarLoan({navigation}) {
               <View style={styles.viewNoPlat} section={true}>
                 <Text style={styles.textPlat}>KB-2232-RFI</Text>
               </View>
+              <Gap height={5} />
               <TouchableOpacity
                 activeOpacity={0.7}
                 style={styles.viewContentRent}
-                onPress={() => navigation.navigate('CreateCarLoan')}>
+                onPress={() => setModalSop(true)}>
                 <Text style={styles.textRent}>Pinjam sekarang</Text>
               </TouchableOpacity>
             </TouchableOpacity>
+
+            <SopModal
+              isVisible={modalSop}
+              onPress={() => {
+                setModalSop(false);
+                navigation.navigate('CreateCarLoan');
+              }}
+              onClose={() => {
+                setModalSop(false);
+              }}
+            />
           </View>
           <Gap width={15} />
         </ScrollView>
 
+        <Gap height={5} />
         <View style={styles.contentLastUs}>
           <Text
             style={[
@@ -127,6 +150,7 @@ export default function CarLoan({navigation}) {
             </View>
           </View>
         </View>
+
         <Gap height={19} />
         <View style={styles.viewFavorite}>
           <Text
@@ -143,52 +167,51 @@ export default function CarLoan({navigation}) {
           </TouchableOpacity>
         </View>
         <Gap height={10} />
-        <ScrollView
-          showsVerticalScrollIndicator={true}
-          style={{
-            flex: 1,
-            marginHorizontal: 10,
-          }}>
-          <View style={styles.viewBodyFavorite} section={true}>
-            <View style={styles.ViewFavoriteText} section={true}>
-              <Text style={styles.textTitleCar}>Reborn-Car</Text>
-              <Text style={styles.textManual}>4 seat-manual</Text>
+        <View style={{flex: 1}}>
+          <ScrollView
+            showsVerticalScrollIndicator={true}
+            contentContainerStyle={{flexGrow: 1, paddingBottom: 20}}>
+            <View style={styles.viewBodyFavorite} section={true}>
+              <View style={styles.ViewFavoriteText} section={true}>
+                <Text style={styles.textTitleCar}>Reborn-Car</Text>
+                <Text style={styles.textManual}>4 seat-manual</Text>
+              </View>
+              <Image
+                source={IMG_CAR_REBORN}
+                style={{height: 80, width: 160}}
+                resizeMethod="resize"
+                resizeMode="cover"
+              />
             </View>
-            <Image
-              source={IMG_CAR_REBORN}
-              style={{height: 80, width: 160}}
-              resizeMethod="resize"
-              resizeMode="cover"
-            />
-          </View>
-          <Gap height={10} />
-          <View style={styles.viewBodyFavorite} section={true}>
-            <View style={styles.ViewFavoriteText} section={true}>
-              <Text style={styles.textTitleCar}>Reborn-Car</Text>
-              <Text style={styles.textManual}>4 seat-manual</Text>
+            <Gap height={10} />
+            <View style={styles.viewBodyFavorite} section={true}>
+              <View style={styles.ViewFavoriteText} section={true}>
+                <Text style={styles.textTitleCar}>Reborn-Car</Text>
+                <Text style={styles.textManual}>4 seat-manual</Text>
+              </View>
+              <Image
+                source={IMG_CAR_REBORN}
+                style={{height: 80, width: 160}}
+                resizeMethod="resize"
+                resizeMode="cover"
+              />
             </View>
-            <Image
-              source={IMG_CAR_REBORN}
-              style={{height: 80, width: 160}}
-              resizeMethod="resize"
-              resizeMode="cover"
-            />
-          </View>
-          <Gap height={10} />
-          <View style={styles.viewBodyFavorite} section={true}>
-            <View style={styles.ViewFavoriteText} section={true}>
-              <Text style={styles.textTitleCar}>Reborn-Car</Text>
-              <Text style={styles.textManual}>4 seat-manual</Text>
+            <Gap height={10} />
+            <View style={styles.viewBodyFavorite} section={true}>
+              <View style={styles.ViewFavoriteText} section={true}>
+                <Text style={styles.textTitleCar}>Reborn-Car</Text>
+                <Text style={styles.textManual}>4 seat-manual</Text>
+              </View>
+              <Image
+                source={IMG_CAR_REBORN}
+                style={{height: 80, width: 160}}
+                resizeMethod="resize"
+                resizeMode="cover"
+              />
             </View>
-            <Image
-              source={IMG_CAR_REBORN}
-              style={{height: 80, width: 160}}
-              resizeMethod="resize"
-              resizeMode="cover"
-            />
-          </View>
-          <Gap height={20} />
-        </ScrollView>
+            <Gap height={20} />
+          </ScrollView>
+        </View>
       </View>
     </View>
   );
@@ -198,6 +221,9 @@ const styles = StyleSheet.create({
   viewContentMenuCar: {
     borderRadius: 15,
     elevation: 2,
+    borderColor: COLORS.goldenOrange,
+    borderWidth: 0.4,
+    height: '95%',
   },
   ViewFavoriteText: {
     marginHorizontal: 10,
@@ -333,7 +359,6 @@ const styles = StyleSheet.create({
   },
   carBody: {
     width: 145,
-    height: 205,
     padding: 10,
   },
   carImage: {
