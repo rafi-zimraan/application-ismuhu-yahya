@@ -1,7 +1,7 @@
 import {Translations} from './components/Translations';
-import languageSlice from './services/languageSlice';
+import {setLanguage} from './services/languageSlice';
 
 // slice
-export {languageSlice};
+export {setLanguage};
 // component
 export {Translations};

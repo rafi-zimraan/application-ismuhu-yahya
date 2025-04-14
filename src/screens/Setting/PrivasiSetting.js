@@ -9,8 +9,7 @@ import {
 import EncryptedStorage from 'react-native-encrypted-storage';
 import {useDispatch, useSelector} from 'react-redux';
 import {Gap, HeaderTransparent, ModalCustom, Text, View} from '../../Component';
-import {Translations} from '../../features/Language';
-import {setLanguage} from '../../features/Language/services/languageSlice';
+import {Translations, setLanguage} from '../../features/Language';
 import {toggleTheme} from '../../features/theme';
 import {COLORS, DIMENS} from '../../utils';
 
@@ -25,7 +24,7 @@ export default function PrivasiSetting({navigation}) {
     {code: 'id', label: 'Bahasa Indonesia'},
   ];
 
-  const handleLanguageChange = () => {
+  const handleLanguageChange = async () => {
     dispatch(setLanguage(selectedLanguage));
     setModalVisible(false);
   };
@@ -69,17 +68,19 @@ export default function PrivasiSetting({navigation}) {
           />
         </View>
 
-        <View style={styles.section} section={true}>
-          <TouchableOpacity
-            onPress={() => setModalVisible(true)}
-            activeOpacity={0.8}>
+        <TouchableOpacity
+          onPress={() => setModalVisible(true)}
+          activeOpacity={0.8}
+          style={[styles.section, {backgroundColor: colors[mode].section}]}>
+          <View>
             <Text style={styles.sectionTitle}>{t('select_language')}</Text>
-            <Text style={styles.sectionSubtitle}>
-              {languages.find(lang => lang.code === currentLanguage)?.label ||
-                t('select_language')}
-            </Text>
-          </TouchableOpacity>
-        </View>
+            <Text style={styles.textDesc}>{t('modal_description')}</Text>
+          </View>
+          <Text style={styles.sectionSubtitle}>
+            {languages.find(lang => lang.code === currentLanguage)?.label ||
+              t('select_language')}
+          </Text>
+        </TouchableOpacity>
 
         <ModalCustom
           visible={isModalVisible}
@@ -114,6 +115,9 @@ export default function PrivasiSetting({navigation}) {
 }
 
 const styles = StyleSheet.create({
+  textDesc: {
+    fontSize: DIMENS.xs,
+  },
   container: {
     flex: 1,
   },
@@ -131,7 +135,7 @@ const styles = StyleSheet.create({
     fontSize: DIMENS.l,
   },
   sectionSubtitle: {
-    fontSize: DIMENS.s,
+    fontSize: DIMENS.xs,
     marginTop: 5,
   },
   languageOption: {
@@ -139,6 +143,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: COLORS.lightGrey,
     marginVertical: 5,
+    borderRadius: 5,
   },
   languageText: {
     fontSize: DIMENS.l,

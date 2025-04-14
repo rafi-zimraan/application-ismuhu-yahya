@@ -23,7 +23,7 @@ import {
   updateTraining,
   uploadPhotoProfile,
   uploadTrainingFile,
-} from './ProfileApiSlice';
+} from './services/ProfileApiSlice';
 
 import AllDataCouple from './components/AllDataCouple';
 import AllDataExperience from './components/AllDataExperience';

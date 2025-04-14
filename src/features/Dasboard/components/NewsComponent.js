@@ -25,7 +25,17 @@ export default function NewsComponent() {
   const [newsData, setNewsData] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  const deskripsi = decode(newsData?.[0]?.desc || 'Deskripsi tidak tersedia');
+  const deskripsi = decode(newsData?.[0]?.desc);
+
+  const getHtmlPreview = (htmlString, maxLength = 100) => {
+    const decoded = decode(htmlString || '');
+    const textOnly = decoded.replace(/<[^>]*>?/gm, '');
+    const trimmed =
+      textOnly.length > maxLength
+        ? textOnly.substring(0, maxLength).trim() + '...'
+        : textOnly;
+    return `<p>${trimmed}</p>`;
+  };
 
   const fetchNewsData = useCallback(async () => {
     setLoading(true);
@@ -101,11 +111,19 @@ export default function NewsComponent() {
                       <Text style={styles.newsTitle} numberOfLines={1}>
                         {item?.title}
                       </Text>
-                      <Gap height={5} />
                       <View style={styles.viewDesc}>
-                        <HTMLView value={deskripsi} stylesheet={htmlStyles} />
+                        {deskripsi ? (
+                          <HTMLView
+                            value={getHtmlPreview(item.desc, 120)}
+                            stylesheet={htmlStyles}
+                          />
+                        ) : (
+                          <Text style={styles.textDescriptionNotFound}>
+                            Deskripsi tidak tersedia
+                          </Text>
+                        )}
                       </View>
-                      <Gap height={15} />
+                      <Gap height={10} />
                       <TouchableOpacity
                         style={styles.moreButton}
                         onPress={() => handleOnPress(item.id)}>
@@ -140,6 +158,11 @@ export default function NewsComponent() {
 }
 
 const styles = StyleSheet.create({
+  textDescriptionNotFound: {
+    color: COLORS.black,
+    fontSize: DIMENS.l,
+    fontWeight: '500',
+  },
   LoadingText: {
     color: COLORS.black,
     fontStyle: 'italic',
@@ -186,7 +209,7 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     borderColor: COLORS.goldenOrange,
     borderWidth: 0.4,
-    shadowColor: '#000',
+    shadowColor: COLORS.black,
     shadowOffset: {width: 0, height: 2},
     shadowOpacity: 0.2,
     shadowRadius: 3,
@@ -252,7 +275,7 @@ const htmlStyles = StyleSheet.create({
   },
   p: {
     fontSize: DIMENS.s,
-    color: COLORS.darkGrey,
+    color: COLORS.softGray,
     fontWeight: '500',
     marginVertical: 2,
   },
@@ -271,7 +294,7 @@ const htmlStyles = StyleSheet.create({
     color: COLORS.black,
   },
   h2: {
-    fontSize: DIMENS.xxl,
+    fontSize: DIMENS.l,
     fontWeight: '700',
     color: COLORS.black,
   },

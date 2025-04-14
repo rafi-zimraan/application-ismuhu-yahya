@@ -1,5 +1,5 @@
 import EncryptedStorage from 'react-native-encrypted-storage';
-import api from '../../utils/axiosInstance';
+import api from '../../../utils/axiosInstance';
 
 export const getCoupleData = async id_user => {
   try {
@@ -385,6 +385,8 @@ export const deleteExperience = async id_experience => {
 export const uploadPhotoProfile = async (id_user, photo) => {
   try {
     const token = await EncryptedStorage.getItem('token');
+
+    console.log('ini token', token);
     if (!token)
       throw new Error('Token expired, silahkan login terlebih dahulu');
 
