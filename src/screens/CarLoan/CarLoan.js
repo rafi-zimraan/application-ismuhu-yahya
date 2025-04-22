@@ -1,18 +1,57 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Image, ScrollView, StyleSheet, TouchableOpacity} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useSelector} from 'react-redux';
-import {Gap, HeaderTransparent, Text, View} from '../../Component';
-import {IMG_CAR_ERTIGA, IMG_CAR_REBORN} from '../../assets';
-import {CustomSearchInput, SopModal} from '../../features/CarLoan';
+import {
+  Gap,
+  HeaderTransparent,
+  ModalCustom,
+  ModalLoading,
+  Text,
+  View,
+} from '../../Component';
+import {IMG_CAR_REBORN} from '../../assets';
+import {
+  AvailableCarSection,
+  CustomSearchInput,
+  getListCars,
+} from '../../features/CarLoan';
+import {FecthMe} from '../../features/authentication';
 import {COLORS, DIMENS} from '../../utils';
 
 export default function CarLoan({navigation}) {
   const {colors, mode} = useSelector(state => state.theme);
   const [modalSop, setModalSop] = useState(false);
+  const [tokenExpired, setTokenExpired] = useState(false);
+  const [carList, setCarList] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fecthCars = async () => {
+      try {
+        // check tokenExpired
+        const response = await FecthMe();
+        if (response.message === 'Silahkan login terlebih dahulu') {
+          setTokenExpired(true);
+          return; // jangan lanjut fecth carlist
+        }
+
+        // Kalau token valid, fetch carList
+        const data = await getListCars();
+        console.log('data car', data);
+        setCarList(data);
+      } catch (error) {
+        console.log('Gagal mengambil data mobile', error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fecthCars();
+  }, []);
+
   return (
     <View style={styles.ContentView}>
+      {loading && <ModalLoading visible={loading} withSpinner={true} />}
       <LinearGradient
         colors={colors[mode].linearGardenProfile}
         start={{x: 0, y: 0}}
@@ -37,121 +76,35 @@ export default function CarLoan({navigation}) {
       </LinearGradient>
 
       <View style={{padding: 15, flex: 1}}>
-        <ScrollView horizontal contentContainerStyle={{flex: 1}}>
-          <Gap width={5} />
-          <View section={true} style={styles.viewContentMenuCar}>
-            <TouchableOpacity
-              activeOpacity={0.8}
-              style={styles.carBody}
-              onPress={() => navigation.navigate('DetailCarLoan')}>
-              <View style={styles.viewActiveText}>
-                <Text style={styles.textActive}>Tersedia</Text>
-              </View>
-              <Gap height={10} />
-              <Image
-                source={IMG_CAR_REBORN}
-                style={styles.carImage}
-                resizeMethod="resize"
-                resizeMode="cover"
-              />
-              <View style={styles.viewTextCar} section={true}>
-                <Text style={styles.textCar}>Reborn</Text>
-                <Icon name="arrow-right-thin" size={20} color={COLORS.black} />
-              </View>
-              <View style={styles.viewNoPlat} section={true}>
-                <Text style={styles.textPlat}>KB-2232-RFI</Text>
-              </View>
-              <Gap height={5} />
-              <TouchableOpacity
-                activeOpacity={0.7}
-                style={styles.viewContentRent}
-                onPress={() => setModalSop(true)}>
-                <Text style={styles.textRent}>Pinjam sekarang</Text>
-              </TouchableOpacity>
-            </TouchableOpacity>
+        <AvailableCarSection
+          carList={carList}
+          navigation={navigation}
+          modalSop={modalSop}
+          loading={loading}
+          setModalSop={setModalSop}
+        />
 
-            <SopModal
-              isVisible={modalSop}
-              onPress={() => {
-                setModalSop(false);
-                navigation.navigate('CreateCarLoan');
-              }}
-              onClose={() => {
-                setModalSop(false);
-              }}
-            />
-          </View>
-          <Gap width={15} />
-
-          <View section={true} style={styles.viewContentMenuCar}>
-            <TouchableOpacity
-              activeOpacity={0.8}
-              style={styles.carBody}
-              onPress={() => navigation.navigate('DetailCarLoan')}>
-              <View style={styles.viewActiveText}>
-                <Text style={styles.textActive}>Tersedia</Text>
-              </View>
-              <Gap height={10} />
-              <Image
-                source={IMG_CAR_ERTIGA}
-                style={styles.imgErtiga}
-                resizeMethod="resize"
-                resizeMode="cover"
-              />
-              <View style={styles.viewTextCar} section={true}>
-                <Text style={styles.textCar}>Ertiga</Text>
-                <Icon name="arrow-right-thin" size={20} color={COLORS.black} />
-              </View>
-              <View style={styles.viewNoPlat} section={true}>
-                <Text style={styles.textPlat}>KB-2232-RFI</Text>
-              </View>
-              <Gap height={5} />
-              <TouchableOpacity
-                activeOpacity={0.7}
-                style={styles.viewContentRent}
-                onPress={() => setModalSop(true)}>
-                <Text style={styles.textRent}>Pinjam sekarang</Text>
-              </TouchableOpacity>
-            </TouchableOpacity>
-
-            <SopModal
-              isVisible={modalSop}
-              onPress={() => {
-                setModalSop(false);
-                navigation.navigate('CreateCarLoan');
-              }}
-              onClose={() => {
-                setModalSop(false);
-              }}
-            />
-          </View>
-          <Gap width={15} />
-        </ScrollView>
-
+        <Text
+          style={[
+            styles.titleTextLastUse,
+            {color: colors[mode].textSectionTitleSett},
+          ]}>
+          Terakhir Digunakan
+        </Text>
         <Gap height={5} />
-        <View style={styles.contentLastUs}>
-          <Text
-            style={[
-              styles.titleTextLastUse,
-              {color: colors[mode].textSectionTitleSett},
-            ]}>
-            Terakhir Digunakan
-          </Text>
-          <Gap height={5} />
-          <View style={styles.viewBodyLastUse}>
-            <View>
-              <Text style={styles.txtLastUseNameCar}>Reborn-Car</Text>
-              <Text style={styles.txtDateLastUse}>Jan 12, 2024 - 08,40</Text>
-            </View>
-            <View style={styles.viewTime}>
-              <Text style={[styles.txtDateLastUse, {color: COLORS.white}]}>
-                Overtime
-              </Text>
-            </View>
+        <View style={styles.viewBodyLastUse}>
+          <View>
+            <Text style={styles.txtLastUseNameCar}>Reborn-Car</Text>
+            <Text style={styles.txtDateLastUse}>Jan 12, 2024 - 08,40</Text>
+          </View>
+          <View style={styles.viewTime}>
+            <Text style={[styles.txtDateLastUse, {color: COLORS.white}]}>
+              Overtime
+            </Text>
           </View>
         </View>
 
-        <Gap height={19} />
+        <Gap height={15} />
         <View style={styles.viewFavorite}>
           <Text
             style={[
@@ -170,7 +123,7 @@ export default function CarLoan({navigation}) {
         <View style={{flex: 1}}>
           <ScrollView
             showsVerticalScrollIndicator={true}
-            contentContainerStyle={{flexGrow: 1, paddingBottom: 20}}>
+            contentContainerStyle={{flexGrow: 1}}>
             <View style={styles.viewBodyFavorite} section={true}>
               <View style={styles.ViewFavoriteText} section={true}>
                 <Text style={styles.textTitleCar}>Reborn-Car</Text>
@@ -213,18 +166,24 @@ export default function CarLoan({navigation}) {
           </ScrollView>
         </View>
       </View>
+
+      <ModalCustom
+        visible={tokenExpired}
+        onRequestClose={() => setTokenExpired(false)}
+        iconModalName="alert-circle-outline"
+        title="Sesi Berakhir"
+        description="Sesi Anda telah berakhir. Silakan login ulang untuk memperbarui data."
+        buttonSubmit={() => {
+          setTokenExpired(false);
+          navigation.navigate('SignIn');
+        }}
+        buttonTitle="Login Ulang"
+      />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  viewContentMenuCar: {
-    borderRadius: 15,
-    elevation: 2,
-    borderColor: COLORS.goldenOrange,
-    borderWidth: 0.4,
-    height: '95%',
-  },
   ViewFavoriteText: {
     marginHorizontal: 10,
   },
@@ -238,11 +197,8 @@ const styles = StyleSheet.create({
     padding: 2,
     borderRadius: 12,
     elevation: 2,
-    shadowColor: COLORS.black,
-    shadowOffset: {width: 0, height: 2},
-    shadowOpacity: 0.1,
-    shadowRadius: 3,
-    zIndex: 10,
+    backgroundColor: COLORS.white,
+    borderColor: COLORS.goldenOrange,
     borderWidth: 0.3,
   },
   textManual: {
@@ -280,92 +236,20 @@ const styles = StyleSheet.create({
     fontSize: DIMENS.m,
   },
   viewBodyLastUse: {
-    marginHorizontal: 10,
+    paddingHorizontal: 10,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    borderRadius: 10,
+    borderWidth: 0.4,
+    height: 60,
+    elevation: 2,
+    borderColor: COLORS.goldenOrange,
   },
   titleTextLastUse: {
-    fontSize: DIMENS.xxl,
-    fontWeight: '500',
-  },
-  contentLastUs: {
-    marginHorizontal: 4,
-  },
-  imgErtiga: {
-    width: 124,
-    height: 115,
-    position: 'absolute',
-    right: 0,
-    top: 23,
-  },
-  imgAmbulance: {
-    width: 124,
-    height: 115,
-    position: 'absolute',
-    right: 0,
-    top: 17,
-  },
-  imgPickWhite: {
-    width: 124,
-    height: 87,
-    position: 'absolute',
-    right: 0,
-    top: 32,
-  },
-  imgPickBlack: {
-    width: 124,
-    height: 87,
-    position: 'absolute',
-    right: 0,
-    top: 32,
-    transform: [{scaleX: -1}],
-  },
-  textPlat: {
-    textAlign: 'left',
-    fontSize: DIMENS.xs,
-  },
-  viewNoPlat: {
-    top: 95,
-  },
-  textRent: {
-    color: COLORS.white,
-    textAlign: 'center',
-    fontSize: DIMENS.s,
-  },
-  viewContentRent: {
-    top: 105,
-    backgroundColor: COLORS.blueLight,
-    padding: 5,
-    borderRadius: 15,
-  },
-  textActive: {color: COLORS.black, textAlign: 'center', fontSize: DIMENS.s},
-  viewActiveText: {
-    top: 0,
-    backgroundColor: COLORS.goldenOrange,
-    padding: 1,
-    borderRadius: 15,
-    width: '50%',
-  },
-  textCar: {
+    fontSize: DIMENS.xl,
+    fontWeight: '600',
     color: COLORS.black,
-    fontSize: DIMENS.m,
-    fontWeight: '500',
-  },
-  viewTextCar: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    top: 95,
-  },
-  carBody: {
-    width: 145,
-    padding: 10,
-  },
-  carImage: {
-    width: 135,
-    height: 128,
-    position: 'absolute',
-    right: 0,
   },
   viewNavbar: {
     padding: 15,

@@ -47,7 +47,6 @@ export default function TaskManagement({navigation}) {
   const [modalVisible, setModalVisible] = useState(false);
   const [modalTaskIndex, setModalTaskIndex] = useState(null);
   const [modalUploadVisible, setModalUploadVisible] = useState(false);
-  const [modalLoading, setModalLoading] = useState(false);
   const [loading, setLoading] = useState(false);
   const [modalLinkVisible, setModalLinkVisible] = useState(false);
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);

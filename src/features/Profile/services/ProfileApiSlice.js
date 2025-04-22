@@ -386,7 +386,6 @@ export const uploadPhotoProfile = async (id_user, photo) => {
   try {
     const token = await EncryptedStorage.getItem('token');
 
-    console.log('ini token', token);
     if (!token)
       throw new Error('Token expired, silahkan login terlebih dahulu');
 
