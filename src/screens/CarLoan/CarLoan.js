@@ -35,7 +35,6 @@ export default function CarLoan({navigation}) {
           setTokenExpired(true);
           return; // jangan lanjut fecth carlist
         }
-
         // Kalau token valid, fetch carList
         const data = await getListCars();
         console.log('data car', data);

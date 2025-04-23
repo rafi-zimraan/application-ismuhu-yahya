@@ -56,7 +56,7 @@ export default function SopModal({isVisible, onClose, onPress}) {
           onPress={onPress}
           style={[
             styles.buttonSend,
-            {backgroundColor: checked ? '#555' : '#aaa'},
+            {backgroundColor: checked ? COLORS.goldenOrange : '#aaa'},
           ]}>
           <Text style={{color: 'white', fontSize: 16}}>Kirim Perizinan</Text>
         </TouchableOpacity>

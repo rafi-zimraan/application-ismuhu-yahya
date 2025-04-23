@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {
   Image,
   ScrollView,
@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {SopModal} from '..';
-import {Gap} from '../../../Component';
+import {Gap, ModalCustom} from '../../../Component';
 import {ICON_NOTFOUND_DATA} from '../../../assets';
 import {COLORS, DIMENS} from '../../../utils';
 
@@ -20,6 +20,8 @@ export default function AvailableCarSection({
   loading,
   setModalSop,
 }) {
+  const [modalUnavailableVisible, setModalUnavailableVisible] = useState(false);
+
   return (
     <View style={{height: '52%'}}>
       <Text style={styles.TextTitleMenuCar}>Mobil Operasional</Text>
@@ -54,8 +56,17 @@ export default function AvailableCarSection({
                 onPress={() =>
                   navigation.navigate('DetailCarLoan', {carId: item.id})
                 }>
-                <View style={styles.viewActiveText}>
-                  <Text style={styles.textActive}>Tersedia</Text>
+                <View
+                  style={{
+                    ...styles.viewActiveText,
+                    backgroundColor:
+                      item.status === '0'
+                        ? COLORS.goldenOrange
+                        : COLORS.mediumGrey,
+                  }}>
+                  <Text style={styles.textActive}>
+                    {item.status === '0' ? 'Tersedia' : 'Terpakai'}
+                  </Text>
                 </View>
                 <Image
                   source={
@@ -83,7 +94,13 @@ export default function AvailableCarSection({
                 <TouchableOpacity
                   activeOpacity={0.7}
                   style={styles.viewContentRent}
-                  onPress={() => setModalSop(true)}>
+                  onPress={() => {
+                    if (item.status === '0') {
+                      setModalSop(true);
+                    } else {
+                      setModalUnavailableVisible(true);
+                    }
+                  }}>
                   <Text style={styles.textRent}>Pinjam sekarang</Text>
                 </TouchableOpacity>
               </TouchableOpacity>
@@ -97,6 +114,18 @@ export default function AvailableCarSection({
                 onClose={() => {
                   setModalSop(false);
                 }}
+              />
+
+              <ModalCustom
+                visible={modalUnavailableVisible}
+                onRequestClose={() => setModalUnavailableVisible(false)}
+                onOutContentPress={() => setModalUnavailableVisible(false)}
+                iconModalName="alert-circle-outline"
+                title="Mobil Tidak Tersedia"
+                description="Maaf, mobil ini sedang digunakan. Silakan pilih mobil lain atau coba lagi nanti."
+                buttonTitle="Mengerti"
+                buttonSubmit={() => setModalUnavailableVisible(false)}
+                BackgroundButtonAction={COLORS.goldenOrange}
               />
             </View>
           ))
@@ -166,13 +195,13 @@ const styles = StyleSheet.create({
     height: 80,
   },
   viewActiveText: {
-    backgroundColor: COLORS.goldenOrange,
     padding: 1,
     borderRadius: 15,
     width: '50%',
   },
   textActive: {
-    color: COLORS.black,
+    color: COLORS.white,
+    fontWeight: '500',
     textAlign: 'center',
     fontSize: DIMENS.s,
   },
