@@ -5,11 +5,13 @@ import DetailCarLoan from './Components/DetailCarLoan';
 import FormInputCar from './Components/FormInputCar';
 import SeeAllCars from './Components/SeeAllCars';
 import SopModal from './Components/SopModal';
+
 import {
   addCar,
   deteleCar,
   getCarDetail,
   getListCars,
+  searchCarByName,
   updateCar,
 } from './Services/CarLoanApiSlice';
 
@@ -24,4 +26,11 @@ export {
   AvailableCarSection,
 };
 // api
-export {getListCars, addCar, getCarDetail, updateCar, deteleCar};
+export {
+  getListCars,
+  addCar,
+  getCarDetail,
+  updateCar,
+  deteleCar,
+  searchCarByName,
+};

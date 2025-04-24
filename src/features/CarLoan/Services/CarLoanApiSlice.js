@@ -47,7 +47,7 @@ export const addCar = async carData => {
       });
     }
 
-    const response = await api.post('/cars', formData, {
+    const response = await api.post('cars', formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
         Authorization: `Bearer ${JSON.parse(token)}`,
@@ -106,7 +106,7 @@ export const updateCar = async (id_car, updatedData) => {
       });
     }
 
-    const response = await api.patch(`/cars/${id_car}`, formData, {
+    const response = await api.patch(`cars/${id_car}`, formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
         Authorization: `Bearer ${JSON.parse(token)}`,
@@ -129,7 +129,7 @@ export const deteleCar = async id_car => {
       throw new Error('Token expired, silahkan login terlebih dahulu');
     }
 
-    const response = await api.delete(`/cars/${id_car}`);
+    const response = await api.delete(`cars/${id_car}`);
 
     if (response.data?.status) {
       return response.data;
@@ -139,6 +139,39 @@ export const deteleCar = async id_car => {
   } catch (error) {
     const errorMessage = error.response?.data?.message || 'Terjadi kesalahan';
     console.log(errorMessage);
+    throw error;
+  }
+};
+
+export const searchCarByName = async searchName => {
+  try {
+    const token = await EncryptedStorage.getItem('token');
+    if (!token) {
+      throw new Error('Token expired, silahkan login terlebih dahulu');
+    }
+
+    const response = await api.get('mobile/list-cars', {
+      headers: {
+        Authorization: `Bearer ${JSON.parse(token)}`,
+      },
+      params: {
+        s_name: searchName,
+      },
+    });
+
+    if (response.data?.status) {
+      return response.data.data;
+    } else {
+      console.log('Gagal memuat data hasil pencarian mobil');
+    }
+  } catch (error) {
+    if (error.response) {
+      const errorMessage =
+        error.response?.data?.message || 'Terjadi kesalahan saat pencarian';
+      console.log(errorMessage);
+    } else {
+      console.log('ERROR CODE:', error.message);
+    }
     throw error;
   }
 };

@@ -41,6 +41,7 @@ export default function FormInputCar({
   pattern,
   flex = 1,
   disabled,
+  backgroundColor = COLORS.white,
 }) {
   const [password, setPassword] = useState(true);
   const [showDate, setShowDate] = useState(false);
@@ -86,8 +87,18 @@ export default function FormInputCar({
 
         return (
           <View style={{flex}}>
-            <Text style={{color: 'black'}}>{title}</Text>
-            <View style={{borderBottomWidth: 1, paddingHorizontal: 5}}>
+            <Text style={{color: COLORS.white}}>{title}</Text>
+            <View
+              style={{
+                borderBottomWidth: 1,
+                borderBottomColor: COLORS.Orange,
+                paddingHorizontal: 5,
+                backgroundColor,
+                borderTopLeftRadius: 2,
+                borderTopRightRadius: 2,
+                borderBottomLeftRadius: 2,
+                borderBottomRightRadius: 2,
+              }}>
               <View style={styles.viewInput}>
                 <Icon name={iconName} color={iconColor} size={25} />
                 {mode === 'text' && (
@@ -123,9 +134,11 @@ export default function FormInputCar({
                         if (picker.onSelect) picker.onSelect(value);
                       }}
                       selectedValue={value}
-                      style={{flex: 1, color: 'black'}}
+                      style={{flex: 1, color: COLORS.black}}
                       dropdownIconColor={
-                        !picker.loading && !picker.error ? 'black' : 'white'
+                        !picker.loading && !picker.error
+                          ? COLORS.black
+                          : COLORS.lightGrey
                       }
                       enabled={!disabled}>
                       <Picker.Item label={pickerPlaceholder} value={null} />
@@ -227,7 +240,7 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     flex: 1,
     margin: 5,
-    backgroundColor: '#0000008',
+    // backgroundColor: '#',
   },
   btnRefresh: {
     backgroundColor: 'white',

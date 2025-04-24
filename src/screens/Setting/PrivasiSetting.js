@@ -72,7 +72,7 @@ export default function PrivasiSetting({navigation}) {
           onPress={() => setModalVisible(true)}
           activeOpacity={0.8}
           style={[styles.section, {backgroundColor: colors[mode].section}]}>
-          <View>
+          <View section={true}>
             <Text style={styles.sectionTitle}>{t('select_language')}</Text>
             <Text style={styles.textDesc}>{t('modal_description')}</Text>
           </View>

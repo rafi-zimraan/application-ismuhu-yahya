@@ -5,13 +5,17 @@ import {
   ScrollView,
   StatusBar,
   StyleSheet,
-  Text,
   TouchableOpacity,
-  View,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {getCarDetail} from '..';
-import {Gap, HeaderTransparent, ModalLoading} from '../../../Component';
+import {
+  Gap,
+  HeaderTransparent,
+  ModalLoading,
+  Text,
+  View,
+} from '../../../Component';
 import {ICON_NOTFOUND_DATA} from '../../../assets';
 import {COLORS, DIMENS} from '../../../utils';
 
@@ -21,6 +25,7 @@ export default function DetailCarLoan({navigation}) {
   const [mobilDetail, setMobilDetail] = useState();
   const [loading, setLoading] = useState(true);
   const [currentScreen, setCurrentScreen] = useState(0);
+
   const handleScroll = event => {
     const position = Math.floor(
       event.nativeEvent.contentOffset.x /
@@ -51,22 +56,22 @@ export default function DetailCarLoan({navigation}) {
       <StatusBar barStyle={'default'} backgroundColor={'transparent'} />
       <ModalLoading visible={loading} withSpinner={true} />
 
-      <View style={styles.headerWrapper}>
-        <HeaderTransparent
-          icon="arrow-left-circle-outline"
-          title="Detail Pinjam Mobil"
-          onPress={() => navigation.goBack()}
-        />
-      </View>
+      <HeaderTransparent
+        icon="arrow-left-circle-outline"
+        title="Detail Pinjam Mobil"
+        onPress={() => navigation.goBack()}
+      />
+
       {mobilDetail && (
         <ScrollView
-          showsVerticalScrollIndicator={true}
-          contentContainerStyle={{paddingBottom: 20}}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{paddingBottom: 25}}
           style={styles.scrollViewContainer}>
           <View style={styles.bodyDetail}>
             {/* <Text style={styles.txtCategoryCar}>Kategori - Ambulance Car</Text> */}
+            <Gap height={10} />
             <Text style={styles.txtNameCar}>{mobilDetail.name}</Text>
-            <Gap height={15} />
+            <Gap height={10} />
             <View style={styles.viewCar}>
               <Image
                 source={
@@ -80,8 +85,10 @@ export default function DetailCarLoan({navigation}) {
                 resizeMethod="resize"
               />
             </View>
-            <View style={styles.viewPagination}>
-              <View style={styles.paginationWrapper}>
+            <View style={styles.viewPagination} useBackgroundTransparent={true}>
+              <View
+                style={styles.paginationWrapper}
+                useBackgroundTransparent={true}>
                 {[mobilDetail.photo].map((_, index) => (
                   <View
                     key={index}
@@ -95,22 +102,21 @@ export default function DetailCarLoan({navigation}) {
                 ))}
               </View>
             </View>
-            <Gap height={10} />
             <Text style={styles.title}>Detail Mobil</Text>
-            <Gap height={5} />
+            <Gap height={10} />
             <View style={styles.contentCar}>
-              <View style={styles.containerDetailCar}>
+              <View style={styles.containerDetailCar} section={true}>
                 <Text style={styles.txtTitleCar}>{mobilDetail.name}</Text>
                 <Gap height={5} />
-                <View style={styles.viewPlatAndDesc}>
-                  <View style={styles.row}>
+                <View style={styles.viewPlatAndDesc} section={true}>
+                  <View style={styles.row} section={true}>
                     <Icon name="seat" size={16} color={COLORS.redLight} />
                     <Text style={styles.txtDescCar}>
                       {mobilDetail.count_seat} seat -{' '}
                       {mobilDetail.type_transmission}
                     </Text>
                   </View>
-                  <View style={styles.row}>
+                  <View style={styles.row} section={true}>
                     <Icon name="car-info" size={16} color={COLORS.blueLight} />
                     <Text style={styles.txtPlatCar}>
                       {mobilDetail.number_plate}
@@ -144,7 +150,7 @@ export default function DetailCarLoan({navigation}) {
           </View>
         </ScrollView>
       )}
-      <View style={styles.footer}>
+      <View style={styles.footer} section={true}>
         <Text style={styles.footerText}>
           Segera pinjam {'\n'}kendaraan pilihan Anda!
         </Text>
@@ -164,7 +170,6 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 10,
     elevation: 2,
-    backgroundColor: COLORS.white,
     borderWidth: 0.3,
     borderColor: COLORS.goldenOrange,
     alignItems: 'center',
@@ -172,14 +177,6 @@ const styles = StyleSheet.create({
   imgCarLoan: {
     height: 135,
     width: 250,
-  },
-  headerWrapper: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 10,
-    backgroundColor: COLORS.goldenOrange,
-    elevation: 3,
   },
   contentHistoryCar: {
     flexDirection: 'row',
@@ -191,7 +188,6 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
-    backgroundColor: COLORS.white,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
@@ -203,7 +199,6 @@ const styles = StyleSheet.create({
   footerText: {
     fontSize: DIMENS.m,
     fontWeight: '400',
-    color: COLORS.grey,
   },
   buttonAction: {
     backgroundColor: COLORS.goldenOrange,
@@ -213,12 +208,10 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     fontSize: DIMENS.m,
-    color: COLORS.white,
     fontWeight: '600',
   },
   title: {
     fontSize: DIMENS.xl,
-    color: COLORS.black,
     fontWeight: '600',
   },
   row: {
@@ -239,12 +232,10 @@ const styles = StyleSheet.create({
   },
   txtPlatCar: {
     fontSize: DIMENS.s,
-    color: COLORS.textSecondary,
     fontWeight: '400',
   },
   txtTitleCar: {
     fontSize: DIMENS.m,
-    color: COLORS.black,
     fontWeight: '600',
   },
   contentCar: {
@@ -271,9 +262,8 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.goldenOrange,
   },
   inactiveDot: {
-    backgroundColor: '#D3D3D3',
+    backgroundColor: COLORS.lightGrey2,
   },
-
   scrollViewContainer: {
     flex: 1,
   },
@@ -289,13 +279,11 @@ const styles = StyleSheet.create({
   },
   txtDescCar: {
     fontSize: DIMENS.s,
-    color: COLORS.textSecondary,
     fontWeight: '500',
   },
   txtNameCar: {
-    fontSize: DIMENS.xxxl,
-    color: COLORS.black,
-    fontWeight: '500',
+    fontSize: DIMENS.xxl,
+    fontWeight: '900',
   },
   txtCategoryCar: {
     fontSize: DIMENS.s,
@@ -306,7 +294,6 @@ const styles = StyleSheet.create({
     padding: 15,
   },
   container: {
-    backgroundColor: COLORS.white,
     flex: 1,
   },
 });

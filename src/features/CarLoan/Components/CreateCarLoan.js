@@ -1,16 +1,15 @@
 import React, {useEffect} from 'react';
 import {useForm} from 'react-hook-form';
 import {
+  Alert,
   ScrollView,
   StatusBar,
   StyleSheet,
-  Text,
   TouchableNativeFeedback,
-  View,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {FormInputCar} from '..';
-import {Gap, HeaderTransparent} from '../../../Component';
+import {Gap, HeaderTransparent, Text, View} from '../../../Component';
 import {COLORS, DIMENS} from '../../../utils';
 
 export default function CreateCarLoan({navigation}) {
@@ -45,19 +44,18 @@ export default function CreateCarLoan({navigation}) {
   }, [datePick, dateUse, dateBack, timePick, timeBack]);
 
   const submitForm = form => {
+    Alert.alert('Hii,', 'Mohon doanya agar fitur terselesaikan ya 😊');
     console.log('Form Submitted:', form);
   };
 
   return (
     <View style={styles.Conter}>
       <StatusBar barStyle={'default'} backgroundColor={'transparent'} />
-      <View style={styles.headerWrapper}>
-        <HeaderTransparent
-          title="Formulir Peminjaman"
-          icon="arrow-left-circle-outline"
-          onPress={() => navigation.goBack()}
-        />
-      </View>
+      <HeaderTransparent
+        title="Formulir Peminjaman"
+        icon="arrow-left-circle-outline"
+        onPress={() => navigation.goBack()}
+      />
       <ScrollView>
         <View style={styles.container}>
           <FormInputCar
@@ -180,17 +178,8 @@ export default function CreateCarLoan({navigation}) {
 }
 
 const styles = StyleSheet.create({
-  headerWrapper: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 10,
-    backgroundColor: COLORS.goldenOrange,
-    elevation: 3,
-  },
   Conter: {
     flex: 1,
-    backgroundColor: COLORS.white,
   },
   textSubmit: {
     fontWeight: 'bold',

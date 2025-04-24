@@ -4,7 +4,11 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {Gap} from '../../../Component';
 import {COLORS} from '../../../utils';
 
-const CustomSearchInput = ({placeholderTextColor, borderRadius = 10}) => {
+const CustomSearchInput = ({
+  placeholderTextColor,
+  borderRadius = 10,
+  onChangeText,
+}) => {
   const [placeholderText, setPlaceholderText] = useState('');
   const placeholderMessage = 'Mau pinjam apa hari ini?';
   const [showPassword, setShowPassword] = useState(false);
@@ -41,6 +45,7 @@ const CustomSearchInput = ({placeholderTextColor, borderRadius = 10}) => {
           placeholderTextColor={placeholderTextColor || COLORS.grey}
           style={{flex: 1, fontSize: 16, color: COLORS.black}}
           secureTextEntry={showPassword}
+          onChangeText={onChangeText}
         />
         {/* <TouchableNativeFeedback
           useForeground

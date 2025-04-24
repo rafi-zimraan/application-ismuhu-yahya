@@ -41,7 +41,10 @@ export const login = async (data, navigation, dispatch) => {
     }
   } catch (error) {
     if (error.response && error.response.data && error.response.data.message) {
-      ToastAndroid.show(error.response.data.message, ToastAndroid.SHORT);
+      ToastAndroid.show(
+        'Terdapat Kesalan dari server, Silahkan hubungi developer',
+        ToastAndroid.SHORT,
+      );
       console.log('Error from server', error.response.data.message);
     } else {
       console.log('Err code', error.message);

@@ -15,6 +15,7 @@ import {
   AvailableCarSection,
   CustomSearchInput,
   getListCars,
+  searchCarByName,
 } from '../../features/CarLoan';
 import {FecthMe} from '../../features/authentication';
 import {COLORS, DIMENS} from '../../utils';
@@ -23,21 +24,19 @@ export default function CarLoan({navigation}) {
   const {colors, mode} = useSelector(state => state.theme);
   const [modalSop, setModalSop] = useState(false);
   const [tokenExpired, setTokenExpired] = useState(false);
+  const [searchText, setsearchText] = useState('');
   const [carList, setCarList] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fecthCars = async () => {
       try {
-        // check tokenExpired
         const response = await FecthMe();
         if (response.message === 'Silahkan login terlebih dahulu') {
           setTokenExpired(true);
-          return; // jangan lanjut fecth carlist
+          return;
         }
-        // Kalau token valid, fetch carList
         const data = await getListCars();
-        console.log('data car', data);
         setCarList(data);
       } catch (error) {
         console.log('Gagal mengambil data mobile', error.message);
@@ -70,6 +69,20 @@ export default function CarLoan({navigation}) {
           <CustomSearchInput
             placeholderTextColor={COLORS.grey}
             borderRadius={12}
+            onChangeText={async text => {
+              setsearchText(text);
+              if (text.length >= 3) {
+                try {
+                  const result = await searchCarByName(text);
+                  setCarList(result);
+                } catch (err) {
+                  console.log('Error searching car:', err);
+                }
+              } else {
+                const allCars = await getListCars();
+                setCarList(allCars);
+              }
+            }}
           />
         </View>
       </LinearGradient>
@@ -83,6 +96,8 @@ export default function CarLoan({navigation}) {
           setModalSop={setModalSop}
         />
 
+        <Gap height={15} />
+
         <Text
           style={[
             styles.titleTextLastUse,
@@ -91,15 +106,13 @@ export default function CarLoan({navigation}) {
           Terakhir Digunakan
         </Text>
         <Gap height={5} />
-        <View style={styles.viewBodyLastUse}>
-          <View>
+        <View style={styles.viewBodyLastUse} section={true}>
+          <View section={true}>
             <Text style={styles.txtLastUseNameCar}>Reborn-Car</Text>
             <Text style={styles.txtDateLastUse}>Jan 12, 2024 - 08,40</Text>
           </View>
-          <View style={styles.viewTime}>
-            <Text style={[styles.txtDateLastUse, {color: COLORS.white}]}>
-              Overtime
-            </Text>
+          <View style={styles.viewTime} section={true}>
+            <Text style={[styles.txtDateLastUse]}>Overtime</Text>
           </View>
         </View>
 
@@ -121,7 +134,7 @@ export default function CarLoan({navigation}) {
         <Gap height={10} />
         <View style={{flex: 1}}>
           <ScrollView
-            showsVerticalScrollIndicator={true}
+            showsVerticalScrollIndicator={false}
             contentContainerStyle={{flexGrow: 1}}>
             <View style={styles.viewBodyFavorite} section={true}>
               <View style={styles.ViewFavoriteText} section={true}>
@@ -196,17 +209,14 @@ const styles = StyleSheet.create({
     padding: 2,
     borderRadius: 12,
     elevation: 2,
-    backgroundColor: COLORS.white,
     borderColor: COLORS.goldenOrange,
     borderWidth: 0.3,
   },
   textManual: {
-    color: COLORS.textPrimary,
     fontWeight: '400',
     fontSize: DIMENS.m,
   },
   textTitleCar: {
-    color: COLORS.black,
     fontWeight: '400',
     fontSize: DIMENS.m,
   },
@@ -226,7 +236,6 @@ const styles = StyleSheet.create({
     borderRadius: 6,
   },
   txtDateLastUse: {
-    color: COLORS.mediumGrey,
     fontWeight: '400',
     fontSize: DIMENS.s,
   },
@@ -248,7 +257,6 @@ const styles = StyleSheet.create({
   titleTextLastUse: {
     fontSize: DIMENS.xl,
     fontWeight: '600',
-    color: COLORS.black,
   },
   viewNavbar: {
     padding: 15,

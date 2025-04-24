@@ -1,15 +1,8 @@
 import React, {useState} from 'react';
-import {
-  Image,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import {Image, ScrollView, StyleSheet, TouchableOpacity} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {SopModal} from '..';
-import {Gap, ModalCustom} from '../../../Component';
+import {Gap, ModalCustom, Text, View} from '../../../Component';
 import {ICON_NOTFOUND_DATA} from '../../../assets';
 import {COLORS, DIMENS} from '../../../utils';
 
@@ -23,7 +16,7 @@ export default function AvailableCarSection({
   const [modalUnavailableVisible, setModalUnavailableVisible] = useState(false);
 
   return (
-    <View style={{height: '52%'}}>
+    <View>
       <Text style={styles.TextTitleMenuCar}>Mobil Operasional</Text>
       <Gap height={5} />
       <ScrollView horizontal contentContainerStyle={{flex: 1}}>
@@ -62,7 +55,7 @@ export default function AvailableCarSection({
                     backgroundColor:
                       item.status === '0'
                         ? COLORS.goldenOrange
-                        : COLORS.mediumGrey,
+                        : COLORS.darkBackground,
                   }}>
                   <Text style={styles.textActive}>
                     {item.status === '0' ? 'Tersedia' : 'Terpakai'}
@@ -144,12 +137,6 @@ const styles = StyleSheet.create({
   TextTitleMenuCar: {
     fontSize: DIMENS.xl,
     fontWeight: '600',
-    color: COLORS.black,
-  },
-  loadingText: {
-    fontStyle: 'italic',
-    color: COLORS.black,
-    marginTop: 10,
   },
   contentNotFound: {
     justifyContent: 'center',
@@ -184,7 +171,6 @@ const styles = StyleSheet.create({
     borderWidth: 0.4,
     height: 220,
     marginHorizontal: 10,
-    backgroundColor: COLORS.white,
   },
   carBody: {
     width: 145,
@@ -210,14 +196,12 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   textCar: {
-    color: COLORS.black,
     fontSize: DIMENS.m,
     fontWeight: '500',
   },
   textPlat: {
     textAlign: 'left',
     fontSize: DIMENS.xs,
-    color: COLORS.mediumGrey,
   },
   viewContentRent: {
     backgroundColor: COLORS.blueLight,
