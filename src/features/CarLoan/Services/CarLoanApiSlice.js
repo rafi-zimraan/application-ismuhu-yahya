@@ -26,42 +26,6 @@ export const getListCars = async () => {
   }
 };
 
-export const addCar = async carData => {
-  try {
-    const token = await EncryptedStorage.getItem('token');
-    if (!token)
-      throw new Error('Token expired, silahkan login terlebih dahulu');
-
-    const formData = new FormData();
-    formData.append('name', carData.name);
-    formData.append('number_plate', carData.number_plate);
-    formData.append('color', carData.color);
-    formData.append('count_seat', carData.count_seat);
-    formData.append('type_transmission', carData.type_transmission);
-
-    if (carData.photo) {
-      formData.append('photo', {
-        uri: carData.photo.uri,
-        name: carData.photo.name,
-        type: carData.photo.type,
-      });
-    }
-
-    const response = await api.post('cars', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-        Authorization: `Bearer ${JSON.parse(token)}`,
-      },
-    });
-
-    return response.data;
-  } catch (error) {
-    const errorMessage = error.response?.data?.message || 'Terjadi kesalahan';
-    console.log(errorMessage);
-    throw error;
-  }
-};
-
 export const getCarDetail = async id_car => {
   try {
     const token = await EncryptedStorage.getItem('token');
@@ -81,64 +45,6 @@ export const getCarDetail = async id_car => {
     } else {
       console.log('Err code', error.message);
     }
-    throw error;
-  }
-};
-
-export const updateCar = async (id_car, updatedData) => {
-  try {
-    const token = await EncryptedStorage.getItem('token');
-    if (!token)
-      throw new Error('Token expired, silahkan login terlebih dahulu');
-
-    const formData = new FormData();
-    formData.append('name', updatedData.name);
-    formData.append('number_plate', updatedData.number_plate);
-    formData.append('color', updatedData.color);
-    formData.append('count_seat', updatedData.count_seat);
-    formData.append('type_transmission', updatedData.type_transmission);
-
-    if (updatedData.photo) {
-      formData.append('photo', {
-        uri: updatedData.photo.uri,
-        name: updatedData.photo.name,
-        type: updatedData.photo.type,
-      });
-    }
-
-    const response = await api.patch(`cars/${id_car}`, formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-        Authorization: `Bearer ${JSON.parse(token)}`,
-      },
-    });
-
-    return response.data;
-  } catch (error) {
-    const errorMessage = error.response?.data?.message || 'Terjadi kesalahan';
-    console.log(errorMessage);
-    throw error;
-  }
-};
-
-export const deteleCar = async id_car => {
-  try {
-    const token = await EncryptedStorage.getItem('token');
-
-    if (!token) {
-      throw new Error('Token expired, silahkan login terlebih dahulu');
-    }
-
-    const response = await api.delete(`cars/${id_car}`);
-
-    if (response.data?.status) {
-      return response.data;
-    } else {
-      throw new Error(response.data?.message || 'Gagal menghapus data mobil!');
-    }
-  } catch (error) {
-    const errorMessage = error.response?.data?.message || 'Terjadi kesalahan';
-    console.log(errorMessage);
     throw error;
   }
 };
@@ -168,6 +74,88 @@ export const searchCarByName = async searchName => {
     if (error.response) {
       const errorMessage =
         error.response?.data?.message || 'Terjadi kesalahan saat pencarian';
+      console.log(errorMessage);
+    } else {
+      console.log('ERROR CODE:', error.message);
+    }
+    throw error;
+  }
+};
+
+export const getCarLoanHistory = async () => {
+  try {
+    const token = await EncryptedStorage.getItem('token');
+
+    if (!token) {
+      throw new Error('Token expired, silahkan login terlebih dahulu');
+    }
+
+    const response = await api.get('micro-loan/history', {
+      headers: {
+        Authorization: `Bearer ${JSON.parse(token)}`,
+      },
+    });
+
+    if (response.data?.status) {
+      return response.data.data;
+    } else {
+      console.log('Gagal memuat data histori peminjaman');
+    }
+  } catch (error) {
+    if (error.response) {
+      const errorMessage =
+        error.response?.data?.message ||
+        'Terjadi kesalahan saat mengambil histori peminjaman';
+      console.log(errorMessage);
+    } else {
+      console.log('ERROR CODE:', error.message);
+    }
+    throw error;
+  }
+};
+
+export const addCarLoan = async loanData => {
+  try {
+    const token = await EncryptedStorage.getItem('token');
+    if (!token)
+      throw new Error('Token expired, silahkan login terlebih dahulu');
+
+    const formData = new FormData();
+    formData.append('car_id', loanData.car_id);
+    formData.append('loan_date', loanData.loan_date);
+    formData.append('use_date', loanData.use_date);
+    formData.append('return_date', loanData.return_date);
+    formData.append('loaner', loanData.loaner);
+    formData.append('current_km', loanData.current_km);
+    formData.append('time_use', loanData.time_use);
+    formData.append('time_return', loanData.time_return);
+    formData.append('necessity', loanData.necessity);
+
+    if (loanData.photo_sim_a) {
+      formData.append('photo_sim_a', {
+        uri: loanData.photo_sim_a.uri,
+        name: loanData.photo_sim_a.name,
+        type: loanData.photo_sim_a.type,
+      });
+    }
+
+    if (loanData.desc) {
+      formData.append('desc', loanData.desc);
+    }
+
+    const response = await api.post('loan-cars', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        Authorization: `Bearer ${JSON.parse(token)}`,
+      },
+    });
+
+    return response.data;
+  } catch (error) {
+    if (error.response) {
+      const errorMessage =
+        error.response?.data?.message ||
+        'Terjadi kesalahan saat mengambil histori peminjaman';
       console.log(errorMessage);
     } else {
       console.log('ERROR CODE:', error.message);

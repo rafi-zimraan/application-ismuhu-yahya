@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {useForm} from 'react-hook-form';
 import {
   Alert,
@@ -8,11 +8,53 @@ import {
   TouchableNativeFeedback,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {FormInputCar} from '..';
-import {Gap, HeaderTransparent, Text, View} from '../../../Component';
+import {addCarLoan, FormInputCar, getListCars} from '..';
+import {
+  Gap,
+  HeaderTransparent,
+  ModalCustom,
+  Text,
+  View,
+} from '../../../Component';
 import {COLORS, DIMENS} from '../../../utils';
+import {useRoute} from '@react-navigation/native';
 
 export default function CreateCarLoan({navigation}) {
+  const route = useRoute();
+  const {carId} = route.params;
+  const [modalVisible, setModalVisible] = useState(false);
+  const [carData, setCarData] = useState([]);
+  const [userErrorMessage, setUserErrorMessage] = useState('');
+  const [tokenExpired, setTokenExpired] = useState(false);
+
+  useEffect(() => {
+    async function fetchCarData() {
+      const response = await getListCars();
+      console.log('response', response);
+      setCarData(response);
+    }
+    fetchCarData();
+  }, []);
+
+  useEffect(() => {
+    if (carId && carData?.length > 0) {
+      const selectedCar = carData.find(car => car.id === carId);
+      if (selectedCar) {
+        setValue('car_id', selectedCar.name);
+      } else {
+        setValue('car_id', '');
+      }
+    }
+  }, [carId, carData, setValue]);
+
+  const [modalData, setModalData] = useState({
+    iconModalName: 'check-circle-outline',
+    title: 'Peminjaman Berhasil!',
+    description: 'Data peminjaman berhasil dikirim.',
+    ColorIcon: COLORS.greenBoy,
+    buttonTitle: 'Kembali',
+  });
+
   const {control, handleSubmit, watch, setValue} = useForm({
     defaultValues: {
       date_pick: new Date(),
@@ -21,7 +63,9 @@ export default function CreateCarLoan({navigation}) {
       time_pick: new Date(),
       time_back: new Date(),
       duration: '0',
+      loaner: '',
     },
+    mode: 'onTouched',
   });
 
   const [datePick, dateUse, dateBack, timePick, timeBack] = watch([
@@ -31,6 +75,57 @@ export default function CreateCarLoan({navigation}) {
     'time_pick',
     'time_back',
   ]);
+
+  const submitForm = async form => {
+    try {
+      const payload = {
+        car_id: form.car_id,
+        loan_date: form.date_pick.toISOString().split('T')[0], // Format: YYYY-MM-DD
+        use_date: form.date_use.toISOString().split('T')[0],
+        return_date: form.date_back.toISOString().split('T')[0],
+        loaner: form.loaner,
+        current_km: 0, // kalau mau input KM, bisa tambahkan field
+        time_use: form.time_pick.toTimeString().split(' ')[0].slice(0, 5), // Format: HH:MM
+        time_return: form.time_back.toTimeString().split(' ')[0].slice(0, 5),
+        necessity: form.necessity,
+        desc: form.reason || '',
+        // photo_sim_a: { uri: '', name: '', type: '' } // kalau mau upload SIM, nanti tambahkan input photo
+      };
+
+      const res = await addCarLoan(payload);
+
+      if (res?.message === 'Silahkan login terlebih dahulu') {
+        setTokenExpired(true);
+        return;
+      }
+
+      if (
+        res?.message === 'Anda belum terdaftar sebagai user peminjaman mobil'
+      ) {
+        setUserErrorMessage(res.message);
+        return;
+      }
+
+      setModalData({
+        iconModalName: 'check-circle-outline',
+        title: 'Peminjaman Berhasil!',
+        description: 'Data peminjaman berhasil dikirim.',
+        ColorIcon: COLORS.greenBoy,
+        buttonTitle: 'Kembali',
+      });
+      setModalVisible(true);
+    } catch (error) {
+      console.log('error dalam peminjaman', error);
+      setModalData({
+        iconModalName: 'alert-circle-outline',
+        title: 'Peminjaman Gagal!',
+        description: 'Terjadi kesalahan saat mengirim data.',
+        ColorIcon: COLORS.redDanger,
+        buttonTitle: 'Coba Lagi',
+      });
+      setModalVisible(true);
+    }
+  };
 
   useEffect(() => {
     if (datePick.getTime() > dateUse.getTime()) setValue('date_use', datePick);
@@ -42,11 +137,6 @@ export default function CreateCarLoan({navigation}) {
     const duration = dateToHour + timeToHour;
     setValue('duration', duration.toFixed(0).toString());
   }, [datePick, dateUse, dateBack, timePick, timeBack]);
-
-  const submitForm = form => {
-    Alert.alert('Hii,', 'Mohon doanya agar fitur terselesaikan ya 😊');
-    console.log('Form Submitted:', form);
-  };
 
   return (
     <View style={styles.Conter}>
@@ -60,21 +150,21 @@ export default function CreateCarLoan({navigation}) {
         <View style={styles.container}>
           <FormInputCar
             iconColor={COLORS.Orange}
+            control={control}
+            name="loaner"
+            title="Nama Peminjam"
+            iconName="account-outline"
+            placeholder="Masukkan nama Anda..."
+            mode="text"
+          />
+
+          <FormInputCar
+            iconColor={COLORS.Orange}
             name="car_id"
             title="Kendaraan"
             iconName="car"
             control={control}
-            mode="picker"
-            picker={{
-              data: [
-                {id: '1', name: 'Mobil A'},
-                {id: '2', name: 'Mobil B'},
-                {id: '3', name: 'Mobil C'},
-              ],
-              label: 'name',
-              value: 'id',
-              loading: false,
-            }}
+            mode="text"
           />
           <View style={{flexDirection: 'row'}}>
             <FormInputCar
@@ -152,6 +242,7 @@ export default function CreateCarLoan({navigation}) {
               flex={0.725}
             />
           </View>
+
           <FormInputCar
             iconColor={COLORS.Orange}
             control={control}
@@ -164,7 +255,7 @@ export default function CreateCarLoan({navigation}) {
           <TouchableNativeFeedback
             useForeground
             background={TouchableNativeFeedback.Ripple(COLORS.ripple, false)}
-            onPress={() => handleSubmit(submitForm)}>
+            onPress={handleSubmit(submitForm)}>
             <View style={styles.btnSubmit}>
               <Icon name="car-key" color={'white'} size={20} />
               <Gap width={5} />
@@ -173,6 +264,41 @@ export default function CreateCarLoan({navigation}) {
           </TouchableNativeFeedback>
         </View>
       </ScrollView>
+
+      <ModalCustom
+        visible={modalVisible}
+        onRequestClose={() => setModalVisible(false)}
+        buttonSubmit={() => {
+          setModalVisible(false);
+          navigation.goBack(); // Atau ke mana kamu mau arahkan user setelah submit
+        }}
+        {...modalData}
+      />
+
+      <ModalCustom
+        visible={tokenExpired}
+        onRequestClose={() => setTokenExpired(false)}
+        iconModalName="alert-circle-outline"
+        title="Sesi Berakhir"
+        description="Sesi Anda telah berakhir. Silakan login ulang untuk memperbarui data."
+        buttonSubmit={() => {
+          setTokenExpired(false);
+          navigation.navigate('SignIn');
+        }}
+        buttonTitle="Login Ulang"
+      />
+
+      <ModalCustom
+        visible={!!userErrorMessage}
+        onRequestClose={() => setUserErrorMessage('')}
+        iconModalName="alert-circle-outline"
+        title="Peringatan"
+        description={userErrorMessage}
+        buttonSubmit={() => {
+          setUserErrorMessage('');
+        }}
+        buttonTitle="Tutup"
+      />
     </View>
   );
 }

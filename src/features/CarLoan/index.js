@@ -7,12 +7,11 @@ import SeeAllCars from './Components/SeeAllCars';
 import SopModal from './Components/SopModal';
 
 import {
-  addCar,
-  deteleCar,
   getCarDetail,
   getListCars,
   searchCarByName,
-  updateCar,
+  addCarLoan,
+  getCarLoanHistory,
 } from './Services/CarLoanApiSlice';
 
 // component
@@ -28,9 +27,8 @@ export {
 // api
 export {
   getListCars,
-  addCar,
+  addCarLoan,
   getCarDetail,
-  updateCar,
-  deteleCar,
   searchCarByName,
+  getCarLoanHistory,
 };

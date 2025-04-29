@@ -5,7 +5,6 @@ import {Controller} from 'react-hook-form';
 import {
   ActivityIndicator,
   StyleSheet,
-  Text,
   TextInput,
   TouchableNativeFeedback,
   TouchableOpacity,
@@ -13,7 +12,7 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {COLORS} from '../../../utils';
-
+import {Text} from '../../../Component';
 export default function FormInputCar({
   mode = 'text',
   title = 'Field',
@@ -87,7 +86,7 @@ export default function FormInputCar({
 
         return (
           <View style={{flex}}>
-            <Text style={{color: COLORS.white}}>{title}</Text>
+            <Text useTextCreateCar={false}>{title}</Text>
             <View
               style={{
                 borderBottomWidth: 1,

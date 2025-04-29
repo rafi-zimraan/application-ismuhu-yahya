@@ -214,7 +214,7 @@ const styles = StyleSheet.create({
   },
   menu: {
     flexDirection: 'row',
-    justifyContent: 'flex-start',
+    justifyContent: 'center',
     alignItems: 'center',
   },
   viewLoadingAyat: {

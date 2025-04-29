@@ -14,12 +14,16 @@ export default function AvailableCarSection({
   setModalSop,
 }) {
   const [modalUnavailableVisible, setModalUnavailableVisible] = useState(false);
+  const [selectedCarId, setSelectedCarId] = useState(null);
 
   return (
     <View>
       <Text style={styles.TextTitleMenuCar}>Mobil Operasional</Text>
       <Gap height={5} />
-      <ScrollView horizontal contentContainerStyle={{flex: 1}}>
+      <ScrollView
+        horizontal
+        contentContainerStyle={{paddingHorizontal: 10}}
+        showsHorizontalScrollIndicator={false}>
         {loading ? (
           <View
             style={{
@@ -88,6 +92,7 @@ export default function AvailableCarSection({
                   activeOpacity={0.7}
                   style={styles.viewContentRent}
                   onPress={() => {
+                    setSelectedCarId(item.id);
                     if (item.status === '0') {
                       setModalSop(true);
                     } else {
@@ -102,7 +107,7 @@ export default function AvailableCarSection({
                 isVisible={modalSop}
                 onPress={() => {
                   setModalSop(false);
-                  navigation.navigate('CreateCarLoan');
+                  navigation.navigate('CreateCarLoan', {carId: selectedCarId});
                 }}
                 onClose={() => {
                   setModalSop(false);
@@ -139,13 +144,10 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   contentNotFound: {
-    justifyContent: 'center',
     alignItems: 'center',
     marginTop: 10,
-    position: 'absolute',
-    top: 35,
-    right: 30,
-    left: 30,
+    marginHorizontal: 80,
+    height: '100%',
   },
   txtNotFound: {
     fontSize: DIMENS.s,

@@ -8,16 +8,18 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {getCarDetail} from '..';
+import {getCarDetail, getCarLoanHistory} from '..';
 import {
   Gap,
   HeaderTransparent,
+  ModalCustom,
   ModalLoading,
   Text,
   View,
 } from '../../../Component';
 import {ICON_NOTFOUND_DATA} from '../../../assets';
 import {COLORS, DIMENS} from '../../../utils';
+import {FecthMe} from '../../authentication';
 
 export default function DetailCarLoan({navigation}) {
   const route = useRoute();
@@ -25,6 +27,9 @@ export default function DetailCarLoan({navigation}) {
   const [mobilDetail, setMobilDetail] = useState();
   const [loading, setLoading] = useState(true);
   const [currentScreen, setCurrentScreen] = useState(0);
+  const [loanHistory, setLoanHistory] = useState([]);
+  const [tokenExpired, setTokenExpired] = useState(false);
+  const [loadingHistory, setLoadingHistory] = useState(false);
 
   const handleScroll = event => {
     const position = Math.floor(
@@ -37,10 +42,13 @@ export default function DetailCarLoan({navigation}) {
   useEffect(() => {
     const fetchMobilDetail = async carId => {
       try {
-        setLoading(true);
-        const response = await getCarDetail(carId);
-        console.log('response', response);
-        setMobilDetail(response.data);
+        const response = await FecthMe();
+        if (response.message === 'Silahkan login terlebih dahulu') {
+          setTokenExpired(true);
+          return;
+        }
+        const fecthData = await getCarDetail(carId);
+        setMobilDetail(fecthData.data);
       } catch (error) {
         console.error('Error fetching mobil detail:', error);
       } finally {
@@ -48,7 +56,25 @@ export default function DetailCarLoan({navigation}) {
       }
     };
 
+    const fetchLoanHistory = async () => {
+      try {
+        setLoadingHistory(true);
+        const history = await getCarLoanHistory();
+        // Kalau history object kosong, set jadi array kosong
+        if (history && Array.isArray(history)) {
+          setLoanHistory(history);
+        } else {
+          setLoanHistory([]);
+        }
+      } catch (error) {
+        console.log('err fecth loan history', error);
+      } finally {
+        setLoadingHistory(false);
+      }
+    };
+
     fetchMobilDetail(carId);
+    fetchLoanHistory();
   }, [carId]);
 
   return (
@@ -70,14 +96,14 @@ export default function DetailCarLoan({navigation}) {
           <View style={styles.bodyDetail}>
             {/* <Text style={styles.txtCategoryCar}>Kategori - Ambulance Car</Text> */}
             <Gap height={10} />
-            <Text style={styles.txtNameCar}>{mobilDetail.name}</Text>
+            <Text style={styles.txtNameCar}>{mobilDetail?.name}</Text>
             <Gap height={10} />
             <View style={styles.viewCar}>
               <Image
                 source={
-                  mobilDetail.photo
+                  mobilDetail?.photo
                     ? {
-                        uri: `https://app.simpondok.com/${mobilDetail.photo}`,
+                        uri: `https://app.simpondok.com/${mobilDetail?.photo}`,
                       }
                     : ICON_NOTFOUND_DATA
                 }
@@ -89,7 +115,7 @@ export default function DetailCarLoan({navigation}) {
               <View
                 style={styles.paginationWrapper}
                 useBackgroundTransparent={true}>
-                {[mobilDetail.photo].map((_, index) => (
+                {[mobilDetail?.photo].map((_, index) => (
                   <View
                     key={index}
                     style={[
@@ -106,20 +132,20 @@ export default function DetailCarLoan({navigation}) {
             <Gap height={10} />
             <View style={styles.contentCar}>
               <View style={styles.containerDetailCar} section={true}>
-                <Text style={styles.txtTitleCar}>{mobilDetail.name}</Text>
+                <Text style={styles.txtTitleCar}>{mobilDetail?.name}</Text>
                 <Gap height={5} />
                 <View style={styles.viewPlatAndDesc} section={true}>
                   <View style={styles.row} section={true}>
                     <Icon name="seat" size={16} color={COLORS.redLight} />
                     <Text style={styles.txtDescCar}>
-                      {mobilDetail.count_seat} seat -{' '}
-                      {mobilDetail.type_transmission}
+                      {mobilDetail?.count_seat} seat -{' '}
+                      {mobilDetail?.type_transmission}
                     </Text>
                   </View>
                   <View style={styles.row} section={true}>
                     <Icon name="car-info" size={16} color={COLORS.blueLight} />
                     <Text style={styles.txtPlatCar}>
-                      {mobilDetail.number_plate}
+                      {mobilDetail?.number_plate}
                     </Text>
                   </View>
                 </View>
@@ -129,9 +155,28 @@ export default function DetailCarLoan({navigation}) {
             <Gap height={5} />
             <Text style={styles.title}>History Peminjaman</Text>
             <Gap height={5} />
-            {Array(7)
-              .fill(0)
-              .map((_, index) => (
+
+            {loadingHistory && (
+              <Text style={styles.loadingText}>Loading History</Text>
+            )}
+
+            {!loadingHistory && loanHistory?.length === 0 && (
+              <View style={styles.contentNotFound}>
+                <Text style={styles.txtNotFound}>
+                  History peminjaman belum tersedia
+                </Text>
+                <View style={styles.viewImageNotFound}>
+                  <Image
+                    source={ICON_NOTFOUND_DATA}
+                    resizeMethod="resize"
+                    style={styles.imgNotFound}
+                  />
+                </View>
+              </View>
+            )}
+
+            {!loadingHistory &&
+              loanHistory?.map((item, index) => (
                 <View key={index} style={styles.contentHistoryCar}>
                   <Icon
                     name="account-circle"
@@ -140,8 +185,12 @@ export default function DetailCarLoan({navigation}) {
                   />
                   <Gap width={15} />
                   <View>
-                    <Text style={styles.txtTitleCar}>Fulan bin fulanah</Text>
-                    <Text style={styles.txtColorCar}>Des, 22, 2025</Text>
+                    <Text style={styles.txtTitleCar}>
+                      {item?.borrower_name || 'Nama tidak tersedia'}
+                    </Text>
+                    <Text style={styles.txtColorCar}>
+                      {item?.borrow_date || 'Tanggal tidak tersedia'}
+                    </Text>
                   </View>
                   <Gap height={20} />
                 </View>
@@ -157,15 +206,53 @@ export default function DetailCarLoan({navigation}) {
         <TouchableOpacity
           style={styles.buttonAction}
           activeOpacity={0.6}
-          onPress={() => navigation.navigate('CreateCarLoan')}>
+          onPress={() => navigation.navigate('CreateCarLoan', {carId})}>
           <Text style={styles.buttonText}>Pinjam</Text>
         </TouchableOpacity>
       </View>
+
+      <ModalCustom
+        visible={tokenExpired}
+        onRequestClose={() => setTokenExpired(false)}
+        iconModalName="alert-circle-outline"
+        title="Sesi Berakhir"
+        description="Sesi Anda telah berakhir. Silakan login ulang untuk memperbarui data."
+        buttonSubmit={() => {
+          setTokenExpired(false);
+          navigation.navigate('SignIn');
+        }}
+        buttonTitle="Login Ulang"
+      />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
+  viewImageNotFound: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 5,
+    overflow: 'hidden',
+  },
+  imgNotFound: {
+    width: 150,
+    height: 100,
+    overflow: 'hidden',
+  },
+  contentNotFound: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 10,
+  },
+  txtNotFound: {
+    fontSize: DIMENS.s,
+    fontStyle: 'italic',
+    fontWeight: '300',
+  },
+  loadingText: {
+    fontStyle: 'italic',
+    marginTop: 10,
+  },
   containerDetailCar: {
     padding: 10,
     borderRadius: 10,
@@ -227,7 +314,6 @@ const styles = StyleSheet.create({
   },
   txtColorCar: {
     fontSize: DIMENS.s,
-    color: COLORS.mediumGrey,
     fontWeight: '400',
   },
   txtPlatCar: {

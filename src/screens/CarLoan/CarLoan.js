@@ -1,5 +1,5 @@
-import React, {useEffect, useState} from 'react';
-import {Image, ScrollView, StyleSheet, TouchableOpacity} from 'react-native';
+import React, {useCallback, useState} from 'react';
+import {ScrollView, StyleSheet, RefreshControl} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import {useSelector} from 'react-redux';
 import {
@@ -10,7 +10,6 @@ import {
   Text,
   View,
 } from '../../Component';
-import {IMG_CAR_REBORN} from '../../assets';
 import {
   AvailableCarSection,
   CustomSearchInput,
@@ -19,33 +18,44 @@ import {
 } from '../../features/CarLoan';
 import {FecthMe} from '../../features/authentication';
 import {COLORS, DIMENS} from '../../utils';
+import {useFocusEffect} from '@react-navigation/native';
 
 export default function CarLoan({navigation}) {
   const {colors, mode} = useSelector(state => state.theme);
   const [modalSop, setModalSop] = useState(false);
   const [tokenExpired, setTokenExpired] = useState(false);
-  const [searchText, setsearchText] = useState('');
+  const [refreshing, setRefreshing] = useState(false);
   const [carList, setCarList] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fecthCars = async () => {
-      try {
-        const response = await FecthMe();
-        if (response.message === 'Silahkan login terlebih dahulu') {
-          setTokenExpired(true);
-          return;
-        }
-        const data = await getListCars();
-        setCarList(data);
-      } catch (error) {
-        console.log('Gagal mengambil data mobile', error.message);
-      } finally {
-        setLoading(false);
+  const fetchCars = useCallback(async () => {
+    try {
+      const response = await FecthMe();
+      if (response.message === 'Silahkan login terlebih dahulu') {
+        setTokenExpired(true);
+        return;
       }
-    };
-    fecthCars();
+      const data = await getListCars();
+      setCarList(data);
+    } catch (error) {
+      console.log('Gagal mengambil data mobil', error.message);
+    } finally {
+      setLoading(false);
+    }
   }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      setLoading(true);
+      fetchCars();
+    }, [fetchCars]),
+  );
+
+  const onRefresh = useCallback(async () => {
+    setRefreshing(true);
+    await fetchCars();
+    setRefreshing(false);
+  }, [fetchCars]);
 
   return (
     <View style={styles.ContentView}>
@@ -70,7 +80,6 @@ export default function CarLoan({navigation}) {
             placeholderTextColor={COLORS.grey}
             borderRadius={12}
             onChangeText={async text => {
-              setsearchText(text);
               if (text.length >= 3) {
                 try {
                   const result = await searchCarByName(text);
@@ -87,7 +96,13 @@ export default function CarLoan({navigation}) {
         </View>
       </LinearGradient>
 
-      <View style={{padding: 15, flex: 1}}>
+      <ScrollView
+        contentContainerStyle={{flexGrow: 1}}
+        style={{padding: 15}}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+        showsVerticalScrollIndicator={false}>
         <AvailableCarSection
           carList={carList}
           navigation={navigation}
@@ -96,9 +111,7 @@ export default function CarLoan({navigation}) {
           setModalSop={setModalSop}
         />
 
-        <Gap height={15} />
-
-        <Text
+        {/* <Text
           style={[
             styles.titleTextLastUse,
             {color: colors[mode].textSectionTitleSett},
@@ -114,9 +127,9 @@ export default function CarLoan({navigation}) {
           <View style={styles.viewTime} section={true}>
             <Text style={[styles.txtDateLastUse]}>Overtime</Text>
           </View>
-        </View>
+        </View> */}
 
-        <Gap height={15} />
+        {/* <Gap height={15} />
         <View style={styles.viewFavorite}>
           <Text
             style={[
@@ -148,36 +161,11 @@ export default function CarLoan({navigation}) {
                 resizeMode="cover"
               />
             </View>
-            <Gap height={10} />
-            <View style={styles.viewBodyFavorite} section={true}>
-              <View style={styles.ViewFavoriteText} section={true}>
-                <Text style={styles.textTitleCar}>Reborn-Car</Text>
-                <Text style={styles.textManual}>4 seat-manual</Text>
-              </View>
-              <Image
-                source={IMG_CAR_REBORN}
-                style={{height: 80, width: 160}}
-                resizeMethod="resize"
-                resizeMode="cover"
-              />
-            </View>
-            <Gap height={10} />
-            <View style={styles.viewBodyFavorite} section={true}>
-              <View style={styles.ViewFavoriteText} section={true}>
-                <Text style={styles.textTitleCar}>Reborn-Car</Text>
-                <Text style={styles.textManual}>4 seat-manual</Text>
-              </View>
-              <Image
-                source={IMG_CAR_REBORN}
-                style={{height: 80, width: 160}}
-                resizeMethod="resize"
-                resizeMode="cover"
-              />
-            </View>
+            
             <Gap height={20} />
           </ScrollView>
-        </View>
-      </View>
+        </View> */}
+      </ScrollView>
 
       <ModalCustom
         visible={tokenExpired}

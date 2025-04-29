@@ -48,7 +48,7 @@ const TaskFilter = () => {
 
   return (
     <View style={{padding: 15}}>
-      <ScrollView horizontal showsHorizontalScrollIndicator={true}>
+      <ScrollView horizontal showsHorizontalScrollIndicator={false}>
         {filterOptions.map((item, index) => {
           const isSelected = filter === item.key;
           const animatedStyle = useAnimatedStyle(() => ({
