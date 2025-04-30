@@ -173,7 +173,7 @@ export default function Dasboard({navigation}) {
               colors={colors}
               mode={mode}
             />
-            <ButtonMenu
+            {/* <ButtonMenu
               title="Pengaduan"
               iconName="hammer-wrench"
               color={COLORS.white}
@@ -182,7 +182,7 @@ export default function Dasboard({navigation}) {
               onPress={() => navigation.navigate('FacilityComplaint')}
               colors={colors}
               mode={mode}
-            />
+            /> */}
           </View>
           <Gap height={25} />
           <NewsComponent />
