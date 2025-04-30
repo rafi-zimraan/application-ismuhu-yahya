@@ -8,7 +8,7 @@ import {
   TouchableNativeFeedback,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {addCarLoan, FormInputCar, getListCars} from '..';
+import {addCarLoan, FormInputCar, getListCars, SopModal} from '..';
 import {
   Gap,
   HeaderTransparent,
@@ -26,6 +26,7 @@ export default function CreateCarLoan({navigation}) {
   const [carData, setCarData] = useState([]);
   const [userErrorMessage, setUserErrorMessage] = useState('');
   const [tokenExpired, setTokenExpired] = useState(false);
+  const [modalSop, setModalSop] = useState(false);
 
   useEffect(() => {
     async function fetchCarData() {
@@ -255,7 +256,9 @@ export default function CreateCarLoan({navigation}) {
           <TouchableNativeFeedback
             useForeground
             background={TouchableNativeFeedback.Ripple(COLORS.ripple, false)}
-            onPress={handleSubmit(submitForm)}>
+            onPress={() => {
+              setModalSop(true);
+            }}>
             <View style={styles.btnSubmit}>
               <Icon name="car-key" color={'white'} size={20} />
               <Gap width={5} />
@@ -264,6 +267,17 @@ export default function CreateCarLoan({navigation}) {
           </TouchableNativeFeedback>
         </View>
       </ScrollView>
+
+      <SopModal
+        isVisible={modalSop}
+        onPress={() => {
+          setModalSop(false);
+          handleSubmit(submitForm)();
+        }}
+        onClose={() => {
+          setModalSop(false);
+        }}
+      />
 
       <ModalCustom
         visible={modalVisible}

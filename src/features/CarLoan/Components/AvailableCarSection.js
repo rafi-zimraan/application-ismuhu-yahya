@@ -6,16 +6,9 @@ import {Gap, ModalCustom, Text, View} from '../../../Component';
 import {ICON_NOTFOUND_DATA} from '../../../assets';
 import {COLORS, DIMENS} from '../../../utils';
 
-export default function AvailableCarSection({
-  carList,
-  navigation,
-  modalSop,
-  loading,
-  setModalSop,
-}) {
+export default function AvailableCarSection({carList, navigation, loading}) {
   const [modalUnavailableVisible, setModalUnavailableVisible] = useState(false);
-  const [selectedCarId, setSelectedCarId] = useState(null);
-
+  console.log('data', carList);
   return (
     <View>
       <Text style={styles.TextTitleMenuCar}>Mobil Operasional</Text>
@@ -92,9 +85,8 @@ export default function AvailableCarSection({
                   activeOpacity={0.7}
                   style={styles.viewContentRent}
                   onPress={() => {
-                    setSelectedCarId(item.id);
                     if (item.status === '0') {
-                      setModalSop(true);
+                      navigation.navigate('CreateCarLoan', {carId: item.id});
                     } else {
                       setModalUnavailableVisible(true);
                     }
@@ -102,17 +94,6 @@ export default function AvailableCarSection({
                   <Text style={styles.textRent}>Pinjam sekarang</Text>
                 </TouchableOpacity>
               </TouchableOpacity>
-
-              <SopModal
-                isVisible={modalSop}
-                onPress={() => {
-                  setModalSop(false);
-                  navigation.navigate('CreateCarLoan', {carId: selectedCarId});
-                }}
-                onClose={() => {
-                  setModalSop(false);
-                }}
-              />
 
               <ModalCustom
                 visible={modalUnavailableVisible}

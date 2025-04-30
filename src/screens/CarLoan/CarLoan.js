@@ -22,7 +22,6 @@ import {useFocusEffect} from '@react-navigation/native';
 
 export default function CarLoan({navigation}) {
   const {colors, mode} = useSelector(state => state.theme);
-  const [modalSop, setModalSop] = useState(false);
   const [tokenExpired, setTokenExpired] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [carList, setCarList] = useState([]);
@@ -106,9 +105,7 @@ export default function CarLoan({navigation}) {
         <AvailableCarSection
           carList={carList}
           navigation={navigation}
-          modalSop={modalSop}
           loading={loading}
-          setModalSop={setModalSop}
         />
 
         {/* <Text
