@@ -13,7 +13,11 @@ import {
 import {
   AvailableCarSection,
   CustomSearchInput,
+  FrequentCarLoansSection,
   getListCars,
+  getMostCarLoans,
+  getUserCarLoans,
+  LoanTodaySection,
   searchCarByName,
 } from '../../features/CarLoan';
 import {FecthMe} from '../../features/authentication';
@@ -26,6 +30,8 @@ export default function CarLoan({navigation}) {
   const [refreshing, setRefreshing] = useState(false);
   const [carList, setCarList] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [mostCarLoans, setMostCarLoans] = useState([]);
+  const [userLoanData, setUserLoanData] = useState(null);
 
   const fetchCars = useCallback(async () => {
     try {
@@ -36,6 +42,12 @@ export default function CarLoan({navigation}) {
       }
       const data = await getListCars();
       setCarList(data);
+
+      const mostLoans = await getMostCarLoans();
+      setMostCarLoans(mostLoans);
+
+      const userLoans = await getUserCarLoans();
+      setUserLoanData(userLoans);
     } catch (error) {
       console.log('Gagal mengambil data mobil', error.message);
     } finally {
@@ -108,60 +120,21 @@ export default function CarLoan({navigation}) {
           loading={loading}
         />
 
-        {/* <Text
-          style={[
-            styles.titleTextLastUse,
-            {color: colors[mode].textSectionTitleSett},
-          ]}>
-          Terakhir Digunakan
-        </Text>
-        <Gap height={5} />
-        <View style={styles.viewBodyLastUse} section={true}>
-          <View section={true}>
-            <Text style={styles.txtLastUseNameCar}>Reborn-Car</Text>
-            <Text style={styles.txtDateLastUse}>Jan 12, 2024 - 08,40</Text>
-          </View>
-          <View style={styles.viewTime} section={true}>
-            <Text style={[styles.txtDateLastUse]}>Overtime</Text>
-          </View>
-        </View> */}
+        <LoanTodaySection
+          loading={loading}
+          userLoanData={userLoanData}
+          navigation={navigation}
+          colors={colors}
+          mode={mode}
+        />
 
-        {/* <Gap height={15} />
-        <View style={styles.viewFavorite}>
-          <Text
-            style={[
-              styles.titleTextLastUse,
-              {color: colors[mode].textSectionTitleSett},
-            ]}>
-            Sering Digunakan
-          </Text>
-          <TouchableOpacity
-            activeOpacity={0.5}
-            onPress={() => navigation.navigate('SeeAllCars')}>
-            <Text style={styles.titleTextSeeAll}>See All</Text>
-          </TouchableOpacity>
-        </View>
-        <Gap height={10} />
-        <View style={{flex: 1}}>
-          <ScrollView
-            showsVerticalScrollIndicator={false}
-            contentContainerStyle={{flexGrow: 1}}>
-            <View style={styles.viewBodyFavorite} section={true}>
-              <View style={styles.ViewFavoriteText} section={true}>
-                <Text style={styles.textTitleCar}>Reborn-Car</Text>
-                <Text style={styles.textManual}>4 seat-manual</Text>
-              </View>
-              <Image
-                source={IMG_CAR_REBORN}
-                style={{height: 80, width: 160}}
-                resizeMethod="resize"
-                resizeMode="cover"
-              />
-            </View>
-            
-            <Gap height={20} />
-          </ScrollView>
-        </View> */}
+        <FrequentCarLoansSection
+          mostCarLoans={mostCarLoans}
+          colors={colors}
+          mode={mode}
+          loading={loading}
+        />
+        <Gap height={15} />
       </ScrollView>
 
       <ModalCustom
@@ -181,67 +154,8 @@ export default function CarLoan({navigation}) {
 }
 
 const styles = StyleSheet.create({
-  ViewFavoriteText: {
-    marginHorizontal: 10,
-  },
   ContentView: {
     flex: 1,
-  },
-  viewBodyFavorite: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    padding: 2,
-    borderRadius: 12,
-    elevation: 2,
-    borderColor: COLORS.goldenOrange,
-    borderWidth: 0.3,
-  },
-  textManual: {
-    fontWeight: '400',
-    fontSize: DIMENS.m,
-  },
-  textTitleCar: {
-    fontWeight: '400',
-    fontSize: DIMENS.m,
-  },
-  titleTextSeeAll: {
-    color: COLORS.goldenOrange,
-    fontSize: DIMENS.m,
-    fontWeight: '500',
-  },
-  viewFavorite: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  viewTime: {
-    backgroundColor: COLORS.greenBoy,
-    padding: 6,
-    borderRadius: 6,
-  },
-  txtDateLastUse: {
-    fontWeight: '400',
-    fontSize: DIMENS.s,
-  },
-  txtLastUseNameCar: {
-    fontWeight: '400',
-    fontSize: DIMENS.m,
-  },
-  viewBodyLastUse: {
-    paddingHorizontal: 10,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    borderRadius: 10,
-    borderWidth: 0.4,
-    height: 60,
-    elevation: 2,
-    borderColor: COLORS.goldenOrange,
-  },
-  titleTextLastUse: {
-    fontSize: DIMENS.xl,
-    fontWeight: '600',
   },
   viewNavbar: {
     padding: 15,
@@ -260,8 +174,5 @@ const styles = StyleSheet.create({
     fontSize: DIMENS.xxxl,
     fontWeight: '800',
     textAlign: 'justify',
-  },
-  container: {
-    padding: 15,
   },
 });

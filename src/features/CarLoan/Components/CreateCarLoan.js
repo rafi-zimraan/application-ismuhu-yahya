@@ -18,6 +18,7 @@ import {
 } from '../../../Component';
 import {COLORS, DIMENS} from '../../../utils';
 import {useRoute} from '@react-navigation/native';
+import {FecthMe} from '../../authentication';
 
 export default function CreateCarLoan({navigation}) {
   const route = useRoute();
@@ -28,10 +29,30 @@ export default function CreateCarLoan({navigation}) {
   const [tokenExpired, setTokenExpired] = useState(false);
   const [modalSop, setModalSop] = useState(false);
 
+  // Untuk fecth user
+  useEffect(() => {
+    async function fecthUserData() {
+      try {
+        const response = await FecthMe();
+        if (response?.message === 'Silahkan login terlebih dahulu') {
+          setTokenExpired(true);
+          return;
+        }
+
+        if (response?.username) {
+          setValue('loaner', response.username);
+        }
+      } catch (error) {
+        console.log('Error fetching user data', error);
+      }
+    }
+    fecthUserData();
+  }, [setValue]);
+
+  // Untuk fetch mobil
   useEffect(() => {
     async function fetchCarData() {
       const response = await getListCars();
-      console.log('response', response);
       setCarData(response);
     }
     fetchCarData();
@@ -41,7 +62,7 @@ export default function CreateCarLoan({navigation}) {
     if (carId && carData?.length > 0) {
       const selectedCar = carData.find(car => car.id === carId);
       if (selectedCar) {
-        setValue('car_id', selectedCar.name);
+        setValue('car_id', selectedCar.id);
       } else {
         setValue('car_id', '');
       }
@@ -94,11 +115,6 @@ export default function CreateCarLoan({navigation}) {
       };
 
       const res = await addCarLoan(payload);
-
-      if (res?.message === 'Silahkan login terlebih dahulu') {
-        setTokenExpired(true);
-        return;
-      }
 
       if (
         res?.message === 'Anda belum terdaftar sebagai user peminjaman mobil'
@@ -158,7 +174,7 @@ export default function CreateCarLoan({navigation}) {
             placeholder="Masukkan nama Anda..."
             mode="text"
           />
-
+          {/* 
           <FormInputCar
             iconColor={COLORS.Orange}
             name="car_id"
@@ -166,6 +182,24 @@ export default function CreateCarLoan({navigation}) {
             iconName="car"
             control={control}
             mode="text"
+          /> */}
+
+          <FormInputCar
+            iconColor={COLORS.Orange}
+            name="car_id"
+            title="Kendaraan"
+            iconName="car"
+            control={control}
+            mode="picker"
+            picker={{
+              data: carData.map(car => ({
+                label: car.name,
+                value: car.id,
+              })),
+              label: 'label',
+              value: 'value',
+              loading: false,
+            }}
           />
           <View style={{flexDirection: 'row'}}>
             <FormInputCar
@@ -284,7 +318,7 @@ export default function CreateCarLoan({navigation}) {
         onRequestClose={() => setModalVisible(false)}
         buttonSubmit={() => {
           setModalVisible(false);
-          navigation.goBack(); // Atau ke mana kamu mau arahkan user setelah submit
+          navigation.goBack();
         }}
         {...modalData}
       />

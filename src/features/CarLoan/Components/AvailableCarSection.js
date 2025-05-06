@@ -1,14 +1,12 @@
 import React, {useState} from 'react';
 import {Image, ScrollView, StyleSheet, TouchableOpacity} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {SopModal} from '..';
 import {Gap, ModalCustom, Text, View} from '../../../Component';
 import {ICON_NOTFOUND_DATA} from '../../../assets';
 import {COLORS, DIMENS} from '../../../utils';
 
 export default function AvailableCarSection({carList, navigation, loading}) {
   const [modalUnavailableVisible, setModalUnavailableVisible] = useState(false);
-  console.log('data', carList);
   return (
     <View>
       <Text style={styles.TextTitleMenuCar}>Mobil Operasional</Text>
@@ -20,7 +18,7 @@ export default function AvailableCarSection({carList, navigation, loading}) {
         {loading ? (
           <View
             style={{
-              alignItems: 'center',
+              alignItems: 'flex-start',
             }}>
             <Text style={styles.loadingText}>Memuat data...</Text>
           </View>
@@ -117,7 +115,6 @@ export default function AvailableCarSection({carList, navigation, loading}) {
 const styles = StyleSheet.create({
   loadingText: {
     fontStyle: 'italic',
-    color: COLORS.black,
     marginTop: 10,
   },
   TextTitleMenuCar: {

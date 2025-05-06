@@ -1,7 +1,12 @@
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import React from 'react';
 import {ListAmalYaumi} from '../features/AmalYaumi';
-import {CreateCarLoan, DetailCarLoan, SeeAllCars} from '../features/CarLoan';
+import {
+  CreateCarLoan,
+  DetailCarLoan,
+  DetailMostCarLoan,
+  LoanTodayDetail,
+} from '../features/CarLoan';
 import {DetailNewInformation} from '../features/Dasboard';
 import {
   Complaints,
@@ -143,7 +148,7 @@ export default function Navigator() {
       <Stack.Screen name="CarLoan" component={CarLoan} />
       <Stack.Screen name="DetailCarLoan" component={DetailCarLoan} />
       <Stack.Screen name="CreateCarLoan" component={CreateCarLoan} />
-      <Stack.Screen name="SeeAllCars" component={SeeAllCars} />
+      <Stack.Screen name="LoanTodayDetail" component={LoanTodayDetail} />
 
       {/* Facility Complaint */}
       <Stack.Screen name="FacilityComplaint" component={FacilityComplaint} />

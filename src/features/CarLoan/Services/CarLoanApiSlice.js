@@ -17,12 +17,12 @@ export const getListCars = async () => {
       console.log('Gagal memuat data daftar mobile');
     }
   } catch (error) {
-    if (error.response) {
-      const errorMessage = error.response?.data?.message || 'Terjadi kesalahan';
-      console.log(errorMessage);
+    if (error.response && error.response.data && error.response.data.message) {
+      console.log('Error from server', error.response.data.message);
     } else {
-      console.log('ERROR CODE:', error.message);
+      console.log('Err code', error.message);
     }
+    throw error;
   }
 };
 
@@ -71,12 +71,10 @@ export const searchCarByName = async searchName => {
       console.log('Gagal memuat data hasil pencarian mobil');
     }
   } catch (error) {
-    if (error.response) {
-      const errorMessage =
-        error.response?.data?.message || 'Terjadi kesalahan saat pencarian';
-      console.log(errorMessage);
+    if (error.response && error.response.data && error.response.data.message) {
+      console.log('Error from server', error.response.data.message);
     } else {
-      console.log('ERROR CODE:', error.message);
+      console.log('Err code', error.message);
     }
     throw error;
   }
@@ -102,13 +100,10 @@ export const getCarLoanHistory = async () => {
       console.log('Gagal memuat data histori peminjaman');
     }
   } catch (error) {
-    if (error.response) {
-      const errorMessage =
-        error.response?.data?.message ||
-        'Terjadi kesalahan saat mengambil histori peminjaman';
-      console.log(errorMessage);
+    if (error.response && error.response.data && error.response.data.message) {
+      console.log('Error from server', error.response.data.message);
     } else {
-      console.log('ERROR CODE:', error.message);
+      console.log('Err code', error.message);
     }
     throw error;
   }
@@ -117,8 +112,9 @@ export const getCarLoanHistory = async () => {
 export const addCarLoan = async loanData => {
   try {
     const token = await EncryptedStorage.getItem('token');
-    if (!token)
+    if (!token) {
       throw new Error('Token expired, silahkan login terlebih dahulu');
+    }
 
     const formData = new FormData();
     formData.append('car_id', loanData.car_id);
@@ -152,13 +148,96 @@ export const addCarLoan = async loanData => {
 
     return response.data;
   } catch (error) {
-    if (error.response) {
-      const errorMessage =
-        error.response?.data?.message ||
-        'Terjadi kesalahan saat mengambil histori peminjaman';
-      console.log(errorMessage);
+    if (error.response && error.response.data && error.response.data.message) {
+      console.log('Error from server', error.response.data.message);
     } else {
-      console.log('ERROR CODE:', error.message);
+      console.log('Err code', error.message);
+    }
+    throw error;
+  }
+};
+
+export const getCarLoanDetail = async loanId => {
+  try {
+    const token = await EncryptedStorage.getItem('token');
+    if (!token) {
+      throw new Error('Token expired, silahkan login terlebih dahulu');
+    }
+
+    const response = await api.get(`mobile/loan-cars/${loanId}`, {
+      headers: {
+        Authorization: `Bearer ${JSON.parse(token)}`,
+      },
+    });
+
+    if (response.data?.status) {
+      return response.data.data;
+    } else {
+      console.log('Failed to load car loan detail');
+    }
+  } catch (error) {
+    if (error.response && error.response.data && error.response.data.message) {
+      console.log('Error from server', error.response.data.message);
+    } else {
+      console.log('Err code', error.message);
+    }
+    throw error;
+  }
+};
+
+export const getMostCarLoans = async () => {
+  try {
+    const token = await EncryptedStorage.getItem('token');
+    if (!token) {
+      throw new Error('Token expired, silahkan login terlebih dahulu');
+    }
+
+    const response = await api.get('mobile/micro-loan/loan-count', {
+      headers: {
+        Authorization: `Bearer ${JSON.parse(token)}`,
+      },
+    });
+
+    if (response.data) {
+      // return response.data;
+      return Object.values(response.data);
+    } else {
+      console.log('Failed to load most car loans data');
+    }
+  } catch (error) {
+    if (error.response && error.response.data && error.response.data.message) {
+      console.log('Error from server', error.response.data.message);
+    } else {
+      console.log('Err code', error.message);
+    }
+    throw error;
+  }
+};
+
+export const getUserCarLoans = async () => {
+  try {
+    const token = await EncryptedStorage.getItem('token');
+
+    if (!token) {
+      throw new Error('Token expired, silahkan login terlebih dahulu');
+    }
+
+    const response = await api.get('mobile/user-loan', {
+      headers: {
+        Authorization: `Bearer ${JSON.parse(token)}`,
+      },
+    });
+
+    if (response.data?.status) {
+      return response.data.data;
+    } else {
+      console.log('Gagal memuat data peminjaman per user');
+    }
+  } catch (error) {
+    if (error.response && error.response.data && error.response.data.message) {
+      console.log('Error from server', error.response.data.message);
+    } else {
+      console.log('Err code', error.message);
     }
     throw error;
   }
