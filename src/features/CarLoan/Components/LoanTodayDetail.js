@@ -18,7 +18,7 @@ export default function LoanTodayDetail({navigation}) {
   const route = useRoute();
   const {id} = route.params;
   const [carLoanDetail, setCarLoanDetail] = useState(null);
-  const [modalLoading, setModalLoading] = useState(false);
+  const [modalLoading, setModalLoading] = useState(true);
   const [tokenExpired, setTokenExpired] = useState(false);
 
   useEffect(() => {
@@ -61,75 +61,83 @@ export default function LoanTodayDetail({navigation}) {
         title="Status Peminjaman Saya"
         onPress={() => navigation.goBack()}
       />
-      <ScrollView contentContainerStyle={styles.container}>
-        <View style={styles.section}>
-          <Gap height={10} />
-          <View style={styles.contentLabel}>
-            <Text style={styles.label}>Nama:</Text>
-            <Text style={styles.valueName}>{carLoanDetail?.loaner}</Text>
-          </View>
-          <View style={styles.contentLabel}>
-            <Text style={styles.label}>Keperluan:</Text>
-            <Text style={styles.value}>{carLoanDetail?.necessity}</Text>
-          </View>
+      {modalLoading ? (
+        <View style={{alignItems: 'center'}}>
+          <Text style={styles.loadingText}>Memuat data...</Text>
         </View>
+      ) : (
+        <ScrollView contentContainerStyle={styles.container}>
+          <View style={styles.section}>
+            <Gap height={10} />
+            <View style={styles.contentLabel}>
+              <Text style={styles.label}>Nama:</Text>
+              <Text style={styles.valueName}>{carLoanDetail?.loaner}</Text>
+            </View>
+            <View style={styles.contentLabel}>
+              <Text style={styles.label}>Keperluan:</Text>
+              <Text style={styles.value}>{carLoanDetail?.necessity}</Text>
+            </View>
+          </View>
 
-        <View style={styles.seperator} />
+          <View style={styles.seperator} />
 
-        <View style={styles.section}>
-          <Text style={styles.title}>Waktu Pinjam</Text>
-          <View style={styles.contentLabel}>
-            <Text style={styles.label}>Waktu Ambil</Text>
-            <Text style={styles.value}>
-              {formatDate(carLoanDetail?.use_date, carLoanDetail?.time_use)}
-            </Text>
+          <View style={styles.section}>
+            <Text style={styles.title}>Waktu Pinjam</Text>
+            <View style={styles.contentLabel}>
+              <Text style={styles.label}>Waktu Ambil</Text>
+              <Text style={styles.value}>
+                {formatDate(carLoanDetail?.use_date, carLoanDetail?.time_use)}
+              </Text>
+            </View>
+            <View style={styles.contentLabel}>
+              <Text style={styles.label}>Waktu Kembali:</Text>
+              <Text style={styles.value}>
+                {formatDate(
+                  carLoanDetail?.return_date,
+                  carLoanDetail?.time_return,
+                )}
+              </Text>
+            </View>
           </View>
-          <View style={styles.contentLabel}>
-            <Text style={styles.label}>Waktu Kembali:</Text>
-            <Text style={styles.value}>
-              {formatDate(
-                carLoanDetail?.return_date,
-                carLoanDetail?.time_return,
-              )}
-            </Text>
-          </View>
-        </View>
 
-        <View style={styles.seperator} />
+          <View style={styles.seperator} />
 
-        <View style={styles.section}>
-          <Text style={styles.title}>Informasi Mobil</Text>
-          <View style={styles.contentLabel}>
-            <Text style={styles.label}>Nama Mobil: </Text>
-            <Text style={styles.value}>{carLoanDetail?.car.name}</Text>
+          <View style={styles.section}>
+            <Text style={styles.title}>Informasi Mobil</Text>
+            <View style={styles.contentLabel}>
+              <Text style={styles.label}>Nama Mobil: </Text>
+              <Text style={styles.value}>{carLoanDetail?.car.name}</Text>
+            </View>
+            <View style={styles.contentLabel}>
+              <Text style={styles.label}>Plat Nomor:</Text>
+              <Text style={styles.value}>
+                {carLoanDetail?.car.number_plate}
+              </Text>
+            </View>
+            <View style={styles.contentLabel}>
+              <Text style={styles.label}>Warna Mobil:</Text>
+              <Text style={styles.value}>{carLoanDetail?.car.color}</Text>
+            </View>
+            <View style={styles.contentLabel}>
+              <Text style={styles.label}>Type Mobil:</Text>
+              <Text style={styles.value}>
+                {carLoanDetail?.car.type_transmission}
+              </Text>
+            </View>
+            <View style={styles.contentLabel}>
+              <Text style={styles.label}>Kilometer Mobil:</Text>
+              <Text style={styles.value}>{carLoanDetail?.current_km} KM</Text>
+            </View>
           </View>
-          <View style={styles.contentLabel}>
-            <Text style={styles.label}>Plat Nomor:</Text>
-            <Text style={styles.value}>{carLoanDetail?.car.number_plate}</Text>
-          </View>
-          <View style={styles.contentLabel}>
-            <Text style={styles.label}>Warna Mobil:</Text>
-            <Text style={styles.value}>{carLoanDetail?.car.color}</Text>
-          </View>
-          <View style={styles.contentLabel}>
-            <Text style={styles.label}>Type Mobil:</Text>
-            <Text style={styles.value}>
-              {carLoanDetail?.car.type_transmission}
-            </Text>
-          </View>
-          <View style={styles.contentLabel}>
-            <Text style={styles.label}>Kilometer Mobil:</Text>
-            <Text style={styles.value}>{carLoanDetail?.current_km} KM</Text>
-          </View>
-        </View>
 
-        <View style={styles.seperator} />
+          <View style={styles.seperator} />
 
-        <View style={styles.section}>
-          <Text style={styles.title}>Status Perizinan Mobile</Text>
-          <StatusBadge status={carLoanDetail?.status} />
-        </View>
-      </ScrollView>
+          <View style={styles.section}>
+            <Text style={styles.title}>Status Perizinan Mobile</Text>
+            <StatusBadge status={carLoanDetail?.status} />
+          </View>
+        </ScrollView>
+      )}
 
       <ModalCustom
         visible={tokenExpired}
@@ -149,6 +157,10 @@ export default function LoanTodayDetail({navigation}) {
 }
 
 const styles = StyleSheet.create({
+  loadingText: {
+    fontStyle: 'italic',
+    marginTop: 10,
+  },
   seperator: {
     borderBottomWidth: 1,
     borderBottomColor: COLORS.black,

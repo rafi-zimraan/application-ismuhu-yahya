@@ -12,6 +12,8 @@ export default function View({
   useSectionLogout,
   useSectionProfile,
   useBackgroundTransparent,
+  useBackroundHeaderImageSignIn,
+  useTextInput,
   ...rest
 }) {
   const {mode, colors} = useSelector(state => state.theme);
@@ -19,7 +21,11 @@ export default function View({
     <ViewDefault
       style={[
         {
-          backgroundColor: useBackgroundTransparent
+          backgroundColor: useTextInput
+            ? colors[mode].textInput
+            : useBackroundHeaderImageSignIn
+            ? colors[mode].background_sigIn
+            : useBackgroundTransparent
             ? colors[mode].transparent
             : useBackgroundColor
             ? mode === 'light'

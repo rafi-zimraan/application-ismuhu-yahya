@@ -1,6 +1,6 @@
 import React from 'react';
-import {StyleSheet, Text, TextInput, View} from 'react-native';
-import {ButtonAction, Gap} from '../../../Component';
+import {StyleSheet, TextInput} from 'react-native';
+import {ButtonAction, Gap, View, Text} from '../../../Component';
 import {COLORS, DIMENS} from '../../../utils';
 
 export default function EmailVerificationInput({
@@ -10,7 +10,7 @@ export default function EmailVerificationInput({
   loading,
 }) {
   return (
-    <View style={styles.contentEmail}>
+    <View style={styles.contentEmail} section={true}>
       <Gap height={55} />
       <Text style={styles.title}>Konfirmasi Identitas Anda</Text>
       <Gap height={15} />
@@ -19,7 +19,7 @@ export default function EmailVerificationInput({
       </Text>
       <Gap height={15} />
       <Text style={[styles.emailTxt, {alignSelf: 'flex-start'}]}>Email</Text>
-      <View style={styles.inputContainer}>
+      <View style={styles.inputContainer} section={true}>
         <TextInput
           style={styles.textInput}
           onChangeText={onChangeText}
@@ -49,16 +49,16 @@ const styles = StyleSheet.create({
   emailTxt: {
     fontSize: DIMENS.l,
     fontWeight: '600',
-    color: COLORS.black,
     marginBottom: 5,
   },
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 15,
-    borderWidth: 1,
-    borderColor: COLORS.grey,
+    borderWidth: 0.7,
+    borderColor: COLORS.goldenOrange,
     borderRadius: 8,
+    elevation: 2,
   },
   textInput: {
     flex: 1,
@@ -66,6 +66,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     padding: 10,
     fontSize: DIMENS.l,
+    backgroundColor: COLORS.white,
   },
   contentEmail: {
     justifyContent: 'center',
@@ -77,7 +78,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   description: {
-    color: COLORS.grey,
     fontSize: DIMENS.xl,
     fontWeight: '400',
     textAlign: 'center',

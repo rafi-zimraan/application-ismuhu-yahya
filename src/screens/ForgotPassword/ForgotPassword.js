@@ -1,11 +1,17 @@
 import React, {useState} from 'react';
-import {StatusBar, StyleSheet, ToastAndroid, View} from 'react-native';
-import {HeaderTransparent} from '../../Component';
+import {
+  StatusBar,
+  StyleSheet,
+  ToastAndroid,
+  TouchableOpacity,
+} from 'react-native';
+import {View, Text, Gap} from '../../Component';
 import {
   EmailVerificationInput,
   sendVerificationEmail,
 } from '../../features/ForgotPassword';
-import {COLORS} from '../../utils';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import {COLORS, DIMENS} from '../../utils';
 
 export default function ForgotPassword({navigation}) {
   const [email, setEmail] = useState('');
@@ -37,14 +43,26 @@ export default function ForgotPassword({navigation}) {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={styles.container} useBackroundHeaderImageSignIn={true}>
       <StatusBar backgroundColor={'transparent'} barStyle={'default'} />
-      <View style={styles.body}>
-        <HeaderTransparent
-          title="Atur Ulang Email"
-          icon="arrow-left-circle-outline"
-          onPress={() => navigation.goBack()}
-        />
+      <View style={styles.body} section={true}>
+        <View style={styles.viewHeader} section={true}>
+          <TouchableOpacity
+            activeOpacity={0.8}
+            onPress={() => {
+              navigation.goBack();
+            }}
+            style={styles.viewHeader}>
+            <Icon
+              name={'arrow-left-circle-outline'}
+              size={30}
+              color={COLORS.black}
+            />
+            <Gap width={10} />
+            <Text style={styles.txtEmail}>Atur Ulang Email</Text>
+          </TouchableOpacity>
+        </View>
+
         <EmailVerificationInput
           onChangeText={text => setEmail(text)}
           loading={loading}
@@ -57,9 +75,17 @@ export default function ForgotPassword({navigation}) {
 }
 
 const styles = StyleSheet.create({
+  viewHeader: {
+    flexDirection: 'row',
+    margin: 15,
+    alignItems: 'center',
+  },
+  txtEmail: {
+    fontSize: DIMENS.xl,
+    fontWeight: '400',
+  },
   body: {
     flex: 1,
-    backgroundColor: COLORS.white,
     position: 'relative',
     borderTopLeftRadius: 35,
     borderTopRightRadius: 35,
@@ -68,6 +94,5 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    backgroundColor: COLORS.goldenOrange,
   },
 });

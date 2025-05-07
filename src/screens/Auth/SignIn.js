@@ -10,13 +10,11 @@ import {
   ScrollView,
   StatusBar,
   StyleSheet,
-  Text,
   TouchableWithoutFeedback,
-  View,
 } from 'react-native';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import {useDispatch} from 'react-redux';
-import {AppVersion, Gap} from '../../Component';
+import {AppVersion, Gap, Text, View} from '../../Component';
 import {IMG_LOGIN} from '../../assets';
 import {
   ButtonAuth,
@@ -97,10 +95,12 @@ export default function SignIn({navigation}) {
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       keyboardVerticalOffset={Platform.OS === 'ios' ? 40 : 0}>
       <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-        <View style={styles.container}>
+        <View style={styles.container} useBackroundHeaderImageSignIn={true}>
           <StatusBar barStyle="default" backgroundColor={'transparent'} />
           <Gap height={45} />
-          <View style={{padding: 15}}>
+          <View
+            style={styles.viewImageSignIn}
+            useBackroundHeaderImageSignIn={true}>
             <Image
               source={IMG_LOGIN}
               style={styles.image}
@@ -109,66 +109,71 @@ export default function SignIn({navigation}) {
             />
           </View>
 
-          <ScrollView
-            style={styles.viewBody}
-            contentContainerStyle={styles.scrollContainer}>
-            <View style={styles.viewSignIn}>
-              <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                <Text style={styles.welcomeText}>Selamat Datang </Text>
-                <Animated.Text style={{transform: [{rotate}], fontSize: 33}}>
-                  👋
-                </Animated.Text>
-              </View>
-              <Text style={styles.descriptionText}>
-                Produktivitas dimulai di sini. {'\n'}Masuk untuk mengatur tugas
-                Anda.
-              </Text>
-              <Gap height={25} />
-              <View style={{height: '40%'}}>
-                <FormInput
-                  control={control}
-                  iconColor={COLORS.Orange}
-                  name="email"
-                  autoCapitalize="none"
-                  iconName="gmail"
-                  keyboardType="email-address"
-                  placeholder="contoh@email.com"
-                  title="Email"
-                  pattern={{
-                    value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-                    message: 'Email tidak valid',
-                  }}
+          {/* <Gap height={10} /> */}
+          <View style={styles.viewBody} section={true}>
+            <ScrollView
+              style={styles.contentScrollView}
+              showsVerticalScrollIndicator={false}
+              contentContainerStyle={styles.scrollContainer}>
+              <View style={styles.viewSignIn} section={true}>
+                <View
+                  style={{flexDirection: 'row', alignItems: 'center'}}
+                  section={true}>
+                  <Text style={styles.welcomeText}>Selamat Datang </Text>
+                  <Animated.Text style={{transform: [{rotate}], fontSize: 33}}>
+                    👋
+                  </Animated.Text>
+                </View>
+                <Text style={styles.descriptionText}>
+                  Produktivitas dimulai di sini. {'\n'}Masuk untuk mengatur
+                  tugas Anda.
+                </Text>
+                <Gap height={25} />
+                <View style={{height: '40%'}} section={true}>
+                  <FormInput
+                    control={control}
+                    iconColor={COLORS.Orange}
+                    name="email"
+                    autoCapitalize="none"
+                    iconName="gmail"
+                    keyboardType="email-address"
+                    placeholder="contoh@email.com"
+                    title="Email"
+                    pattern={{
+                      value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+                      message: 'Email tidak valid',
+                    }}
+                  />
+                  <FormInput
+                    control={control}
+                    iconColor={COLORS.Orange}
+                    name="password"
+                    autoCapitalize="none"
+                    iconName="lock"
+                    placeholder="Kata sandi..."
+                    title="Password"
+                    secureText={true}
+                  />
+                </View>
+                <Gap height={15} />
+                <View style={{position: 'relative'}} section={true}>
+                  <ButtonAuth
+                    title="Masuk"
+                    onPress={handleSubmit(onSubmit)}
+                    maxWidth={400}
+                    priority="primary"
+                    width={'70%'}
+                    loading={loading}
+                  />
+                </View>
+                <Gap height={13} />
+                <ResetPassword
+                  onPress={() => navigation.navigate('ForgotPassword')}
                 />
-                <FormInput
-                  control={control}
-                  iconColor={COLORS.Orange}
-                  name="password"
-                  autoCapitalize="none"
-                  iconName="lock"
-                  placeholder="Kata sandi..."
-                  title="Password"
-                  secureText={true}
-                />
+                <AppVersion />
               </View>
-              <Gap height={15} />
-              <View style={{position: 'relative'}}>
-                <ButtonAuth
-                  title="Masuk"
-                  onPress={handleSubmit(onSubmit)}
-                  maxWidth={400}
-                  priority="primary"
-                  width={'70%'}
-                  loading={loading}
-                />
-              </View>
-              <Gap height={13} />
-              <ResetPassword
-                onPress={() => navigation.navigate('ForgotPassword')}
-              />
-
-              <AppVersion />
-            </View>
-          </ScrollView>
+            </ScrollView>
+          </View>
         </View>
       </TouchableWithoutFeedback>
     </KeyboardAvoidingView>
@@ -176,19 +181,27 @@ export default function SignIn({navigation}) {
 }
 
 const styles = StyleSheet.create({
+  viewImageSignIn: {
+    padding: 10,
+    alignItems: 'center',
+  },
   viewSignIn: {
     padding: 15,
     height: '100%',
   },
-  viewBody: {
-    backgroundColor: COLORS.white,
-    borderTopRightRadius: 45,
-    borderTopLeftRadius: 45,
+  contentScrollView: {
     flex: 1,
+    margin: 5,
+  },
+  viewBody: {
+    flex: 1,
+    position: 'relative',
+    borderTopLeftRadius: 35,
+    borderTopRightRadius: 35,
+    paddingHorizontal: 20,
   },
   container: {
     flex: 1,
-    backgroundColor: COLORS.goldenOrange,
   },
   image: {
     width: '90%',
@@ -197,13 +210,11 @@ const styles = StyleSheet.create({
   welcomeText: {
     fontSize: 33,
     fontWeight: '600',
-    color: COLORS.black,
     textAlign: 'left',
   },
   descriptionText: {
     fontSize: DIMENS.m,
     fontWeight: '500',
-    color: COLORS.mediumGrey,
     textAlign: 'left',
     alignSelf: 'flex-start',
   },

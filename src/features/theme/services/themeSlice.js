@@ -5,6 +5,7 @@ const initialState = {
   mode: 'light',
   colors: {
     light: {
+      background_sigIn: COLORS.goldenOrange,
       text: COLORS.black,
       background: COLORS.white,
       background_header: COLORS.goldenOrange,
@@ -23,6 +24,7 @@ const initialState = {
       iconPicker: COLORS.black,
     },
     dark: {
+      background_sigIn: COLORS.black,
       text: COLORS.white,
       background: COLORS.black,
       background_header: COLORS.darkGrey,

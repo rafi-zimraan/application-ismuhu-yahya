@@ -2,21 +2,15 @@ import {useNavigation} from '@react-navigation/native';
 import React, {useRef, useState} from 'react';
 import {
   StyleSheet,
-  Text,
   TextInput,
   ToastAndroid,
   TouchableOpacity,
-  View,
 } from 'react-native';
 import EncryptedStorage from 'react-native-encrypted-storage';
-import {
-  ButtonAction,
-  Gap,
-  HeaderTransparent,
-  ModalCustom,
-} from '../../../Component';
+import {ButtonAction, Gap, ModalCustom, Text, View} from '../../../Component';
 import {COLORS, DIMENS} from '../../../utils';
 import {verifyOtpCode} from '../services/ForgotApiSlice';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 export default function OtpForgotPassword({route}) {
   const navigation = useNavigation();
@@ -101,7 +95,7 @@ export default function OtpForgotPassword({route}) {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={styles.container} useBackroundHeaderImageSignIn={true}>
       <ModalCustom
         visible={modalVisible}
         onRequestClose={() => setModalVisible(false)}
@@ -113,12 +107,24 @@ export default function OtpForgotPassword({route}) {
         buttonTitle="Oke"
         buttonSubmit={handleModalClose}
       />
-      <View style={styles.body}>
-        <HeaderTransparent
-          title="Periksa Email"
-          icon="arrow-left-circle-outline"
-          onPress={() => navigation.goBack()}
-        />
+      <View style={styles.body} section={true}>
+        <View style={styles.viewHeader} section={true}>
+          <TouchableOpacity
+            activeOpacity={0.8}
+            onPress={() => {
+              navigation.goBack();
+            }}
+            style={styles.viewHeader}>
+            <Icon
+              name={'arrow-left-circle-outline'}
+              size={30}
+              color={COLORS.black}
+            />
+            <Gap width={10} />
+            <Text style={styles.txtEmail}>Kode Otp</Text>
+          </TouchableOpacity>
+        </View>
+
         <Gap height={40} />
         <Text style={styles.title}>Masukkan kode OTP</Text>
         <Gap height={10} />
@@ -128,7 +134,7 @@ export default function OtpForgotPassword({route}) {
         </Text>
         <Gap height={20} />
 
-        <View style={styles.otpContainer}>
+        <View style={styles.otpContainer} section={true}>
           {otp.map((value, index) => (
             <TextInput
               key={index}
@@ -151,7 +157,7 @@ export default function OtpForgotPassword({route}) {
         />
 
         <Gap height={15} />
-        <View style={styles.resendContainer}>
+        <View style={styles.resendContainer} section={true}>
           <Text style={styles.resendText}>Tidak menerima otp? </Text>
           <TouchableOpacity onPress={handleResendEmail}>
             <Text
@@ -169,13 +175,21 @@ export default function OtpForgotPassword({route}) {
 }
 
 const styles = StyleSheet.create({
+  viewHeader: {
+    flexDirection: 'row',
+    margin: 15,
+    alignItems: 'center',
+  },
+  txtEmail: {
+    fontSize: DIMENS.xl,
+    fontWeight: '400',
+  },
   resendContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
   },
   body: {
-    backgroundColor: COLORS.white,
     flex: 1,
     position: 'relative',
     top: 120,
@@ -185,7 +199,6 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    backgroundColor: COLORS.goldenOrange,
   },
   title: {
     color: COLORS.black,
@@ -194,13 +207,11 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   subtitle: {
-    color: COLORS.mediumGrey,
     fontSize: DIMENS.m,
     textAlign: 'center',
     paddingHorizontal: 20,
   },
   email: {
-    color: COLORS.textPrimary,
     fontWeight: 'bold',
     fontSize: DIMENS.m,
   },
@@ -218,10 +229,8 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     textAlign: 'center',
     fontSize: DIMENS.xxl,
-    color: COLORS.black,
   },
   resendText: {
-    color: COLORS.black,
     fontSize: DIMENS.s,
     textAlign: 'center',
     fontWeight: 'bold',

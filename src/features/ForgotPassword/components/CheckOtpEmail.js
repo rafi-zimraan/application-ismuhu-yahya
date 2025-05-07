@@ -1,9 +1,15 @@
 import {useNavigation} from '@react-navigation/native';
 import React from 'react';
-import {StatusBar, StyleSheet, Text, ToastAndroid, View} from 'react-native';
+import {
+  StatusBar,
+  StyleSheet,
+  ToastAndroid,
+  TouchableOpacity,
+} from 'react-native';
 import {openInbox} from 'react-native-email-link';
-import {ButtonAction, Gap, HeaderTransparent} from '../../../Component';
+import {ButtonAction, Gap, Text, View} from '../../../Component';
 import {COLORS, DIMENS} from '../../../utils';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 export default function CheckOtpEmail({route}) {
   const {email} = route.params;
@@ -23,15 +29,26 @@ export default function CheckOtpEmail({route}) {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={styles.container} useBackroundHeaderImageSignIn={true}>
       <StatusBar backgroundColor={'transparent'} barStyle={'default'} />
-      <View style={styles.body}>
-        <HeaderTransparent
-          title="Periksa Email"
-          icon="arrow-left-circle-outline"
-          onPress={() => navigation.goBack()}
-        />
-        <View style={styles.content}>
+      <View style={styles.body} section={true}>
+        <View style={styles.viewHeader} section={true}>
+          <TouchableOpacity
+            activeOpacity={0.8}
+            onPress={() => {
+              navigation.goBack();
+            }}
+            style={styles.viewHeader}>
+            <Icon
+              name={'arrow-left-circle-outline'}
+              size={30}
+              color={COLORS.black}
+            />
+            <Gap width={10} />
+            <Text style={styles.txtEmail}>Periksa Email</Text>
+          </TouchableOpacity>
+        </View>
+        <View style={styles.content} section={true}>
           <Gap height={55} />
           <Text style={styles.title}>Periksa email Anda.</Text>
           <Gap height={15} />
@@ -52,12 +69,19 @@ export default function CheckOtpEmail({route}) {
 }
 
 const styles = StyleSheet.create({
+  viewHeader: {
+    flexDirection: 'row',
+    margin: 15,
+    alignItems: 'center',
+  },
+  txtEmail: {
+    fontSize: DIMENS.xl,
+    fontWeight: '400',
+  },
   container: {
     flex: 1,
-    backgroundColor: COLORS.goldenOrange,
   },
   body: {
-    backgroundColor: COLORS.white,
     flex: 1,
     position: 'relative',
     top: 120,
@@ -77,14 +101,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
   },
   description: {
-    color: COLORS.grey,
     fontSize: DIMENS.m,
     fontWeight: '400',
     textAlign: 'center',
     paddingHorizontal: 20,
   },
   footerText: {
-    color: COLORS.grey,
     fontSize: DIMENS.s,
     paddingHorizontal: 45,
     fontWeight: '400',

@@ -1,6 +1,6 @@
-import {Image, StyleSheet, Text, View} from 'react-native';
+import {Image, StyleSheet} from 'react-native';
 import React from 'react';
-import {Gap} from '../../../Component';
+import {Gap, Text, View} from '../../../Component';
 import LoanTodayItem from './LoanTodayItem';
 import {ICON_NOTFOUND_DATA} from '../../../assets';
 import {COLORS, DIMENS} from '../../../utils';
