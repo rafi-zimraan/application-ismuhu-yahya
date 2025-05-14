@@ -80,8 +80,10 @@ export default function SignIn({navigation}) {
         password: data.password,
       };
 
+      console.log('data login', loginData);
       await EncryptedStorage.setItem('userLogin', JSON.stringify(loginData));
       await login(loginData, navigation, dispatch);
+      console.Console('auth', login);
     } catch (error) {
       console.log('LOGIN ERROR:', error?.message);
     } finally {
@@ -109,7 +111,6 @@ export default function SignIn({navigation}) {
             />
           </View>
 
-          {/* <Gap height={10} /> */}
           <View style={styles.viewBody} section={true}>
             <ScrollView
               style={styles.contentScrollView}
@@ -156,7 +157,13 @@ export default function SignIn({navigation}) {
                   />
                 </View>
                 <Gap height={15} />
-                <View style={{position: 'relative'}} section={true}>
+                <View
+                  style={{
+                    position: 'relative',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                  section={true}>
                   <ButtonAuth
                     title="Masuk"
                     onPress={handleSubmit(onSubmit)}

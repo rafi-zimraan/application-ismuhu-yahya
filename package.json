@@ -13,6 +13,7 @@
     "@react-native-community/blur": "^4.4.1",
     "@react-native-community/datetimepicker": "^8.2.0",
     "@react-native-community/netinfo": "^11.4.1",
+    "@react-native-community/push-notification-ios": "^1.11.0",
     "@react-native-documents/picker": "^10.0.1",
     "@react-native-documents/viewer": "^1.0.0",
     "@react-native-picker/picker": "^2.8.1",
@@ -46,6 +47,7 @@
     "react-native-screens": "^3.34.0",
     "react-native-share": "^12.0.3",
     "react-native-svg": "^15.11.1",
+    "react-native-toast-message": "^2.3.0",
     "react-native-vector-icons": "^10.2.0",
     "react-native-version-info": "^1.1.1",
     "react-native-vision-camera": "^4.6.1",
@@ -71,6 +73,5 @@
   },
   "engines": {
     "node": ">=18"
-  },
-  "packageManager": "yarn@3.6.4"
+  }
 }

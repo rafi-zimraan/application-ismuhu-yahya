@@ -67,7 +67,8 @@ export default function ModalCustom({
           <TouchableNativeFeedback
             useForeground
             onPress={buttonSubmit}
-            disabled={buttonDisable}>
+            disabled={buttonDisable}
+            style={{backgroundColor: 'transparent'}}>
             <View
               style={{
                 ...styles.buttonAction,
@@ -96,12 +97,15 @@ const styles = StyleSheet.create({
     height: '100%',
   },
   buttonAction: {
-    overflow: 'hidden',
     width: '100%',
     maxWidth: 200,
     height: 45,
     alignSelf: 'center',
     elevation: 3,
+    shadowColor: COLORS.black,
+    shadowOpacity: 0.25,
+    shadowOffset: {width: 0, height: 2},
+    shadowRadius: 3.84,
     borderRadius: 10,
     alignItems: 'center',
     justifyContent: 'center',

@@ -2,6 +2,7 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+
 	<key>UIAppFonts</key>
 	<array>
 	<string>MaterialCommunityIcons.ttf</string>
@@ -23,7 +24,7 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>$(MARKETING_VERSION)</string>
+	<string>1.0-simpondok-rc</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
@@ -45,6 +46,8 @@
 	<array>
 		<string>remote-notification</string>
 	</array>
+	<key>NSUserNotificationUsageDescription</key>
+	<string>$(PRODUCT_NAME) uses notifications to inform you about important updates.</string>
 	<key>UILaunchStoryboardName</key>
 	<string>BootSplash</string>
 	<key>UIRequiredDeviceCapabilities</key>

@@ -12,13 +12,21 @@ import {
 } from '../../features/ForgotPassword';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {COLORS, DIMENS} from '../../utils';
+import Toast from 'react-native-toast-message';
+import {toastConfig} from '../../Component';
 
 export default function ForgotPassword({navigation}) {
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const showToast = message => {
-    ToastAndroid.show(message, ToastAndroid.SHORT);
+  const showToast = (message, type = 'info') => {
+    Toast.show({
+      type: type, // 'success', 'error', 'info'
+      text1: message,
+      position: 'bottom',
+      visibilityTime: 2000,
+    });
+    // ToastAndroid.show(message, ToastAndroid.SHORT);
   };
 
   const handleSendEmail = async () => {
@@ -70,6 +78,7 @@ export default function ForgotPassword({navigation}) {
           value={email}
         />
       </View>
+      <Toast config={toastConfig} />
     </View>
   );
 }

@@ -3,7 +3,7 @@ import {
   createNavigationContainerRef,
 } from '@react-navigation/native';
 import React, {useEffect, useState} from 'react';
-import {BackHandler, ToastAndroid} from 'react-native';
+import {BackHandler, Platform, ToastAndroid} from 'react-native';
 import BootSplash from 'react-native-bootsplash';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import PushNotification from 'react-native-push-notification';
@@ -11,6 +11,9 @@ import {Provider} from 'react-redux';
 import {ExitAppModal} from './features/authentication';
 import {store} from './redux';
 import Navigator from './routes';
+import PushNotificationIOS from '@react-native-community/push-notification-ios';
+import Toast from 'react-native-toast-message';
+import {toastConfig} from './Component';
 
 export const navigationRef = createNavigationContainerRef();
 
@@ -21,6 +24,12 @@ export default function App() {
 
   useEffect(() => {
     PushNotification.cancelAllLocalNotifications();
+
+    // 🧠 Tambahan untuk iOS: Request permission saat pertama app launch jika kalo plafrom-nya ios
+    if (Platform.OS === 'ios') {
+      PushNotificationIOS.requestPermissions();
+    }
+
     const scheduleNotification = (hour, minute, title, message) => {
       const now = new Date();
       const scheduledDate = new Date();
@@ -134,6 +143,9 @@ export default function App() {
           onConfirm={handleLogout}
         />
       </NavigationContainer>
+
+      {/* Toast container for cross-platfrom toasts */}
+      <Toast config={toastConfig} />
     </Provider>
   );
 }

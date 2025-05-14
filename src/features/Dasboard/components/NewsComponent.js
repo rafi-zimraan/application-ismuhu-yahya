@@ -233,6 +233,7 @@ const styles = StyleSheet.create({
     paddingBottom: 5,
     paddingHorizontal: 10,
     elevation: 5,
+    backgroundColor: COLORS.white,
   },
   titleText: {
     fontSize: DIMENS.xxl,

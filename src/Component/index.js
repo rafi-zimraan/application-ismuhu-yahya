@@ -15,8 +15,10 @@ import ModalLoading from './screens/ModalLoading';
 import SearchInput from './screens/SearchInput';
 import Text from './screens/Text';
 import View from './screens/View';
+import {toastConfig} from './screens/toastConfig';
 
 export {
+  toastConfig,
   Icon,
   View,
   Text,

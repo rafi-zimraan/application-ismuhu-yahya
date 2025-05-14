@@ -90,6 +90,7 @@ export default function Dasboard({navigation}) {
   const fetchUserSession = useCallback(async () => {
     try {
       const response = await FecthMe();
+      console.log('data fectme', response);
       if (response?.message === 'Silahkan login terlebih dahulu') {
         setTokenExpired(true);
       }
