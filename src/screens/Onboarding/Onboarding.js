@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import {
   Image,
+  SafeAreaView,
   StatusBar,
   StyleSheet,
   Text,
@@ -19,9 +20,11 @@ import {
 } from '../../assets';
 import {BGOnBoarding} from '../../features/OnBoarding';
 import {COLORS, DIMENS} from '../../utils';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 export default function OnBoarding({navigation}) {
   const [currentScreen, setCurrentScreen] = useState(0);
+  const insets = useSafeAreaInsets();
 
   const screens = [
     {
@@ -75,15 +78,21 @@ export default function OnBoarding({navigation}) {
       <StatusBar barStyle={'dark-content'} backgroundColor={'transparent'} />
       {currentScreen === 0 && <BGOnBoarding />}
       {currentScreen === 0 && (
-        <View style={styles.navbarLogo}>
-          <Image
-            source={IMG_LOGO}
-            style={styles.imgLogoPondok}
-            resizeMethod="resize"
-            resizeMode="cover"
-          />
-          <Image source={IMG_PONDOK_DIGITAL} style={styles.imgPondokDigital} />
-        </View>
+        <SafeAreaView
+          style={[styles.safeAreaLogoWrapper, {marginTop: insets.top + 5}]}>
+          <View style={styles.navbarLogo}>
+            <Image
+              source={IMG_LOGO}
+              style={styles.imgLogoPondok}
+              resizeMethod="resize"
+              resizeMode="cover"
+            />
+            <Image
+              source={IMG_PONDOK_DIGITAL}
+              style={styles.imgPondokDigital}
+            />
+          </View>
+        </SafeAreaView>
       )}
 
       {screens[currentScreen].showImage && (
@@ -222,11 +231,12 @@ const styles = StyleSheet.create({
     left: 17,
     top: 540,
   },
+  safeAreaLogoWrapper: {
+    marginTop: 15,
+    marginHorizontal: 15,
+  },
   navbarLogo: {
     flexDirection: 'row',
-    position: 'absolute',
-    top: 45,
-    left: 20,
   },
   imgLogoPondok: {
     height: 31,

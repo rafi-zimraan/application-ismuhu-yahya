@@ -1,6 +1,7 @@
 import {useFocusEffect} from '@react-navigation/native';
 import React, {useEffect, useState} from 'react';
 import {
+  Platform,
   RefreshControl,
   ScrollView,
   StatusBar,
@@ -11,6 +12,7 @@ import {useSelector} from 'react-redux';
 import {Gap, ModalCustom, Text, View} from '../../Component';
 import {getAllNotifications} from '../../features/Notification';
 import {COLORS, DIMENS} from '../../utils';
+import {current} from '@reduxjs/toolkit';
 
 export default function Notification({navigation}) {
   const {colors, mode} = useSelector(state => state.theme);
@@ -74,7 +76,9 @@ export default function Notification({navigation}) {
       <View
         style={[
           styles.navbarContainer,
-          {backgroundColor: colors[mode].background_header},
+          {
+            backgroundColor: colors[mode].background_header,
+          },
         ]}>
         <Text style={styles.navbarTitle}>Notification</Text>
       </View>
@@ -107,7 +111,6 @@ export default function Notification({navigation}) {
               </View>
             </TouchableOpacity>
           </View>
-
           <Gap height={15} />
         </ScrollView>
       </View>
@@ -150,6 +153,10 @@ const styles = StyleSheet.create({
     elevation: 5,
     padding: 5,
     marginHorizontal: 5,
+    shadowColor: COLORS.black,
+    shadowOffset: {height: 2, width: 0},
+    shadowOpacity: 0.32,
+    shadowRadius: 2.22,
   },
   categoryCard: {
     marginBottom: 10,

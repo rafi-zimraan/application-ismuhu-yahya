@@ -68,7 +68,6 @@ export default function SignIn({navigation}) {
         console.log('LOAD LOGIN ERROR:', error?.message);
       }
     };
-
     loadUserLogin();
   }, [setValue]);
 
@@ -80,10 +79,8 @@ export default function SignIn({navigation}) {
         password: data.password,
       };
 
-      console.log('data login', loginData);
       await EncryptedStorage.setItem('userLogin', JSON.stringify(loginData));
       await login(loginData, navigation, dispatch);
-      console.Console('auth', login);
     } catch (error) {
       console.log('LOGIN ERROR:', error?.message);
     } finally {

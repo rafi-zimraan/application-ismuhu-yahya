@@ -2,6 +2,7 @@ import {useFocusEffect} from '@react-navigation/native';
 import React, {useCallback, useState} from 'react';
 import {
   Image,
+  Platform,
   ScrollView,
   StatusBar,
   StyleSheet,
@@ -15,9 +16,11 @@ import {getAllDataSpa} from '../../features/Profile';
 import {FecthMe, logout} from '../../features/authentication';
 import {COLORS} from '../../utils';
 import {DIMENS} from '../../utils/dimens';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 export default function Settings({navigation}) {
   const dispatch = useDispatch();
+  const insets = useSafeAreaInsets();
   const currentLanguage = useSelector(state => state.language.currentLanguage);
   const {mode, colors} = useSelector(state => state.theme);
   const [logoutModalVisible, setLogoutModalVisible] = useState(false);
@@ -83,7 +86,10 @@ export default function Settings({navigation}) {
       <View
         style={[
           styles.navbar,
-          {backgroundColor: colors[mode].background_header},
+          {
+            backgroundColor: colors[mode].background_header,
+            paddingTop: Platform.OS === 'ios' ? insets.top : 20,
+          },
         ]}>
         <Text style={styles.navbarTitle}>{t('name_settings')}</Text>
       </View>
@@ -306,6 +312,10 @@ const styles = StyleSheet.create({
   contentMenu: {
     elevation: 3,
     borderRadius: 10,
+    shadowColor: COLORS.black,
+    shadowOffset: {height: 2, width: 0},
+    shadowOpacity: 0.33,
+    shadowRadius: 3.2,
   },
   imgPhoto: {
     height: 54,
@@ -359,5 +369,6 @@ const styles = StyleSheet.create({
   },
   sectionSubtitle: {
     fontSize: DIMENS.m,
+    fontWeight: '300',
   },
 });

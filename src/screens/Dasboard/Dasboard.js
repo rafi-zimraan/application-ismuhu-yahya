@@ -10,7 +10,6 @@ import {
   ScrollView,
   StatusBar,
   StyleSheet,
-  ToastAndroid,
   View,
 } from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
@@ -36,6 +35,7 @@ import {
 } from '../../features/Dasboard';
 import {FecthMe} from '../../features/authentication';
 import {COLORS} from '../../utils';
+import Toast from 'react-native-toast-message';
 
 export default function Dasboard({navigation}) {
   const dispatch = useDispatch();
@@ -55,6 +55,15 @@ export default function Dasboard({navigation}) {
   const {showModal, setShowModal, buttonLoading, openNetworkSettings} =
     useNetworkStatus(isFocused);
 
+  const showToast = (message, type = 'info') => {
+    Toast.show({
+      type: type,
+      text1: message,
+      position: 'bottom',
+      visibilityTime: 2000,
+    });
+  };
+
   useEffect(() => {
     const requestNotificationPermission = async () => {
       if (
@@ -69,10 +78,7 @@ export default function Dasboard({navigation}) {
         if (granted === PermissionsAndroid.RESULTS.GRANTED) {
           console.log('Izin notifikasi diberikan');
         } else {
-          ToastAndroid.show(
-            'Amal Yaumi butuh notifikasi. Aktifkan di pengaturan!',
-            ToastAndroid.LONG,
-          );
+          showToast('Amal Yaumi butuh notifikasi. Aktifkan di pengaturan!');
         }
         setPermissionRequested(true);
       }
@@ -90,7 +96,6 @@ export default function Dasboard({navigation}) {
   const fetchUserSession = useCallback(async () => {
     try {
       const response = await FecthMe();
-      console.log('data fectme', response);
       if (response?.message === 'Silahkan login terlebih dahulu') {
         setTokenExpired(true);
       }
@@ -113,8 +118,12 @@ export default function Dasboard({navigation}) {
     }, [fetchUserSession]),
   );
   return (
-    <SafeAreaView style={{flex: 1}}>
-      <StatusBar barStyle="default" backgroundColor="transparent" />
+    <SafeAreaView style={{flex: 1, backgroundColor: 'transparent'}}>
+      <StatusBar
+        barStyle="default"
+        backgroundColor="transparent"
+        translucent={true}
+      />
       <ScrollView
         contentContainerStyle={styles.contentContainer}
         refreshControl={
@@ -124,7 +133,8 @@ export default function Dasboard({navigation}) {
           source={backgroundImage}
           style={styles.imageContainer}
           resizeMode="cover">
-          <Gap height={18} />
+          <Gap height={10} />
+
           <HeaderComponent urlPhoto={photo} welcomeText={welcomeText} />
           {loadingAyat ? (
             <View style={styles.viewLoadingAyat}>

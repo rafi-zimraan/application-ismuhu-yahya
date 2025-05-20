@@ -3,16 +3,25 @@ import {ToastAndroid} from 'react-native';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import {setUserSession} from '..';
 import api from '../../../utils/axiosInstance';
+import Toast from 'react-native-toast-message';
+
+const showToast = (message, type = 'info') => {
+  Toast.show({
+    type: type,
+    text1: message,
+    position: 'bottom',
+    visibilityTime: 2000,
+  });
+};
 
 export const login = async (data, navigation, dispatch) => {
   try {
     const netInfo = await NetInfo.fetch();
     if (!netInfo.isConnected) {
-      ToastAndroid.show('Tidak ada koneksi internet', ToastAndroid.SHORT);
+      showToast('Tidak ada koneksi internet');
       return;
     }
-    const response = await api.post('mobile/login', data);
-    console.log('response login', response);
+    const response = await api.post('/mobile/login', data);
     const token = response.data?.token;
     const id = response.data?.id;
     const responseData = response.data;
@@ -32,17 +41,15 @@ export const login = async (data, navigation, dispatch) => {
         'user_sesion',
         JSON.stringify(responseData),
       );
-      ToastAndroid.show(
-        `Selamat Datang ${responseData.name}`,
-        ToastAndroid.SHORT,
-      );
+      showToast(`Selamat Datang ${responseData.name}`);
+
       navigation.replace('Dasboard');
     } else {
       throw new Error('Token atau user tidak ditemukan');
     }
   } catch (error) {
     if (error.response && error.response.data && error.response.data.message) {
-      ToastAndroid.show(error.response.data.message, ToastAndroid.SHORT);
+      showToast(error.response.data.message);
       console.log('Error from server', error.response.data.message);
     } else {
       console.log('Err code', error.message);
@@ -69,7 +76,7 @@ export const logout = async (navigation, dispatch) => {
   try {
     const netInfo = await NetInfo.fetch();
     if (!netInfo.isConnected) {
-      ToastAndroid.show('Tidak ada koneksi internet', ToastAndroid.SHORT);
+      showToast('Tidak ada koneksi internet');
       return;
     }
     const response = await api.post('/mobile/logout');
@@ -82,7 +89,7 @@ export const logout = async (navigation, dispatch) => {
       });
     } else {
       const errorMessage = response?.data?.message;
-      ToastAndroid.show(errorMessage, ToastAndroid.SHORT);
+      showToast(errorMessage);
     }
   } catch (error) {
     if (error.response && error.response.data && error.response.data.message) {

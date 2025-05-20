@@ -1,10 +1,12 @@
 import React from 'react';
 import {
   ActivityIndicator,
+  Platform,
   StyleSheet,
   Text,
   TouchableNativeFeedback,
   View,
+  TouchableOpacity,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {COLORS} from '../../utils';
@@ -20,32 +22,54 @@ export default function ButtonAction({
   iconLeft,
   iconRight,
 }) {
+  const ButtonWrapper =
+    Platform.OS === 'android' ? TouchableNativeFeedback : TouchableOpacity;
   return (
-    <TouchableNativeFeedback
-      useForeground
-      onPress={onPress}
-      disabled={disabled}>
-      <View style={{...styles.container, backgroundColor}}>
-        {loading ? (
-          <ActivityIndicator color={'white'} size={'small'} />
-        ) : (
-          <View style={styles.viewTitle}>
-            {iconLeft && <Icon name={iconLeft} size={22} color={'white'} />}
-            <Text
-              style={{...styles.textTitle, color}}
-              adjustsFontSizeToFit
-              allowFontScaling>
-              {title}
-            </Text>
-            {iconRight && <Icon name={iconRight} size={22} color={'white'} />}
-          </View>
-        )}
-      </View>
-    </TouchableNativeFeedback>
+    <View style={[styles.shadowWrapper, {backgroundColor}]}>
+      <ButtonWrapper
+        onPress={onPress}
+        disabled={disabled}
+        activeOpacity={0.7}
+        {...(Platform.OS === 'android' ? {useForeground: true} : {})}>
+        <View style={styles.container}>
+          {loading ? (
+            <ActivityIndicator color={'white'} size={'small'} />
+          ) : (
+            <View style={styles.viewTitle}>
+              {iconLeft && <Icon name={iconLeft} size={22} color={'white'} />}
+              <Text
+                style={{...styles.textTitle, color}}
+                adjustsFontSizeToFit
+                allowFontScaling>
+                {title}
+              </Text>
+              {iconRight && <Icon name={iconRight} size={22} color={'white'} />}
+            </View>
+          )}
+        </View>
+      </ButtonWrapper>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
+  shadowWrapper: {
+    width: '90%',
+    alignSelf: 'center',
+    borderRadius: 10,
+    shadowColor: COLORS.black,
+    shadowOffset: {width: 1, height: 2},
+    shadowOpacity: 0.32,
+    shadowRadius: 2,
+    elevation: 3,
+  },
+  container: {
+    height: 50,
+    borderRadius: 10,
+    overflow: 'hidden',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   viewTitle: {
     flexDirection: 'row',
     justifyContent: 'center',
@@ -57,15 +81,5 @@ const styles = StyleSheet.create({
     fontSize: DIMENS.l,
     fontWeight: '500',
     marginHorizontal: 5,
-  },
-  container: {
-    width: '90%',
-    height: 50,
-    borderRadius: 50 / 5,
-    overflow: 'hidden',
-    elevation: 3,
-    alignSelf: 'center',
-    justifyContent: 'center',
-    alignItems: 'center',
   },
 });

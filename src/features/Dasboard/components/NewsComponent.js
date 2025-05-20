@@ -10,7 +10,6 @@ import {
 } from 'react-native';
 import HTMLView from 'react-native-htmlview';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {useSelector} from 'react-redux';
 import {Gap, Text, View} from '../../../Component';
 import {ICON_NOTFOUND_DATA} from '../../../assets';
 import {COLORS, DIMENS} from '../../../utils';
@@ -20,11 +19,9 @@ import {
 } from '../../ImageInformation';
 
 export default function NewsComponent() {
-  const {colors, mode} = useSelector(state => state.theme);
   const navigation = useNavigation();
   const [newsData, setNewsData] = useState([]);
   const [loading, setLoading] = useState(false);
-
   const deskripsi = decode(newsData?.[0]?.desc);
 
   const getHtmlPreview = (htmlString, maxLength = 100) => {
@@ -170,7 +167,6 @@ const styles = StyleSheet.create({
   },
   viewDesc: {
     height: 20,
-    overflow: 'hidden',
   },
   titleContainer: {
     flexDirection: 'row',
@@ -233,7 +229,7 @@ const styles = StyleSheet.create({
     paddingBottom: 5,
     paddingHorizontal: 10,
     elevation: 5,
-    backgroundColor: COLORS.white,
+    backgroundColor: 'transparent',
   },
   titleText: {
     fontSize: DIMENS.xxl,

@@ -83,16 +83,18 @@ export default function Profile({navigation}) {
       try {
         const userId = JSON.parse(await EncryptedStorage.getItem('idUser'));
         const uploadResponse = await uploadPhotoProfile(userId, selectedImage);
-
+        console.log('upload image', uploadResponse);
         if (uploadResponse?.status) {
           ToastAndroid.show('Foto berhasil diunggah!', ToastAndroid.SHORT);
 
           const userData = await FecthMe();
+          console.log('data profile', userData);
           if (userData?.status) {
             const baseUrl = 'https://app.simpondok.com/';
             const photoUrl = userData.url_photo
               ? `${baseUrl}${userData.url_photo}?timestamp=${Date.now()}`
               : null;
+            console.log('foto', photoUrl);
             setPhoto(photoUrl);
           } else {
             ToastAndroid.show(

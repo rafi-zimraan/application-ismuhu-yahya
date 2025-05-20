@@ -24,6 +24,10 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     borderRadius: 10,
     elevation: 5,
+    shadowColor: COLORS.black,
+    shadowOffset: {width: 0, height: 2},
+    shadowOpacity: 0.22,
+    shadowRadius: 2,
   },
   icon: {
     width: 24,

@@ -1,19 +1,24 @@
 import {useNavigation} from '@react-navigation/native';
 import React from 'react';
-import {
-  StatusBar,
-  StyleSheet,
-  ToastAndroid,
-  TouchableOpacity,
-} from 'react-native';
+import {StatusBar, StyleSheet, TouchableOpacity} from 'react-native';
 import {openInbox} from 'react-native-email-link';
-import {ButtonAction, Gap, Text, View} from '../../../Component';
+import {ButtonAction, Gap, Text, toastConfig, View} from '../../../Component';
 import {COLORS, DIMENS} from '../../../utils';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import Toast from 'react-native-toast-message';
 
 export default function CheckOtpEmail({route}) {
   const {email} = route.params;
   const navigation = useNavigation();
+
+  const showToast = (message, type = 'info') => {
+    Toast.show({
+      type: type, // 'success' , 'error' , 'info'
+      text1: message,
+      position: 'bottom',
+      visibilityTime: 2000,
+    });
+  };
 
   const handleOpenInbox = () => {
     openInbox()
@@ -21,10 +26,7 @@ export default function CheckOtpEmail({route}) {
         navigation.navigate('OtpForgotPassword', {email});
       })
       .catch(err => {
-        ToastAndroid.show(
-          'Gagal membuka aplikasi email. Silakan buka secara manual.',
-          ToastAndroid.SHORT,
-        );
+        showToast('Gagal membuka applikasi email, Silahkan buka secara manual');
       });
   };
 
@@ -64,6 +66,7 @@ export default function CheckOtpEmail({route}) {
           </Text>
         </View>
       </View>
+      <Toast config={toastConfig} />
     </View>
   );
 }

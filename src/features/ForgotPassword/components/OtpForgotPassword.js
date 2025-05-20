@@ -1,16 +1,19 @@
 import {useNavigation} from '@react-navigation/native';
 import React, {useRef, useState} from 'react';
-import {
-  StyleSheet,
-  TextInput,
-  ToastAndroid,
-  TouchableOpacity,
-} from 'react-native';
+import {StyleSheet, TextInput, TouchableOpacity} from 'react-native';
 import EncryptedStorage from 'react-native-encrypted-storage';
-import {ButtonAction, Gap, ModalCustom, Text, View} from '../../../Component';
+import {
+  ButtonAction,
+  Gap,
+  ModalCustom,
+  Text,
+  toastConfig,
+  View,
+} from '../../../Component';
 import {COLORS, DIMENS} from '../../../utils';
 import {verifyOtpCode} from '../services/ForgotApiSlice';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import Toast from 'react-native-toast-message';
 
 export default function OtpForgotPassword({route}) {
   const navigation = useNavigation();
@@ -37,8 +40,13 @@ export default function OtpForgotPassword({route}) {
     }
   };
 
-  const showToast = message => {
-    ToastAndroid.show(message, ToastAndroid.SHORT);
+  const showToast = (message, type = 'info') => {
+    Toast.show({
+      type: type,
+      text1: message,
+      position: 'bottom',
+      visibilityTime: 2000,
+    });
   };
 
   const handleVerifyOtp = async () => {
@@ -76,7 +84,7 @@ export default function OtpForgotPassword({route}) {
   };
 
   const handleResendEmail = () => {
-    ToastAndroid.show('Nantikan fitur terbarunya yaa 🤗', ToastAndroid.SHORT);
+    showToast('Nantikan fitur terbarunya yaa 🤗');
   };
 
   const handleModalClose = () => {
@@ -170,6 +178,7 @@ export default function OtpForgotPassword({route}) {
           </TouchableOpacity>
         </View>
       </View>
+      <Toast config={toastConfig} />
     </View>
   );
 }
@@ -229,6 +238,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     textAlign: 'center',
     fontSize: DIMENS.xxl,
+    color: COLORS.black,
   },
   resendText: {
     fontSize: DIMENS.s,

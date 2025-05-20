@@ -1,10 +1,5 @@
 import React, {useState} from 'react';
-import {
-  StatusBar,
-  StyleSheet,
-  ToastAndroid,
-  TouchableOpacity,
-} from 'react-native';
+import {StatusBar, StyleSheet, TouchableOpacity} from 'react-native';
 import {View, Text, Gap} from '../../Component';
 import {
   EmailVerificationInput,
@@ -26,7 +21,6 @@ export default function ForgotPassword({navigation}) {
       position: 'bottom',
       visibilityTime: 2000,
     });
-    // ToastAndroid.show(message, ToastAndroid.SHORT);
   };
 
   const handleSendEmail = async () => {
