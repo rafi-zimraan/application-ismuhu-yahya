@@ -127,7 +127,7 @@ export default function SignIn({navigation}) {
                   tugas Anda.
                 </Text>
                 <Gap height={25} />
-                <View style={{height: '40%'}} section={true}>
+                <View section={true}>
                   <FormInput
                     control={control}
                     iconColor={COLORS.Orange}
@@ -174,6 +174,7 @@ export default function SignIn({navigation}) {
                 <ResetPassword
                   onPress={() => navigation.navigate('ForgotPassword')}
                 />
+
                 <AppVersion />
               </View>
             </ScrollView>

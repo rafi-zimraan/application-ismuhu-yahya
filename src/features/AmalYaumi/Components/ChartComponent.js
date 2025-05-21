@@ -1,7 +1,9 @@
 import React from 'react';
-import {StyleSheet, View} from 'react-native';
+import {Dimensions, StyleSheet, View} from 'react-native';
 import {LineChart} from 'react-native-gifted-charts';
 import {COLORS, DIMENS} from '../../../utils';
+
+const {width: screenWidth} = Dimensions.get('window');
 
 export default function ChartComponent({lineData, lineDataPercen}) {
   return (
@@ -12,7 +14,7 @@ export default function ChartComponent({lineData, lineDataPercen}) {
         data={lineData}
         data2={lineDataPercen}
         height={200}
-        width={270}
+        width={screenWidth - 90}
         showVerticalLines
         spacing={80}
         hideDataPoints={false}

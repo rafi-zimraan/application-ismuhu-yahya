@@ -11,7 +11,7 @@ const styles = StyleSheet.create({
   textVersion: {
     color: COLORS.black,
     position: 'absolute',
-    bottom: 15,
+    bottom: 10,
     alignSelf: 'center',
   },
 });

@@ -54,6 +54,7 @@ export default function Dasboard({navigation}) {
   const [permissionRequested, setPermissionRequested] = useState(false);
   const {showModal, setShowModal, buttonLoading, openNetworkSettings} =
     useNetworkStatus(isFocused);
+  const [listMemberLoan, setListMemberLoan] = useState(null);
 
   const showToast = (message, type = 'info') => {
     Toast.show({
@@ -107,6 +108,7 @@ export default function Dasboard({navigation}) {
       dispatch(setAmountSantri(response?.data_users?.santris?.tot_santri || 0));
       dispatch(setAmountSpa(response?.data_users?.spa?.tot_spa || 0));
       dispatch(setUserPosition(response?.position || ''));
+      setListMemberLoan(response?.is_member_loan ?? null);
     } catch (e) {
       console.log('Terjadi kesalahan checking session', e);
     }
@@ -174,16 +176,18 @@ export default function Dasboard({navigation}) {
               colors={colors}
               mode={mode}
             />
-            <ButtonMenu
-              title="Peminjaman "
-              iconName="car-side"
-              color={COLORS.white}
-              backgroundColor={COLORS.goldenOrange}
-              iconSize={33}
-              onPress={() => navigation.navigate('CarLoan')}
-              colors={colors}
-              mode={mode}
-            />
+            {listMemberLoan === 1 && (
+              <ButtonMenu
+                title="Peminjaman "
+                iconName="car-side"
+                color={COLORS.white}
+                backgroundColor={COLORS.goldenOrange}
+                iconSize={33}
+                onPress={() => navigation.navigate('CarLoan')}
+                colors={colors}
+                mode={mode}
+              />
+            )}
             {/* <ButtonMenu
               title="Pengaduan"
               iconName="hammer-wrench"
