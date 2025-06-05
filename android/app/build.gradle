@@ -74,9 +74,9 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdk rootProject.ext.compileSdkVersion
 
-    namespace "com.pondokdigital"
+    namespace "com.ismuhuyahyadev"
     defaultConfig {
-        applicationId "com.pondokdigital"
+        applicationId "com.ismuhuyahyadev"
         minSdkVersion  rootProject.ext.minSdkVersion
         targetSdkVersion  rootProject.ext.targetSdkVersion
         versionCode 4

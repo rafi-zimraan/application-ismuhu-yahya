@@ -1,4 +1,4 @@
-package com.ismuhuyahya
+package com.ismuhuyahyadev
 
 import com.facebook.react.ReactActivity
 import com.facebook.react.ReactActivityDelegate

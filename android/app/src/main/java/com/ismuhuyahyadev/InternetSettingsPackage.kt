@@ -1,16 +1,17 @@
-package com.ismuhuyahya
+package com.ismuhuyahyadev
 
 import com.facebook.react.ReactPackage
 import com.facebook.react.bridge.NativeModule
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.uimanager.ViewManager
 
-class DeveloperOptionsPackage : ReactPackage {
+class InternetSettingsPackage : ReactPackage {
+
     override fun createNativeModules(reactContext: ReactApplicationContext): List<NativeModule> {
-        return listOf(DeveloperOptionsModule(reactContext)) // Memanggil DeveloperOptionsModule
+        return listOf(InternetSettingsModule(reactContext)) // Mendaftarkan InternetSettingsModule
     }
 
     override fun createViewManagers(reactContext: ReactApplicationContext): List<ViewManager<*, *>> {
-        return emptyList() // Tidak ada view manager yang digunakan
+        return emptyList() // Tidak ada ViewManager yang diperlukan dalam package ini
     }
 }

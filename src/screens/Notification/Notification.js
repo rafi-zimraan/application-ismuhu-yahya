@@ -3,6 +3,7 @@ import React, {useEffect, useState} from 'react';
 import {
   Platform,
   RefreshControl,
+  SafeAreaView,
   ScrollView,
   StatusBar,
   StyleSheet,
@@ -12,7 +13,6 @@ import {useSelector} from 'react-redux';
 import {Gap, ModalCustom, Text, View} from '../../Component';
 import {getAllNotifications} from '../../features/Notification';
 import {COLORS, DIMENS} from '../../utils';
-import {current} from '@reduxjs/toolkit';
 
 export default function Notification({navigation}) {
   const {colors, mode} = useSelector(state => state.theme);
@@ -146,7 +146,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: COLORS.white,
     textAlign: 'center',
-    top: 30,
+    top: Platform.OS === 'ios' ? 50 : 30,
   },
   viewCard: {
     borderRadius: 15,

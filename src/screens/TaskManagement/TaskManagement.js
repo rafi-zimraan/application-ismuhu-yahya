@@ -4,9 +4,9 @@ import React, {useCallback, useState} from 'react';
 import {
   Dimensions,
   LayoutAnimation,
+  SafeAreaView,
   StatusBar,
   StyleSheet,
-  ToastAndroid,
 } from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {
@@ -29,6 +29,7 @@ import {
 } from '../../features/TaskManagement';
 import {FecthMe} from '../../features/authentication';
 import {COLORS} from '../../utils';
+import Toast from 'react-native-toast-message';
 
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
@@ -62,6 +63,15 @@ export default function TaskManagement({navigation}) {
     description: '',
   });
 
+  const showToast = (message, type = 'info') => {
+    Toast.show({
+      type: type,
+      text1: message,
+      position: 'bottom',
+      visibilityTime: 2000,
+    });
+  };
+
   const fetchTasks = async () => {
     setLoading(true);
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
@@ -73,6 +83,7 @@ export default function TaskManagement({navigation}) {
         return;
       }
       const response = await getAllTaskManagement(selectedFilter);
+      console.log('MANAGEMENET', response);
       dispatch(
         setTasksFilter({data: response.data.todos, type: selectedFilter}),
       );
@@ -153,9 +164,9 @@ export default function TaskManagement({navigation}) {
           type: selectedFilter,
         }),
       );
-      ToastAndroid.show(response?.message, ToastAndroid.SHORT);
+      showToast(response?.message);
     } catch (error) {
-      ToastAndroid.show('Gagal menghapus tugas', ToastAndroid.SHORT);
+      showToast('Gagal menghapus tugas');
     } finally {
       setIsDeleting(false);
       setDeleteModalVisible(false);
@@ -164,103 +175,105 @@ export default function TaskManagement({navigation}) {
   };
 
   return (
-    <View style={styles.container}>
-      <StatusBar
-        barStyle={mode == 'light' ? 'dark-content' : 'default'}
-        component={'transparent'}
-      />
-      <HeaderTransparent
-        title={'Task Management'}
-        icon="arrow-left-circle-outline"
-        onPress={() => navigation.goBack()}
-      />
+    <SafeAreaView style={{flex: 1, backgroundColor: colors[mode].background}}>
+      <View style={styles.container}>
+        <StatusBar
+          barStyle={mode === 'dark' ? 'light-content' : 'dark-content'}
+          backgroundColor="transparent"
+        />
+        <HeaderTransparent
+          title={'Task Management'}
+          icon="arrow-left-circle-outline"
+          onPress={() => navigation.goBack()}
+        />
 
-      <Gap height={15} />
-      <View>
-        <TargetLeader />
-        <TaskFilter />
-      </View>
+        <Gap height={15} />
+        <View>
+          <TargetLeader />
+          <TaskFilter />
+        </View>
 
-      <View style={{flex: 1, padding: 15}}>
-        <TaskList
-          data={selectedData}
-          loading={loading}
-          fetchTasks={fetchTasks}
-          navigation={navigation}
-          handleLongPress={handleLongPress}
-          selectedTaskIdModal={selectedTaskIdModal}
-          modalVisible={modalVisible}
-          setModalLinkVisible={setModalLinkVisible}
-          setModalUploadVisible={setModalUploadVisible}
+        <View style={{flex: 1, padding: 15}}>
+          <TaskList
+            data={selectedData}
+            loading={loading}
+            fetchTasks={fetchTasks}
+            navigation={navigation}
+            handleLongPress={handleLongPress}
+            selectedTaskIdModal={selectedTaskIdModal}
+            modalVisible={modalVisible}
+            setModalLinkVisible={setModalLinkVisible}
+            setModalUploadVisible={setModalUploadVisible}
+            setSelectedTaskId={setSelectedTaskId}
+          />
+        </View>
+
+        <UploadFileModal
+          visible={modalUploadVisible}
+          onClose={() => setModalUploadVisible(false)}
+          selectedTaskId={selectedTaskId}
           setSelectedTaskId={setSelectedTaskId}
         />
+
+        <UploadLinkModal
+          visible={modalLinkVisible}
+          onClose={() => setModalLinkVisible(false)}
+          linkData={linkData}
+          setLinkData={setLinkData}
+          selectedTaskId={selectedTaskId}
+          setSelectedTaskId={setSelectedTaskId}
+        />
+
+        <TaskOptionModal
+          visible={modalVisible}
+          onClose={handleCloseModal}
+          position={modalPosition}
+          taskOptions={taskOptions}
+          modalTaskIndex={modalTaskIndex}
+          selectedData={selectedData}
+          selectedFilter={selectedFilter}
+          navigation={navigation}
+          setSelectedTaskToDelete={setSelectedTaskToDelete}
+          setDeleteModalVisible={setDeleteModalVisible}
+          setModalVisible={setModalVisible}
+          refreshTasks={fetchTasks}
+        />
+
+        <ModalCustom
+          visible={deleteModalVisible}
+          onRequestClose={() => setDeleteModalVisible(false)}
+          title="Hapus Rencana Harian"
+          description="Apakah Anda yakin ingin menghapus rencana ini?"
+          iconModalName="delete-outline"
+          ColorIcon={COLORS.red}
+          BackgroundButtonAction={COLORS.red}
+          buttonTitle="Hapus"
+          TextColorButton={COLORS.white}
+          buttonSubmit={handleDeleteTask}
+          buttonDisable={false}
+          buttonLoading={isDeleting}
+        />
+
+        <ModalCustom
+          visible={tokenExpired}
+          onRequestClose={() => setTokenExpired(false)}
+          iconModalName="alert-circle-outline"
+          title="Sesi Berakhir"
+          description="Sesi Anda telah berakhir. Silakan login ulang untuk memperbarui data."
+          buttonSubmit={() => {
+            setTokenExpired(false);
+            navigation.navigate('SignIn');
+          }}
+          buttonTitle="Login Ulang"
+        />
+
+        <FloatingButton
+          iconName="plus"
+          backgroundColor={COLORS.goldenOrange}
+          onPress={() => navigation.navigate('CreateTaskManagement')}
+        />
       </View>
-
-      <UploadFileModal
-        visible={modalUploadVisible}
-        onClose={() => setModalUploadVisible(false)}
-        selectedTaskId={selectedTaskId}
-        setSelectedTaskId={setSelectedTaskId}
-      />
-
-      <UploadLinkModal
-        visible={modalLinkVisible}
-        onClose={() => setModalLinkVisible(false)}
-        linkData={linkData}
-        setLinkData={setLinkData}
-        selectedTaskId={selectedTaskId}
-        setSelectedTaskId={setSelectedTaskId}
-      />
-
-      <TaskOptionModal
-        visible={modalVisible}
-        onClose={handleCloseModal}
-        position={modalPosition}
-        taskOptions={taskOptions}
-        modalTaskIndex={modalTaskIndex}
-        selectedData={selectedData}
-        selectedFilter={selectedFilter}
-        navigation={navigation}
-        setSelectedTaskToDelete={setSelectedTaskToDelete}
-        setDeleteModalVisible={setDeleteModalVisible}
-        setModalVisible={setModalVisible}
-        refreshTasks={fetchTasks}
-      />
-
-      <ModalCustom
-        visible={deleteModalVisible}
-        onRequestClose={() => setDeleteModalVisible(false)}
-        title="Hapus Rencana Harian"
-        description="Apakah Anda yakin ingin menghapus rencana ini?"
-        iconModalName="delete-outline"
-        ColorIcon={COLORS.red}
-        BackgroundButtonAction={COLORS.red}
-        buttonTitle="Hapus"
-        TextColorButton={COLORS.white}
-        buttonSubmit={handleDeleteTask}
-        buttonDisable={false}
-        buttonLoading={isDeleting}
-      />
-
-      <ModalCustom
-        visible={tokenExpired}
-        onRequestClose={() => setTokenExpired(false)}
-        iconModalName="alert-circle-outline"
-        title="Sesi Berakhir"
-        description="Sesi Anda telah berakhir. Silakan login ulang untuk memperbarui data."
-        buttonSubmit={() => {
-          setTokenExpired(false);
-          navigation.navigate('SignIn');
-        }}
-        buttonTitle="Login Ulang"
-      />
-
-      <FloatingButton
-        iconName="plus"
-        backgroundColor={COLORS.goldenOrange}
-        onPress={() => navigation.navigate('CreateTaskManagement')}
-      />
-    </View>
+    </SafeAreaView>
   );
 }
 

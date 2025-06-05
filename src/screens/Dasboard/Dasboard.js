@@ -6,7 +6,6 @@ import {
   PermissionsAndroid,
   Platform,
   RefreshControl,
-  SafeAreaView,
   ScrollView,
   StatusBar,
   StyleSheet,
@@ -36,6 +35,8 @@ import {
 import {FecthMe} from '../../features/authentication';
 import {COLORS} from '../../utils';
 import Toast from 'react-native-toast-message';
+import {SafeAreaView, useSafeAreaInsets} from 'react-native-safe-area-context';
+import PushNotificationIOS from '@react-native-community/push-notification-ios';
 
 export default function Dasboard({navigation}) {
   const dispatch = useDispatch();
@@ -55,6 +56,7 @@ export default function Dasboard({navigation}) {
   const {showModal, setShowModal, buttonLoading, openNetworkSettings} =
     useNetworkStatus(isFocused);
   const [listMemberLoan, setListMemberLoan] = useState(null);
+  const insets = useSafeAreaInsets();
 
   const showToast = (message, type = 'info') => {
     Toast.show({
@@ -83,6 +85,16 @@ export default function Dasboard({navigation}) {
         }
         setPermissionRequested(true);
       }
+
+      if (Platform.OS === 'ios' && !permissionRequested) {
+        const result = await PushNotificationIOS.requestPermissions();
+        if (result?.alert === true) {
+          console.log('Izin notifikasi diberikan (iOS)');
+        } else {
+          showToast('Amal Yaumi butuh notifikasi. Aktifkan di pengaturan!');
+        }
+        setPermissionRequested(true);
+      }
     };
 
     requestNotificationPermission();
@@ -97,6 +109,7 @@ export default function Dasboard({navigation}) {
   const fetchUserSession = useCallback(async () => {
     try {
       const response = await FecthMe();
+      console.log('me', response);
       if (response?.message === 'Silahkan login terlebih dahulu') {
         setTokenExpired(true);
       }
@@ -119,13 +132,10 @@ export default function Dasboard({navigation}) {
       fetchUserSession();
     }, [fetchUserSession]),
   );
+
   return (
-    <SafeAreaView style={{flex: 1, backgroundColor: 'transparent'}}>
-      <StatusBar
-        barStyle="default"
-        backgroundColor="transparent"
-        translucent={true}
-      />
+    <View style={{flex: 1, backgroundColor: colors[mode].background}}>
+      <StatusBar barStyle="dark-content" backgroundColor="transparent" />
       <ScrollView
         contentContainerStyle={styles.contentContainer}
         refreshControl={
@@ -133,9 +143,9 @@ export default function Dasboard({navigation}) {
         }>
         <ImageBackground
           source={backgroundImage}
-          style={styles.imageContainer}
+          style={[styles.imageContainer, {paddingTop: insets.top}]}
           resizeMode="cover">
-          <Gap height={10} />
+          <Gap height={15} />
 
           <HeaderComponent urlPhoto={photo} welcomeText={welcomeText} />
           {loadingAyat ? (
@@ -215,7 +225,7 @@ export default function Dasboard({navigation}) {
           buttonLoading={buttonLoading}
         />
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 }
 

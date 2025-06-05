@@ -1,6 +1,6 @@
 import {useNavigation} from '@react-navigation/native';
 import React from 'react';
-import {StyleSheet, Text, TouchableNativeFeedback, View} from 'react-native';
+import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {COLORS} from '../../utils';
 import {DIMENS} from '../../utils/dimens';
@@ -22,26 +22,19 @@ export default function FloatingButton({
           <Text style={{fontSize: DIMENS.s, color: 'black'}}>{message}</Text>
         </View>
       )}
-      <TouchableNativeFeedback
-        useForeground
+      <TouchableOpacity
+        activeOpacity={0.8}
         onPress={onPress}
-        disabled={disabled}>
-        <View style={{...styles.btnAbsolute, backgroundColor}}>
-          <Icon name={iconName} size={30} color="white" style={styles.icon} />
-        </View>
-      </TouchableNativeFeedback>
+        disabled={disabled}
+        style={{...styles.btnAbsolute, backgroundColor}}>
+        <Icon name={iconName} size={30} color="white" />
+      </TouchableOpacity>
       {label && <Text style={styles.label}>{label}</Text>}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  icon: {
-    width: '100%',
-    height: '100%',
-    textAlign: 'center',
-    textAlignVertical: 'center',
-  },
   btnAbsolute: {
     height: 60,
     width: 60,
@@ -49,6 +42,8 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.icon,
     elevation: 3,
     overflow: 'hidden',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   containerTextAbsolute: {
     paddingHorizontal: 10,

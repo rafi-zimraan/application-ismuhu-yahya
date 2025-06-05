@@ -64,7 +64,6 @@ export default function ForgotPassword({navigation}) {
             <Text style={styles.txtEmail}>Atur Ulang Email</Text>
           </TouchableOpacity>
         </View>
-
         <EmailVerificationInput
           onChangeText={text => setEmail(text)}
           loading={loading}

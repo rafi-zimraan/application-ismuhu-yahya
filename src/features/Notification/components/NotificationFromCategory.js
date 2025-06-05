@@ -5,8 +5,8 @@ import {
   ScrollView,
   StatusBar,
   StyleSheet,
-  ToastAndroid,
   TouchableOpacity,
+  Platform,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useSelector} from 'react-redux';
@@ -23,6 +23,7 @@ import {
   View,
 } from '../../../Component';
 import {COLORS, DIMENS} from '../../../utils';
+import Toast from 'react-native-toast-message';
 
 export default function NotificationFromCategory({route, navigation}) {
   const {category} = route.params;
@@ -38,6 +39,15 @@ export default function NotificationFromCategory({route, navigation}) {
   const [originalData, setOriginalData] = useState([]);
   const [isLoadingFilter, setIsLoadingFilter] = useState(false);
   const [dropdownVisible, setDropdownVisible] = useState(false);
+
+  const showToast = (message, type = 'info') => {
+    Toast.show({
+      type: type,
+      text1: message,
+      position: 'bottom',
+      visibilityTime: 2000,
+    });
+  };
 
   const filterOptions = [
     {label: 'Today', value: 'today'},
@@ -157,10 +167,7 @@ export default function NotificationFromCategory({route, navigation}) {
         notificationDetail: detail.data,
       });
     } catch (error) {
-      ToastAndroid.show(
-        'Terjadi Kesalahan saat memuat detail notification,',
-        ToastAndroid.SHORT,
-      );
+      showToast('Terjadi kesalahan saat memuat detail notification');
     } finally {
       setIsLoadingFilter(false);
     }
@@ -178,7 +185,7 @@ export default function NotificationFromCategory({route, navigation}) {
           {backgroundColor: colors[mode].background_header},
         ]}>
         <HeaderTransparent
-          title={'Kategori Notification'}
+          title={'Kategori Notification '}
           icon="arrow-left-circle-outline"
           onPress={() => navigation.goBack()}
         />
@@ -217,7 +224,7 @@ export default function NotificationFromCategory({route, navigation}) {
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           }>
           {loading ? (
-            <View>
+            <View section={true} useBackgroundTransparent={true}>
               <Text style={styles.loadingText}>Sedang memuat data...</Text>
               <ModalLoading visible={loading} />
             </View>
@@ -342,7 +349,12 @@ const styles = StyleSheet.create({
   viewCard: {
     borderRadius: 10,
     elevation: 4,
-    padding: 10,
+    padding: 15,
+    margin: 5,
+    shadowColor: COLORS.black,
+    shadowRadius: 2,
+    shadowOpacity: 0.2,
+    shadowOffset: {height: 0, width: 2},
   },
   notificationCard: {
     marginBottom: 5,

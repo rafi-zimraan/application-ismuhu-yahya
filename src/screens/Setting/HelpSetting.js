@@ -94,6 +94,10 @@ const styles = StyleSheet.create({
   contentHelp: {
     borderRadius: 10,
     elevation: 3,
+    shadowColor: COLORS.black,
+    shadowOffset: {height: 0, width: 2},
+    shadowOpacity: 0.23,
+    shadowRadius: 2.22,
   },
   container: {
     flex: 1,
@@ -116,11 +120,11 @@ const styles = StyleSheet.create({
     color: COLORS.darkGray,
   },
   descriptionContainer: {
-    backgroundColor: COLORS.beige,
+    backgroundColor: COLORS.champagne,
     padding: 15,
     marginTop: -10,
-    marginBottom: 10,
-    borderRadius: 10,
+    borderBottomLeftRadius: 10,
+    borderBottomRightRadius: 10,
     shadowColor: COLORS.black,
     shadowOffset: {width: 0, height: 1},
     shadowOpacity: 0.1,

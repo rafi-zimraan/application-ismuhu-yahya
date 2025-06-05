@@ -44,6 +44,7 @@ import ProfileSection from './components/ProfileSection';
 import SectionWithData from './components/SectionWithData';
 import TrainingSection from './components/TrainingSection';
 import UpdateDataSpa from './components/UpdateDataSpa';
+import {setBiometricEnabled} from './services/biometricSlice';
 
 // component
 export {
@@ -94,3 +95,6 @@ export {
   updateExperience,
   deleteExperience,
 };
+
+// Redux
+export {setBiometricEnabled};

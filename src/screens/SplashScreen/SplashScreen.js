@@ -13,6 +13,7 @@ import {AppVersion, Gap} from '../../Component';
 import {IMG_ISMUHUYAHYA_POTRAIT} from '../../assets';
 import {setTheme} from '../../features/theme';
 import {COLORS} from '../../utils';
+import {setBiometricEnabled} from '../../features/Profile';
 
 export default function SplashScreen({navigation}) {
   const dispatch = useDispatch();
@@ -22,13 +23,19 @@ export default function SplashScreen({navigation}) {
     async function statusUserChecking() {
       setLoading(true);
       try {
-        const storedCredential = await EncryptedStorage.getItem('token');
-        const onboarding = await EncryptedStorage.getItem('is_boarding');
-        const theme = await EncryptedStorage.getItem('theme_mode');
+        const [storedCredential, onboarding, theme, biometric] =
+          await Promise.all([
+            EncryptedStorage.getItem('token'),
+            EncryptedStorage.getItem('is_boarding'),
+            EncryptedStorage.getItem('theme_mode'),
+            EncryptedStorage.getItem('biometric_enabled'),
+          ]);
 
         if (theme) {
-          setTheme(dispatch(setTheme(theme)));
+          // setTheme(dispatch(setTheme(theme)));
+          dispatch(setTheme(theme));
         }
+        dispatch(setBiometricEnabled(biometric === 'true'));
 
         setTimeout(() => {
           if (storedCredential) {

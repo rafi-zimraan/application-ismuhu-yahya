@@ -3,6 +3,7 @@ import React, {useCallback, useState} from 'react';
 import {
   Image,
   Platform,
+  SafeAreaView,
   ScrollView,
   StatusBar,
   StyleSheet,
@@ -88,7 +89,6 @@ export default function Settings({navigation}) {
           styles.navbar,
           {
             backgroundColor: colors[mode].background_header,
-            paddingTop: Platform.OS === 'ios' ? insets.top : 20,
           },
         ]}>
         <Text style={styles.navbarTitle}>{t('name_settings')}</Text>
@@ -316,6 +316,7 @@ const styles = StyleSheet.create({
     shadowOffset: {height: 2, width: 0},
     shadowOpacity: 0.33,
     shadowRadius: 3.2,
+    margin: 5,
   },
   imgPhoto: {
     height: 54,
@@ -337,10 +338,11 @@ const styles = StyleSheet.create({
   },
   navbarTitle: {
     position: 'absolute',
-    top: 40,
+    top: Platform.OS === 'ios' ? 50 : 40,
     fontSize: DIMENS.xxxl,
     fontWeight: 'bold',
     color: COLORS.white,
+    alignItems: 'center',
   },
   scrollContent: {
     padding: 20,
@@ -351,7 +353,7 @@ const styles = StyleSheet.create({
     fontSize: DIMENS.xl,
     fontWeight: 'bold',
     color: COLORS.darkGray,
-    marginVertical: 8,
+    marginVertical: 5,
   },
   section: {
     flexDirection: 'row',

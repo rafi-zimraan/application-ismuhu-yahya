@@ -118,7 +118,7 @@ export default function NotificationDetail({route, navigation}) {
         onPress={() => navigation.goBack()}
       />
       {notificationDetail ? (
-        <View showImageBackground={true}>
+        <View style={{flex: 1}} showImageBackground={true}>
           <ScrollView
             contentContainerStyle={styles.contentContainer}
             refreshControl={
@@ -131,7 +131,6 @@ export default function NotificationDetail({route, navigation}) {
               />
             }>
             <View style={styles.detailCard} section={true}>
-              {/* Title */}
               <Text style={styles.title}>{notificationDetail?.title}</Text>
               <Text
                 style={[
@@ -141,13 +140,11 @@ export default function NotificationDetail({route, navigation}) {
                 {new Date(notificationDetail.created_at).toLocaleString()}
               </Text>
 
-              {/* Message */}
               <View style={styles.section} section={true}>
                 <Text style={styles.sectionHeader}>Pesan</Text>
                 <Text style={styles.text}>{notificationDetail?.message}</Text>
               </View>
 
-              {/* Approved Button */}
               {notificationDetail?.approval?.is_approve === '1' && (
                 <View style={styles.viewApproval}>
                   <TouchableOpacity style={styles.approvedButton}>
@@ -160,7 +157,6 @@ export default function NotificationDetail({route, navigation}) {
         </View>
       ) : null}
 
-      {/* Bottom Approval */}
       {notificationDetail?.approval?.is_approve === null && (
         <View style={styles.bottomContainer} section={true}>
           <TouchableOpacity

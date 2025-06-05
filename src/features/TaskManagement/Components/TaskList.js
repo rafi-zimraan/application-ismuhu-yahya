@@ -4,12 +4,12 @@ import {
   FlatList,
   Image,
   StyleSheet,
-  Text,
   View,
 } from 'react-native';
 import {TaskItem} from '..';
 import {ICON_NOTFOUND_DATA} from '../../../assets';
 import {COLORS} from '../../../utils';
+import {Text} from '../../../Component';
 
 export default function TaskList({
   data,
@@ -28,6 +28,7 @@ export default function TaskList({
       data={data}
       style={{flex: 1}}
       keyExtractor={(item, index) => index.toString()}
+      showsVerticalScrollIndicator={true}
       ListEmptyComponent={
         <>
           {loading ? (
@@ -77,7 +78,6 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   LoadingText: {
-    color: COLORS.black,
     fontStyle: 'italic',
     marginBottom: 10,
   },

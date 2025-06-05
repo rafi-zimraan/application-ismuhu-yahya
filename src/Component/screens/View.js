@@ -13,6 +13,7 @@ export default function View({
   useSectionProfile,
   useBackgroundTransparent,
   useBackroundHeaderImageSignIn,
+  useBackgroundHeaderTaskDetail,
   useTextInput,
   ...rest
 }) {
@@ -21,7 +22,9 @@ export default function View({
     <ViewDefault
       style={[
         {
-          backgroundColor: useTextInput
+          backgroundColor: useBackgroundHeaderTaskDetail
+            ? colors[mode].headerTaskDetail
+            : useTextInput
             ? colors[mode].textInput
             : useBackroundHeaderImageSignIn
             ? colors[mode].background_sigIn

@@ -11,9 +11,10 @@ import {
   StatusBar,
   StyleSheet,
   TouchableWithoutFeedback,
+  SafeAreaView,
 } from 'react-native';
 import EncryptedStorage from 'react-native-encrypted-storage';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {AppVersion, Gap, Text, View} from '../../Component';
 import {IMG_LOGIN} from '../../assets';
 import {
@@ -23,12 +24,17 @@ import {
   login,
 } from '../../features/authentication';
 import {COLORS, DIMENS} from '../../utils';
+import ReactNativeBiometrics from 'react-native-biometrics';
 
 export default function SignIn({navigation}) {
+  const dispatch = useDispatch();
+  const isBiometricEnabled = useSelector(state => state.biometric.isEnabled);
+  const {colors, mode} = useSelector(state => state.theme);
+  console.log('Biometric Redux:', isBiometricEnabled);
   const animatedValue = useRef(new Animated.Value(0)).current;
   const {control, handleSubmit, setValue} = useForm();
   const [loading, setLoading] = useState(false);
-  const dispatch = useDispatch();
+  const [isPromptShown, setPromptShown] = useState(false);
 
   const rotate = animatedValue.interpolate({
     inputRange: [0, 1, 2, 3, 4, 5, 6, 10],
@@ -71,6 +77,51 @@ export default function SignIn({navigation}) {
     loadUserLogin();
   }, [setValue]);
 
+  useEffect(() => {
+    if (isBiometricEnabled) {
+      triggerBiometricLogin();
+    }
+  }, [isBiometricEnabled]);
+
+  const triggerBiometricLogin = async () => {
+    try {
+      const savedLogin = await EncryptedStorage.getItem('userLogin');
+      if (!savedLogin) return;
+
+      const {email, password} = JSON.parse(savedLogin);
+      const rnBiometrics = new ReactNativeBiometrics();
+      const {success} = await rnBiometrics.simplePrompt({
+        promptMessage: 'Login dengan sidik jari',
+        cancelButtonText: 'Batal',
+      });
+
+      if (success) {
+        const response = await login({email, password}, navigation, dispatch);
+        if (response?.status) {
+          navigation.replace('Dasboard');
+        }
+      } else {
+        console.log('Autentikasi biometrik dibatalkan');
+      }
+    } catch (error) {
+      console.log('BIOMETRIC LOGIN ERROR:', error?.message);
+    }
+  };
+
+  // const triggerBiometricLogin = async () => {
+  //   const rnBiometrics = new ReactNativeBiometrics();
+  //   const {success} = await rnBiometrics.simplePrompt({
+  //     promptMessage: 'Login dengan sidik jari',
+  //     cancelButtonText: 'Batal',
+  //   });
+
+  //   if (success && isBiometricEnabled) {
+  //     navigation.replace('Dasboard');
+  //   } else {
+  //     console.log('Autentikasi biometrik dibatalkan');
+  //   }
+  // };
+
   const onSubmit = async data => {
     setLoading(true);
     try {
@@ -78,9 +129,27 @@ export default function SignIn({navigation}) {
         email: data.email,
         password: data.password,
       };
-
-      await EncryptedStorage.setItem('userLogin', JSON.stringify(loginData));
-      await login(loginData, navigation, dispatch);
+      const response = await login(loginData, navigation, dispatch);
+      console.log('LOGIN RESPONSE', response);
+      if (response?.status) {
+        try {
+          await EncryptedStorage.setItem(
+            'userLogin',
+            JSON.stringify(loginData),
+          );
+        } catch (storageError) {
+          console.log('ERROR MENYIMPAN USER LOGIN:', storageError.message);
+        }
+      } else {
+        try {
+          const existing = await EncryptedStorage.getItem('userLogin');
+          if (existing) {
+            await EncryptedStorage.removeItem('userLogin');
+          }
+        } catch (error) {
+          console.log('ERROR MENGHAPUS USER LOGIN:', error.message);
+        }
+      }
     } catch (error) {
       console.log('LOGIN ERROR:', error?.message);
     } finally {
@@ -95,7 +164,10 @@ export default function SignIn({navigation}) {
       keyboardVerticalOffset={Platform.OS === 'ios' ? 40 : 0}>
       <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
         <View style={styles.container} useBackroundHeaderImageSignIn={true}>
-          <StatusBar barStyle="default" backgroundColor={'transparent'} />
+          <StatusBar
+            barStyle={mode === 'light' ? 'dark-content' : 'light-content'}
+            backgroundColor={colors[mode].background_sigIn}
+          />
           <Gap height={45} />
           <View
             style={styles.viewImageSignIn}
@@ -174,7 +246,6 @@ export default function SignIn({navigation}) {
                 <ResetPassword
                   onPress={() => navigation.navigate('ForgotPassword')}
                 />
-
                 <AppVersion />
               </View>
             </ScrollView>

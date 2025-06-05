@@ -40,7 +40,8 @@ PushNotification.configure({
     sound: true,
   },
   popInitialNotification: true,
-  requestPermissions: Platform.OS === 'ios',
+  // requestPermissions: Platform.OS === 'ios',
+  requestPermissions: false,
 });
 
 PushNotification.createChannel({

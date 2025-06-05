@@ -96,7 +96,6 @@ export default function OtpForgotPassword({route}) {
 
   const maskEmail = email => {
     if (!email.includes('@')) return email;
-
     const [localPart, domain] = email.split('@');
     const visiblePart = localPart.slice(0, 3);
     return `${visiblePart}****@${domain}`;

@@ -25,10 +25,10 @@ export default function App() {
   useEffect(() => {
     PushNotification.cancelAllLocalNotifications();
 
-    // 🧠 Tambahan untuk iOS: Request permission saat pertama app launch jika kalo plafrom-nya ios
-    if (Platform.OS === 'ios') {
-      PushNotificationIOS.requestPermissions();
-    }
+    // // 🧠 Tambahan untuk iOS: Request permission saat pertama app launch jika kalo plafrom-nya ios
+    // if (Platform.OS === 'ios') {
+    //   PushNotificationIOS.requestPermissions();
+    // }
 
     const scheduleNotification = (hour, minute, title, message) => {
       const now = new Date();
@@ -63,6 +63,13 @@ export default function App() {
       20,
       0,
       "Selamat Malam, Pejuang Qur'an",
+      'Jangan lupa isi amal yaumi, ya!',
+    );
+
+    scheduleNotification(
+      11,
+      19,
+      "Selamat Pagi, Pejuang Qur'an",
       'Jangan lupa isi amal yaumi, ya!',
     );
   }, []);

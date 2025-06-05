@@ -1,4 +1,4 @@
-package com.ismuhuyahya
+package com.ismuhuyahyadev
 
 import android.content.Intent
 import android.provider.Settings

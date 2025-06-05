@@ -1,5 +1,4 @@
 import NetInfo from '@react-native-community/netinfo';
-import {ToastAndroid} from 'react-native';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import {setUserSession} from '..';
 import api from '../../../utils/axiosInstance';
@@ -22,6 +21,7 @@ export const login = async (data, navigation, dispatch) => {
       return;
     }
     const response = await api.post('/mobile/login', data);
+    console.log('SIGNIN', response);
     const token = response.data?.token;
     const id = response.data?.id;
     const responseData = response.data;
@@ -42,8 +42,8 @@ export const login = async (data, navigation, dispatch) => {
         JSON.stringify(responseData),
       );
       showToast(`Selamat Datang ${responseData.name}`);
-
       navigation.replace('Dasboard');
+      return responseData;
     } else {
       throw new Error('Token atau user tidak ditemukan');
     }

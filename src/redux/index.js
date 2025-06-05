@@ -3,6 +3,7 @@ import {
   DasboardReducer,
   TaskReducer,
   authReducer,
+  biometriceReducer,
   languageReducer,
   themeReducer,
 } from './slices';
@@ -14,5 +15,6 @@ export const store = configureStore({
     language: languageReducer,
     task_management: TaskReducer,
     dasboard: DasboardReducer,
+    biometric: biometriceReducer,
   },
 });

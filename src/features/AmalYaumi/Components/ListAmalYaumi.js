@@ -23,6 +23,7 @@ import {
 import {ICON_NOTFOUND_DATA} from '../../../assets';
 import {COLORS, DIMENS} from '../../../utils';
 import {FecthMe} from '../../authentication';
+import Toast from 'react-native-toast-message';
 
 export default function ListAmalYaumi({navigation}) {
   const [data, setData] = useState([]);
@@ -36,10 +37,20 @@ export default function ListAmalYaumi({navigation}) {
   const [isHaid, setIsHaid] = useState(false);
   const [userGender, setUserGender] = useState(null);
 
+  const showToast = (message, type = 'info') => {
+    Toast.show({
+      type: type,
+      text1: message,
+      position: 'bottom',
+      visibilityTime: 2000,
+    });
+  };
+
   const fetchData = async (haid = 0) => {
     try {
       const idUser = await EncryptedStorage.getItem('idUser');
       const response = await fetchGetYaumi(JSON.parse(idUser), haid);
+      console.log('data listYaumi', response);
       if (response.message === 'Silahkan login terlebih dahulu') {
         setTokenExpired(true);
         return;
@@ -110,10 +121,7 @@ export default function ListAmalYaumi({navigation}) {
         setSelectedDropdown(dropdownSelections);
       }
     } catch (error) {
-      ToastAndroid.show(
-        'Terjadi kesalahan saat memuat data list yaumi',
-        ToastAndroid.SHORT,
-      );
+      showToast('Terjadi kesalahan saat memuat data list yaumi');
     } finally {
       setLoading(false);
     }

@@ -51,6 +51,7 @@ export {
   TaskFilter,
   TargetLeader,
 };
+
 // slice
 export {
   getFilesTaskManagement,
@@ -68,5 +69,6 @@ export {
   getDetailTaskManagement,
   updateDataTaskManagement,
 };
+
 // redux
 export {setTargetLeader, setFilter, setDepartment, setTasksFilter};

@@ -8,7 +8,6 @@ import {
   ScrollView,
   StyleSheet,
   Text,
-  ToastAndroid,
   TouchableOpacity,
 } from 'react-native';
 import EncryptedStorage from 'react-native-encrypted-storage';
@@ -30,6 +29,7 @@ import {
 } from '../../features/AmalYaumi';
 import {FecthMe} from '../../features/authentication';
 import {COLORS, DIMENS} from '../../utils';
+import Toast from 'react-native-toast-message';
 
 const {height} = Dimensions.get('window');
 
@@ -48,11 +48,20 @@ export default function AmalYaumi({navigation}) {
   const [loading, setLoading] = useState(false);
   const [modalGender, setModalGender] = useState(false);
 
+  const showToast = (message, type = 'info') => {
+    Toast.show({
+      type: type,
+      text1: message,
+      position: 'bottom',
+      visibilityTime: 2000,
+    });
+  };
+
   const fetchProfileData = useCallback(async () => {
     setLoading(true);
     try {
       const userData = await FecthMe();
-
+      console.log('DATA USER', userData);
       if (userData?.status) {
         const baseUrl = 'https://app.simpondok.com/';
         const photoUrl = userData.url_photo
@@ -61,7 +70,7 @@ export default function AmalYaumi({navigation}) {
 
         setPhoto(photoUrl);
       } else {
-        ToastAndroid.show('Gagal memuat data pengguna', ToastAndroid.SHORT);
+        showToast('Gagal memuat data pengguna');
       }
 
       const idUser = JSON.parse(await EncryptedStorage.getItem('idUser'));
@@ -102,10 +111,7 @@ export default function AmalYaumi({navigation}) {
       setScrollData(scrollItems);
       setDaysData(dataMonth);
     } catch (error) {
-      ToastAndroid.show(
-        'Terjadi kesalah saat memuat data grafik yaumi',
-        ToastAndroid.SHORT,
-      );
+      showToast('Terjadi kesalahan saat memuat data grafik yaumi');
     } finally {
       setLoading(false);
     }
@@ -122,7 +128,7 @@ export default function AmalYaumi({navigation}) {
     try {
       await fetchProfileData();
     } catch (error) {
-      ToastAndroid.show('gagal refresh data', ToastAndroid.SHORT);
+      console.log('error refresh', error);
     } finally {
       setRefreshing(false);
     }

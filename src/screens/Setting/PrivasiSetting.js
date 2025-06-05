@@ -12,22 +12,108 @@ import {Gap, HeaderTransparent, ModalCustom, Text, View} from '../../Component';
 import {Translations, setLanguage} from '../../features/Language';
 import {toggleTheme} from '../../features/theme';
 import {COLORS, DIMENS} from '../../utils';
+import ReactNativeBiometrics, {BiometryTypes} from 'react-native-biometrics';
+import Toast from 'react-native-toast-message';
+import {setBiometricEnabled} from '../../features/Profile';
 
 export default function PrivasiSetting({navigation}) {
   const dispatch = useDispatch();
+  const rnBiometrics = new ReactNativeBiometrics();
+  const isBiometricEnable = useSelector(state => state.biometric.isEnabled);
+  console.log('INI BIOMETRIC', isBiometricEnable);
   const {mode, colors} = useSelector(state => state.theme);
   const currentLanguage = useSelector(state => state.language.currentLanguage);
   const [selectedLanguage, setSelectedLanguage] = useState(currentLanguage);
   const [isModalVisible, setModalVisible] = useState(false);
+  const [showBiometricConfirmModal, setShowBiometricConfirmModal] =
+    useState(false);
   const languages = [
     {code: 'en', label: 'English'},
     {code: 'id', label: 'Bahasa Indonesia'},
   ];
 
+  const showToast = (message, type = 'info') => {
+    Toast.show({
+      type: type,
+      text1: message,
+      position: 'bottom',
+      visibilityTime: 2000,
+    });
+  };
+
   const handleLanguageChange = async () => {
     dispatch(setLanguage(selectedLanguage));
     setModalVisible(false);
   };
+
+  const handleBiometricEnable = async () => {
+    try {
+      const {available, biometryType} = await rnBiometrics.isSensorAvailable();
+      if (!available) {
+        showToast('Biometrik tidak tersedia di perangkat ini', 'error');
+        return;
+      }
+
+      // Log jenis biometri
+      if (biometryType === BiometryTypes.TouchID) {
+        console.log('TouchID is supported');
+      } else if (biometryType === BiometryTypes.FaceID) {
+        console.log('FaceID is supported');
+      } else if (biometryType === BiometryTypes.Biometrics) {
+        console.log('Biometrics is supported (Android)');
+      }
+
+      // Prompt autentikasi
+      const result = await rnBiometrics.simplePrompt({
+        promptMessage: 'Otentifikasi menggunakan biometrik Anda',
+        fallbackPromptMessage: 'Gunakan kode sandi perangkat',
+        cancelButtonText: 'Batal',
+      });
+
+      if (result?.success) {
+        await EncryptedStorage.setItem('biometric_enabled', 'true');
+        dispatch(setBiometricEnabled(true));
+        showToast('Biometrik berhasil diaktifkan', 'success');
+      } else {
+        dispatch(setBiometricEnabled(false));
+        showToast('Autentikasi dibatalkan', 'info');
+      }
+    } catch (error) {
+      console.log('Biometric Error:', error.message);
+      showToast('Gagal melakukan autentikasi', 'error');
+
+      dispatch(setBiometricEnabled(false));
+    } finally {
+      setShowBiometricConfirmModal(false);
+    }
+  };
+
+  // const handleBiometricEnable = async () => {
+  //   try {
+  //     const {available} = await rnBiometrics.isSensorAvailable();
+
+  //     if (available) {
+  //       const result = await rnBiometrics.simplePrompt({
+  //         promptMessage:
+  //           'Otentifikasi dengan sidik jari, Untuk mengunakan sensor sidik jari kami memerlukan data anda',
+  //       });
+
+  //       if (result?.success) {
+  //         dispatch(setBiometricEnabled(true));
+  //         await EncryptedStorage.setItem('biometric_enabled', 'true');
+  //       } else {
+  //         dispatch(setBiometricEnabled(false));
+  //       }
+  //     } else {
+  //       showToast('Biometrik tidak tersedia di perangkat ini');
+  //     }
+  //   } catch (error) {
+  //     console.log('Biometric Error', error);
+  //     dispatch(setBiometricEnabled(false));
+  //   } finally {
+  //     setShowBiometricConfirmModal(false);
+  //   }
+  // };
 
   const t = key => Translations[currentLanguage][key];
 
@@ -82,6 +168,39 @@ export default function PrivasiSetting({navigation}) {
           </Text>
         </TouchableOpacity>
 
+        <View style={styles.section} section={true}>
+          <View section={true}>
+            <Text style={styles.sectionTitle}>Gunakan Biometrik</Text>
+            <Text style={styles.sectionSubtitle}>
+              Aktifkan untuk menggunakan sidik jari saat login.
+            </Text>
+          </View>
+          <Switch
+            value={isBiometricEnable}
+            onValueChange={async Bio => {
+              if (Bio) {
+                setShowBiometricConfirmModal(true);
+              } else {
+                dispatch(setBiometricEnabled(false));
+                await EncryptedStorage.setItem('biometric_enabled', 'false');
+              }
+            }}
+            trackColor={{false: '#767577', true: '#81b0ff'}}
+            thumbColor={isBiometricEnable ? '#f5dd4b' : COLORS.softGray}
+          />
+        </View>
+
+        <ModalCustom
+          visible={showBiometricConfirmModal}
+          onRequestClose={() => setShowBiometricConfirmModal(false)}
+          onOutContentPress={() => setShowBiometricConfirmModal(false)}
+          title="Aktifkan Biometrik"
+          description="Anda akan diminta memverifikasi menggunakan biometrik."
+          iconModalName="fingerprint"
+          buttonTitle="Lanjutkan"
+          buttonSubmit={handleBiometricEnable}
+        />
+
         <ModalCustom
           visible={isModalVisible}
           onRequestClose={() => setModalVisible(false)}
@@ -128,8 +247,12 @@ const styles = StyleSheet.create({
     padding: 15,
     borderRadius: 10,
     marginBottom: 15,
-    elevation: 3,
     marginHorizontal: 15,
+    elevation: 3,
+    shadowColor: COLORS.black,
+    shadowOffset: {height: 0, width: 2},
+    shadowOpacity: 0.22,
+    shadowRadius: 2.22,
   },
   sectionTitle: {
     fontSize: DIMENS.l,
