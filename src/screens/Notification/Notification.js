@@ -139,10 +139,10 @@ const styles = StyleSheet.create({
   },
   navbarContainer: {
     padding: 15,
-    height: '12%',
+    height: '11%',
   },
   navbarTitle: {
-    fontSize: 20,
+    fontSize: DIMENS.xl,
     fontWeight: 'bold',
     color: COLORS.white,
     textAlign: 'center',

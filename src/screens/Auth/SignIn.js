@@ -19,22 +19,31 @@ import {AppVersion, Gap, Text, View} from '../../Component';
 import {IMG_LOGIN} from '../../assets';
 import {
   ButtonAuth,
+  FecthMe,
   FormInput,
   ResetPassword,
   login,
 } from '../../features/authentication';
 import {COLORS, DIMENS} from '../../utils';
 import ReactNativeBiometrics from 'react-native-biometrics';
+import Toast from 'react-native-toast-message';
 
 export default function SignIn({navigation}) {
   const dispatch = useDispatch();
   const isBiometricEnabled = useSelector(state => state.biometric.isEnabled);
   const {colors, mode} = useSelector(state => state.theme);
-  console.log('Biometric Redux:', isBiometricEnabled);
   const animatedValue = useRef(new Animated.Value(0)).current;
   const {control, handleSubmit, setValue} = useForm();
   const [loading, setLoading] = useState(false);
-  const [isPromptShown, setPromptShown] = useState(false);
+
+  const showToast = (message, type = 'info') => {
+    Toast.show({
+      type: type,
+      text1: message,
+      position: 'bottom',
+      visibilityTime: 2000,
+    });
+  };
 
   const rotate = animatedValue.interpolate({
     inputRange: [0, 1, 2, 3, 4, 5, 6, 10],
@@ -86,41 +95,35 @@ export default function SignIn({navigation}) {
   const triggerBiometricLogin = async () => {
     try {
       const savedLogin = await EncryptedStorage.getItem('userLogin');
-      if (!savedLogin) return;
+      if (!savedLogin) {
+        return;
+      }
 
       const {email, password} = JSON.parse(savedLogin);
+      const loginData = {email, password};
+
       const rnBiometrics = new ReactNativeBiometrics();
       const {success} = await rnBiometrics.simplePrompt({
-        promptMessage: 'Login dengan sidik jari',
+        promptMessage: 'Autentikasi dengan sidik jari',
         cancelButtonText: 'Batal',
       });
 
-      if (success) {
-        const response = await login({email, password}, navigation, dispatch);
-        if (response?.status) {
-          navigation.replace('Dasboard');
-        }
+      if (!success) {
+        console.log('Autentikasi dibatalkan oleh user');
+        return;
+      }
+
+      const me = await FecthMe();
+      if (me?.message === 'Silahkan login terlebih dahulu') {
+        await login(loginData, navigation, dispatch);
       } else {
-        console.log('Autentikasi biometrik dibatalkan');
+        navigation.replace('Dashboard');
       }
     } catch (error) {
       console.log('BIOMETRIC LOGIN ERROR:', error?.message);
+      showToast('Gagal login dengan sidik jari', 'error');
     }
   };
-
-  // const triggerBiometricLogin = async () => {
-  //   const rnBiometrics = new ReactNativeBiometrics();
-  //   const {success} = await rnBiometrics.simplePrompt({
-  //     promptMessage: 'Login dengan sidik jari',
-  //     cancelButtonText: 'Batal',
-  //   });
-
-  //   if (success && isBiometricEnabled) {
-  //     navigation.replace('Dasboard');
-  //   } else {
-  //     console.log('Autentikasi biometrik dibatalkan');
-  //   }
-  // };
 
   const onSubmit = async data => {
     setLoading(true);
@@ -130,7 +133,6 @@ export default function SignIn({navigation}) {
         password: data.password,
       };
       const response = await login(loginData, navigation, dispatch);
-      console.log('LOGIN RESPONSE', response);
       if (response?.status) {
         try {
           await EncryptedStorage.setItem(

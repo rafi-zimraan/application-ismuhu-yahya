@@ -35,7 +35,7 @@ import {
 import {FecthMe} from '../../features/authentication';
 import {COLORS} from '../../utils';
 import Toast from 'react-native-toast-message';
-import {SafeAreaView, useSafeAreaInsets} from 'react-native-safe-area-context';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import PushNotificationIOS from '@react-native-community/push-notification-ios';
 
 export default function Dasboard({navigation}) {
@@ -109,7 +109,6 @@ export default function Dasboard({navigation}) {
   const fetchUserSession = useCallback(async () => {
     try {
       const response = await FecthMe();
-      console.log('me', response);
       if (response?.message === 'Silahkan login terlebih dahulu') {
         setTokenExpired(true);
       }
@@ -135,7 +134,10 @@ export default function Dasboard({navigation}) {
 
   return (
     <View style={{flex: 1, backgroundColor: colors[mode].background}}>
-      <StatusBar barStyle="dark-content" backgroundColor="transparent" />
+      <StatusBar
+        barStyle={mode === 'light' ? 'light-content' : 'dark-content'}
+        backgroundColor="transparent"
+      />
       <ScrollView
         contentContainerStyle={styles.contentContainer}
         refreshControl={

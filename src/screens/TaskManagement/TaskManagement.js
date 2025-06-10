@@ -83,7 +83,6 @@ export default function TaskManagement({navigation}) {
         return;
       }
       const response = await getAllTaskManagement(selectedFilter);
-      console.log('MANAGEMENET', response);
       dispatch(
         setTasksFilter({data: response.data.todos, type: selectedFilter}),
       );

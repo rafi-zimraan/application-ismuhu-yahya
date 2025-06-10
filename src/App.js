@@ -65,13 +65,6 @@ export default function App() {
       "Selamat Malam, Pejuang Qur'an",
       'Jangan lupa isi amal yaumi, ya!',
     );
-
-    scheduleNotification(
-      11,
-      19,
-      "Selamat Pagi, Pejuang Qur'an",
-      'Jangan lupa isi amal yaumi, ya!',
-    );
   }, []);
 
   useEffect(() => {

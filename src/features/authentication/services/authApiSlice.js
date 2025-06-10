@@ -21,7 +21,6 @@ export const login = async (data, navigation, dispatch) => {
       return;
     }
     const response = await api.post('/mobile/login', data);
-    console.log('SIGNIN', response);
     const token = response.data?.token;
     const id = response.data?.id;
     const responseData = response.data;

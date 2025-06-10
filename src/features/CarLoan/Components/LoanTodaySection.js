@@ -32,18 +32,21 @@ export default function LoanTodaySection({
             <Text style={styles.loadingText}>Memuat data...</Text>
           </View>
         ) : userLoanData?.loan_car?.length > 0 ? (
-          userLoanData.loan_car.map(item => (
-            <LoanTodayItem
-              key={item.id}
-              loaner={item.loaner}
-              status={item.car?.status || '-'}
-              carName={item.car?.name || '-'}
-              timeUse={item.time_use ? item.time_use.substring(0, 5) : '-'}
-              onPress={() => {
-                navigation.navigate('LoanTodayDetail', {id: item.id});
-              }}
-            />
-          ))
+          userLoanData.loan_car
+            .slice()
+            .reverse()
+            .map(item => (
+              <LoanTodayItem
+                key={item.id}
+                loaner={item.loaner}
+                status={item.status || '-'}
+                carName={item.car?.name || '-'}
+                timeUse={item.time_use ? item.time_use.substring(0, 5) : '-'}
+                onPress={() => {
+                  navigation.navigate('LoanTodayDetail', {id: item.id});
+                }}
+              />
+            ))
         ) : (
           <View style={styles.viewContentNotFound}>
             <Image
