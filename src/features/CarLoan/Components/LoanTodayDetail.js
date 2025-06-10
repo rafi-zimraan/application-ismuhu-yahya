@@ -30,7 +30,6 @@ export default function LoanTodayDetail({navigation}) {
           return;
         }
         const data = await getCarLoanDetail(id);
-        console.log('data detail peminjaman', data);
         setCarLoanDetail(data);
       } catch (err) {
         console.log('Failed to fetch car loan detail:', err.message);

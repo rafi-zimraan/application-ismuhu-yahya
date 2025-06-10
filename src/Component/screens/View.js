@@ -14,6 +14,7 @@ export default function View({
   useBackgroundTransparent,
   useBackroundHeaderImageSignIn,
   useBackgroundHeaderTaskDetail,
+  useBackgroundBottomTab,
   useTextInput,
   ...rest
 }) {
@@ -22,7 +23,9 @@ export default function View({
     <ViewDefault
       style={[
         {
-          backgroundColor: useBackgroundHeaderTaskDetail
+          backgroundColor: useBackgroundBottomTab
+            ? colors[mode].backgroundBottomTab
+            : useBackgroundHeaderTaskDetail
             ? colors[mode].headerTaskDetail
             : useTextInput
             ? colors[mode].textInput

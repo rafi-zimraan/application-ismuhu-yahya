@@ -50,7 +50,7 @@ export default function AvailableCarSection({carList, navigation, loading}) {
                     backgroundColor:
                       item.status === '0'
                         ? COLORS.goldenOrange
-                        : COLORS.darkBackground,
+                        : COLORS.greenBoy,
                   }}>
                   <Text style={styles.textActive}>
                     {item.status === '0' ? 'Tersedia' : 'Terpakai'}

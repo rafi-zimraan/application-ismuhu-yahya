@@ -61,7 +61,6 @@ export default function AmalYaumi({navigation}) {
     setLoading(true);
     try {
       const userData = await FecthMe();
-      console.log('DATA USER', userData);
       if (userData?.status) {
         const baseUrl = 'https://app.simpondok.com/';
         const photoUrl = userData.url_photo

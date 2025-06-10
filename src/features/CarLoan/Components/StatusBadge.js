@@ -4,6 +4,24 @@ import {DIMENS} from '../../../utils';
 import {View, Text} from '../../../Component';
 
 const StatusBadge = ({status}) => {
+  const getStatusLabel = code => {
+    switch (code) {
+      case '0':
+      case 0:
+        return 'Menunggu';
+      case '1':
+      case 1:
+        return 'Setuju';
+      case '2':
+      case 2:
+        return 'Ditolak';
+      default:
+        return 'Menunggu';
+    }
+  };
+
+  const statusLabel = getStatusLabel(status);
+
   const statusInfo = {
     Menunggu: {
       iconName: 'progress-clock',
@@ -22,7 +40,8 @@ const StatusBadge = ({status}) => {
     },
   };
 
-  const {iconName, label, color} = statusInfo[status] || statusInfo['Menunggu'];
+  const {iconName, label, color} =
+    statusInfo[statusLabel] || statusInfo['Menunggu'];
 
   return (
     <View style={styles.container}>

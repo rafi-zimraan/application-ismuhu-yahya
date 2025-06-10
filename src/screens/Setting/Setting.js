@@ -97,10 +97,14 @@ export default function Settings({navigation}) {
         <ScrollView
           contentContainerStyle={styles.scrollContent}
           showsVerticalScrollIndicator={false}>
-          <Gap height={15} />
-
+          <Gap height={20} />
           <Text style={styles.sectionHeader}>{t('profile')}</Text>
-          <View section={true} style={styles.contentMenu}>
+          <View
+            section={true}
+            style={[
+              styles.contentMenu,
+              {shadowColor: mode === 'dark' ? COLORS.white : COLORS.black},
+            ]}>
             <TouchableOpacity
               style={styles.section}
               activeOpacity={0.6}
@@ -312,11 +316,10 @@ const styles = StyleSheet.create({
   contentMenu: {
     elevation: 3,
     borderRadius: 10,
-    shadowColor: COLORS.black,
     shadowOffset: {height: 2, width: 0},
     shadowOpacity: 0.33,
     shadowRadius: 3.2,
-    margin: 5,
+    margin: 3,
   },
   imgPhoto: {
     height: 54,
@@ -334,12 +337,12 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     zIndex: 10,
-    height: '12%',
+    height: '11%',
   },
   navbarTitle: {
     position: 'absolute',
-    top: Platform.OS === 'ios' ? 50 : 40,
-    fontSize: DIMENS.xxxl,
+    top: Platform.OS === 'ios' ? 55 : 45,
+    fontSize: DIMENS.xl,
     fontWeight: 'bold',
     color: COLORS.white,
     alignItems: 'center',
@@ -350,7 +353,7 @@ const styles = StyleSheet.create({
     marginTop: 60,
   },
   sectionHeader: {
-    fontSize: DIMENS.xl,
+    fontSize: DIMENS.l,
     fontWeight: 'bold',
     color: COLORS.darkGray,
     marginVertical: 5,

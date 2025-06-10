@@ -10,7 +10,7 @@ export default function LoanTodayItem({
   timeUse,
   onPress,
 }) {
-  const renderStatus = () => {
+  const getStatusText = () => {
     switch (status) {
       case '0':
         return 'Menunggu';
@@ -20,6 +20,19 @@ export default function LoanTodayItem({
         return 'Ditolak';
       default:
         return 'Menunggu';
+    }
+  };
+
+  const getStatusColor = status => {
+    switch (status) {
+      case '0':
+        return '#007AFF';
+      case '1':
+        return COLORS.greenBoy;
+      case '2':
+        return COLORS.red;
+      default:
+        return COLORS.black;
     }
   };
 
@@ -35,7 +48,9 @@ export default function LoanTodayItem({
           <Text style={styles.timeUse}>Jam: {timeUse}</Text>
         </View>
         <View style={styles.rightSection} section={true}>
-          <Text style={styles.status}>{renderStatus()}</Text>
+          <Text style={[styles.status, {color: getStatusColor(status)}]}>
+            {getStatusText(status)}
+          </Text>
         </View>
       </View>
     </TouchableOpacity>
