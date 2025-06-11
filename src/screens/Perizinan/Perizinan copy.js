@@ -8,7 +8,6 @@ import {
   StatusBar,
   StyleSheet,
   Text,
-  ToastAndroid,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -28,6 +27,7 @@ import {
   getAllPerizinanKeluar,
 } from '../../features/Perizinan';
 import {COLORS, DIMENS} from '../../utils';
+import Toast from 'react-native-toast-message';
 
 export default function Perizinan({navigation}) {
   const [dataCuti, setDataCuti] = useState([]);
@@ -42,6 +42,15 @@ export default function Perizinan({navigation}) {
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
   const [isDelete, setIsDelete] = useState(false);
   const [selectedDeleteId, setSelectedDeleteId] = useState(null);
+
+  const showToast = (message, type = 'info') => {
+    Toast.show({
+      type: type,
+      text1: message,
+      position: 'bottom',
+      visibilityTime: 2000,
+    });
+  };
 
   const fetchData = async () => {
     try {
@@ -183,13 +192,13 @@ export default function Perizinan({navigation}) {
             );
           }
 
-          ToastAndroid.show('Data berhasil dihapus.', ToastAndroid.SHORT);
+          showToast('Data berhasil dihapus.');
           setDeleteModalVisible(false);
         } else {
-          ToastAndroid.show('Gagal menghapus data.', ToastAndroid.SHORT);
+          showToast('Gagal menghapus data.');
         }
       } else {
-        ToastAndroid.show('Data tidak ditemukan.', ToastAndroid.SHORT);
+        showToast('Data tidak ditemukan.');
       }
     } catch (error) {
       console.log('Error deleting data:', error);

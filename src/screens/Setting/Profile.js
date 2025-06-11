@@ -8,7 +8,6 @@ import {
   RefreshControl,
   ScrollView,
   StyleSheet,
-  ToastAndroid,
   TouchableOpacity,
 } from 'react-native';
 import EncryptedStorage from 'react-native-encrypted-storage';
@@ -39,6 +38,7 @@ import {
 } from '../../features/Profile';
 import {FecthMe} from '../../features/authentication';
 import {COLORS, DIMENS} from '../../utils';
+import Toast from 'react-native-toast-message';
 
 export default function Profile({navigation}) {
   const {colors, mode} = useSelector(state => state.theme);
@@ -54,6 +54,15 @@ export default function Profile({navigation}) {
   const [familyData, setFamilyData] = useState([]);
   const [spaData, setSpaData] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
+
+  const showToast = (message, type = 'info') => {
+    Toast.show({
+      type: type,
+      text1: message,
+      position: 'bottom',
+      visibilityTime: 2000,
+    });
+  };
 
   const CheckToken = async () => {
     try {
@@ -85,50 +94,37 @@ export default function Profile({navigation}) {
         const uploadResponse = await uploadPhotoProfile(userId, selectedImage);
         console.log('upload image', uploadResponse);
         if (uploadResponse?.status) {
-          ToastAndroid.show('Foto berhasil diunggah!', ToastAndroid.SHORT);
+          showToast('Foto berhasil diunggah!');
 
           const userData = await FecthMe();
-          console.log('data profile', userData);
           if (userData?.status) {
             const baseUrl = 'https://app.simpondok.com/';
             const photoUrl = userData.url_photo
               ? `${baseUrl}${userData.url_photo}?timestamp=${Date.now()}`
               : null;
-            console.log('foto', photoUrl);
             setPhoto(photoUrl);
           } else {
-            ToastAndroid.show(
-              'Gagal memperbarui foto, coba lagi nanti.',
-              ToastAndroid.SHORT,
-            );
+            showToast('Gagal memperbarui foto, coba lagi nanti.');
           }
         } else {
-          ToastAndroid.show(
+          showToast(
             uploadResponse?.message || 'Gagal mengunggah foto. Coba lagi!',
-            ToastAndroid.SHORT,
           );
           setModalVisible(true);
         }
       } catch (error) {
         if (error.response) {
-          ToastAndroid.show(
+          showToast(
             error.response.data.message || 'Terjadi kesalahan pada server.',
-            ToastAndroid.LONG,
           );
         } else if (error.message.includes('Network Error')) {
-          ToastAndroid.show(
-            'Gagal mengunggah foto. Periksa koneksi internet Anda.',
-            ToastAndroid.LONG,
-          );
+          showToast('Gagal mengunggah foto. Periksa koneksi internet Anda.');
         } else {
-          ToastAndroid.show(
-            'Terjadi kesalahan, coba lagi nanti.',
-            ToastAndroid.SHORT,
-          );
+          showToast('Terjadi kesalahan, coba lagi nanti.');
         }
       }
     } else {
-      ToastAndroid.show('Anda belum memilih gambar.', ToastAndroid.SHORT);
+      showToast('Anda belum memilih gambar.');
     }
   };
 
@@ -147,10 +143,7 @@ export default function Profile({navigation}) {
             if (granted === PermissionsAndroid.RESULTS.GRANTED) {
               launchCamera(options, handleImageResponse);
             } else {
-              ToastAndroid.show(
-                'Izin kamera tidak diberikan',
-                ToastAndroid.SHORT,
-              );
+              showToast('Izin kamera tidak diberikan');
             }
           },
         },

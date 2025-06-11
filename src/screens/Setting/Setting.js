@@ -3,7 +3,6 @@ import React, {useCallback, useState} from 'react';
 import {
   Image,
   Platform,
-  SafeAreaView,
   ScrollView,
   StatusBar,
   StyleSheet,

@@ -3,7 +3,6 @@ import React, {useEffect, useState} from 'react';
 import {
   Platform,
   RefreshControl,
-  SafeAreaView,
   ScrollView,
   StatusBar,
   StyleSheet,

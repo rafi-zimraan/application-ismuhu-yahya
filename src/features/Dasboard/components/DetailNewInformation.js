@@ -6,7 +6,6 @@ import {
   ScrollView,
   StatusBar,
   StyleSheet,
-  ToastAndroid,
   TouchableOpacity,
 } from 'react-native';
 import HTMLView from 'react-native-htmlview';
@@ -22,6 +21,7 @@ import {
 } from '../../../Component';
 import {ICON_NOTFOUND_DATA} from '../../../assets';
 import {COLORS, DIMENS} from '../../../utils';
+import Toast from 'react-native-toast-message';
 
 const {width} = Dimensions.get('window');
 
@@ -31,6 +31,15 @@ export default function DetailNewInformation({route, navigation}) {
   const {colors, mode} = useSelector(state => state.theme);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [loading, setLoading] = useState(true);
+
+  const showToast = (message, type = 'info') => {
+    Toast.show({
+      type: type,
+      text1: message,
+      position: 'bottom',
+      visibilityTime: 2000,
+    });
+  };
 
   useEffect(() => {
     const timeout = setTimeout(() => setLoading(false), 1000);
@@ -58,10 +67,7 @@ export default function DetailNewInformation({route, navigation}) {
         failOnCancel: false,
       });
     } catch (error) {
-      ToastAndroid.show(
-        'Terjadi kesalahan saat share data informasi',
-        ToastAndroid.SHORT,
-      );
+      showToast('Terjadi kesalahan saat share data informasi');
     }
   };
 

@@ -5,7 +5,6 @@ import {
   ScrollView,
   StyleSheet,
   TextInput,
-  ToastAndroid,
   TouchableOpacity,
 } from 'react-native';
 import EncryptedStorage from 'react-native-encrypted-storage';
@@ -20,6 +19,7 @@ import {
   View,
 } from '../../../Component';
 import {COLORS, DIMENS} from '../../../utils';
+import Toast from 'react-native-toast-message';
 
 export default function CreateTraining({navigation}) {
   const {mode, colors} = useSelector(state => state.theme);
@@ -33,6 +33,15 @@ export default function CreateTraining({navigation}) {
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [tokenExpired, setTokenExpired] = useState(false);
+
+  const showToast = (message, type = 'info') => {
+    Toast.show({
+      type: type,
+      text1: message,
+      position: 'bottom',
+      visibilityTime: 2000,
+    });
+  };
 
   const handleDateChange = (event, selectedDate) => {
     setShowDatePicker(false);
@@ -52,10 +61,7 @@ export default function CreateTraining({navigation}) {
         setModalVisible(true);
       }
     } catch (error) {
-      ToastAndroid.show(
-        'Gagal menambahkan data pelatihan!',
-        ToastAndroid.SHORT,
-      );
+      showToast('Gagal menambahkan data pelatihan!');
     } finally {
       setIsLoading(false);
     }
@@ -63,7 +69,7 @@ export default function CreateTraining({navigation}) {
 
   const onSubmit = () => {
     if (!title || !date || !cost || !category) {
-      ToastAndroid.show('Harap diisi semua kolom!', ToastAndroid.SHORT);
+      showToast('Harap diisi semua kolom!');
       return;
     }
 

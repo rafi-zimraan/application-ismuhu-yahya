@@ -4,7 +4,6 @@ import {
   ScrollView,
   StatusBar,
   StyleSheet,
-  ToastAndroid,
   View,
 } from 'react-native';
 import {TextInputPerizinan, addCuti} from '..';
@@ -20,6 +19,7 @@ import {COLORS} from '../../../utils';
 import {getAllDepartment} from '../../Departmant';
 import {getAllDivisions} from '../../Divisi';
 import {FecthMe} from '../../authentication';
+import Toast from 'react-native-toast-message';
 
 export default function CreateFormulirPerizinan({navigation, route}) {
   const {division_id, department_id} = route.params;
@@ -38,6 +38,15 @@ export default function CreateFormulirPerizinan({navigation, route}) {
   const [showWarning, setShowWarning] = useState(false);
   const [tokenExpired, setTokenExpired] = useState(false);
   const [warningMessage, setWarningMessage] = useState('');
+
+  const showToast = (message, type = 'info') => {
+    Toast.show({
+      type: type,
+      text1: message,
+      position: 'bottom',
+      visibilityTime: 2000,
+    });
+  };
 
   useEffect(() => {
     const fetchDivisionsAndDepartments = async () => {
@@ -98,10 +107,7 @@ export default function CreateFormulirPerizinan({navigation, route}) {
       } else if (response?.message === 'Silahkan login terlebih dahulu') {
         setTokenExpired(true);
       } else {
-        ToastAndroid.show(
-          response?.message || 'Gagal mengirim data',
-          ToastAndroid.SHORT,
-        );
+        showToast(response?.message || 'Gagal mengirim data');
       }
     } catch (error) {
       console.log('err create perizinan cuti', error);

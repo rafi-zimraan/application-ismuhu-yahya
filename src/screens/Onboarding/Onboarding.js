@@ -5,7 +5,6 @@ import {
   StatusBar,
   StyleSheet,
   Text,
-  ToastAndroid,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -21,10 +20,20 @@ import {
 import {BGOnBoarding} from '../../features/OnBoarding';
 import {COLORS, DIMENS} from '../../utils';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import Toast from 'react-native-toast-message';
 
 export default function OnBoarding({navigation}) {
   const [currentScreen, setCurrentScreen] = useState(0);
   const insets = useSafeAreaInsets();
+
+  const showToast = (message, type = 'info') => {
+    Toast.show({
+      type: type,
+      text1: message,
+      position: 'bottom',
+      visibilityTime: 2000,
+    });
+  };
 
   const screens = [
     {
@@ -62,10 +71,7 @@ export default function OnBoarding({navigation}) {
       await EncryptedStorage.setItem('is_boarding', 'true');
       navigation.replace('SignIn');
     } catch (error) {
-      ToastAndroid.show(
-        'Terjadi kesalahan saat menyimpan status onboarding',
-        ToastAndroid.SHORT,
-      );
+      showToast('Terjadi kesalahan saat menyimpan status onboarding');
     }
   };
 

@@ -10,7 +10,6 @@ import {
   StyleSheet,
   Text,
   TextInput,
-  ToastAndroid,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -20,6 +19,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {addFileTaskManagement, getAllTaskManagement, setTasksFilter} from '..';
 import {ButtonAction, Gap} from '../../../Component';
 import {COLORS, DIMENS} from '../../../utils';
+import Toast from 'react-native-toast-message';
 
 export default function UploadFileModal({
   visible,
@@ -27,13 +27,22 @@ export default function UploadFileModal({
   selectedTaskId,
   setSelectedTaskId,
 }) {
+  const dispacth = useDispatch();
   const [fileTitle, setFileTitle] = useState('');
   const [fileType, setFileType] = useState('');
   const [fileUri, setFileUri] = useState(null);
   const [fileDescription, setFileDescription] = useState('');
   const [isUploading, setIsUploading] = useState(false);
   const selectedFilter = useSelector(state => state.task_management.filter);
-  const dispacth = useDispatch();
+
+  const showToast = (message, type = 'info') => {
+    Toast.show({
+      type: type,
+      text1: message,
+      position: 'bottom',
+      visibilityTime: 2000,
+    });
+  };
 
   useEffect(() => {
     if (!visible) {
@@ -60,7 +69,7 @@ export default function UploadFileModal({
         setFileType('pdf');
       }
     } catch (error) {
-      ToastAndroid.show('Gagal memilih file PDF', ToastAndroid.SHORT);
+      showToast('Gagal memilih file PDF');
     }
   };
 
@@ -84,7 +93,7 @@ export default function UploadFileModal({
               setFileType('image');
             });
           } else {
-            ToastAndroid.show('Izin kamera ditolak', ToastAndroid.SHORT);
+            showToast('Izin kamera ditolak');
           }
         },
       },
@@ -113,22 +122,22 @@ export default function UploadFileModal({
 
   const handleUploadFile = async () => {
     if (!selectedTaskId) {
-      ToastAndroid.show('ID tugas tidak ditemukan!', ToastAndroid.SHORT);
+      showToast('ID tugas tidak ditemukan!');
       return;
     }
 
     if (!fileTitle.trim()) {
-      ToastAndroid.show('Judul file tidak boleh kosong!', ToastAndroid.SHORT);
+      showToast('Judul file tidak boleh kosong!');
       return;
     }
 
     if (!fileType) {
-      ToastAndroid.show('Pilih tipe file!', ToastAndroid.SHORT);
+      showToast('Tipe file harus dipilih!');
       return;
     }
 
     if (!fileUri) {
-      ToastAndroid.show('File harus dipilih!', ToastAndroid.SHORT);
+      showToast('File harus dipilih!');
       return;
     }
 
@@ -146,7 +155,7 @@ export default function UploadFileModal({
       dispacth(
         setTasksFilter({data: updatedTask.data.todos, type: selectedFilter}),
       );
-      ToastAndroid.show(response?.message, ToastAndroid.SHORT);
+      showToast(response?.message);
       setFileTitle('');
       setFileType('');
       setFileDescription('');
@@ -156,10 +165,7 @@ export default function UploadFileModal({
       }
       onClose();
     } catch (error) {
-      ToastAndroid.show(
-        'Terjadi kesalahan saat uplaod link',
-        ToastAndroid.SHORT,
-      );
+      showToast('Terjadi kesalahan saat uplaod link');
     } finally {
       setIsUploading(false);
     }

@@ -6,7 +6,6 @@ import {
   ScrollView,
   StyleSheet,
   TextInput,
-  ToastAndroid,
   TouchableOpacity,
 } from 'react-native';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
@@ -23,6 +22,7 @@ import {
   View,
 } from '../../../Component';
 import {COLORS, DIMENS} from '../../../utils';
+import Toast from 'react-native-toast-message';
 
 export default function UpdateFacilityComplaint({navigation, route}) {
   const {id} = route.params;
@@ -38,6 +38,15 @@ export default function UpdateFacilityComplaint({navigation, route}) {
   const [loading, setLoading] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [tokenExpired, setTokenExpired] = useState(false);
+
+  const showToast = (message, type = 'info') => {
+    Toast.show({
+      type: type,
+      text1: message,
+      position: 'bottom',
+      visibilityTime: 2000,
+    });
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -63,10 +72,7 @@ export default function UpdateFacilityComplaint({navigation, route}) {
           );
         }
       } catch (error) {
-        ToastAndroid.show(
-          error.response?.data?.message || 'Gagal memuat data!',
-          ToastAndroid.SHORT,
-        );
+        showToast(error.response?.data?.message || 'Gagal memuat data!');
       } finally {
         setLoading(false);
       }
@@ -123,36 +129,22 @@ export default function UpdateFacilityComplaint({navigation, route}) {
         const response = await deleteSuggestionFile(imageId);
         if (response?.status === true) {
           setImage(prevImages => prevImages.filter(img => img.id !== imageId));
-
-          ToastAndroid.show(
-            response.message || 'Gambar berhasil dihapus!',
-            ToastAndroid.SHORT,
-          );
+          showToast(response.message || 'Gambar berhasil dihapus!');
         } else {
-          ToastAndroid.show(
-            'Gagal menghapus gambar! Silakan coba lagi.',
-            ToastAndroid.SHORT,
-          );
+          showToast('Gagal menghapus gambar! Silakan coba lagi.');
         }
       } catch (error) {
         const statusCode = error.response?.status;
         const errorMessage = error.response?.data?.message;
 
         if (statusCode === 404) {
-          ToastAndroid.show(
-            'Data tidak ditemukan. Silakan periksa kembali!',
-            ToastAndroid.SHORT,
-          );
+          showToast('Data tidak ditemukan. Silakan periksa kembali!');
         } else if (statusCode === 500) {
-          ToastAndroid.show(
+          showToast(
             'Terjadi kesalahan pada server. Silakan hubungi developer!',
-            ToastAndroid.SHORT,
           );
         } else {
-          ToastAndroid.show(
-            errorMessage || 'Gagal memperbarui pengaduan!',
-            ToastAndroid.SHORT,
-          );
+          showToast(errorMessage || 'Gagal memperbarui pengaduan!');
         }
       } finally {
         setLoading(false);
@@ -172,15 +164,12 @@ export default function UpdateFacilityComplaint({navigation, route}) {
       !complaint ||
       !phone
     ) {
-      ToastAndroid.show('Harap isi semua kolom!', ToastAndroid.SHORT);
+      showToast('Harap isi semua kolom!');
       return;
     }
 
     if (!phone.startsWith('62')) {
-      ToastAndroid.show(
-        'Nomor telepon harus dimulai dengan 62!',
-        ToastAndroid.SHORT,
-      );
+      showToast('Nomor telepon harus dimulai dengan +62!');
       return;
     }
 
@@ -219,20 +208,11 @@ export default function UpdateFacilityComplaint({navigation, route}) {
       const errorMessage = error.response?.data?.message;
 
       if (statusCode === 404) {
-        ToastAndroid.show(
-          'Data tidak ditemukan. Silakan periksa kembali!',
-          ToastAndroid.SHORT,
-        );
+        showToast('Data tidak ditemukan. Silakan periksa kembali!');
       } else if (statusCode === 500) {
-        ToastAndroid.show(
-          'Terjadi kesalahan pada server. Silakan hubungi developer!',
-          ToastAndroid.SHORT,
-        );
+        showToast('Terjadi kesalahan pada server. Silakan hubungi developer!');
       } else {
-        ToastAndroid.show(
-          errorMessage || 'Gagal memperbarui pengaduan!',
-          ToastAndroid.SHORT,
-        );
+        showToast(errorMessage || 'Gagal memperbarui pengaduan!');
       }
     } finally {
       setLoading(false);

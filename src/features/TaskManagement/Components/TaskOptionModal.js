@@ -1,16 +1,10 @@
 import React from 'react';
-import {
-  Modal,
-  StyleSheet,
-  Text,
-  ToastAndroid,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import {Modal, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useDispatch} from 'react-redux';
 import {setTasksFilter, updateStatusRencanaTask} from '..';
 import {COLORS, DIMENS} from '../../../utils';
+import Toast from 'react-native-toast-message';
 
 export default function TaskOptionModal({
   visible,
@@ -38,6 +32,15 @@ export default function TaskOptionModal({
   const taskToHandle = selectedData[modalTaskIndex];
   const isCompleted = taskToHandle.status === '1';
 
+  const showToast = (message, type = 'info') => {
+    Toast.show({
+      type: type,
+      text1: message,
+      position: 'bottom',
+      visibilityTime: 2000,
+    });
+  };
+
   const handleOptionSelect = async option => {
     if (option === 'Selesai' || option === 'Batalkan') {
       try {
@@ -54,18 +57,12 @@ export default function TaskOptionModal({
             }),
           );
           refreshTasks();
-          ToastAndroid.show(response?.message, ToastAndroid.SHORT);
+          showToast(response?.message);
         } else {
-          ToastAndroid.show(
-            'Gagal memperbarui status tugas',
-            ToastAndroid.SHORT,
-          );
+          showToast('Gagal memperbarui status tugas');
         }
       } catch (error) {
-        ToastAndroid.show(
-          'Terjadi kesalahan saat memperbarui status',
-          ToastAndroid.SHORT,
-        );
+        showToast('Terjadi kesalahan saat memperbarui status');
       }
     } else if (option === 'Edit') {
       navigation.navigate('UpdateTaskManagement', {

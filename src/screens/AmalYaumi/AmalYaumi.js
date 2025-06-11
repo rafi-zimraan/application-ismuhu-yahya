@@ -4,6 +4,7 @@ import React, {useCallback, useState} from 'react';
 import {
   Dimensions,
   Image,
+  Platform,
   RefreshControl,
   ScrollView,
   StyleSheet,
@@ -30,11 +31,13 @@ import {
 import {FecthMe} from '../../features/authentication';
 import {COLORS, DIMENS} from '../../utils';
 import Toast from 'react-native-toast-message';
+import {SafeAreaView, useSafeAreaInsets} from 'react-native-safe-area-context';
 
 const {height} = Dimensions.get('window');
 
 export default function AmalYaumi({navigation}) {
   const today = moment().format('YYYY-MM-DD');
+  const insets = useSafeAreaInsets();
   const {colors, mode} = useSelector(state => state.theme);
   const [selectedDate, setSelectedDate] = useState(today);
   const [modalVisible, setModalVisible] = useState(false);
@@ -155,34 +158,28 @@ export default function AmalYaumi({navigation}) {
       <View
         style={[
           styles.viewNavbar,
-          {backgroundColor: colors[mode].background_header},
+          {
+            backgroundColor: colors[mode].background_header,
+            paddingTop: Platform.OS === 'android' ? 7 : 50,
+          },
         ]}>
         <HeaderTransparent
           title="Amal Yaumi"
           icon="arrow-left-circle-outline"
           onPress={() => navigation.goBack()}
         />
-        <View
-          section={true}
-          style={[
-            styles.profileWrapper,
-            {
-              backgroundColor: colors[mode].background_header,
-            },
-          ]}>
-          <TouchableOpacity>
-            {photo ? (
-              <Image
-                source={{uri: photo}}
-                style={styles.imgPhoto}
-                resizeMethod="resize"
-                resizeMode="cover"
-              />
-            ) : (
-              <Icon name="account-circle" size={45} color={COLORS.white} />
-            )}
-          </TouchableOpacity>
-        </View>
+        <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
+          {photo ? (
+            <Image
+              source={{uri: photo}}
+              style={styles.imgPhoto}
+              resizeMethod="resize"
+              resizeMode="cover"
+            />
+          ) : (
+            <Icon name="account-circle" size={45} color={COLORS.white} />
+          )}
+        </TouchableOpacity>
       </View>
 
       <View style={{flex: 1}}>
@@ -305,13 +302,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    height: '13%',
+    paddingHorizontal: 15,
   },
   imgPhoto: {
     height: 48,
     width: 48,
     borderRadius: 27.5,
     borderWidth: 2,
+    top: 15,
     borderColor: COLORS.white,
   },
   CreateTextAmalYaumi: {
@@ -346,11 +344,6 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     textAlign: 'left',
   },
-  profileWrapper: {
-    marginRight: 10,
-    marginTop: 34,
-  },
-
   container: {
     flex: 1,
   },

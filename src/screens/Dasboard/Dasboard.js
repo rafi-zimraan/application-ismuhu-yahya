@@ -35,7 +35,6 @@ import {
 import {FecthMe} from '../../features/authentication';
 import {COLORS} from '../../utils';
 import Toast from 'react-native-toast-message';
-import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import PushNotificationIOS from '@react-native-community/push-notification-ios';
 
 export default function Dasboard({navigation}) {
@@ -56,7 +55,6 @@ export default function Dasboard({navigation}) {
   const {showModal, setShowModal, buttonLoading, openNetworkSettings} =
     useNetworkStatus(isFocused);
   const [listMemberLoan, setListMemberLoan] = useState(null);
-  const insets = useSafeAreaInsets();
 
   const showToast = (message, type = 'info') => {
     Toast.show({
@@ -145,7 +143,10 @@ export default function Dasboard({navigation}) {
         }>
         <ImageBackground
           source={backgroundImage}
-          style={[styles.imageContainer, {paddingTop: insets.top}]}
+          style={[
+            styles.imageContainer,
+            {paddingTop: Platform.OS === 'android' ? 25 : 50},
+          ]}
           resizeMode="cover">
           <Gap height={15} />
 
@@ -200,16 +201,6 @@ export default function Dasboard({navigation}) {
                 mode={mode}
               />
             )}
-            {/* <ButtonMenu
-              title="Pengaduan"
-              iconName="hammer-wrench"
-              color={COLORS.white}
-              backgroundColor={COLORS.goldenOrange}
-              iconSize={33}
-              onPress={() => navigation.navigate('FacilityComplaint')}
-              colors={colors}
-              mode={mode}
-            /> */}
           </View>
           <Gap height={25} />
           <NewsComponent />

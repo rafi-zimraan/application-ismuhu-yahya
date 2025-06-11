@@ -6,7 +6,6 @@ import {
   StyleSheet,
   Switch,
   TextInput,
-  ToastAndroid,
   TouchableOpacity,
 } from 'react-native';
 import EncryptedStorage from 'react-native-encrypted-storage';

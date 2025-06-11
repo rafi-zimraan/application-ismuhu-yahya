@@ -4,7 +4,6 @@ import {
   ScrollView,
   StatusBar,
   StyleSheet,
-  ToastAndroid,
   View,
 } from 'react-native';
 import {TextInputPerizinan, patchCuti, patchPerizinanKeluar} from '..';
@@ -18,6 +17,7 @@ import {
 import {COLORS, DIMENS} from '../../../utils';
 import {getDepartmentDetail} from '../../Departmant';
 import {getDivisionDetail} from '../../Divisi';
+import Toast from 'react-native-toast-message';
 
 export default function EditFormulirPerizinan({navigation, route}) {
   const {id_lisences, initialData} = route.params;
@@ -44,6 +44,15 @@ export default function EditFormulirPerizinan({navigation, route}) {
   const [loading, setLoading] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [tokenExpired, setTokenExpired] = useState(false);
+
+  const showToast = (message, type = 'info') => {
+    Toast.show({
+      type: type,
+      text1: message,
+      position: 'bottom',
+      visibilityTime: 2000,
+    });
+  };
 
   useEffect(() => {
     const fetchDivisionAndDepartment = async () => {
@@ -124,14 +133,14 @@ export default function EditFormulirPerizinan({navigation, route}) {
       }
 
       if (response?.status === true) {
-        ToastAndroid.show(response?.message, ToastAndroid.SHORT);
+        showToast(response?.message);
         const {onSave} = route.params || {};
         if (onSave) {
           onSave({...initialData, ...payload});
         }
         setModalVisible(true);
       } else {
-        ToastAndroid.show(response.message, ToastAndroid.SHORT);
+        showToast(response?.message);
       }
     } catch (error) {
       console.log('Error updating perizinan:', error);

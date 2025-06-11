@@ -1,12 +1,6 @@
 import {useFocusEffect} from '@react-navigation/native';
 import React, {useCallback, useState} from 'react';
-import {
-  Image,
-  ScrollView,
-  StyleSheet,
-  ToastAndroid,
-  TouchableOpacity,
-} from 'react-native';
+import {Image, ScrollView, StyleSheet, TouchableOpacity} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useSelector} from 'react-redux';
 import {deleteSuggestion, getSuggestionDetail} from '..';
@@ -20,6 +14,7 @@ import {
 } from '../../../Component';
 import {ICON_NOTFOUND_DATA} from '../../../assets';
 import {COLORS, DIMENS} from '../../../utils';
+import Toast from 'react-native-toast-message';
 
 export default function DetailFacilityComplaint({navigation, route}) {
   const {id} = route.params;
@@ -31,6 +26,15 @@ export default function DetailFacilityComplaint({navigation, route}) {
   const [tokenExpired, setTokenExpired] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
 
+  const showToast = (message, type = 'info') => {
+    Toast.show({
+      type: type,
+      text1: message,
+      position: 'bottom',
+      visibilityTime: 2000,
+    });
+  };
+
   const fetchData = useCallback(async () => {
     try {
       setLoading(true);
@@ -41,9 +45,8 @@ export default function DetailFacilityComplaint({navigation, route}) {
         setData(response.data);
       }
     } catch (error) {
-      ToastAndroid.show(
+      showToast(
         error.response?.data?.message || 'Gagal memuat detail pengaduan',
-        ToastAndroid.SHORT,
       );
     } finally {
       setLoading(false);
@@ -60,7 +63,7 @@ export default function DetailFacilityComplaint({navigation, route}) {
     try {
       setDeleting(true);
       const response = await deleteSuggestion(id);
-      ToastAndroid.show(response?.message, ToastAndroid.SHORT);
+      showToast(response?.message);
       navigation.goBack();
     } catch (error) {
       console.log('err delete detail facility complaint', error);

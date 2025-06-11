@@ -4,7 +4,6 @@ import {
   Keyboard,
   StyleSheet,
   Text,
-  ToastAndroid,
   TouchableOpacity,
   TouchableWithoutFeedback,
   View,
@@ -28,6 +27,7 @@ import {
 } from '../../../Component';
 import {COLORS, DIMENS} from '../../../utils';
 import {FecthMe} from '../../authentication';
+import Toast from 'react-native-toast-message';
 
 export default function UpdateTaskManagement({route, navigation}) {
   const {taskId, taskData} = route.params;
@@ -44,6 +44,15 @@ export default function UpdateTaskManagement({route, navigation}) {
   const [showAlert, setShowAlert] = useState(false);
   const [tokenExpired, setTokenExpired] = useState(false);
   const [modalLoading, setModalLoading] = useState(false);
+
+  const showToast = (message, type = 'info') => {
+    Toast.show({
+      type: type,
+      text1: message,
+      position: 'bottom',
+      visibilityTime: 2000,
+    });
+  };
 
   useEffect(() => {
     const initializeData = async () => {
@@ -88,20 +97,17 @@ export default function UpdateTaskManagement({route, navigation}) {
 
   const handleUpdateTask = async () => {
     if (!activity.trim()) {
-      ToastAndroid.show(
-        'Nama rencana harian tidak boleh kosong!',
-        ToastAndroid.SHORT,
-      );
+      showToast('Nama rencana harian tidak boleh kosong!');
       return;
     }
 
     if (!dueDate.trim()) {
-      ToastAndroid.show('Tenggat waktu harus diisi!', ToastAndroid.SHORT);
+      showToast('Tenggat waktu harus diisi!');
       return;
     }
 
     if (!category) {
-      ToastAndroid.show('Kategori harus dipilih!', ToastAndroid.SHORT);
+      showToast('Kategori harus dipilih!');
       return;
     }
 
@@ -133,13 +139,10 @@ export default function UpdateTaskManagement({route, navigation}) {
           type: selectedFilter,
         }),
       );
-      ToastAndroid.show(response?.message, ToastAndroid.SHORT);
+      showToast(response?.message);
       setModalVisible(true);
     } catch (error) {
-      ToastAndroid.show(
-        'Gagal memperbarui rencana harian!',
-        ToastAndroid.SHORT,
-      );
+      showToast('Gagal memperbarui rencana harian!');
     } finally {
       setLoading(false);
     }

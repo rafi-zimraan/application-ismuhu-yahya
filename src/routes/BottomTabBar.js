@@ -5,9 +5,6 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useSelector} from 'react-redux';
 import {COLORS, DIMENS} from '../utils';
 import Animated, {
-  useSharedValue,
-  useAnimatedStyle,
-  withTiming,
   FadeIn,
   FadeOut,
   LinearTransition,
@@ -16,9 +13,6 @@ import {Gap} from '../Component';
 
 const AnimatedTouchableOpacity =
   Animated.createAnimatedComponent(TouchableOpacity);
-
-const PRIMARY_COLOR = '#130057';
-const SECONDARY_COLOR = '#fff';
 
 export default function BottomTabBar({state, descriptors, navigation}) {
   const {colors, mode} = useSelector(state => state.theme);
@@ -31,7 +25,7 @@ export default function BottomTabBar({state, descriptors, navigation}) {
         style.container,
         {
           backgroundColor: colors[mode].background,
-          shadowColor: mode === 'dark' ? '#fff' : '#000',
+          shadowColor: mode === 'dark' ? COLORS.white : COLORS.black,
         },
       ]}>
       {state.routes.map((route, index) => {
@@ -137,7 +131,7 @@ const style = StyleSheet.create({
     alignItems: 'center',
     alignSelf: 'center',
     width: '85%',
-    bottom: 15,
+    bottom: 25,
     borderRadius: 40,
     paddingHorizontal: 12,
     paddingVertical: 12,

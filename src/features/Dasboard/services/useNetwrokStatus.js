@@ -1,11 +1,21 @@
 import NetInfo from '@react-native-community/netinfo';
 import {useEffect, useState} from 'react';
-import {NativeModules, ToastAndroid} from 'react-native';
+import {NativeModules} from 'react-native';
+import Toast from 'react-native-toast-message';
 
 export const useNetworkStatus = isFocused => {
   const [isOffline, setIsOffline] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [buttonLoading, setButtonLoading] = useState(false);
+
+  const showToast = (message, type = 'info') => {
+    Toast.show({
+      type: type,
+      text1: message,
+      position: 'bottom',
+      visibilityTime: 2000,
+    });
+  };
 
   useEffect(() => {
     const unsubscribe = NetInfo.addEventListener(state => {
@@ -26,9 +36,8 @@ export const useNetworkStatus = isFocused => {
       if (InternetSettings?.open) {
         InternetSettings.open();
       } else {
-        ToastAndroid.show(
+        showToast(
           'Tidak dapat membuka pengaturan jaringan, Silahkan bukan dengan manual',
-          ToastAndroid.SHORT,
         );
       }
     } catch (error) {

@@ -6,7 +6,6 @@ import {
   ScrollView,
   StyleSheet,
   TextInput,
-  ToastAndroid,
   TouchableOpacity,
 } from 'react-native';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
@@ -21,6 +20,7 @@ import {
   View,
 } from '../../../Component';
 import {COLORS, DIMENS} from '../../../utils';
+import Toast from 'react-native-toast-message';
 
 export default function CreateFacilityComplaint({navigation}) {
   const {colors, mode} = useSelector(state => state.theme);
@@ -35,6 +35,15 @@ export default function CreateFacilityComplaint({navigation}) {
   const [loading, setLoading] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [tokenExpired, setTokenExpired] = useState(false);
+
+  const showToast = (message, type = 'info') => {
+    Toast.show({
+      type: type,
+      text1: message,
+      position: 'bottom',
+      visibilityTime: 2000,
+    });
+  };
 
   const handleImageResponse = response => {
     if (!response.didCancel && !response.error) {
@@ -84,20 +93,17 @@ export default function CreateFacilityComplaint({navigation}) {
       !phone ||
       !image
     ) {
-      ToastAndroid.show('Harap isi semua kolom', ToastAndroid.SHORT);
+      showToast('Harap isi semua kolom');
       return;
     }
 
     if (!phone.startsWith('62')) {
-      ToastAndroid.show(
-        'Nomor telepon harus dimulai dengan 62!',
-        ToastAndroid.SHORT,
-      );
+      showToast('Nomor telepon harus dimulai daengan +62!');
       return;
     }
 
     if (!image || !image.uri || !image.type || !image.name) {
-      ToastAndroid.show('Gambar tidak valid.', ToastAndroid.SHORT);
+      showToast('Gambar tidak valid.');
       return;
     }
 
