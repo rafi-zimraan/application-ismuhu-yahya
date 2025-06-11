@@ -41,12 +41,15 @@ export default function CarLoan({navigation}) {
         return;
       }
       const data = await getListCars();
+      console.log('Data mobil:', data);
       setCarList(data);
 
       const mostLoans = await getMostCarLoans();
+      console.log('Most car loans:', mostLoans);
       setMostCarLoans(mostLoans);
 
       const userLoans = await getUserCarLoans();
+      console.log('User car loans:', userLoans);
       setUserLoanData(userLoans);
     } catch (error) {
       console.log('Gagal mengambil data mobil', error.message);

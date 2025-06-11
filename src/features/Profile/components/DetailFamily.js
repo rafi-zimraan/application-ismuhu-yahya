@@ -5,7 +5,6 @@ import {
   StatusBar,
   StyleSheet,
   TextInput,
-  ToastAndroid,
   TouchableOpacity,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -20,6 +19,7 @@ import {
 } from '../../../Component';
 import {ICON_NOTFOUND_DATA} from '../../../assets';
 import {COLORS, DIMENS} from '../../../utils';
+import Toast from 'react-native-toast-message';
 
 export default function DetailFamily({route, navigation}) {
   const {data} = route.params;
@@ -29,6 +29,15 @@ export default function DetailFamily({route, navigation}) {
   const [isLoading, setIsLoading] = useState(false);
   const [isDeleted, setIsDeleted] = useState(false);
   const [tokenExpired, setTokenExpired] = useState(false);
+
+  const showToast = (message, type = 'info') => {
+    Toast.show({
+      type: type,
+      text1: message,
+      position: 'bottom',
+      visibilityTime: 2000,
+    });
+  };
 
   const [editedData, setEditedData] = useState({
     father: data.father,
@@ -45,7 +54,7 @@ export default function DetailFamily({route, navigation}) {
       if (response?.message === 'Silahkan login terlebih dahulu') {
         setTokenExpired(true);
       } else {
-        ToastAndroid.show(response?.message, ToastAndroid.SHORT);
+        showToast(response?.message);
         setEditModalVisible(false);
       }
     } catch (error) {

@@ -3,7 +3,7 @@ import {
   createNavigationContainerRef,
 } from '@react-navigation/native';
 import React, {useEffect, useState} from 'react';
-import {BackHandler, Platform, ToastAndroid} from 'react-native';
+import {BackHandler} from 'react-native';
 import BootSplash from 'react-native-bootsplash';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import PushNotification from 'react-native-push-notification';
@@ -11,7 +11,6 @@ import {Provider} from 'react-redux';
 import {ExitAppModal} from './features/authentication';
 import {store} from './redux';
 import Navigator from './routes';
-import PushNotificationIOS from '@react-native-community/push-notification-ios';
 import Toast from 'react-native-toast-message';
 import {toastConfig} from './Component';
 
@@ -22,14 +21,17 @@ export default function App() {
   const [loadingLogout, setLoadingLogout] = useState(false);
   const [lastBackPressed, setLastBackPressed] = useState(null);
 
+  const showToast = (message, type = 'info') => {
+    Toast.show({
+      type: type,
+      text1: message,
+      position: 'bottom',
+      visibilityTime: 2000,
+    });
+  };
+
   useEffect(() => {
     PushNotification.cancelAllLocalNotifications();
-
-    // // 🧠 Tambahan untuk iOS: Request permission saat pertama app launch jika kalo plafrom-nya ios
-    // if (Platform.OS === 'ios') {
-    //   PushNotificationIOS.requestPermissions();
-    // }
-
     const scheduleNotification = (hour, minute, title, message) => {
       const now = new Date();
       const scheduledDate = new Date();
@@ -79,9 +81,8 @@ export default function App() {
             return true;
           }
           setLastBackPressed(now);
-          ToastAndroid.show(
+          showToast(
             'Klik tombol kembali sekali lagi untuk keluar dari aplikasi',
-            ToastAndroid.SHORT,
           );
           return true;
         }
@@ -97,10 +98,7 @@ export default function App() {
           return true;
         }
         setLastBackPressed(now);
-        ToastAndroid.show(
-          'Klik tombol kembali sekali lagi untuk keluar dari aplikasi',
-          ToastAndroid.SHORT,
-        );
+        showToast('Klik tombol kembali sekali lagi untuk keluar dari aplikasi');
         return true;
       }
       return false;
@@ -122,7 +120,7 @@ export default function App() {
       BackHandler.exitApp();
       setModalVisible(false);
     } catch (error) {
-      ToastAndroid.show('Gagal keluar dari applikasi', ToastAndroid.SHORT);
+      showToast('Gagal keluar dari applikasi');
     } finally {
       setLoadingLogout(false);
     }

@@ -10,7 +10,6 @@ import {
   RefreshControl,
   StyleSheet,
   Text,
-  ToastAndroid,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -25,6 +24,7 @@ import {
 import {ICON_NOTFOUND_DATA} from '../../../assets';
 import {COLORS, DIMENS} from '../../../utils';
 import {FecthMe} from '../../authentication';
+import Toast from 'react-native-toast-message';
 
 const screenWidth = Dimensions.get('window').width;
 const columnWidth = screenWidth / 2 - 20;
@@ -40,6 +40,15 @@ export default function FilesScreen({route, navigation}) {
   const [refreshing, setRefreshing] = useState(false);
   const [imageModalVisible, setImageModalVisible] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
+
+  const showToast = (message, type = 'info') => {
+    Toast.show({
+      type: type,
+      text1: message,
+      position: 'bottom',
+      visibilityTime: 2000,
+    });
+  };
 
   const showImageModal = imageUrl => {
     setSelectedImage(imageUrl);
@@ -87,11 +96,11 @@ export default function FilesScreen({route, navigation}) {
 
       if (response) {
         setFiles(files.filter(file => file.id !== selectedFileId));
-        ToastAndroid.show(response.message, ToastAndroid.SHORT);
+        showToast(response.message);
       }
     } catch (error) {
       const errorMessage = error.response?.data?.message;
-      ToastAndroid.show(errorMessage, ToastAndroid.SHORT);
+      showToast(errorMessage);
     } finally {
       setIsDeleting(false);
       setDeleteModalVisible(false);
@@ -114,13 +123,10 @@ export default function FilesScreen({route, navigation}) {
       if (supported) {
         await Linking.openURL(fileUri);
       } else {
-        ToastAndroid.show(
-          'Tidak ada aplikasi untuk membuka PDF',
-          ToastAndroid.SHORT,
-        );
+        showToast('Tidak ada aplikasi untuk membuka PDF');
       }
     } catch (error) {
-      ToastAndroid.show('Terjadi kesalahan membuka PDF', ToastAndroid.SHORT);
+      showToast('Terjadi kesalahan membuka PDF');
     }
   };
 

@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {useForm} from 'react-hook-form';
-import {ScrollView, StyleSheet, TextInput, ToastAndroid} from 'react-native';
+import {ScrollView, StyleSheet, TextInput} from 'react-native';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import {useSelector} from 'react-redux';
 import {addExperience} from '..';
@@ -13,6 +13,7 @@ import {
   View,
 } from '../../../Component';
 import {COLORS, DIMENS} from '../../../utils';
+import Toast from 'react-native-toast-message';
 
 export default function CreateExperience({navigation}) {
   const {handleSubmit} = useForm();
@@ -24,6 +25,15 @@ export default function CreateExperience({navigation}) {
   const [modalVisible, setModalVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [tokenExpired, setTokenExpired] = useState(false);
+
+  const showToast = (message, type = 'info') => {
+    Toast.show({
+      type: type,
+      text1: message,
+      position: 'bottom',
+      visibilityTime: 2000,
+    });
+  };
 
   const handleAPI = async data => {
     setIsLoading(true);
@@ -37,10 +47,7 @@ export default function CreateExperience({navigation}) {
         setModalVisible(true);
       }
     } catch (error) {
-      ToastAndroid.show(
-        error.response?.data?.message || 'Gagal menambahkan data!',
-        ToastAndroid.SHORT,
-      );
+      showToast(error.response?.data?.message || 'Gagal menambahkan data!');
     } finally {
       setIsLoading(false);
     }
@@ -48,7 +55,7 @@ export default function CreateExperience({navigation}) {
 
   const onSubmit = () => {
     if (!company || !lengthOfWork || !position) {
-      ToastAndroid.show('Harap diisi semua kolom', ToastAndroid.SHORT);
+      showToast('Harap diisi semua kolom');
       return;
     }
 

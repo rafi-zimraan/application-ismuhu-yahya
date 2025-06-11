@@ -12,7 +12,7 @@ import {Gap, HeaderTransparent, ModalCustom, Text, View} from '../../Component';
 import {Translations, setLanguage} from '../../features/Language';
 import {toggleTheme} from '../../features/theme';
 import {COLORS, DIMENS} from '../../utils';
-import ReactNativeBiometrics, {BiometryTypes} from 'react-native-biometrics';
+import ReactNativeBiometrics from 'react-native-biometrics';
 import Toast from 'react-native-toast-message';
 import {setBiometricEnabled} from '../../features/Profile';
 
@@ -20,7 +20,6 @@ export default function PrivasiSetting({navigation}) {
   const dispatch = useDispatch();
   const rnBiometrics = new ReactNativeBiometrics();
   const isBiometricEnable = useSelector(state => state.biometric.isEnabled);
-  console.log('INI BIOMETRIC', isBiometricEnable);
   const {mode, colors} = useSelector(state => state.theme);
   const currentLanguage = useSelector(state => state.language.currentLanguage);
   const [selectedLanguage, setSelectedLanguage] = useState(currentLanguage);
@@ -48,22 +47,12 @@ export default function PrivasiSetting({navigation}) {
 
   const handleBiometricEnable = async () => {
     try {
-      const {available, biometryType} = await rnBiometrics.isSensorAvailable();
+      const {available} = await rnBiometrics.isSensorAvailable();
       if (!available) {
         showToast('Biometrik tidak tersedia di perangkat ini', 'error');
         return;
       }
 
-      // Log jenis biometri
-      if (biometryType === BiometryTypes.TouchID) {
-        console.log('TouchID is supported');
-      } else if (biometryType === BiometryTypes.FaceID) {
-        console.log('FaceID is supported');
-      } else if (biometryType === BiometryTypes.Biometrics) {
-        console.log('Biometrics is supported (Android)');
-      }
-
-      // Prompt autentikasi
       const result = await rnBiometrics.simplePrompt({
         promptMessage: 'Otentifikasi menggunakan biometrik Anda',
         fallbackPromptMessage: 'Gunakan kode sandi perangkat',
@@ -81,39 +70,11 @@ export default function PrivasiSetting({navigation}) {
     } catch (error) {
       console.log('Biometric Error:', error.message);
       showToast('Gagal melakukan autentikasi', 'error');
-
       dispatch(setBiometricEnabled(false));
     } finally {
       setShowBiometricConfirmModal(false);
     }
   };
-
-  // const handleBiometricEnable = async () => {
-  //   try {
-  //     const {available} = await rnBiometrics.isSensorAvailable();
-
-  //     if (available) {
-  //       const result = await rnBiometrics.simplePrompt({
-  //         promptMessage:
-  //           'Otentifikasi dengan sidik jari, Untuk mengunakan sensor sidik jari kami memerlukan data anda',
-  //       });
-
-  //       if (result?.success) {
-  //         dispatch(setBiometricEnabled(true));
-  //         await EncryptedStorage.setItem('biometric_enabled', 'true');
-  //       } else {
-  //         dispatch(setBiometricEnabled(false));
-  //       }
-  //     } else {
-  //       showToast('Biometrik tidak tersedia di perangkat ini');
-  //     }
-  //   } catch (error) {
-  //     console.log('Biometric Error', error);
-  //     dispatch(setBiometricEnabled(false));
-  //   } finally {
-  //     setShowBiometricConfirmModal(false);
-  //   }
-  // };
 
   const t = key => Translations[currentLanguage][key];
 

@@ -10,7 +10,6 @@ import {
   StatusBar,
   StyleSheet,
   TextInput,
-  ToastAndroid,
   TouchableOpacity,
 } from 'react-native';
 import {launchImageLibrary} from 'react-native-image-picker';
@@ -33,6 +32,7 @@ import {
 } from '../../../Component';
 import {ICON_NOTFOUND_DATA} from '../../../assets';
 import {COLORS, DIMENS} from '../../../utils';
+import Toast from 'react-native-toast-message';
 
 export default function DetailTraining({route, navigation}) {
   const {data} = route.params;
@@ -49,6 +49,15 @@ export default function DetailTraining({route, navigation}) {
   const [file, setFile] = useState(null);
   const [existingFiles, setExistingFiles] = useState([]);
   const [selectedFileId, setSelectedFileId] = useState(null);
+
+  const showToast = (message, type = 'info') => {
+    Toast.show({
+      type: type,
+      text1: message,
+      position: 'bottom',
+      visibilityTime: 2000,
+    });
+  };
 
   const [editedData, setEditedData] = useState({
     title: data.title,
@@ -82,7 +91,7 @@ export default function DetailTraining({route, navigation}) {
       if (response?.message === 'Silahkan login terlebih dahulu') {
         setTokenExpired(true);
       } else {
-        ToastAndroid.show(response?.message, ToastAndroid.SHORT);
+        showToast(response?.message);
         setEditModalVisible(false);
       }
     } catch (error) {
@@ -110,9 +119,9 @@ export default function DetailTraining({route, navigation}) {
       setExistingFiles(prevFiles =>
         prevFiles.filter(file => file.id !== selectedFileId),
       );
-      ToastAndroid.show(response?.message, ToastAndroid.SHORT);
+      showToast(response?.message);
     } catch (error) {
-      ToastAndroid.show('Gagal menghapus file!', ToastAndroid.SHORT);
+      showToast('Gagal menghapus file!');
     } finally {
       setIsModalLoading(false);
       setModalDeleteFile(false);
@@ -138,10 +147,10 @@ export default function DetailTraining({route, navigation}) {
         setFile({uri, name: fileName, type});
         setFileType('image');
       } else {
-        ToastAndroid.show('Data gambar tidak valid', ToastAndroid.SHORT);
+        showToast('Data gambar tidak valid');
       }
     } else {
-      ToastAndroid.show('Gambar tidak dipilih', ToastAndroid.SHORT);
+      showToast('Gambar tidak dipilih');
     }
   };
 
@@ -167,17 +176,14 @@ export default function DetailTraining({route, navigation}) {
 
   const handleFileUpload = async () => {
     if (!file || !fileType) {
-      ToastAndroid.show(
-        'File atau tipe file belum tersedia',
-        ToastAndroid.SHORT,
-      );
+      showToast('File atau tipe file belum tersedia');
       return;
     }
     setIsModalLoading(true);
     try {
       const idFileTraining = data.id;
       const response = await uploadTrainingFile(fileType, file, idFileTraining);
-      ToastAndroid.show(response?.message, ToastAndroid.SHORT);
+      showToast(response?.message);
       setExistingFiles(prevFiles => [
         ...prevFiles,
         {
@@ -190,7 +196,7 @@ export default function DetailTraining({route, navigation}) {
       ]);
       navigation.goBack();
     } catch (error) {
-      ToastAndroid.show('Gagal mengunggah file!', ToastAndroid.SHORT);
+      showToast('Gagal mengunggah file!');
     } finally {
       setIsModalLoading(false);
     }
@@ -212,7 +218,7 @@ export default function DetailTraining({route, navigation}) {
         setFileType('pdf');
       }
     } catch (error) {
-      ToastAndroid.show('Gagal memilih file PDF', ToastAndroid.SHORT);
+      showToast('Gagal memilih file PDF');
     }
   };
 
@@ -220,7 +226,7 @@ export default function DetailTraining({route, navigation}) {
     try {
       await viewDocument({uri});
     } catch (error) {
-      ToastAndroid.show('Terjadi kesalahan melihat pdf', ToastAndroid.SHORT);
+      showToast('Terjadi kesalahan melihat pdf');
     }
   };
 

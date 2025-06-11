@@ -5,7 +5,6 @@ import {
   StatusBar,
   StyleSheet,
   TextInput,
-  ToastAndroid,
   TouchableOpacity,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -21,6 +20,7 @@ import {
 import {apiChangePassword} from '../../features/ChangePassword';
 import {Translations} from '../../features/Language';
 import {COLORS, DIMENS} from '../../utils';
+import Toast from 'react-native-toast-message';
 
 export default function ChangePassword({navigation}) {
   const currentLanguage = useSelector(state => state.language.currentLanguage);
@@ -48,9 +48,18 @@ export default function ChangePassword({navigation}) {
 
   const t = key => Translations[currentLanguage][key];
 
+  const showToast = (message, type = 'info') => {
+    Toast.show({
+      type: type,
+      text1: message,
+      position: 'bottom',
+      visibilityTime: 2000,
+    });
+  };
+
   const onSubmit = async data => {
     if (data.newPassword !== data.confirmPassword) {
-      ToastAndroid.show(t('password_mismatch'), ToastAndroid.SHORT);
+      showToast(t('password_mismatch'));
       return;
     }
 
@@ -63,10 +72,8 @@ export default function ChangePassword({navigation}) {
         setModalVisible(true);
       }
     } catch (error) {
-      ToastAndroid.show(
-        'Terjadi kesalahan saat menganti password',
-        ToastAndroid.SHORT,
-      );
+      console.log('error changing password:', error);
+      showToast(t('Terjadi kesalahan saat menganti password'));
     }
   };
 

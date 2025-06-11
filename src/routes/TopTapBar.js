@@ -1,12 +1,6 @@
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import React, {useEffect, useState} from 'react';
-import {
-  SafeAreaView,
-  StatusBar,
-  StyleSheet,
-  ToastAndroid,
-  View,
-} from 'react-native';
+import {SafeAreaView, StatusBar, StyleSheet, View} from 'react-native';
 import {HeaderTransparent, ModalCustom} from '../Component';
 import {
   HistoryCuti,
@@ -15,6 +9,7 @@ import {
 } from '../features/Perizinan';
 import {COLORS} from '../utils';
 import TabBar from './TapBar';
+import Toast from 'react-native-toast-message';
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -25,6 +20,15 @@ export default function TopTabBar({navigation, route}) {
   const [selectedDeleteId, setSelectedDeleteId] = useState(null);
   const [data, setData] = useState(dataHistory);
   const [isDelete, setIsDelete] = useState(false);
+
+  const showToast = (message, type = 'info') => {
+    Toast.show({
+      type: type,
+      text1: message,
+      position: 'bottom',
+      visibilityTime: 2000,
+    });
+  };
 
   useEffect(() => {
     navigation.setOptions({
@@ -65,7 +69,7 @@ export default function TopTabBar({navigation, route}) {
         );
         setDeleteModalVisible(false);
       } else {
-        ToastAndroid.show('Gagal', 'Gagal menghapus data.', ToastAndroid.SHORT);
+        showToast('Gagal menghapus data.');
       }
     } catch (error) {
       console.log('Error deleting data:', error);

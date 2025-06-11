@@ -1,12 +1,7 @@
 import {Picker} from '@react-native-picker/picker';
 import {useNavigation} from '@react-navigation/native';
 import React, {useEffect, useState} from 'react';
-import {
-  ScrollView,
-  StyleSheet,
-  ToastAndroid,
-  TouchableOpacity,
-} from 'react-native';
+import {ScrollView, StyleSheet, TouchableOpacity} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useSelector} from 'react-redux';
 import {TextInputTaskManagement, addTaskManagement} from '..';
@@ -21,6 +16,7 @@ import {
 } from '../../../Component';
 import {COLORS, DIMENS} from '../../../utils';
 import {FecthMe} from '../../authentication';
+import Toast from 'react-native-toast-message';
 
 export default function CreateTaskManagement({route}) {
   const {colors, mode} = useSelector(state => state.theme);
@@ -37,6 +33,15 @@ export default function CreateTaskManagement({route}) {
   const [taskData, setTaskData] = useState(null);
   const [showAlert, setShowAlert] = useState(false);
   const [tokenExpired, setTokenExpired] = useState(false);
+
+  const showToast = (message, type = 'info') => {
+    Toast.show({
+      type: type,
+      text1: message,
+      position: 'bottom',
+      visibilityTime: 2000,
+    });
+  };
 
   const validateSession = async () => {
     try {
@@ -55,20 +60,17 @@ export default function CreateTaskManagement({route}) {
 
   const handleAddTask = async () => {
     if (!activity.trim()) {
-      ToastAndroid.show(
-        'Nama rencana harian tidak boleh kosong!',
-        ToastAndroid.SHORT,
-      );
+      showToast('Nama rencana harian tidak boleh kosong!');
       return;
     }
 
     if (!dueDate.trim()) {
-      ToastAndroid.show('Tenggat waktu harus diisi!', ToastAndroid.SHORT);
+      showToast('Tenggat waktu harus diisi!');
       return;
     }
 
     if (!category) {
-      ToastAndroid.show('Kategori harus dipilih!', ToastAndroid.SHORT);
+      showToast('Kategori harus dipilih!');
       return;
     }
 
@@ -101,10 +103,7 @@ export default function CreateTaskManagement({route}) {
         console.log('kesalahan menambah rencana harian');
       }
     } catch (error) {
-      ToastAndroid.show(
-        'Gagal menambahkan rencana harian!',
-        ToastAndroid.SHORT,
-      );
+      showToast('Gagal menambahkan rencana harian!');
     } finally {
       setloading(false);
     }

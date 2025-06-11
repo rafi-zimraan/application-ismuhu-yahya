@@ -1,11 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  TextInput,
-  ToastAndroid,
-} from 'react-native';
+import {ScrollView, StatusBar, StyleSheet, TextInput} from 'react-native';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useSelector} from 'react-redux';
@@ -20,6 +14,7 @@ import {
   View,
 } from '../../../Component';
 import {COLORS, DIMENS} from '../../../utils';
+import Toast from 'react-native-toast-message';
 
 export default function UpdateDataSpa({route, navigation}) {
   const {spaData} = route.params;
@@ -33,6 +28,15 @@ export default function UpdateDataSpa({route, navigation}) {
   const [successModal, setSuccessModal] = useState(false);
   const [alertVisible, setAlertVisible] = useState(false);
   const [alertMessage, setAlertMessage] = useState('');
+
+  const showToast = (message, type = 'info') => {
+    Toast.show({
+      type: type,
+      text1: message,
+      position: 'bottom',
+      visibilityTime: 2000,
+    });
+  };
 
   const [formData, setFormData] = useState({
     name: spaData?.name || '',
@@ -140,7 +144,7 @@ export default function UpdateDataSpa({route, navigation}) {
       ) {
         setSuccessModal(true);
       } else {
-        ToastAndroid.show('Gagal memperbarui data.', ToastAndroid.SHORT);
+        showToast('Gagal memperbarui data.');
       }
     } catch (error) {
       console.log('Error updating data:', error);

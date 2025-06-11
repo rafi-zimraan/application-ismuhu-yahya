@@ -9,7 +9,6 @@ import {
   StyleSheet,
   Text,
   TextInput,
-  ToastAndroid,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -23,6 +22,7 @@ import {Background, HeaderTransparent, ModalCustom} from '../../../Component';
 import {ICON_NOTFOUND_DATA} from '../../../assets';
 import {COLORS, DIMENS} from '../../../utils';
 import {FecthMe} from '../../authentication';
+import Toast from 'react-native-toast-message';
 
 export default function FileLinkScreen({route, navigation}) {
   const {taskId} = route.params;
@@ -37,6 +37,15 @@ export default function FileLinkScreen({route, navigation}) {
   const [editUrl, setEditUrl] = useState('');
   const [editDesc, setEditDesc] = useState('');
   const [refreshing, setRefreshing] = useState(false);
+
+  const showToast = (message, type = 'info') => {
+    Toast.show({
+      type: type,
+      text1: message,
+      position: 'bottom',
+      visibilityTime: 2000,
+    });
+  };
 
   const checkSession = useCallback(async () => {
     try {
@@ -113,9 +122,9 @@ export default function FileLinkScreen({route, navigation}) {
       setLinks(prevLinks =>
         prevLinks.filter(link => link.id !== selectedLinkId),
       );
-      ToastAndroid.show(response?.message, ToastAndroid.SHORT);
+      showToast(response?.message);
     } catch (error) {
-      ToastAndroid.show('Gagal menghapus link', ToastAndroid.SHORT);
+      showToast('Gagal menghapus link');
     } finally {
       setIsLoading(false);
       setDeleteModalVisible(false);
@@ -132,10 +141,7 @@ export default function FileLinkScreen({route, navigation}) {
 
   const handleUpdate = async () => {
     if (!editTitle.trim() || !editUrl.trim()) {
-      ToastAndroid.show(
-        'Judul dan URL tidak boleh kosong!',
-        ToastAndroid.SHORT,
-      );
+      showToast('Judul dan URL tidak boleh kosong!');
       return;
     }
 
@@ -158,11 +164,10 @@ export default function FileLinkScreen({route, navigation}) {
           );
           return updatedLinks.reverse();
         });
-
-        ToastAndroid.show(response?.message, ToastAndroid.SHORT);
+        showToast(response?.message);
         setEditModalVisible(false);
       } else {
-        ToastAndroid.show('Gagal memperbarui link', ToastAndroid.SHORT);
+        showToast('Gagal memperbarui link');
       }
     } catch (error) {
       console.log('Error update:', error);

@@ -4,7 +4,6 @@ import {
   ActivityIndicator,
   StyleSheet,
   Text,
-  ToastAndroid,
   TouchableNativeFeedback,
   View,
 } from 'react-native';
@@ -12,6 +11,7 @@ import EncryptedStorage from 'react-native-encrypted-storage';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {COLORS, DIMENS} from '../../../utils';
 import {addYaumiNotes} from '../Services/YaumiApiSLice';
+import Toast from 'react-native-toast-message';
 
 export default function ButtonActionYaumi({
   title = 'Kirim',
@@ -22,6 +22,14 @@ export default function ButtonActionYaumi({
   const [loading, setLoading] = useState(false);
   const navigation = useNavigation();
 
+  const showToast = (message, type = 'info') => {
+    Toast.show({
+      type: type,
+      text1: message,
+      position: 'bottom',
+      visibilityTime: 2000,
+    });
+  };
   const handleSendData = async () => {
     setLoading(true);
     try {
@@ -36,14 +44,11 @@ export default function ButtonActionYaumi({
       };
       const response = await addYaumiNotes(payload.user_id, payload.datas);
       if (response?.status) {
-        ToastAndroid.show(response?.message, ToastAndroid.SHORT);
+        showToast(response?.message);
         navigation.goBack();
         if (onSuccess) onSuccess();
       } else {
-        ToastAndroid.show(
-          'Terjadi kesalahan saat mengirim data, Silakan coba lagi.',
-          ToastAndroid.SHORT,
-        );
+        showToast('Terjadi kesalahan saat mengirim data, Silakan coba lagi.');
       }
     } catch (error) {
       console.log('errr create yaumi', error);

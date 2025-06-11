@@ -4,7 +4,6 @@ import {
   ScrollView,
   StatusBar,
   StyleSheet,
-  ToastAndroid,
   View,
 } from 'react-native';
 import {TextInputPerizinan, addPerizinanKeluar} from '..';
@@ -19,6 +18,7 @@ import {
 import {COLORS} from '../../../utils';
 import {getAllDepartment} from '../../Departmant';
 import {getAllDivisions} from '../../Divisi';
+import Toast from 'react-native-toast-message';
 
 export default function CreateFormulirPerizinanExit({navigation, route}) {
   const {division_id, department_id} = route.params;
@@ -38,6 +38,15 @@ export default function CreateFormulirPerizinanExit({navigation, route}) {
   const [tokenExpired, setTokenExpired] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
   const [alertMessage, setAlertMessage] = useState('');
+
+  const showToast = (message, type = 'info') => {
+    Toast.show({
+      type: type,
+      text1: message,
+      position: 'bottom',
+      visibilityTime: 2000,
+    });
+  };
 
   useEffect(() => {
     const fetchDivisionsAndDepartments = async () => {
@@ -116,16 +125,10 @@ export default function CreateFormulirPerizinanExit({navigation, route}) {
       } else if (response?.message === 'Silahkan login terlebih dahulu') {
         setTokenExpired(true);
       } else {
-        ToastAndroid.show(
-          response?.message || 'Gagal menambahkan data.',
-          ToastAndroid.SHORT,
-        );
+        showToast(response?.message || 'Gagal menambahkan data.');
       }
     } catch (error) {
-      ToastAndroid.show(
-        error.message || 'Terjadi kesalahan saat menambahkan data',
-        ToastAndroid.SHORT,
-      );
+      showToast(error.message || 'Terjadi kesalahan saat menambahkan data');
     } finally {
       setLoading(false);
     }

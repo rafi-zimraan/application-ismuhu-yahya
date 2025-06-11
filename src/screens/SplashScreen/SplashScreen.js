@@ -32,7 +32,6 @@ export default function SplashScreen({navigation}) {
           ]);
 
         if (theme) {
-          // setTheme(dispatch(setTheme(theme)));
           dispatch(setTheme(theme));
         }
         dispatch(setBiometricEnabled(biometric === 'true'));

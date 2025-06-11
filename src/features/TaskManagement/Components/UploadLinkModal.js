@@ -4,7 +4,6 @@ import {
   StyleSheet,
   Text,
   TextInput,
-  ToastAndroid,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -13,6 +12,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {addLinkTaskManagement, getAllTaskManagement, setTasksFilter} from '..';
 import {ButtonAction} from '../../../Component';
 import {COLORS, DIMENS} from '../../../utils';
+import Toast from 'react-native-toast-message';
 
 export default function UploadLinkModal({
   visible,
@@ -26,14 +26,22 @@ export default function UploadLinkModal({
   const [loading, setLoading] = useState(false);
   const dispacth = useDispatch();
   const selectedFilter = useSelector(state => state.task_management.filter);
-
   const handleInputChange = (key, value) => {
     setLinkData(prev => ({...prev, [key]: value}));
   };
 
+  const showToast = (message, type = 'info') => {
+    Toast.show({
+      type: type,
+      text1: message,
+      position: 'bottom',
+      visibilityTime: 2000,
+    });
+  };
+
   const handleUploadLink = async () => {
     if (!selectedTaskId || !title || !url) {
-      ToastAndroid.show('Harap isi semua bidang', ToastAndroid.SHORT);
+      showToast('Harap isi semua bidang');
       return;
     }
 
@@ -52,15 +60,12 @@ export default function UploadLinkModal({
           type: selectedFilter,
         }),
       );
-      ToastAndroid.show(response?.message, ToastAndroid.SHORT);
+      showToast(response?.message);
       setLinkData({title: '', url: '', description: ''});
       setSelectedTaskId(null);
       onClose();
     } catch (error) {
-      ToastAndroid.show(
-        'Terjadi kesalahan saat uplaod link',
-        ToastAndroid.SHORT,
-      );
+      showToast('Terjadi kesalahan saat uplaod link');
     } finally {
       setLoading(false);
     }
