@@ -1,6 +1,12 @@
 import React, {useState} from 'react';
 import {useForm} from 'react-hook-form';
-import {ScrollView, StyleSheet, TextInput} from 'react-native';
+import {
+  Platform,
+  ScrollView,
+  StatusBar,
+  StyleSheet,
+  TextInput,
+} from 'react-native';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import {useSelector} from 'react-redux';
 import {addExperience} from '..';
@@ -70,11 +76,21 @@ export default function CreateExperience({navigation}) {
 
   return (
     <View style={{flex: 1}}>
-      <HeaderTransparent
-        title="Tambah Data Pengalaman"
-        icon="arrow-left-circle-outline"
-        onPress={() => navigation.goBack()}
+      <StatusBar
+        barStyle={mode == 'light' ? 'dark-content' : 'default'}
+        backgroundColor={'transparent'}
       />
+      <View
+        style={[
+          styles.navbarContainer,
+          {backgroundColor: colors[mode].background_header},
+        ]}>
+        <HeaderTransparent
+          title="Tambah Data Pengalaman"
+          icon="arrow-left-circle-outline"
+          onPress={() => navigation.goBack()}
+        />
+      </View>
       <View style={styles.container} showImageBackground={true}>
         <Gap height={15} />
         <ScrollView style={styles.scrollContainer}>
@@ -203,6 +219,10 @@ export default function CreateExperience({navigation}) {
 }
 
 const styles = StyleSheet.create({
+  navbarContainer: {
+    paddingTop: Platform.OS === 'android' ? 0 : 50,
+    height: '11%',
+  },
   container: {
     flex: 1,
   },

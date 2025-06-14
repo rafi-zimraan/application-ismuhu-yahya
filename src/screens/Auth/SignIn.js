@@ -11,7 +11,6 @@ import {
   StatusBar,
   StyleSheet,
   TouchableWithoutFeedback,
-  SafeAreaView,
 } from 'react-native';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import {useDispatch, useSelector} from 'react-redux';

@@ -1,8 +1,10 @@
 import {useFocusEffect} from '@react-navigation/native';
 import React, {useCallback, useState} from 'react';
 import {
+  Platform,
   RefreshControl,
   ScrollView,
+  StatusBar,
   StyleSheet,
   TouchableOpacity,
 } from 'react-native';
@@ -70,11 +72,21 @@ export default function AllDataCouple({navigation}) {
 
   return (
     <View style={{flex: 1}}>
-      <HeaderTransparent
-        title="Semua Data Pasangan"
-        icon="arrow-left-circle-outline"
-        onPress={() => navigation.goBack()}
+      <StatusBar
+        barStyle={mode == 'light' ? 'default' : 'dark-content'}
+        backgroundColor="transparent"
       />
+      <View
+        style={[
+          styles.navbarContainer,
+          {backgroundColor: colors[mode].background_header},
+        ]}>
+        <HeaderTransparent
+          title="Semua Data Pasangan"
+          icon="arrow-left-circle-outline"
+          onPress={() => navigation.goBack()}
+        />
+      </View>
 
       <View style={{flex: 1}} showImageBackground={true}>
         <ScrollView
@@ -193,6 +205,10 @@ export default function AllDataCouple({navigation}) {
 }
 
 const styles = StyleSheet.create({
+  navbarContainer: {
+    paddingTop: Platform.OS === 'android' ? 0 : 50,
+    height: '11%',
+  },
   container: {
     flex: 1,
     padding: 15,

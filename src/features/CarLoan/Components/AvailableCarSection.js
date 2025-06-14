@@ -1,12 +1,11 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {Image, ScrollView, StyleSheet, TouchableOpacity} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {Gap, ModalCustom, Text, View} from '../../../Component';
+import {Gap, Text, View} from '../../../Component';
 import {ICON_NOTFOUND_DATA} from '../../../assets';
 import {COLORS, DIMENS} from '../../../utils';
 
 export default function AvailableCarSection({carList, navigation, loading}) {
-  const [modalUnavailableVisible, setModalUnavailableVisible] = useState(false);
   return (
     <View>
       <Text style={styles.TextTitleMenuCar}>Mobil Operasional</Text>
@@ -49,11 +48,11 @@ export default function AvailableCarSection({carList, navigation, loading}) {
                     ...styles.viewActiveText,
                     backgroundColor:
                       item.status === '0'
-                        ? COLORS.goldenOrange
-                        : COLORS.greenBoy,
+                        ? COLORS.greenConfirm
+                        : COLORS.darkGrey,
                   }}>
                   <Text style={styles.textActive}>
-                    {item.status === '0' ? 'Tersedia' : 'Terpakai'}
+                    {item.status === '0' ? 'Tersedia' : 'Digunakan'}
                   </Text>
                 </View>
                 <Image
@@ -80,30 +79,34 @@ export default function AvailableCarSection({carList, navigation, loading}) {
                 </View>
                 <Gap height={13} />
                 <TouchableOpacity
-                  activeOpacity={0.7}
-                  style={styles.viewContentRent}
+                  disabled={item?.status !== '0'}
+                  activeOpacity={item?.status === '0' ? 0.7 : 1}
+                  style={[
+                    styles.viewContentRent,
+                    {
+                      backgroundColor:
+                        item?.status === '0'
+                          ? COLORS.blueLight
+                          : COLORS.darkGrey,
+                    },
+                  ]}
                   onPress={() => {
-                    if (item.status === '0') {
-                      navigation.navigate('CreateCarLoan', {carId: item.id});
-                    } else {
-                      setModalUnavailableVisible(true);
-                    }
+                    navigation.navigate('CreateCarLoan', {carId: item.id});
                   }}>
-                  <Text style={styles.textRent}>Pinjam sekarang</Text>
+                  <Text
+                    style={[
+                      styles.textRent,
+                      {
+                        color:
+                          item?.status === '0'
+                            ? COLORS.white
+                            : COLORS.mediumGrey,
+                      },
+                    ]}>
+                    Pinjam sekarang
+                  </Text>
                 </TouchableOpacity>
               </TouchableOpacity>
-
-              <ModalCustom
-                visible={modalUnavailableVisible}
-                onRequestClose={() => setModalUnavailableVisible(false)}
-                onOutContentPress={() => setModalUnavailableVisible(false)}
-                iconModalName="alert-circle-outline"
-                title="Mobil Tidak Tersedia"
-                description="Maaf, mobil ini sedang digunakan. Silakan pilih mobil lain atau coba lagi nanti."
-                buttonTitle="Mengerti"
-                buttonSubmit={() => setModalUnavailableVisible(false)}
-                BackgroundButtonAction={COLORS.goldenOrange}
-              />
             </View>
           ))
         )}
@@ -151,6 +154,10 @@ const styles = StyleSheet.create({
     borderWidth: 0.4,
     height: 220,
     marginHorizontal: 10,
+    shadowColor: COLORS.black,
+    shadowOffset: {width: 0, height: 2},
+    shadowOpacity: 0.22,
+    shadowRadius: 2.22,
   },
   carBody: {
     width: 145,
@@ -161,9 +168,8 @@ const styles = StyleSheet.create({
     height: 80,
   },
   viewActiveText: {
-    padding: 1,
     borderRadius: 15,
-    width: '50%',
+    width: '60%',
   },
   textActive: {
     color: COLORS.white,
@@ -184,12 +190,10 @@ const styles = StyleSheet.create({
     fontSize: DIMENS.xs,
   },
   viewContentRent: {
-    backgroundColor: COLORS.blueLight,
     padding: 5,
     borderRadius: 15,
   },
   textRent: {
-    color: COLORS.white,
     textAlign: 'center',
     fontSize: DIMENS.s,
   },

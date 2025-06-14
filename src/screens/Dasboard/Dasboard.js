@@ -36,6 +36,7 @@ import {FecthMe} from '../../features/authentication';
 import {COLORS} from '../../utils';
 import Toast from 'react-native-toast-message';
 import PushNotificationIOS from '@react-native-community/push-notification-ios';
+import EncryptedStorage from 'react-native-encrypted-storage';
 
 export default function Dasboard({navigation}) {
   const dispatch = useDispatch();
@@ -55,6 +56,8 @@ export default function Dasboard({navigation}) {
   const {showModal, setShowModal, buttonLoading, openNetworkSettings} =
     useNetworkStatus(isFocused);
   const [listMemberLoan, setListMemberLoan] = useState(null);
+  const [hasShownWelcome, setHasShownWelcome] = useState(false);
+  const [permissionDone, setPermissionDone] = useState(false);
 
   const showToast = (message, type = 'info') => {
     Toast.show({
@@ -64,6 +67,20 @@ export default function Dasboard({navigation}) {
       visibilityTime: 2000,
     });
   };
+
+  // useEffect(() => {
+  //   const checkWelcomeFlag = async () => {
+  //     try {
+  //       const flag = await EncryptedStorage.getItem('hasShownWelcome');
+  //       if (flag === 'true') {
+  //         setHasShownWelcome(true);
+  //       }
+  //     } catch (e) {
+  //       console.log('Gagal membaca flag welcome:', e);
+  //     }
+  //   };
+  //   checkWelcomeFlag();
+  // }, []);
 
   useEffect(() => {
     const requestNotificationPermission = async () => {
@@ -119,6 +136,13 @@ export default function Dasboard({navigation}) {
       dispatch(setAmountSpa(response?.data_users?.spa?.tot_spa || 0));
       dispatch(setUserPosition(response?.position || ''));
       setListMemberLoan(response?.is_member_loan ?? null);
+      // if (!hasShownWelcome) {
+      //   setTimeout(() => {
+      //     showToast(`Selamat Datang ${response?.username}`);
+      //   }, 300);
+      //   setHasShownWelcome(true);
+      //   await EncryptedStorage.setItem('hasShownWelcome', 'true');
+      // }
     } catch (e) {
       console.log('Terjadi kesalahan checking session', e);
     }

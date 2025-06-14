@@ -5,6 +5,7 @@ import {
   Animated,
   Image,
   PermissionsAndroid,
+  Platform,
   RefreshControl,
   ScrollView,
   StyleSheet,
@@ -276,7 +277,10 @@ export default function Profile({navigation}) {
         colors={colors[mode].linearGardenProfile}
         start={{x: 0, y: 0}}
         end={{x: 1, y: 1}}
-        style={styles.header}>
+        style={[
+          styles.header,
+          {paddingTop: Platform.OS === 'android' ? 25 : 50},
+        ]}>
         <HeaderTransparent
           title="Profile"
           icon="arrow-left-circle-outline"
@@ -285,7 +289,6 @@ export default function Profile({navigation}) {
         />
         <View style={styles.content} useSectionProfile={true}>
           <TouchableOpacity activeOpacity={0.7} onPress={handleImagePicker}>
-            <Gap height={5} />
             {photo ? (
               <Image
                 source={{uri: photo}}
@@ -333,7 +336,6 @@ export default function Profile({navigation}) {
             data={spaData}
             navigation={navigation}
             navTargetDetail="DetailDataSpa"
-            navTargetCreate="CreateDataSpa"
           />
 
           <Gap height={15} />
@@ -443,12 +445,7 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     borderBottomLeftRadius: 30,
     borderBottomRightRadius: 30,
-    shadowColor: COLORS.black,
-    shadowOffset: {width: 0, height: 10},
-    shadowOpacity: 0.3,
-    shadowRadius: 10,
-    elevation: 5,
-    height: 283,
+    height: 295,
   },
   scrollContainer: {
     padding: 20,

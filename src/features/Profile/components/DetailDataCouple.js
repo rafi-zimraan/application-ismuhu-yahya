@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import {
   Image,
+  Platform,
   ScrollView,
   StatusBar,
   StyleSheet,
@@ -81,11 +82,17 @@ export default function DetailDataCouple({route, navigation}) {
         barStyle={mode == 'light' ? 'default' : 'dark-content'}
         backgroundColor="transparent"
       />
-      <HeaderTransparent
-        title="Detail Data Pasangan"
-        icon="arrow-left-circle-outline"
-        onPress={() => navigation.goBack()}
-      />
+      <View
+        style={[
+          styles.navbarContainer,
+          {backgroundColor: colors[mode].background_header},
+        ]}>
+        <HeaderTransparent
+          title="Detail Data Pasangan"
+          icon="arrow-left-circle-outline"
+          onPress={() => navigation.goBack()}
+        />
+      </View>
       <View style={{flex: 1}} showImageBackground={true}>
         <ScrollView style={styles.container}>
           {!isDeleted ? (
@@ -264,6 +271,10 @@ export default function DetailDataCouple({route, navigation}) {
 }
 
 const styles = StyleSheet.create({
+  navbarContainer: {
+    paddingTop: Platform.OS === 'android' ? 0 : 50,
+    height: '11%',
+  },
   container: {
     flex: 1,
     padding: 20,

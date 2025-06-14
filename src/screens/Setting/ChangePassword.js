@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {useForm} from 'react-hook-form';
 import {
-  SafeAreaView,
+  Platform,
   StatusBar,
   StyleSheet,
   TextInput,
@@ -98,17 +98,22 @@ export default function ChangePassword({navigation}) {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <StatusBar
         barStyle={mode == 'light' ? 'default' : 'dark-content'}
         backgroundColor={'transparent'}
       />
-      <HeaderTransparent
-        title={t('password_title')}
-        icon="arrow-left-circle-outline"
-        onPress={() => navigation.goBack()}
-      />
-
+      <View
+        style={[
+          styles.navbarContainer,
+          {backgroundColor: colors[mode].background_header},
+        ]}>
+        <HeaderTransparent
+          title={t('password_title')}
+          icon="arrow-left-circle-outline"
+          onPress={() => navigation.goBack()}
+        />
+      </View>
       <View style={styles.contentWrapper} showImageBackground={true}>
         <View
           style={{paddingHorizontal: 20, paddingVertical: 15}}
@@ -211,11 +216,15 @@ export default function ChangePassword({navigation}) {
           navigation.goBack();
         }}
       />
-    </SafeAreaView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
+  navbarContainer: {
+    paddingTop: Platform.OS === 'android' ? 0 : 50,
+    height: '11%',
+  },
   errorText: {
     color: COLORS.red,
     fontSize: DIMENS.s,

@@ -1,8 +1,10 @@
 import {useFocusEffect} from '@react-navigation/native';
 import React, {useCallback, useState} from 'react';
 import {
+  Platform,
   RefreshControl,
   ScrollView,
+  StatusBar,
   StyleSheet,
   TouchableOpacity,
 } from 'react-native';
@@ -58,11 +60,21 @@ export default function AllDataExperience({navigation}) {
 
   return (
     <View style={{flex: 1}}>
-      <HeaderTransparent
-        title="Semua Data Pengalaman"
-        icon="arrow-left-circle-outline"
-        onPress={() => navigation.goBack()}
+      <StatusBar
+        barStyle={mode == 'light' ? 'dark-content' : 'default'}
+        backgroundColor={'transparent'}
       />
+      <View
+        style={[
+          styles.navbarContainer,
+          {backgroundColor: colors[mode].background_header},
+        ]}>
+        <HeaderTransparent
+          title="Semua Data Pengalaman"
+          icon="arrow-left-circle-outline"
+          onPress={() => navigation.goBack()}
+        />
+      </View>
 
       <View style={{flex: 1}} showImageBackground={true}>
         <ScrollView
@@ -183,6 +195,10 @@ export default function AllDataExperience({navigation}) {
 }
 
 const styles = StyleSheet.create({
+  navbarContainer: {
+    paddingTop: Platform.OS === 'android' ? 0 : 50,
+    height: '11%',
+  },
   container: {
     padding: 15,
     flex: 1,

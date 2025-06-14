@@ -11,7 +11,6 @@ const CustomSearchInput = ({
 }) => {
   const [placeholderText, setPlaceholderText] = useState('');
   const placeholderMessage = 'Mau pinjam apa hari ini?';
-  const [showPassword, setShowPassword] = useState(false);
 
   useEffect(() => {
     let index = 0;
@@ -23,7 +22,6 @@ const CustomSearchInput = ({
         clearInterval(typingInterval);
       }
     }, 100);
-
     return () => clearInterval(typingInterval);
   }, []);
 
@@ -32,9 +30,6 @@ const CustomSearchInput = ({
       style={{
         ...styles.containerSearchBar,
         borderRadius,
-        backgroundColor: 'white',
-        borderWidth: 0.4,
-        borderColor: COLORS.grey,
       }}>
       <Gap width={10} />
       <Icon name={'magnify'} color={COLORS.grey} size={30} />
@@ -43,32 +38,33 @@ const CustomSearchInput = ({
         <TextInput
           placeholder={placeholderText}
           placeholderTextColor={placeholderTextColor || COLORS.grey}
-          style={{flex: 1, fontSize: 16, color: COLORS.black}}
-          secureTextEntry={showPassword}
+          style={styles.textInput}
           onChangeText={onChangeText}
         />
-        {/* <TouchableNativeFeedback
-          useForeground
-          onPress={() => setShowPassword(!showPassword)}>
-          <View style={styles.contentShowText}>
-            <Icon
-              name={showPassword ? 'eye' : 'eye-off'}
-              color={COLORS.black}
-              size={20}
-            />
-          </View>
-        </TouchableNativeFeedback> */}
       </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
+  textInput: {
+    flex: 1,
+    fontSize: 16,
+    color: COLORS.black,
+  },
   containerSearchBar: {
+    backgroundColor: 'white',
+    borderWidth: 0.4,
+    borderColor: COLORS.grey,
     flexDirection: 'row',
     elevation: 3,
     alignItems: 'center',
     width: 324,
+    height: 45,
+    shadowColor: COLORS.black,
+    shadowOffset: {height: 0, width: 2},
+    shadowOpacity: 0.22,
+    shadowRadius: 2.22,
   },
   inputContainer: {
     flexDirection: 'row',

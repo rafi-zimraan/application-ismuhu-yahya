@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {
-  SafeAreaView,
+  Platform,
   StatusBar,
   StyleSheet,
   Switch,
@@ -79,16 +79,22 @@ export default function PrivasiSetting({navigation}) {
   const t = key => Translations[currentLanguage][key];
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <StatusBar
         barStyle={mode == 'light' ? 'default' : 'dark-content'}
         backgroundColor={'transparent'}
       />
-      <HeaderTransparent
-        title={t('app_settings')}
-        icon="arrow-left-circle-outline"
-        onPress={() => navigation.goBack()}
-      />
+      <View
+        style={[
+          styles.navbarContainer,
+          {backgroundColor: colors[mode].background_header},
+        ]}>
+        <HeaderTransparent
+          title={t('app_settings')}
+          icon="arrow-left-circle-outline"
+          onPress={() => navigation.goBack()}
+        />
+      </View>
       <View style={{flex: 1}} showImageBackground={true}>
         <Gap height={15} />
         <View style={styles.section} section={true}>
@@ -190,11 +196,15 @@ export default function PrivasiSetting({navigation}) {
           ))}
         </ModalCustom>
       </View>
-    </SafeAreaView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
+  navbarContainer: {
+    paddingTop: Platform.OS === 'android' ? 0 : 50,
+    height: '11%',
+  },
   textDesc: {
     fontSize: DIMENS.xs,
   },

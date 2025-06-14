@@ -95,18 +95,18 @@ export default function Navigator() {
       {/* Profile */}
       <Stack.Screen name="Profile" component={Profile} />
       <Stack.Screen name="CreateCouple" component={CreateCouple} />
+      <Stack.Screen name="CreateTraining" component={CreateTraining} />
+      <Stack.Screen name="CreateExperience" component={CreateExperience} />
+      <Stack.Screen name="CreateFamily" component={CreateFamily} />
       <Stack.Screen name="DetailDataCouple" component={DetailDataCouple} />
       <Stack.Screen name="DetailTraining" component={DetailTraining} />
-      <Stack.Screen name="CreateTraining" component={CreateTraining} />
       <Stack.Screen name="DetailExperience" component={DetailExperience} />
-      <Stack.Screen name="CreateExperience" component={CreateExperience} />
       <Stack.Screen name="DetailDataSpa" component={DetailDataSpa} />
-      <Stack.Screen name="CreateFamily" component={CreateFamily} />
       <Stack.Screen name="DetailFamily" component={DetailFamily} />
+      <Stack.Screen name="UpdateDataSpa" component={UpdateDataSpa} />
       <Stack.Screen name="AllDataCouple" component={AllDataCouple} />
       <Stack.Screen name="AllDataTraining" component={AllDataTraining} />
       <Stack.Screen name="AllDataExperience" component={AllDataExperience} />
-      <Stack.Screen name="UpdateDataSpa" component={UpdateDataSpa} />
 
       {/* Setting  */}
       <Stack.Screen name="Settings" component={Settings} />

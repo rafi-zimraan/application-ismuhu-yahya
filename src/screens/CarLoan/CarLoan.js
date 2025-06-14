@@ -1,5 +1,5 @@
 import React, {useCallback, useState} from 'react';
-import {ScrollView, StyleSheet, RefreshControl} from 'react-native';
+import {ScrollView, StyleSheet, RefreshControl, Platform} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import {useSelector} from 'react-redux';
 import {
@@ -41,15 +41,12 @@ export default function CarLoan({navigation}) {
         return;
       }
       const data = await getListCars();
-      console.log('Data mobil:', data);
       setCarList(data);
 
       const mostLoans = await getMostCarLoans();
-      console.log('Most car loans:', mostLoans);
       setMostCarLoans(mostLoans);
 
       const userLoans = await getUserCarLoans();
-      console.log('User car loans:', userLoans);
       setUserLoanData(userLoans);
     } catch (error) {
       console.log('Gagal mengambil data mobil', error.message);
@@ -78,7 +75,10 @@ export default function CarLoan({navigation}) {
         colors={colors[mode].linearGardenProfile}
         start={{x: 0, y: 0}}
         end={{x: 1, y: 1}}
-        style={styles.header}>
+        style={[
+          styles.header,
+          {paddingTop: Platform.OS === 'android' ? 25 : 50},
+        ]}>
         <HeaderTransparent
           title="Peminjaman mobil"
           icon="arrow-left-circle-outline"
@@ -167,14 +167,9 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     borderBottomLeftRadius: 35,
     borderBottomRightRadius: 35,
-    shadowColor: COLORS.black,
-    shadowOffset: {width: 0, height: 10},
-    shadowOpacity: 0.3,
-    shadowRadius: 10,
-    elevation: 2,
   },
   title: {
-    fontSize: DIMENS.xxxl,
+    fontSize: DIMENS.xxl,
     fontWeight: '800',
     textAlign: 'justify',
   },

@@ -10,10 +10,8 @@ export default function ProfileSection({
   data,
   navigation,
   navTargetDetail,
-  navTargetCreate,
 }) {
   const {colors, mode} = useSelector(state => state.theme);
-
   return (
     <View section={true} style={styles.container}>
       <TouchableOpacity
@@ -75,12 +73,6 @@ export default function ProfileSection({
               style={[styles.sectionSubtitle, {color: colors[mode].textLabel}]}>
               Data spa tidak tersedia.
             </Text>
-            <TouchableOpacity
-              style={styles.createAddDataButton}
-              activeOpacity={0.7}
-              onPress={() => navigation.navigate(navTargetCreate)}>
-              <Icon name="plus-circle" size={25} color={COLORS.black} />
-            </TouchableOpacity>
           </View>
         )}
       </TouchableOpacity>
@@ -91,13 +83,14 @@ export default function ProfileSection({
 const styles = StyleSheet.create({
   container: {
     borderRadius: 15,
-    elevation: 2,
-  },
-  contentCouple: {
-    padding: 15,
     shadowColor: COLORS.black,
     shadowOffset: {width: 0, height: 2},
     shadowOpacity: 0.1,
+    shadowRadius: 2.22,
+    elevation: 5,
+  },
+  contentCouple: {
+    padding: 15,
     marginTop: 5,
   },
   sectionHeader: {

@@ -1,5 +1,5 @@
 
-# Tentukan minimal iOS versi kamu di sini, misal 14.0
+# IOS versi yang didukung
 min_ios_version_supported = '14.0'
 
 # Resolve react_native_pods.rb with node to allow for hoisting

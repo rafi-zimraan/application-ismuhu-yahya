@@ -21,6 +21,7 @@ export const login = async (data, navigation, dispatch) => {
       return;
     }
     const response = await api.post('/mobile/login', data);
+    console.log('response login', response);
     const token = response.data?.token;
     const id = response.data?.id;
     const responseData = response.data;
@@ -40,8 +41,10 @@ export const login = async (data, navigation, dispatch) => {
         'user_sesion',
         JSON.stringify(responseData),
       );
-      showToast(`Selamat Datang ${responseData.name}`);
       navigation.replace('Dasboard');
+      setTimeout(() => {
+        showToast(`Selamat datang ${responseData?.name}`);
+      }, 500);
       return responseData;
     } else {
       throw new Error('Token atau user tidak ditemukan');
