@@ -3,7 +3,7 @@ import React from 'react';
 import {Gap, Text, View} from '../../../Component';
 import LoanTodayItem from './LoanTodayItem';
 import {ICON_NOTFOUND_DATA} from '../../../assets';
-import {COLORS, DIMENS} from '../../../utils';
+import {DIMENS} from '../../../utils';
 
 export default function LoanTodaySection({
   loading,

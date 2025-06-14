@@ -122,6 +122,10 @@ const styles = StyleSheet.create({
   container: {
     borderRadius: 15,
     elevation: 3,
+    shadowColor: COLORS.black,
+    shadowOffset: {width: 0, height: 2},
+    shadowOpacity: 0.1,
+    shadowRadius: 2.22,
   },
   addButton: {
     backgroundColor: COLORS.softGrey,
@@ -142,9 +146,6 @@ const styles = StyleSheet.create({
   },
   contentCouple: {
     padding: 15,
-    shadowColor: COLORS.black,
-    shadowOffset: {width: 0, height: 2},
-    shadowOpacity: 0.1,
     marginTop: 5,
   },
   sectionHeader: {

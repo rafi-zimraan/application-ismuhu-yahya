@@ -1,5 +1,11 @@
 import React, {useEffect, useState} from 'react';
-import {ScrollView, StatusBar, StyleSheet, TextInput} from 'react-native';
+import {
+  Platform,
+  ScrollView,
+  StatusBar,
+  StyleSheet,
+  TextInput,
+} from 'react-native';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useSelector} from 'react-redux';
@@ -159,17 +165,31 @@ export default function UpdateDataSpa({route, navigation}) {
         barStyle={mode == 'light' ? 'default' : 'dark-content'}
         backgroundColor="transparent"
       />
-      <HeaderTransparent
-        title="Update Data SPA"
-        icon="arrow-left-circle-outline"
-        onPress={() => navigation.goBack()}
-      />
+      <View
+        style={[
+          styles.navbarContainer,
+          {backgroundColor: colors[mode].background_header},
+        ]}>
+        <HeaderTransparent
+          title="Update Data SPA"
+          icon="arrow-left-circle-outline"
+          onPress={() => navigation.goBack()}
+        />
+      </View>
       <View showImageBackground={true} style={{flex: 1}}>
         <ScrollView
           contentContainerStyle={{padding: 20, paddingBottom: 30}}
           showsVerticalScrollIndicator={false}>
           <Text style={styles.title}>Username</Text>
-          <View style={styles.section} section={true}>
+          <View
+            style={[
+              styles.section,
+              {
+                borderColor:
+                  mode === 'dark' ? COLORS.goldenOrange : COLORS.grey,
+              },
+            ]}
+            section={true}>
             <Icon name="account" size={24} color={COLORS.goldenOrange} />
             <TextInput
               style={[
@@ -185,7 +205,15 @@ export default function UpdateDataSpa({route, navigation}) {
             />
           </View>
           <Text style={styles.title}>Email</Text>
-          <View style={styles.section} section={true}>
+          <View
+            style={[
+              styles.section,
+              {
+                borderColor:
+                  mode === 'dark' ? COLORS.goldenOrange : COLORS.grey,
+              },
+            ]}
+            section={true}>
             <Icon name="email" size={24} color={COLORS.goldenOrange} />
             <TextInput
               style={[
@@ -203,7 +231,15 @@ export default function UpdateDataSpa({route, navigation}) {
             />
           </View>
           <Text style={styles.title}>Jenis Kelamin</Text>
-          <View style={styles.section} section={true}>
+          <View
+            style={[
+              styles.section,
+              {
+                borderColor:
+                  mode === 'dark' ? COLORS.goldenOrange : COLORS.grey,
+              },
+            ]}
+            section={true}>
             <Icon
               name="gender-male-female"
               size={24}
@@ -223,7 +259,15 @@ export default function UpdateDataSpa({route, navigation}) {
             />
           </View>
           <Text style={styles.title}>Nomor Telepon</Text>
-          <View style={styles.section} section={true}>
+          <View
+            style={[
+              styles.section,
+              {
+                borderColor:
+                  mode === 'dark' ? COLORS.goldenOrange : COLORS.grey,
+              },
+            ]}
+            section={true}>
             <Icon name="phone" size={24} color={COLORS.goldenOrange} />
             <TextInput
               style={[
@@ -240,7 +284,15 @@ export default function UpdateDataSpa({route, navigation}) {
             />
           </View>
           <Text style={styles.title}>Tanggal Lahir</Text>
-          <View style={styles.section} section={true}>
+          <View
+            style={[
+              styles.section,
+              {
+                borderColor:
+                  mode === 'dark' ? COLORS.goldenOrange : COLORS.grey,
+              },
+            ]}
+            section={true}>
             <Icon name="calendar" size={24} color={COLORS.goldenOrange} />
             <TextInput
               style={[
@@ -256,7 +308,15 @@ export default function UpdateDataSpa({route, navigation}) {
             />
           </View>
           <Text style={styles.title}>Npwp</Text>
-          <View style={styles.section} section={true}>
+          <View
+            style={[
+              styles.section,
+              {
+                borderColor:
+                  mode === 'dark' ? COLORS.goldenOrange : COLORS.grey,
+              },
+            ]}
+            section={true}>
             <Icon name="file-document" size={24} color={COLORS.goldenOrange} />
             <TextInput
               style={[
@@ -273,7 +333,15 @@ export default function UpdateDataSpa({route, navigation}) {
             />
           </View>
           <Text style={styles.title}>Hobi</Text>
-          <View style={styles.section} section={true}>
+          <View
+            style={[
+              styles.section,
+              {
+                borderColor:
+                  mode === 'dark' ? COLORS.goldenOrange : COLORS.grey,
+              },
+            ]}
+            section={true}>
             <Icon name="soccer" size={24} color={COLORS.goldenOrange} />
             <TextInput
               style={[
@@ -289,7 +357,15 @@ export default function UpdateDataSpa({route, navigation}) {
             />
           </View>
           <Text style={styles.title}>Status Pernikahan</Text>
-          <View style={styles.section} section={true}>
+          <View
+            style={[
+              styles.section,
+              {
+                borderColor:
+                  mode === 'dark' ? COLORS.goldenOrange : COLORS.grey,
+              },
+            ]}
+            section={true}>
             <Icon name="heart" size={24} color={COLORS.goldenOrange} />
             <TextInput
               style={[
@@ -305,7 +381,15 @@ export default function UpdateDataSpa({route, navigation}) {
             />
           </View>
           <Text style={styles.title}>Kontak darurat</Text>
-          <View style={styles.section} section={true}>
+          <View
+            style={[
+              styles.section,
+              {
+                borderColor:
+                  mode === 'dark' ? COLORS.goldenOrange : COLORS.grey,
+              },
+            ]}
+            section={true}>
             <Icon name="phone-in-talk" size={24} color={COLORS.goldenOrange} />
             <TextInput
               style={[
@@ -324,7 +408,15 @@ export default function UpdateDataSpa({route, navigation}) {
             />
           </View>
           <Text style={styles.title}>Bpjs</Text>
-          <View style={styles.section} section={true}>
+          <View
+            style={[
+              styles.section,
+              {
+                borderColor:
+                  mode === 'dark' ? COLORS.goldenOrange : COLORS.grey,
+              },
+            ]}
+            section={true}>
             <Icon name="hospital" size={24} color={COLORS.goldenOrange} />
             <TextInput
               style={[
@@ -341,7 +433,15 @@ export default function UpdateDataSpa({route, navigation}) {
             />
           </View>
           <Text style={styles.title}>Tempat Lahir</Text>
-          <View style={styles.section} section={true}>
+          <View
+            style={[
+              styles.section,
+              {
+                borderColor:
+                  mode === 'dark' ? COLORS.goldenOrange : COLORS.grey,
+              },
+            ]}
+            section={true}>
             <Icon name="earth" size={24} color={COLORS.goldenOrange} />
             <TextInput
               style={[
@@ -357,7 +457,15 @@ export default function UpdateDataSpa({route, navigation}) {
             />
           </View>
           <Text style={styles.title}>Domisili</Text>
-          <View style={styles.section} section={true}>
+          <View
+            style={[
+              styles.section,
+              {
+                borderColor:
+                  mode === 'dark' ? COLORS.goldenOrange : COLORS.grey,
+              },
+            ]}
+            section={true}>
             <Icon
               name="city-variant-outline"
               size={24}
@@ -377,7 +485,15 @@ export default function UpdateDataSpa({route, navigation}) {
             />
           </View>
           <Text style={styles.title}>Nik</Text>
-          <View style={styles.section} section={true}>
+          <View
+            style={[
+              styles.section,
+              {
+                borderColor:
+                  mode === 'dark' ? COLORS.goldenOrange : COLORS.grey,
+              },
+            ]}
+            section={true}>
             <Icon name="id-card" size={24} color={COLORS.goldenOrange} />
             <TextInput
               style={[
@@ -394,7 +510,15 @@ export default function UpdateDataSpa({route, navigation}) {
             />
           </View>
           <Text style={styles.title}>Alamat Rumah</Text>
-          <View style={styles.section} section={true}>
+          <View
+            style={[
+              styles.section,
+              {
+                borderColor:
+                  mode === 'dark' ? COLORS.goldenOrange : COLORS.grey,
+              },
+            ]}
+            section={true}>
             <Icon name="map" size={24} color={COLORS.goldenOrange} />
             <TextInput
               style={[
@@ -463,6 +587,10 @@ export default function UpdateDataSpa({route, navigation}) {
 }
 
 const styles = StyleSheet.create({
+  navbarContainer: {
+    paddingTop: Platform.OS === 'android' ? 0 : 50,
+    height: '11%',
+  },
   title: {
     fontSize: DIMENS.l,
     fontWeight: 'bold',
@@ -475,8 +603,8 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     padding: 13,
     borderWidth: 0.4,
-    borderColor: COLORS.grey,
     borderRadius: 10,
+    elevation: 5,
   },
   input: {
     flex: 1,

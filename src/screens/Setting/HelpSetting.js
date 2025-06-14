@@ -1,10 +1,5 @@
 import React, {useState} from 'react';
-import {
-  SafeAreaView,
-  StatusBar,
-  StyleSheet,
-  TouchableOpacity,
-} from 'react-native';
+import {Platform, StatusBar, StyleSheet, TouchableOpacity} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useSelector} from 'react-redux';
 import {HeaderTransparent, Text, View} from '../../Component';
@@ -13,9 +8,8 @@ import {COLORS, DIMENS} from '../../utils';
 
 export default function HelpSetting({navigation}) {
   const currentLanguage = useSelector(state => state.language.currentLanguage);
-  const {mode} = useSelector(state => state.theme);
+  const {mode, colors} = useSelector(state => state.theme);
   const t = key => Translations[currentLanguage][key];
-
   const [expandedIndex, setExpandedIndex] = useState(null);
 
   const toggleDescription = index => {
@@ -42,16 +36,22 @@ export default function HelpSetting({navigation}) {
   ];
 
   return (
-    <SafeAreaView style={{flex: 1}}>
+    <View style={{flex: 1}}>
       <StatusBar
         barStyle={mode == 'light' ? 'dark-content' : 'default'}
         backgroundColor={'transparent'}
       />
-      <HeaderTransparent
-        title={t('help_title')}
-        icon="arrow-left-circle-outline"
-        onPress={() => navigation.goBack()}
-      />
+      <View
+        style={[
+          styles.navbarContainer,
+          {backgroundColor: colors[mode].background_header},
+        ]}>
+        <HeaderTransparent
+          title={t('help_title')}
+          icon="arrow-left-circle-outline"
+          onPress={() => navigation.goBack()}
+        />
+      </View>
       <View style={styles.container} showImageBackground={true}>
         {helpData.map((item, index) => (
           <View
@@ -86,11 +86,15 @@ export default function HelpSetting({navigation}) {
           </View>
         ))}
       </View>
-    </SafeAreaView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
+  navbarContainer: {
+    paddingTop: Platform.OS === 'android' ? 0 : 50,
+    height: '11%',
+  },
   contentHelp: {
     borderRadius: 10,
     elevation: 3,

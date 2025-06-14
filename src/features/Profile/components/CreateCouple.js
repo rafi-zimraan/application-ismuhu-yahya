@@ -1,6 +1,12 @@
 import React, {useState} from 'react';
 import {useForm} from 'react-hook-form';
-import {ScrollView, StatusBar, StyleSheet, TextInput} from 'react-native';
+import {
+  Platform,
+  ScrollView,
+  StatusBar,
+  StyleSheet,
+  TextInput,
+} from 'react-native';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import {useSelector} from 'react-redux';
 import {addCouple} from '..';
@@ -53,11 +59,17 @@ export default function CreateCouple({navigation}) {
   return (
     <View style={{flex: 1}}>
       <StatusBar barStyle={mode == 'light' ? 'dark-content' : 'default'} />
-      <HeaderTransparent
-        title="Tambah Data Pasangan"
-        icon="arrow-left-circle-outline"
-        onPress={() => navigation.goBack()}
-      />
+      <View
+        style={[
+          styles.navbarContainer,
+          {backgroundColor: colors[mode].background_header},
+        ]}>
+        <HeaderTransparent
+          title="Tambah Data Pasangan"
+          icon="arrow-left-circle-outline"
+          onPress={() => navigation.goBack()}
+        />
+      </View>
       <View style={styles.container} showImageBackground={true}>
         <Gap height={15} />
         <ScrollView
@@ -173,6 +185,10 @@ export default function CreateCouple({navigation}) {
 }
 
 const styles = StyleSheet.create({
+  navbarContainer: {
+    paddingTop: Platform.OS === 'android' ? 0 : 50,
+    height: '11%',
+  },
   container: {
     flex: 1,
   },

@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import {
   Image,
+  Platform,
   ScrollView,
   StatusBar,
   StyleSheet,
@@ -83,11 +84,17 @@ export default function DetailFamily({route, navigation}) {
         barStyle={mode == 'light' ? 'default' : 'dark-content'}
         backgroundColor="transparent"
       />
-      <HeaderTransparent
-        title="Detail Data Keluarga"
-        icon="arrow-left-circle-outline"
-        onPress={() => navigation.goBack()}
-      />
+      <View
+        style={[
+          styles.navbarContainer,
+          {backgroundColor: colors[mode].background_header},
+        ]}>
+        <HeaderTransparent
+          title="Detail Data Keluarga"
+          icon="arrow-left-circle-outline"
+          onPress={() => navigation.goBack()}
+        />
+      </View>
       <View style={{flex: 1}} showImageBackground={true}>
         <ScrollView style={styles.container}>
           {!isDeleted ? (
@@ -292,6 +299,10 @@ export default function DetailFamily({route, navigation}) {
 }
 
 const styles = StyleSheet.create({
+  navbarContainer: {
+    paddingTop: Platform.OS === 'android' ? 0 : 50,
+    height: '11%',
+  },
   viewButtonMore: {
     flexDirection: 'row',
     justifyContent: 'space-between',

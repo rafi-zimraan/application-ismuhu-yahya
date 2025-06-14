@@ -101,6 +101,10 @@ const styles = StyleSheet.create({
     borderWidth: 0.7,
     elevation: 2,
     marginBottom: 15,
+    shadowColor: COLORS.black,
+    shadowOffset: {whidth: 0, height: 2},
+    shadowOpacity: 0.22,
+    shadowRadius: 2.33,
   },
   ViewFavoriteText: {
     padding: 8,

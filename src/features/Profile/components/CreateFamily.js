@@ -1,5 +1,11 @@
 import React, {useState} from 'react';
-import {ScrollView, StatusBar, StyleSheet, TextInput} from 'react-native';
+import {
+  Platform,
+  ScrollView,
+  StatusBar,
+  StyleSheet,
+  TextInput,
+} from 'react-native';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import {useSelector} from 'react-redux';
 import {addFamilyData} from '..';
@@ -70,11 +76,17 @@ export default function CreateFamily({navigation}) {
         barStyle={mode == 'light' ? 'default' : 'dark-content'}
         backgroundColor={'transparent'}
       />
-      <HeaderTransparent
-        title="Tambah Data Keluarga"
-        icon="arrow-left-circle-outline"
-        onPress={() => navigation.goBack()}
-      />
+      <View
+        style={[
+          styles.navbarContainer,
+          {backgroundColor: colors[mode].background_header},
+        ]}>
+        <HeaderTransparent
+          title="Tambah Data Keluarga"
+          icon="arrow-left-circle-outline"
+          onPress={() => navigation.goBack()}
+        />
+      </View>
       <View style={{flex: 1}} showImageBackground={true}>
         <ScrollView style={styles.container}>
           <Gap height={15} />
@@ -201,6 +213,10 @@ export default function CreateFamily({navigation}) {
 }
 
 const styles = StyleSheet.create({
+  navbarContainer: {
+    paddingTop: Platform.OS === 'android' ? 0 : 50,
+    height: '11%',
+  },
   container: {
     flex: 1,
     padding: 15,

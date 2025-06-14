@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {Platform, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useSelector} from 'react-redux';
@@ -18,7 +18,6 @@ export default function BottomTabBar({state, descriptors, navigation}) {
   const {colors, mode} = useSelector(state => state.theme);
   const iconColorDefault = '#808080';
   const iconColorActive = '#FFB200';
-
   return (
     <View
       style={[
@@ -112,7 +111,13 @@ export default function BottomTabBar({state, descriptors, navigation}) {
               </Animated.Text>
             )}
             {options.tabBarBadge != null && (
-              <View style={style.navbarBadge}>
+              <View
+                style={[
+                  style.navbarBadge,
+                  {
+                    right: isFocused ? (Platform.OS === 'ios' ? 104 : 99) : 36,
+                  },
+                ]}>
                 <Text style={style.textBadge}>{options.tabBarBadge}</Text>
               </View>
             )}
@@ -151,7 +156,7 @@ const style = StyleSheet.create({
   navbarBadge: {
     position: 'absolute',
     top: 6,
-    right: 44,
+    // right: 104,
     backgroundColor: COLORS.red,
     borderRadius: 10,
     paddingHorizontal: 5,

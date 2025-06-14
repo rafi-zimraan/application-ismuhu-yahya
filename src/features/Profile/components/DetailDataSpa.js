@@ -2,6 +2,7 @@ import {useFocusEffect} from '@react-navigation/native';
 import React, {useState} from 'react';
 import {
   Image,
+  Platform,
   RefreshControl,
   ScrollView,
   StatusBar,
@@ -47,6 +48,7 @@ export default function DetailDataSpa({navigation}) {
       setLoading(false);
     }
   };
+
   useFocusEffect(
     React.useCallback(() => {
       fetchData();
@@ -65,11 +67,17 @@ export default function DetailDataSpa({navigation}) {
         barStyle={mode == 'light' ? 'dark-content' : 'default'}
         backgroundColor="transparent"
       />
-      <HeaderTransparent
-        title="Detail Data SPA"
-        icon="arrow-left-circle-outline"
-        onPress={() => navigation.goBack()}
-      />
+      <View
+        style={[
+          styles.navbarContainer,
+          {backgroundColor: colors[mode].background_header},
+        ]}>
+        <HeaderTransparent
+          title="Detail Data SPA"
+          icon="arrow-left-circle-outline"
+          onPress={() => navigation.goBack()}
+        />
+      </View>
 
       <View style={{flex: 1}} showImageBackground={true}>
         <ScrollView
@@ -92,7 +100,7 @@ export default function DetailDataSpa({navigation}) {
                 <View style={styles.viewContentText} section={true}>
                   <Text
                     style={[styles.textTitle, {color: colors[mode].textLabel}]}>
-                    Nama
+                    {/* Nama */}
                   </Text>
                   <Text style={styles.label}>{spaData?.name || '-'}</Text>
                 </View>
@@ -303,7 +311,7 @@ export default function DetailDataSpa({navigation}) {
                     Provinsi
                   </Text>
                   <Text style={styles.label}>
-                    {spaData?.spa_profile?.province || '-'}
+                    {spaData?.spa_profile?.province.name || '-'}
                   </Text>
                 </View>
               </View>
@@ -321,7 +329,7 @@ export default function DetailDataSpa({navigation}) {
                     Kabupaten
                   </Text>
                   <Text style={styles.label}>
-                    {spaData?.spa_profile?.city || '-'}
+                    {spaData?.spa_profile?.city.name || '-'}
                   </Text>
                 </View>
               </View>
@@ -365,6 +373,10 @@ export default function DetailDataSpa({navigation}) {
 }
 
 const styles = StyleSheet.create({
+  navbarContainer: {
+    paddingTop: Platform.OS === 'android' ? 0 : 50,
+    height: '11%',
+  },
   newsImageNotFound: {
     width: 280,
     height: 280,

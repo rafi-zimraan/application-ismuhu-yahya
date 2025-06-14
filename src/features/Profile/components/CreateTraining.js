@@ -2,7 +2,9 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import React, {useState} from 'react';
 import {useForm} from 'react-hook-form';
 import {
+  Platform,
   ScrollView,
+  StatusBar,
   StyleSheet,
   TextInput,
   TouchableOpacity,
@@ -85,11 +87,21 @@ export default function CreateTraining({navigation}) {
 
   return (
     <View style={{flex: 1}}>
-      <HeaderTransparent
-        title="Tambah Data Pelatihan"
-        icon="arrow-left-circle-outline"
-        onPress={() => navigation.goBack()}
+      <StatusBar
+        barStyle={mode == 'light' ? 'dark-content' : 'default'}
+        backgroundColor={'transparent'}
       />
+      <View
+        style={[
+          styles.navbarContainer,
+          {backgroundColor: colors[mode].background_header},
+        ]}>
+        <HeaderTransparent
+          title="Tambah Data Pelatihan"
+          icon="arrow-left-circle-outline"
+          onPress={() => navigation.goBack()}
+        />
+      </View>
       <View style={styles.container} showImageBackground={true}>
         <Gap height={15} />
         <ScrollView style={styles.scrollContainer}>
@@ -229,6 +241,10 @@ export default function CreateTraining({navigation}) {
 }
 
 const styles = StyleSheet.create({
+  navbarContainer: {
+    paddingTop: Platform.OS === 'android' ? 0 : 50,
+    height: '11%',
+  },
   dropdownButton: {
     backgroundColor: COLORS.white,
     borderWidth: 0.4,

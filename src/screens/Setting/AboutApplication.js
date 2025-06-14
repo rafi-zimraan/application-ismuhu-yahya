@@ -1,26 +1,32 @@
 import React from 'react';
-import {SafeAreaView, StatusBar, StyleSheet} from 'react-native';
+import {Platform, StatusBar, StyleSheet} from 'react-native';
 import {useSelector} from 'react-redux';
 import {HeaderTransparent, Text, View} from '../../Component';
 import {Translations} from '../../features/Language';
 import {DIMENS} from '../../utils';
 
 export default function AboutApplication({navigation}) {
-  const {mode} = useSelector(state => state.theme);
+  const {mode, colors} = useSelector(state => state.theme);
   const currentLanguage = useSelector(state => state.language.currentLanguage);
   const t = key => Translations[currentLanguage][key];
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <StatusBar
         barStyle={mode == 'light' ? 'dark-content' : 'default'}
         backgroundColor={'transparent'}
       />
-      <HeaderTransparent
-        title={t('about_app')}
-        icon="arrow-left-circle-outline"
-        onPress={() => navigation.goBack()}
-      />
+      <View
+        style={[
+          styles.navbarContainer,
+          {backgroundColor: colors[mode].background_header},
+        ]}>
+        <HeaderTransparent
+          title={t('about_app')}
+          icon="arrow-left-circle-outline"
+          onPress={() => navigation.goBack()}
+        />
+      </View>
       <View style={{flex: 1}} showImageBackground={true}>
         <View style={{padding: 15}} useBackgroundTransparent={true}>
           <Text style={styles.title}>{t('about_app')}</Text>
@@ -32,11 +38,15 @@ export default function AboutApplication({navigation}) {
           </Text>
         </View>
       </View>
-    </SafeAreaView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
+  navbarContainer: {
+    paddingTop: Platform.OS === 'android' ? 0 : 50,
+    height: '11%',
+  },
   container: {
     flex: 1,
   },

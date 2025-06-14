@@ -5,6 +5,7 @@ import React, {useEffect, useState} from 'react';
 import {
   Alert,
   Image,
+  Platform,
   RefreshControl,
   ScrollView,
   StatusBar,
@@ -237,11 +238,17 @@ export default function DetailTraining({route, navigation}) {
         backgroundColor="transparent"
       />
       <ModalLoading visible={isModalLoading} />
-      <HeaderTransparent
-        title="Detail Data Pelatihan"
-        icon="arrow-left-circle-outline"
-        onPress={() => navigation.goBack()}
-      />
+      <View
+        style={[
+          styles.navbarContainer,
+          {backgroundColor: colors[mode].background_header},
+        ]}>
+        <HeaderTransparent
+          title="Detail Data Pelatihan"
+          icon="arrow-left-circle-outline"
+          onPress={() => navigation.goBack()}
+        />
+      </View>
       <View style={{flex: 1}} showImageBackground={true}>
         <ScrollView
           refreshControl={
@@ -532,6 +539,10 @@ export default function DetailTraining({route, navigation}) {
 }
 
 const styles = StyleSheet.create({
+  navbarContainer: {
+    paddingTop: Platform.OS === 'android' ? 0 : 50,
+    height: '11%',
+  },
   secondryViewButtonSection: {
     flexDirection: 'row',
     justifyContent: 'space-between',

@@ -318,6 +318,7 @@ const styles = StyleSheet.create({
     shadowOffset: {height: 2, width: 0},
     shadowOpacity: 0.33,
     shadowRadius: 3.2,
+    shadowColor: COLORS.black,
     margin: 3,
   },
   imgPhoto: {
@@ -361,9 +362,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     padding: 15,
-    shadowColor: COLORS.black,
-    shadowOffset: {width: 0, height: 2},
-    shadowOpacity: 0.1,
   },
   sectionTextContainer: {
     marginLeft: 15,

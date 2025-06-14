@@ -30,6 +30,7 @@ export default function DetailCarLoan({navigation}) {
   const [loanHistory, setLoanHistory] = useState([]);
   const [tokenExpired, setTokenExpired] = useState(false);
   const [loadingHistory, setLoadingHistory] = useState(false);
+  const [modalUnavailableVisible, setModalUnavailableVisible] = useState(false);
 
   const handleScroll = event => {
     const position = Math.floor(
@@ -94,7 +95,6 @@ export default function DetailCarLoan({navigation}) {
           contentContainerStyle={{paddingBottom: 25}}
           style={styles.scrollViewContainer}>
           <View style={styles.bodyDetail}>
-            {/* <Text style={styles.txtCategoryCar}>Kategori - Ambulance Car</Text> */}
             <Gap height={10} />
             <Text style={styles.txtNameCar}>{mobilDetail?.name}</Text>
             <Gap height={10} />
@@ -204,10 +204,36 @@ export default function DetailCarLoan({navigation}) {
           Segera pinjam {'\n'}kendaraan pilihan Anda!
         </Text>
         <TouchableOpacity
-          style={styles.buttonAction}
-          activeOpacity={0.6}
-          onPress={() => navigation.navigate('CreateCarLoan', {carId})}>
-          <Text style={styles.buttonText}>Pinjam</Text>
+          style={[
+            styles.buttonAction,
+            {
+              backgroundColor:
+                mobilDetail?.status === '0'
+                  ? COLORS.goldenOrange
+                  : COLORS.lightGrey2,
+            },
+          ]}
+          activeOpacity={mobilDetail?.status === '0' ? 0.8 : 1}
+          onPress={() => {
+            if (mobilDetail?.status !== '0') {
+              setModalUnavailableVisible(true);
+              return;
+            } else {
+              navigation.navigate('CreateCarLoan', {carId});
+            }
+          }}>
+          <Text
+            style={[
+              styles.buttonText,
+              {
+                color:
+                  mobilDetail?.status === '0'
+                    ? COLORS.white
+                    : COLORS.mediumGrey,
+              },
+            ]}>
+            Pinjam
+          </Text>
         </TouchableOpacity>
       </View>
 
@@ -222,6 +248,18 @@ export default function DetailCarLoan({navigation}) {
           navigation.navigate('SignIn');
         }}
         buttonTitle="Login Ulang"
+      />
+
+      <ModalCustom
+        visible={modalUnavailableVisible}
+        onRequestClose={() => setModalUnavailableVisible(false)}
+        onOutContentPress={() => setModalUnavailableVisible(false)}
+        iconModalName="alert-circle-outline"
+        title="Mobil Tidak Tersedia"
+        description="Maaf, mobil ini sedang digunakan. Silakan pilih mobil lain atau coba lagi nanti."
+        buttonTitle="Mengerti"
+        buttonSubmit={() => setModalUnavailableVisible(false)}
+        BackgroundButtonAction={COLORS.goldenOrange}
       />
     </View>
   );
@@ -288,7 +326,6 @@ const styles = StyleSheet.create({
     fontWeight: '400',
   },
   buttonAction: {
-    backgroundColor: COLORS.goldenOrange,
     paddingHorizontal: 20,
     paddingVertical: 10,
     borderRadius: 5,
@@ -371,11 +408,7 @@ const styles = StyleSheet.create({
     fontSize: DIMENS.xxl,
     fontWeight: '900',
   },
-  txtCategoryCar: {
-    fontSize: DIMENS.s,
-    color: COLORS.softBlue,
-    fontWeight: '500',
-  },
+
   bodyDetail: {
     padding: 15,
   },

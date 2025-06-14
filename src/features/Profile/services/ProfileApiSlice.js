@@ -524,7 +524,6 @@ export const getAllDataSpa = async id_user => {
         Authorization: `Bearer ${JSON.parse(token)}`,
       },
     });
-
     return response.data || {};
   } catch (error) {
     if (error.response && error.response.data && error.response.data.message) {
