@@ -1,10 +1,10 @@
 import * as React from 'react';
 import {Image, StyleSheet} from 'react-native';
 
-const BGOnBoarding = () => (
+const BGOnBoardingSecond = () => (
   <Image
     style={styles.bg}
-    source={require('../../../assets/onboarding/onBoard1.jpeg')}
+    source={require('../../../assets/onboarding/onBoard2.jpeg')}
     resizeMethod="resize"
     resizeMode="cover"
     fadeDuration={300}
@@ -19,4 +19,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default BGOnBoarding;
+export default BGOnBoardingSecond;

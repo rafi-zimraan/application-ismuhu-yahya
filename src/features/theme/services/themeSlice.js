@@ -5,8 +5,12 @@ const initialState = {
   mode: 'light',
   colors: {
     light: {
+      backgroundReturned: COLORS.goldenOrange,
+      backgroundReject: COLORS.red,
+      backgroundApproved: COLORS.greenConfirm,
+      backgroundDelete: COLORS.redLight,
       backgroundBottomTab: COLORS.goldenOrange,
-      headerTaskDetail: COLORS.paleGrey,
+      headerTaskDetail: COLORS.champagne,
       background_sigIn: COLORS.goldenOrange,
       text: COLORS.black,
       background: COLORS.white,
@@ -26,8 +30,12 @@ const initialState = {
       iconPicker: COLORS.black,
     },
     dark: {
+      backgroundReturned: COLORS.goldenOrange,
+      backgroundReject: COLORS.red,
+      backgroundApproved: COLORS.greenConfirm,
+      backgroundDelete: COLORS.redLight,
       backgroundBottomTab: COLORS.white,
-      headerTaskDetail: COLORS.paleGrey,
+      headerTaskDetail: COLORS.goldenOrange,
       background_sigIn: COLORS.black,
       text: COLORS.white,
       background: COLORS.black,

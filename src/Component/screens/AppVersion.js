@@ -1,18 +1,28 @@
 import React from 'react';
-import {StyleSheet, Text} from 'react-native';
+import {StyleSheet} from 'react-native';
 import version from 'react-native-version-info';
 import {COLORS} from '../../utils';
+import Text from './Text';
+import View from './View';
 
 const AppVersion = () => {
-  return <Text style={styles.textVersion}>{version.appVersion}</Text>;
+  return (
+    <View style={styles.container} section={true}>
+      <Text style={styles.textVersion}>{version.appVersion}</Text>
+    </View>
+  );
 };
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    bottom: 0,
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+  },
   textVersion: {
     color: COLORS.black,
-    position: 'absolute',
-    bottom: 25,
-    alignSelf: 'center',
+    textAlign: 'center',
   },
 });
 

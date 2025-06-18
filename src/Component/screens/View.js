@@ -15,6 +15,10 @@ export default function View({
   useBackroundHeaderImageSignIn,
   useBackgroundHeaderTaskDetail,
   useBackgroundBottomTab,
+  useBackgroundDelete,
+  useBackgroundApproved,
+  useBackgroundReject,
+  useBackgroundReturned,
   useTextInput,
   ...rest
 }) {
@@ -23,7 +27,15 @@ export default function View({
     <ViewDefault
       style={[
         {
-          backgroundColor: useBackgroundBottomTab
+          backgroundColor: useBackgroundReturned
+            ? colors[mode].backgroundReturned
+            : useBackgroundReject
+            ? colors[mode].backgroundReject
+            : useBackgroundApproved
+            ? colors[mode].backgroundApproved
+            : useBackgroundDelete
+            ? colors[mode].backgroundDelete
+            : useBackgroundBottomTab
             ? colors[mode].backgroundBottomTab
             : useBackgroundHeaderTaskDetail
             ? colors[mode].headerTaskDetail

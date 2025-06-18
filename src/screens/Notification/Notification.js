@@ -9,9 +9,11 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import {useSelector} from 'react-redux';
-import {Gap, ModalCustom, Text, View} from '../../Component';
+import {Gap, ModalCustom, ModalLoading, Text, View} from '../../Component';
 import {getAllNotifications} from '../../features/Notification';
 import {COLORS, DIMENS} from '../../utils';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import {FecthMe} from '../../features/authentication';
 
 export default function Notification({navigation}) {
   const {colors, mode} = useSelector(state => state.theme);
@@ -21,9 +23,21 @@ export default function Notification({navigation}) {
   });
   const [refreshing, setRefreshing] = useState(false);
   const [tokenExpired, setTokenExpired] = useState(false);
+  const [listMemberLoan, setListMemberLoan] = useState(null);
+  const [modalLoadingVisible, setModalLoadingVisible] = useState(true);
 
   useEffect(() => {
-    fetchNotifications();
+    const fetchAll = async () => {
+      try {
+        await Promise.all([fetchNotifications(), FectListCar()]);
+      } finally {
+        setTimeout(() => {
+          setModalLoadingVisible(false);
+        }, 2000);
+      }
+    };
+
+    fetchAll();
   }, []);
 
   useFocusEffect(
@@ -52,6 +66,19 @@ export default function Notification({navigation}) {
     }
   };
 
+  const FectListCar = async () => {
+    try {
+      const response = await FecthMe();
+      if (response?.message === 'Silahkan login terlebih dahulu') {
+        setTokenExpired(true);
+        return;
+      }
+      setListMemberLoan(response?.is_member_loan ?? null);
+    } catch (error) {
+      console.log('Error fetching user data:', error);
+    }
+  };
+
   const onRefresh = async () => {
     setRefreshing(true);
     try {
@@ -70,8 +97,12 @@ export default function Notification({navigation}) {
   };
 
   return (
-    <View style={{flex: 1, backgroundColor: COLORS.white}}>
+    <View style={{flex: 1}}>
       <StatusBar barStyle="default" backgroundColor="transparent" />
+      <ModalLoading
+        visible={modalLoadingVisible}
+        onRequestClose={() => setModalLoadingVisible(false)}
+      />
       <View
         style={[
           styles.navbarContainer,
@@ -87,20 +118,33 @@ export default function Notification({navigation}) {
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           }>
-          <View style={styles.viewCard} section={true}>
+          <View
+            style={[
+              styles.viewCard,
+              {shadowColor: mode === 'dark' ? COLORS.white : COLORS.black},
+            ]}
+            section={true}>
             <TouchableOpacity
               activeOpacity={0.7}
               style={styles.categoryCard}
               onPress={() =>
-                navigation.navigate('NotificationFromCategory', {
+                navigation.navigate('PermissionNotificationListScreen', {
                   category: 'lisences',
                 })
               }>
               <View section={true}>
-                <Text style={styles.categoryHeader}>Perizinan</Text>
+                <View style={styles.categoryHeaderContainer} section={true}>
+                  <Icon
+                    name={'information-outline'}
+                    size={20}
+                    color={COLORS.goldenOrange}
+                  />
+                  <Gap width={3} />
+                  <Text style={styles.categoryHeader}>Perizinan</Text>
+                </View>
                 <Gap height={5} />
                 <Text style={styles.categoryDescription}>
-                  Kumpulan notifikasi berkaitan {'\n'}dengan perizinan.
+                  Notifikasi terkait pengajuan dan status {'\n'}perizinan Anda.
                 </Text>
               </View>
               <View style={styles.countBadge}>
@@ -111,6 +155,42 @@ export default function Notification({navigation}) {
             </TouchableOpacity>
           </View>
           <Gap height={15} />
+
+          {listMemberLoan === 1 && (
+            <View
+              style={[
+                styles.viewCard,
+                {shadowColor: mode === 'dark' ? COLORS.white : COLORS.black},
+              ]}
+              section={true}>
+              <TouchableOpacity
+                activeOpacity={0.7}
+                style={styles.categoryCard}
+                onPress={() => {
+                  navigation.navigate('CarLoanNotificationListScreen');
+                }}>
+                <View section={true}>
+                  <View style={styles.categoryHeaderContainer} section={true}>
+                    <Icon
+                      name={'car-info'}
+                      size={20}
+                      color={COLORS.goldenOrange}
+                    />
+                    <Gap width={3} />
+                    <Text style={styles.categoryHeader}>Peminjaman mobil</Text>
+                  </View>
+                  <Gap height={5} />
+                  <Text style={styles.categoryDescription}>
+                    Notifikasi mengenai pengajuan dan persetujuan {'\n'}
+                    peminjaman mobil.
+                  </Text>
+                </View>
+                <View style={styles.countBadge}>
+                  <Text style={styles.countText}>0</Text>
+                </View>
+              </TouchableOpacity>
+            </View>
+          )}
         </ScrollView>
       </View>
 
@@ -131,6 +211,10 @@ export default function Notification({navigation}) {
 }
 
 const styles = StyleSheet.create({
+  categoryHeaderContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
   textLoading: {
     fontStyle: 'italic',
     color: COLORS.black,
@@ -152,9 +236,8 @@ const styles = StyleSheet.create({
     elevation: 5,
     padding: 5,
     marginHorizontal: 5,
-    shadowColor: COLORS.black,
     shadowOffset: {height: 2, width: 0},
-    shadowOpacity: 0.32,
+    shadowOpacity: 0.35,
     shadowRadius: 2.22,
   },
   categoryCard: {
@@ -164,7 +247,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
   },
   categoryHeader: {
-    fontSize: DIMENS.xxl,
+    fontSize: DIMENS.xl,
     fontWeight: '500',
   },
   categoryDescription: {

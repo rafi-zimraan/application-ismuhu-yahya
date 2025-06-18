@@ -2,6 +2,7 @@ import {useFocusEffect} from '@react-navigation/native';
 import React, {useState} from 'react';
 import {
   ActivityIndicator,
+  Platform,
   RefreshControl,
   ScrollView,
   StatusBar,
@@ -19,7 +20,7 @@ import {
 } from '../../../Component';
 import {COLORS, DIMENS} from '../../../utils';
 
-export default function NotificationDetail({route, navigation}) {
+export default function PermissionDetailScreen({route, navigation}) {
   const {notificationDetail: initialDetail} = route.params;
   const {mode, colors} = useSelector(state => state.theme);
   const [notificationDetail, setNotificationDetail] = useState(initialDetail);
@@ -112,11 +113,17 @@ export default function NotificationDetail({route, navigation}) {
         barStyle={mode == 'light' ? 'dark-content' : 'default'}
         backgroundColor="transparent"
       />
-      <HeaderTransparent
-        title="Detail Notifikasi"
-        icon="arrow-left-circle-outline"
-        onPress={() => navigation.goBack()}
-      />
+      <View
+        style={[
+          styles.navbarContainer,
+          {backgroundColor: colors[mode].background_header},
+        ]}>
+        <HeaderTransparent
+          title="Detail Notifikasi"
+          icon="arrow-left-circle-outline"
+          onPress={() => navigation.goBack()}
+        />
+      </View>
       {notificationDetail ? (
         <View style={{flex: 1}} showImageBackground={true}>
           <ScrollView
@@ -220,6 +227,10 @@ export default function NotificationDetail({route, navigation}) {
 }
 
 const styles = StyleSheet.create({
+  navbarContainer: {
+    paddingTop: Platform.OS === 'android' ? 0 : 50,
+    height: '12%',
+  },
   container: {
     flex: 1,
   },

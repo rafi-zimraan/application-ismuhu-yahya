@@ -381,9 +381,8 @@ export default function TaskDetailScreen({route, navigation}) {
 
 const styles = {
   dashedLine: {
-    borderBottomWidth: 1,
-    borderBottomColor: COLORS.grey,
-    borderStyle: 'dashed',
+    borderBottomWidth: 0.4,
+    borderBottomColor: COLORS.mediumGrey,
     marginVertical: 5,
   },
   LoadingText: {
