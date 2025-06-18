@@ -1,6 +1,5 @@
 import AyatComponent from './components/AyatComponent';
 import ButtonMenu from './components/ButtonMenu';
-import ClockDasboard from './components/ClockDasboard';
 import DataSpaComponent from './components/DataSpaAndSantri';
 import DetailNewInformation from './components/DetailNewInformation';
 import HeaderComponent from './components/HeaderComponent';
@@ -18,11 +17,13 @@ import {useFetchAyat} from './services/useFetchAyat';
 import {useNetworkStatus} from './services/useNetwrokStatus';
 import {useTime} from './services/useTime';
 import {useWelcomeMessage} from './services/useWelcomeMessage';
+import {fetchHijriDate} from './components/FetchHijriDate';
+import {useFetchHijriDate} from './services/useFetchHijriDate';
 
 // component
 export {
+  fetchHijriDate,
   ButtonMenu,
-  ClockDasboard,
   HeaderComponent,
   NewsComponent,
   AyatComponent,
@@ -33,6 +34,7 @@ export {
 };
 // slice api
 export {
+  useFetchHijriDate,
   useNetworkStatus,
   fetchAyat,
   fetchDailyAyah,

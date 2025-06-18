@@ -45,7 +45,7 @@ export default function AboutApplication({navigation}) {
 const styles = StyleSheet.create({
   navbarContainer: {
     paddingTop: Platform.OS === 'android' ? 0 : 50,
-    height: '11%',
+    height: '12%',
   },
   container: {
     flex: 1,

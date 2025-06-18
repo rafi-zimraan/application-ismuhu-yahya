@@ -17,7 +17,6 @@ import {ICON_DASBOARD} from '../../assets';
 import {
   AyatComponent,
   ButtonMenu,
-  ClockDasboard,
   DataSpaComponent,
   HeaderComponent,
   NetworkModal,
@@ -28,6 +27,7 @@ import {
   setUserPosition,
   useBackgroundImage,
   useFetchAyat,
+  useFetchHijriDate,
   useNetworkStatus,
   useTime,
   useWelcomeMessage,
@@ -36,7 +36,6 @@ import {FecthMe} from '../../features/authentication';
 import {COLORS} from '../../utils';
 import Toast from 'react-native-toast-message';
 import PushNotificationIOS from '@react-native-community/push-notification-ios';
-import EncryptedStorage from 'react-native-encrypted-storage';
 
 export default function Dasboard({navigation}) {
   const dispatch = useDispatch();
@@ -47,6 +46,7 @@ export default function Dasboard({navigation}) {
   const formatTime = useTime();
   const backgroundImage = useBackgroundImage();
   const welcomeText = useWelcomeMessage();
+  const {hijriDate} = useFetchHijriDate();
   const {ayat, loadingAyat} = useFetchAyat();
   const [refreshing, setRefreshing] = useState(false);
   const [tokenExpired, setTokenExpired] = useState(false);
@@ -56,8 +56,6 @@ export default function Dasboard({navigation}) {
   const {showModal, setShowModal, buttonLoading, openNetworkSettings} =
     useNetworkStatus(isFocused);
   const [listMemberLoan, setListMemberLoan] = useState(null);
-  const [hasShownWelcome, setHasShownWelcome] = useState(false);
-  const [permissionDone, setPermissionDone] = useState(false);
 
   const showToast = (message, type = 'info') => {
     Toast.show({
@@ -67,20 +65,6 @@ export default function Dasboard({navigation}) {
       visibilityTime: 2000,
     });
   };
-
-  // useEffect(() => {
-  //   const checkWelcomeFlag = async () => {
-  //     try {
-  //       const flag = await EncryptedStorage.getItem('hasShownWelcome');
-  //       if (flag === 'true') {
-  //         setHasShownWelcome(true);
-  //       }
-  //     } catch (e) {
-  //       console.log('Gagal membaca flag welcome:', e);
-  //     }
-  //   };
-  //   checkWelcomeFlag();
-  // }, []);
 
   useEffect(() => {
     const requestNotificationPermission = async () => {
@@ -124,6 +108,7 @@ export default function Dasboard({navigation}) {
   const fetchUserSession = useCallback(async () => {
     try {
       const response = await FecthMe();
+      console.log('Response FecthMe:', response);
       if (response?.message === 'Silahkan login terlebih dahulu') {
         setTokenExpired(true);
       }
@@ -136,13 +121,6 @@ export default function Dasboard({navigation}) {
       dispatch(setAmountSpa(response?.data_users?.spa?.tot_spa || 0));
       dispatch(setUserPosition(response?.position || ''));
       setListMemberLoan(response?.is_member_loan ?? null);
-      // if (!hasShownWelcome) {
-      //   setTimeout(() => {
-      //     showToast(`Selamat Datang ${response?.username}`);
-      //   }, 300);
-      //   setHasShownWelcome(true);
-      //   await EncryptedStorage.setItem('hasShownWelcome', 'true');
-      // }
     } catch (e) {
       console.log('Terjadi kesalahan checking session', e);
     }
@@ -169,12 +147,13 @@ export default function Dasboard({navigation}) {
           source={backgroundImage}
           style={[
             styles.imageContainer,
-            {paddingTop: Platform.OS === 'android' ? 25 : 50},
+            {paddingTop: Platform.OS === 'android' ? 30 : 50},
           ]}
           resizeMode="cover">
           <Gap height={15} />
 
           <HeaderComponent urlPhoto={photo} welcomeText={welcomeText} />
+          <Gap height={30} />
           {loadingAyat ? (
             <View style={styles.viewLoadingAyat}>
               <ActivityIndicator size={16} color={COLORS.white} />
@@ -183,13 +162,13 @@ export default function Dasboard({navigation}) {
             <AyatComponent ayat={ayat} />
           )}
           <Gap height={25} />
-          <ClockDasboard formatTime={formatTime} />
-          <Gap height={25} />
           <DataSpaComponent
             iconDashboard={ICON_DASBOARD}
             totalSantri={amountSantri}
             totalSpa={amountSpa}
             userPosition={userPosition}
+            formatTime={formatTime}
+            hijriDate={hijriDate}
           />
           <Gap height={25} />
           <View style={styles.menu}>

@@ -1,22 +1,17 @@
 import React, {useEffect, useState} from 'react';
-import {
-  ActivityIndicator,
-  Image,
-  SafeAreaView,
-  StatusBar,
-  StyleSheet,
-  View,
-} from 'react-native';
+import {ActivityIndicator, Image, StatusBar, StyleSheet} from 'react-native';
 import EncryptedStorage from 'react-native-encrypted-storage';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {AppVersion, Gap} from '../../Component';
 import {IMG_ISMUHUYAHYA_POTRAIT} from '../../assets';
 import {setTheme} from '../../features/theme';
 import {COLORS} from '../../utils';
 import {setBiometricEnabled} from '../../features/Profile';
+import {View, Text} from '../../Component';
 
 export default function SplashScreen({navigation}) {
   const dispatch = useDispatch();
+  const {mode} = useSelector(state => state.theme);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -53,9 +48,12 @@ export default function SplashScreen({navigation}) {
   }, [navigation]);
 
   return (
-    <SafeAreaView style={styles.background}>
-      <StatusBar barStyle={'dark-content'} backgroundColor={'transparent'} />
-      <View style={styles.container}>
+    <View style={styles.background} section={true}>
+      <StatusBar
+        barStyle={mode === 'light' ? 'dark-content' : 'light-content'}
+        backgroundColor={'transparent'}
+      />
+      <View style={styles.container} section={true}>
         <Image
           source={IMG_ISMUHUYAHYA_POTRAIT}
           style={styles.img}
@@ -71,15 +69,13 @@ export default function SplashScreen({navigation}) {
           />
         )}
       </View>
-      <AppVersion />
-    </SafeAreaView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   background: {
     flex: 1,
-    backgroundColor: COLORS.white,
   },
   container: {
     flex: 1,

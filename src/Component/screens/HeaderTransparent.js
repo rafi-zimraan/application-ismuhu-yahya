@@ -39,7 +39,7 @@ export default function HeaderTransparent({
           <Icon name={icon} size={30} />
         </View>
       </TouchableNativeFeedback>
-      <View style={{width: 15}} />
+      <View style={{width: 10}} />
       <Text style={styles.text}>{title}</Text>
     </View>
   );

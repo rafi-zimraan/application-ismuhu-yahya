@@ -93,7 +93,7 @@ export default function HelpSetting({navigation}) {
 const styles = StyleSheet.create({
   navbarContainer: {
     paddingTop: Platform.OS === 'android' ? 0 : 50,
-    height: '11%',
+    height: '12%',
   },
   contentHelp: {
     borderRadius: 10,

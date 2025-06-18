@@ -4,7 +4,6 @@ import {ListAmalYaumi} from '../features/AmalYaumi';
 import {
   CreateCarLoan,
   DetailCarLoan,
-  DetailMostCarLoan,
   LoanTodayDetail,
 } from '../features/CarLoan';
 import {DetailNewInformation} from '../features/Dasboard';
@@ -16,8 +15,9 @@ import {
 } from '../features/FacilityComplaint';
 import {CheckOtpEmail, OtpForgotPassword} from '../features/ForgotPassword';
 import {
-  NotificationDetail,
-  NotificationFromCategory,
+  CarLoanNotificationListScreen,
+  PermissionDetailScreen,
+  PermissionNotificationListScreen,
 } from '../features/Notification';
 import {
   CreateFormulirPerizinan,
@@ -132,10 +132,17 @@ export default function Navigator() {
 
       {/* Notification */}
       <Stack.Screen name="Notification" component={Notification} />
-      <Stack.Screen name="NotificationDetail" component={NotificationDetail} />
       <Stack.Screen
-        name="NotificationFromCategory"
-        component={NotificationFromCategory}
+        name="PermissionDetailScreen"
+        component={PermissionDetailScreen}
+      />
+      <Stack.Screen
+        name="PermissionNotificationListScreen"
+        component={PermissionNotificationListScreen}
+      />
+      <Stack.Screen
+        name="CarLoanNotificationListScreen"
+        component={CarLoanNotificationListScreen}
       />
 
       {/* News Images */}

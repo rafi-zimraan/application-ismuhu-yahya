@@ -25,7 +25,7 @@ import {
 import {COLORS, DIMENS} from '../../../utils';
 import Toast from 'react-native-toast-message';
 
-export default function NotificationFromCategory({route, navigation}) {
+export default function PermissionNotificationListScreen({route, navigation}) {
   const {category} = route.params;
   const {mode, colors} = useSelector(state => state.theme);
   const [data, setData] = useState([]);
@@ -163,7 +163,7 @@ export default function NotificationFromCategory({route, navigation}) {
     setIsLoadingFilter(true);
     try {
       const detail = await getNotificationDetail(id);
-      navigation.navigate('NotificationDetail', {
+      navigation.navigate('PermissionDetailScreen', {
         notificationDetail: detail.data,
       });
     } catch (error) {
@@ -185,7 +185,7 @@ export default function NotificationFromCategory({route, navigation}) {
           {backgroundColor: colors[mode].background_header},
         ]}>
         <HeaderTransparent
-          title={'Kategori Notification '}
+          title={'Notifikasi Perizinan'}
           icon="arrow-left-circle-outline"
           onPress={() => navigation.goBack()}
         />
@@ -209,7 +209,6 @@ export default function NotificationFromCategory({route, navigation}) {
           {filterOptions.map(option => (
             <TouchableOpacity
               key={option.value}
-              style={styles.dropdownItem}
               onPress={() => handleFilterSelect(option.value)}>
               <Text style={styles.dropdownText}>{option.label}</Text>
             </TouchableOpacity>
@@ -226,7 +225,7 @@ export default function NotificationFromCategory({route, navigation}) {
           {loading ? (
             <View section={true} useBackgroundTransparent={true}>
               <Text style={styles.loadingText}>Sedang memuat data...</Text>
-              <ModalLoading visible={loading} />
+              {/* <ModalLoading visible={loading} /> */}
             </View>
           ) : data?.length > 0 ? (
             <>
@@ -252,11 +251,14 @@ export default function NotificationFromCategory({route, navigation}) {
                       <Text style={styles.messageText}>{item?.message}</Text>
                     </View>
                     <View style={styles.actionsSection} section={true}>
-                      <TouchableOpacity
+                      <View
                         style={styles.deleteButton}
-                        onPress={() => openDeleteModal(item?.id)}>
-                        <Text style={styles.deleteText}>Delete</Text>
-                      </TouchableOpacity>
+                        useBackgroundDelete={true}>
+                        <TouchableOpacity
+                          onPress={() => openDeleteModal(item?.id)}>
+                          <Text style={styles.deleteText}>Delete</Text>
+                        </TouchableOpacity>
+                      </View>
                     </View>
                   </TouchableOpacity>
                 </View>
@@ -305,32 +307,28 @@ export default function NotificationFromCategory({route, navigation}) {
 
 const styles = StyleSheet.create({
   viewIconFilter: {
-    position: 'absolute',
-    top: 48,
-    right: 20,
+    top: Platform.OS === 'ios' ? 0 : 26,
+    right: 10,
   },
   dropdownMenu: {
-    position: 'absolute',
-    top: 50,
-    right: 15,
     backgroundColor: COLORS.white,
     borderRadius: 8,
-    padding: 10,
-    elevation: 5,
-  },
-  dropdownItem: {
-    paddingVertical: 10,
+    alignSelf: 'flex-end',
+    position: 'absolute',
+    right: 10,
+    top: Platform.OS === 'android' ? 45 : 90,
+    padding: 8,
   },
   dropdownText: {
     fontSize: DIMENS.m,
     color: COLORS.black,
+    margin: 2,
   },
   headerWrapper: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: 10,
-    elevation: 3,
+    paddingTop: Platform.OS === 'ios' ? 50 : 0,
   },
   contentContainer: {
     padding: 15,
@@ -383,14 +381,16 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
   },
   deleteButton: {
-    backgroundColor: COLORS.redSoft,
     top: 10,
-    padding: 4,
-    borderRadius: 8,
+    paddingHorizontal: 9,
+    borderRadius: 4,
+    borderWidth: 1,
+    padding: 2,
+    borderColor: COLORS.softRed,
   },
   deleteText: {
-    fontSize: DIMENS.m,
-    color: COLORS.red,
+    fontSize: DIMENS.s,
+    color: COLORS.white,
   },
   emptyText: {
     textAlign: 'center',
