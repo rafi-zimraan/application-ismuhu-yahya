@@ -70,7 +70,7 @@ export default function CarLoan({navigation}) {
 
   return (
     <View style={styles.ContentView}>
-      {loading && <ModalLoading visible={loading} withSpinner={true} />}
+      {loading && <ModalLoading visible={loading} />}
       <LinearGradient
         colors={colors[mode].linearGardenProfile}
         start={{x: 0, y: 0}}

@@ -41,8 +41,6 @@ export default function View({
             ? colors[mode].headerTaskDetail
             : useTextInput
             ? colors[mode].textInput
-            : useBackroundHeaderImageSignIn
-            ? colors[mode].background_sigIn
             : useBackgroundTransparent
             ? colors[mode].transparent
             : useBackgroundColor

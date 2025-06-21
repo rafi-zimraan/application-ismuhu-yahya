@@ -76,6 +76,10 @@ export default function LoanTodayDetail({navigation}) {
               <Text style={styles.label}>Keperluan:</Text>
               <Text style={styles.value}>{carLoanDetail?.necessity}</Text>
             </View>
+            <View style={styles.contentLabel}>
+              <Text style={styles.label}>Deskirpsi</Text>
+              <Text style={styles.desc}>{carLoanDetail?.desc}</Text>
+            </View>
           </View>
 
           <View style={styles.seperator} />
@@ -156,6 +160,12 @@ export default function LoanTodayDetail({navigation}) {
 }
 
 const styles = StyleSheet.create({
+  desc: {
+    fontSize: DIMENS.s,
+    color: COLORS.black,
+    marginTop: 6,
+    maxWidth: '70%',
+  },
   loadingText: {
     fontStyle: 'italic',
     marginTop: 10,

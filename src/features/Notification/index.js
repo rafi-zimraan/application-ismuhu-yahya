@@ -2,6 +2,7 @@ import DropdownPicker from './components/DropdonwPicker';
 import NavbarNotif from './components/NavbarNotif';
 import PermissionDetailScreen from './components/PermissionDetailScreen';
 import PermissionNotificationListScreen from './components/PermissionNotificationListScreen';
+import CarLoanApprovalListScreen from './components/CarLoanApprovalListScreen';
 import CarLoanNotificationListScreen from './components/CarLoanNotificationListScreen';
 import {
   deleteNotification,
@@ -17,6 +18,7 @@ export {
   NavbarNotif,
   PermissionNotificationListScreen,
   CarLoanNotificationListScreen,
+  CarLoanApprovalListScreen,
   PermissionDetailScreen,
 };
 // slice

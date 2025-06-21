@@ -199,7 +199,6 @@ export const getMostCarLoans = async () => {
     });
 
     if (response.data) {
-      // return response.data;
       return Object.values(response.data);
     } else {
       console.log('Failed to load most car loans data');

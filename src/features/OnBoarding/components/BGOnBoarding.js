@@ -7,7 +7,7 @@ const BGOnBoarding = () => (
     source={require('../../../assets/onboarding/onBoard1.jpeg')}
     resizeMethod="resize"
     resizeMode="cover"
-    fadeDuration={300}
+    fadeDuration={0}
   />
 );
 

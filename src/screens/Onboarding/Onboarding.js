@@ -1,5 +1,6 @@
-import React, {useState} from 'react';
+import React, {useState, useRef} from 'react';
 import {
+  Animated,
   Button,
   Image,
   Platform,
@@ -22,6 +23,7 @@ import Toast from 'react-native-toast-message';
 
 export default function OnBoarding({navigation}) {
   const [currentScreen, setCurrentScreen] = useState(0);
+  const fadeAnim = useRef(new Animated.Value(1)).current;
 
   const showToast = (message, type = 'info') => {
     Toast.show({
@@ -47,21 +49,33 @@ export default function OnBoarding({navigation}) {
     },
   ];
 
-  const handleNext = async () => {
-    if (currentScreen < screens.length - 1) {
-      setCurrentScreen(currentScreen + 1);
-    } else {
-      await EncryptedStorage.setItem('is_boarding', 'true');
-      navigation.replace('SignIn');
-    }
-  };
-
   const handleSkip = async () => {
     try {
       await EncryptedStorage.setItem('is_boarding', 'true');
       navigation.replace('SignIn');
     } catch (error) {
       showToast('Terjadi kesalahan saat menyimpan status onboarding');
+    }
+  };
+
+  const handleNext = async () => {
+    if (currentScreen < screens.length - 1) {
+      Animated.timing(fadeAnim, {
+        toValue: 0,
+        duration: 150,
+        useNativeDriver: true,
+      }).start(() => {
+        setCurrentScreen(prev => prev + 1);
+        fadeAnim.setValue(0);
+        Animated.timing(fadeAnim, {
+          toValue: 1,
+          duration: 150,
+          useNativeDriver: true,
+        }).start();
+      });
+    } else {
+      await EncryptedStorage.setItem('is_boarding', 'true');
+      navigation.replace('SignIn');
     }
   };
 
@@ -72,7 +86,33 @@ export default function OnBoarding({navigation}) {
         backgroundColor: screens[currentScreen].backgroundColor,
       }}>
       <StatusBar barStyle={'light-content'} backgroundColor={'transparent'} />
-      {currentScreen === 0 && <BGOnBoarding />}
+
+      {/* Backgrounds dirender bersamaan dengan opacity */}
+      <View style={StyleSheet.absoluteFill}>
+        <Animated.View
+          style={[
+            StyleSheet.absoluteFill,
+            {opacity: currentScreen === 0 ? fadeAnim : 0},
+          ]}>
+          <BGOnBoarding />
+        </Animated.View>
+        <Animated.View
+          style={[
+            StyleSheet.absoluteFill,
+            {opacity: currentScreen === 1 ? fadeAnim : 0},
+          ]}>
+          <BGOnBoardingSecond />
+        </Animated.View>
+        <Animated.View
+          style={[
+            StyleSheet.absoluteFill,
+            {opacity: currentScreen === 2 ? fadeAnim : 0},
+          ]}>
+          <BGOnBoardingThrid />
+        </Animated.View>
+      </View>
+
+      {/* Logo hanya muncul di screen pertama */}
       {currentScreen === 0 && (
         <View
           style={[
@@ -83,7 +123,7 @@ export default function OnBoarding({navigation}) {
         </View>
       )}
 
-      {currentScreen === 1 && <BGOnBoardingSecond />}
+      {/* Tombol skip hanya di screen ke-2 */}
       {currentScreen === 1 && (
         <TouchableOpacity
           style={styles.skipButton}
@@ -93,7 +133,7 @@ export default function OnBoarding({navigation}) {
         </TouchableOpacity>
       )}
 
-      {currentScreen === 2 && <BGOnBoardingThrid />}
+      {/* Pagination */}
       <View style={styles.viewPagination}>
         <View style={styles.paginationWrapper}>
           {screens.map((_, index) => (

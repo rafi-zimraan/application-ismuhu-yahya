@@ -13,27 +13,26 @@ import {Gap, ModalCustom, ModalLoading, Text, View} from '../../Component';
 import {getAllNotifications} from '../../features/Notification';
 import {COLORS, DIMENS} from '../../utils';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {FecthMe} from '../../features/authentication';
 
 export default function Notification({navigation}) {
   const {colors, mode} = useSelector(state => state.theme);
   const [notifications, setNotifications] = useState({
     lisences: [],
     payrol: [],
+    loan_car: [],
   });
   const [refreshing, setRefreshing] = useState(false);
   const [tokenExpired, setTokenExpired] = useState(false);
-  const [listMemberLoan, setListMemberLoan] = useState(null);
   const [modalLoadingVisible, setModalLoadingVisible] = useState(true);
 
   useEffect(() => {
     const fetchAll = async () => {
       try {
-        await Promise.all([fetchNotifications(), FectListCar()]);
+        await fetchNotifications();
       } finally {
         setTimeout(() => {
           setModalLoadingVisible(false);
-        }, 2000);
+        }, 1000);
       }
     };
 
@@ -59,23 +58,13 @@ export default function Notification({navigation}) {
           payrol: Array.isArray(response?.data?.payrol)
             ? response.data.payrol
             : [],
+          loan_car: Array.isArray(response?.data?.loan_car)
+            ? response.data.loan_car
+            : [],
         });
       }
     } catch (error) {
       setNotifications({lisences: [], payrol: []});
-    }
-  };
-
-  const FectListCar = async () => {
-    try {
-      const response = await FecthMe();
-      if (response?.message === 'Silahkan login terlebih dahulu') {
-        setTokenExpired(true);
-        return;
-      }
-      setListMemberLoan(response?.is_member_loan ?? null);
-    } catch (error) {
-      console.log('Error fetching user data:', error);
     }
   };
 
@@ -156,41 +145,41 @@ export default function Notification({navigation}) {
           </View>
           <Gap height={15} />
 
-          {listMemberLoan === 1 && (
-            <View
-              style={[
-                styles.viewCard,
-                {shadowColor: mode === 'dark' ? COLORS.white : COLORS.black},
-              ]}
-              section={true}>
-              <TouchableOpacity
-                activeOpacity={0.7}
-                style={styles.categoryCard}
-                onPress={() => {
-                  navigation.navigate('CarLoanNotificationListScreen');
-                }}>
-                <View section={true}>
-                  <View style={styles.categoryHeaderContainer} section={true}>
-                    <Icon
-                      name={'car-info'}
-                      size={20}
-                      color={COLORS.goldenOrange}
-                    />
-                    <Gap width={3} />
-                    <Text style={styles.categoryHeader}>Peminjaman mobil</Text>
-                  </View>
-                  <Gap height={5} />
-                  <Text style={styles.categoryDescription}>
-                    Notifikasi mengenai pengajuan dan persetujuan {'\n'}
-                    peminjaman mobil.
-                  </Text>
+          <View
+            style={[
+              styles.viewCard,
+              {shadowColor: mode === 'dark' ? COLORS.white : COLORS.black},
+            ]}
+            section={true}>
+            <TouchableOpacity
+              activeOpacity={0.7}
+              style={styles.categoryCard}
+              onPress={() => {
+                navigation.navigate('CarLoanNotificationListScreen');
+              }}>
+              <View section={true}>
+                <View style={styles.categoryHeaderContainer} section={true}>
+                  <Icon
+                    name={'car-info'}
+                    size={20}
+                    color={COLORS.goldenOrange}
+                  />
+                  <Gap width={3} />
+                  <Text style={styles.categoryHeader}>Peminjaman mobil</Text>
                 </View>
-                <View style={styles.countBadge}>
-                  <Text style={styles.countText}>0</Text>
-                </View>
-              </TouchableOpacity>
-            </View>
-          )}
+                <Gap height={5} />
+                <Text style={styles.categoryDescription}>
+                  Notifikasi mengenai pengajuan dan persetujuan {'\n'}
+                  peminjaman mobil.
+                </Text>
+              </View>
+              <View style={styles.countBadge}>
+                <Text style={styles.countText}>
+                  {countCategoryItems('loan_car')}
+                </Text>
+              </View>
+            </TouchableOpacity>
+          </View>
         </ScrollView>
       </View>
 

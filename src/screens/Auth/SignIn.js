@@ -163,105 +163,101 @@ export default function SignIn({navigation}) {
       style={{flex: 1}}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       keyboardVerticalOffset={Platform.OS === 'ios' ? 40 : 0}>
-      <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-        <View style={styles.container} useBackroundHeaderImageSignIn={true}>
-          <StatusBar
-            barStyle={mode === 'light' ? 'dark-content' : 'light-content'}
-            backgroundColor={colors[mode].background_sigIn}
-          />
-          <Gap height={45} />
-          <View
-            style={styles.viewImageSignIn}
-            useBackroundHeaderImageSignIn={true}>
+      <View style={{flex: 1}} section={true}>
+        <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+          <View style={styles.container}>
+            <StatusBar
+              barStyle={mode === 'light' ? 'dark-content' : 'light-content'}
+              backgroundColor={'transparent'}
+            />
+            {/* <Gap height={45} /> */}
             <Image
               source={IMG_LOGIN}
               style={styles.image}
               resizeMethod="resize"
               resizeMode="cover"
             />
-          </View>
 
-          <View style={styles.viewBody} section={true}>
-            <ScrollView
-              style={styles.contentScrollView}
-              showsVerticalScrollIndicator={false}
-              contentContainerStyle={styles.scrollContainer}>
-              <View style={styles.viewSignIn} section={true}>
-                <View
-                  style={{flexDirection: 'row', alignItems: 'center'}}
-                  section={true}>
-                  <Text style={styles.welcomeText}>Selamat Datang </Text>
-                  <Animated.Text style={{transform: [{rotate}], fontSize: 33}}>
-                    👋
-                  </Animated.Text>
-                </View>
-                <Text style={styles.descriptionText}>
-                  Produktivitas dimulai di sini. {'\n'}Masuk untuk mengatur
-                  tugas Anda.
-                </Text>
-                <Gap height={25} />
-                <View section={true}>
-                  <FormInput
-                    control={control}
-                    iconColor={COLORS.Orange}
-                    name="email"
-                    autoCapitalize="none"
-                    iconName="gmail"
-                    keyboardType="email-address"
-                    placeholder="contoh@email.com"
-                    title="Email"
-                    pattern={{
-                      value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-                      message: 'Email tidak valid',
+            <View style={styles.viewBody} section={true}>
+              <ScrollView
+                style={styles.contentScrollView}
+                showsVerticalScrollIndicator={false}
+                contentContainerStyle={styles.scrollContainer}>
+                <View style={styles.viewSignIn} section={true}>
+                  <View
+                    style={{flexDirection: 'row', alignItems: 'center'}}
+                    section={true}>
+                    <Text style={styles.welcomeText}>Selamat Datang </Text>
+                    <Animated.Text
+                      style={{transform: [{rotate}], fontSize: 33}}>
+                      👋
+                    </Animated.Text>
+                  </View>
+                  <Text style={styles.descriptionText}>
+                    Produktivitas dimulai di sini. {'\n'}Masuk untuk mengatur
+                    tugas Anda.
+                  </Text>
+                  <Gap height={25} />
+                  <View section={true}>
+                    <FormInput
+                      control={control}
+                      iconColor={COLORS.Orange}
+                      name="email"
+                      autoCapitalize="none"
+                      iconName="gmail"
+                      keyboardType="email-address"
+                      placeholder="contoh@email.com"
+                      title="Email"
+                      pattern={{
+                        value:
+                          /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+                        message: 'Email tidak valid',
+                      }}
+                    />
+                    <FormInput
+                      control={control}
+                      iconColor={COLORS.Orange}
+                      name="password"
+                      autoCapitalize="none"
+                      iconName="lock"
+                      placeholder="Kata sandi..."
+                      title="Password"
+                      secureText={true}
+                    />
+                  </View>
+                  <Gap height={15} />
+                  <View
+                    style={{
+                      position: 'relative',
+                      alignItems: 'center',
+                      justifyContent: 'center',
                     }}
+                    section={true}>
+                    <ButtonAuth
+                      title="Masuk"
+                      onPress={handleSubmit(onSubmit)}
+                      maxWidth={400}
+                      priority="primary"
+                      width={'70%'}
+                      loading={loading}
+                    />
+                  </View>
+                  <Gap height={13} />
+                  <ResetPassword
+                    onPress={() => navigation.navigate('ForgotPassword')}
                   />
-                  <FormInput
-                    control={control}
-                    iconColor={COLORS.Orange}
-                    name="password"
-                    autoCapitalize="none"
-                    iconName="lock"
-                    placeholder="Kata sandi..."
-                    title="Password"
-                    secureText={true}
-                  />
+                  <AppVersion />
                 </View>
-                <Gap height={15} />
-                <View
-                  style={{
-                    position: 'relative',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}
-                  section={true}>
-                  <ButtonAuth
-                    title="Masuk"
-                    onPress={handleSubmit(onSubmit)}
-                    maxWidth={400}
-                    priority="primary"
-                    width={'70%'}
-                    loading={loading}
-                  />
-                </View>
-                <Gap height={13} />
-                <ResetPassword
-                  onPress={() => navigation.navigate('ForgotPassword')}
-                />
-                <AppVersion />
-              </View>
-            </ScrollView>
+              </ScrollView>
+            </View>
           </View>
-        </View>
-      </TouchableWithoutFeedback>
+        </TouchableWithoutFeedback>
+      </View>
     </KeyboardAvoidingView>
   );
 }
 
 const styles = StyleSheet.create({
-  viewImageSignIn: {
-    padding: 10,
-    alignItems: 'center',
-  },
   viewSignIn: {
     padding: 15,
     height: '100%',
@@ -272,17 +268,14 @@ const styles = StyleSheet.create({
   },
   viewBody: {
     flex: 1,
-    position: 'relative',
-    borderTopLeftRadius: 35,
-    borderTopRightRadius: 35,
-    paddingHorizontal: 20,
+    paddingHorizontal: 15,
   },
   container: {
     flex: 1,
   },
   image: {
-    width: '90%',
-    height: 200,
+    width: '100%',
+    height: 300,
   },
   welcomeText: {
     fontSize: 33,
