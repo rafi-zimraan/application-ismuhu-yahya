@@ -58,7 +58,10 @@ export default function LoanTodayItem({
 }
 
 const styles = StyleSheet.create({
-  viewLoaner: {flexDirection: 'row', alignItem: 'center'},
+  viewLoaner: {
+    flexDirection: 'row',
+    alignItem: 'center',
+  },
   textLoan: {
     fontWeight: '300',
     fontSize: DIMENS.s,
@@ -81,12 +84,12 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
   loaner: {
-    fontWeight: '400',
-    fontSize: DIMENS.l,
+    fontWeight: '500',
+    fontSize: DIMENS.m,
   },
   carName: {
     fontWeight: 'bold',
-    fontSize: DIMENS.xl,
+    fontSize: DIMENS.xxl,
   },
   timeUse: {
     fontWeight: '300',

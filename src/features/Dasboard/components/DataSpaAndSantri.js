@@ -32,19 +32,19 @@ export default function DataSpaComponent({
           />
           {!isStaffOrKoordinator && <Text style={styles.title}>Dasboard</Text>}
         </TouchableOpacity>
-        <Gap width={45} />
+        <Gap width={60} />
         <View style={styles.viewSantri}>
           <Text style={styles.titleSantri}>Total Santri</Text>
           <Text style={styles.amountSantri}>{totalSantri}</Text>
         </View>
-        <Gap width={20} />
+        <Gap width={15} />
         <Line
-          height={60}
+          height={45}
           marginTop={10}
-          borderColor={COLORS.black}
-          borderWidth={0.7}
+          borderColor={COLORS.softGray}
+          borderWidth={0.4}
         />
-        <Gap width={20} />
+        <Gap width={10} />
         <View style={styles.viewSpa}>
           <Text style={styles.titleSpa}>Total Spa</Text>
           <Text style={styles.amountSpa}>{totalSpa}</Text>
@@ -118,33 +118,43 @@ const styles = StyleSheet.create({
     fontSize: DIMENS.m,
     textAlign: 'center',
     fontWeight: '400',
-    marginTop: 5,
+    left: 5,
     color: COLORS.black,
   },
   viewSantri: {
-    maxWidth: 120,
+    alignItems: 'flex-end',
+    justifyContent: 'center',
   },
   titleSantri: {
-    fontSize: DIMENS.l,
+    fontSize: DIMENS.s,
     fontWeight: '500',
     color: COLORS.black,
+    letterSpacing: 0.6,
+    textTransform: 'uppercase',
   },
   amountSantri: {
     fontSize: DIMENS.xxxl,
     fontWeight: 'bold',
     color: COLORS.black,
+    WebkitBackgroundClip: 'text',
+    WebkitTextFillColor: 'transparent',
   },
   viewSpa: {
-    maxWidth: 120,
+    alignItems: 'flex-end',
+    justifyContent: 'center',
   },
   titleSpa: {
-    fontSize: DIMENS.l,
+    fontSize: DIMENS.s,
     fontWeight: '500',
     color: COLORS.black,
+    letterSpacing: 0.6,
+    textTransform: 'uppercase',
   },
   amountSpa: {
     fontSize: DIMENS.xxxl,
     fontWeight: 'bold',
     color: COLORS.black,
+    WebkitBackgroundClip: 'text',
+    WebkitTextFillColor: 'transparent',
   },
 });

@@ -7,7 +7,7 @@ const BGOnBoardingThrid = () => (
     source={require('../../../assets/onboarding/onBoard3.jpeg')}
     resizeMethod="resize"
     resizeMode="cover"
-    fadeDuration={300}
+    fadeDuration={0}
   />
 );
 
