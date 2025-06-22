@@ -141,3 +141,35 @@ export const updateApprovalStatus = async (id_approval, status) => {
     throw error;
   }
 };
+
+export const updateLoanCarApprovalStatus = async (loan_id, status) => {
+  try {
+    const token = await EncryptedStorage.getItem('token');
+    if (!token) {
+      throw new Error('Token expired, silahkan login terlebih dahulu');
+    }
+
+    const response = await api.post(
+      `mobile/loan-cars/${loan_id}/update-approval/${status}`,
+      null,
+      {
+        headers: {
+          Authorization: `Bearer ${JSON.parse(token)}`,
+        },
+      },
+    );
+
+    if (response.data?.status === true) {
+      return response.data;
+    } else {
+      throw new Error('Gagal memperbarui status approval peminjaman mobil');
+    }
+  } catch (error) {
+    if (error.response && error.response.data && error.response.data.message) {
+      console.log('Error from server', error.response.data.message);
+    } else {
+      console.log('Err code', error.message);
+    }
+    throw error;
+  }
+};

@@ -225,7 +225,6 @@ export default function PermissionNotificationListScreen({route, navigation}) {
           {loading ? (
             <View section={true} useBackgroundTransparent={true}>
               <Text style={styles.loadingText}>Sedang memuat data...</Text>
-              {/* <ModalLoading visible={loading} /> */}
             </View>
           ) : data?.length > 0 ? (
             <>

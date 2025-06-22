@@ -1,6 +1,8 @@
 import {TouchableNativeFeedback} from 'react-native';
 
 const COLORS = {
+  greenDark: '#0d6b27',
+  redDark: '#7a0000',
   PRIMARY_COLOR: '#130057',
   // Red Shades
   red: '#FC2D2D',

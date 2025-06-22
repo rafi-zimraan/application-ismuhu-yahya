@@ -20,14 +20,14 @@ export default function BottomTabs() {
         const payrol = Array.isArray(response.data.payrol)
           ? response.data.payrol
           : [];
-        const loan_car = Array.isArray(response.data.loan_car)
-          ? response.data.loan_car
-          : [];
+        // const loan_car = Array.isArray(response.data.loan_car)
+        //   ? response.data.loan_car
+        //   : [];
 
         const unreadNotifications = [
           ...lisences,
           ...payrol,
-          ...loan_car,
+          // ...loan_car,
         ].filter(item => item?.is_read === '0');
         return unreadNotifications.length;
       }
