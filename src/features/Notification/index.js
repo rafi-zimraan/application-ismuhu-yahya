@@ -10,6 +10,7 @@ import {
   getNotificationCategory,
   getNotificationDetail,
   updateApprovalStatus,
+  updateLoanCarApprovalStatus,
 } from './services/notificationApiSlice';
 
 // component
@@ -28,4 +29,5 @@ export {
   deleteNotification,
   getNotificationCategory,
   updateApprovalStatus,
+  updateLoanCarApprovalStatus,
 };

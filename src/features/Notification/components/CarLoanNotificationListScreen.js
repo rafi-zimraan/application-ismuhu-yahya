@@ -87,6 +87,7 @@ export default function CarLoanNotificationListScreen({navigation}) {
           loanCarNotifications={
             userDataRoles?.data_notifications?.notification?.loan_car || []
           }
+          loanCarList={data}
           loading={loading}
         />
       ) : (
