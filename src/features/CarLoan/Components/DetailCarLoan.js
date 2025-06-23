@@ -51,7 +51,7 @@ export default function DetailCarLoan({navigation}) {
         const fecthData = await getCarDetail(carId);
         setMobilDetail(fecthData.data);
       } catch (error) {
-        console.error('Error fetching mobil detail:', error);
+        console.log('Error fetching mobil detail:', error);
       } finally {
         setLoading(false);
       }

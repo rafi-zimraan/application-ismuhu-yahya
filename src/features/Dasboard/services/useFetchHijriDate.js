@@ -10,7 +10,7 @@ export const useFetchHijriDate = () => {
         const date = await fetchHijriDate();
         setHijriDate(date);
       } catch (error) {
-        console.error('Gagal ambil tanggal Hijriah:', error);
+        console.log('Gagal ambil tanggal Hijriah:', error);
         setHijriDate('Hijri date unavailable');
       }
     };

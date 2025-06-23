@@ -89,6 +89,7 @@ export default function CarLoanNotificationListScreen({navigation}) {
           }
           loanCarList={data}
           loading={loading}
+          onAfterApproval={onRefresh}
         />
       ) : (
         <FlatList
