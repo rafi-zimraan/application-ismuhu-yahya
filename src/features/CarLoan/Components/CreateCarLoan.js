@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {useForm} from 'react-hook-form';
 import {
   Alert,
+  Platform,
   ScrollView,
   StatusBar,
   StyleSheet,
@@ -19,6 +20,7 @@ import {
 import {COLORS, DIMENS} from '../../../utils';
 import {useRoute} from '@react-navigation/native';
 import {FecthMe} from '../../authentication';
+import {useSelector} from 'react-redux';
 
 export default function CreateCarLoan({navigation}) {
   const route = useRoute();
@@ -28,6 +30,7 @@ export default function CreateCarLoan({navigation}) {
   const [userErrorMessage, setUserErrorMessage] = useState('');
   const [tokenExpired, setTokenExpired] = useState(false);
   const [modalSop, setModalSop] = useState(false);
+  const {colors, mode} = useSelector(state => state.theme);
 
   // Untuk fecth user
   useEffect(() => {
@@ -158,11 +161,17 @@ export default function CreateCarLoan({navigation}) {
   return (
     <View style={styles.Conter}>
       <StatusBar barStyle={'default'} backgroundColor={'transparent'} />
-      <HeaderTransparent
-        title="Formulir Peminjaman"
-        icon="arrow-left-circle-outline"
-        onPress={() => navigation.goBack()}
-      />
+      <View
+        style={[
+          styles.navbarContainer,
+          {backgroundColor: colors[mode].background_header},
+        ]}>
+        <HeaderTransparent
+          title="Formulir Peminjaman"
+          icon="arrow-left-circle-outline"
+          onPress={() => navigation.goBack()}
+        />
+      </View>
       <ScrollView>
         <View style={styles.container}>
           <FormInputCar
@@ -352,6 +361,10 @@ export default function CreateCarLoan({navigation}) {
 }
 
 const styles = StyleSheet.create({
+  navbarContainer: {
+    paddingTop: Platform.OS === 'android' ? 0 : 50,
+    height: '12%',
+  },
   Conter: {
     flex: 1,
   },
