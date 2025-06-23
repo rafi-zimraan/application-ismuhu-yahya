@@ -2,6 +2,7 @@ import {useRoute} from '@react-navigation/native';
 import React, {useEffect, useState} from 'react';
 import {
   Image,
+  Platform,
   ScrollView,
   StatusBar,
   StyleSheet,
@@ -20,9 +21,11 @@ import {
 import {ICON_NOTFOUND_DATA} from '../../../assets';
 import {COLORS, DIMENS} from '../../../utils';
 import {FecthMe} from '../../authentication';
+import {useSelector} from 'react-redux';
 
 export default function DetailCarLoan({navigation}) {
   const route = useRoute();
+  const {colors, mode} = useSelector(state => state.theme);
   const {carId} = route.params;
   const [mobilDetail, setMobilDetail] = useState();
   const [loading, setLoading] = useState(true);
@@ -83,11 +86,17 @@ export default function DetailCarLoan({navigation}) {
       <StatusBar barStyle={'default'} backgroundColor={'transparent'} />
       <ModalLoading visible={loading} withSpinner={true} />
 
-      <HeaderTransparent
-        icon="arrow-left-circle-outline"
-        title="Detail Pinjam Mobil"
-        onPress={() => navigation.goBack()}
-      />
+      <View
+        style={[
+          styles.navbarContainer,
+          {backgroundColor: colors[mode].background_header},
+        ]}>
+        <HeaderTransparent
+          icon="arrow-left-circle-outline"
+          title="Detail Pinjam Mobil"
+          onPress={() => navigation.goBack()}
+        />
+      </View>
 
       {mobilDetail && (
         <ScrollView
@@ -266,6 +275,10 @@ export default function DetailCarLoan({navigation}) {
 }
 
 const styles = StyleSheet.create({
+  navbarContainer: {
+    paddingTop: Platform.OS === 'android' ? 0 : 50,
+    height: '12%',
+  },
   viewImageNotFound: {
     alignItems: 'center',
     justifyContent: 'center',
@@ -310,7 +323,7 @@ const styles = StyleSheet.create({
   },
   footer: {
     position: 'absolute',
-    bottom: 0,
+    bottom: 20,
     left: 0,
     right: 0,
     flexDirection: 'row',
