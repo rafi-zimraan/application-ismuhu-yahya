@@ -12,7 +12,7 @@ const notifConf = {
     if (foreground && action == 'Isi Yaumi') console.log('yaumi notifikasi');
   },
   onRegistrationError: function (err) {
-    console.error(err.message, err);
+    console.log(err.message, err);
   },
   permissions: {
     alert: true,

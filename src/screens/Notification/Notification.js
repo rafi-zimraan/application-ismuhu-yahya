@@ -19,7 +19,7 @@ export default function Notification({navigation}) {
   const [notifications, setNotifications] = useState({
     lisences: [],
     payrol: [],
-    // loan_car: [],
+    loan_car: [],
   });
   const [refreshing, setRefreshing] = useState(false);
   const [tokenExpired, setTokenExpired] = useState(false);
@@ -58,9 +58,9 @@ export default function Notification({navigation}) {
           payrol: Array.isArray(response?.data?.payrol)
             ? response.data.payrol
             : [],
-          // loan_car: Array.isArray(response?.data?.loan_car)
-          //   ? response.data.loan_car
-          //   : [],
+          loan_car: Array.isArray(response?.data?.loan_car)
+            ? response.data.loan_car
+            : [],
         });
       }
     } catch (error) {
@@ -173,11 +173,11 @@ export default function Notification({navigation}) {
                   peminjaman mobil.
                 </Text>
               </View>
-              {/* <View style={styles.countBadge}>
+              <View style={styles.countBadge}>
                 <Text style={styles.countText}>
                   {countCategoryItems('loan_car')}
                 </Text>
-              </View> */}
+              </View>
             </TouchableOpacity>
           </View>
         </ScrollView>

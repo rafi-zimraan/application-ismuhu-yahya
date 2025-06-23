@@ -16,6 +16,7 @@ import {updateLoanCarApprovalStatus} from '../services/notificationApiSlice';
 export default function CarLoanApprovalListScreen({
   loanCarNotifications = [],
   loading,
+  onAfterApproval = () => {},
 }) {
   const {mode} = useSelector(state => state.theme);
   const [modalVisible, setModalVisible] = useState(false);
@@ -45,12 +46,12 @@ export default function CarLoanApprovalListScreen({
     const getLoanIdFromNotification = item => {
       try {
         const message = JSON.parse(item.message);
+
         return message.loan_id || null;
       } catch (err) {
-        console.error('Error parsing message:', err);
+        console.log('Error parsing message:', err);
       }
     };
-
     const handleApproval = async (item, status) => {
       const loan_id = getLoanIdFromNotification(item);
 
@@ -80,6 +81,12 @@ export default function CarLoanApprovalListScreen({
       try {
         await updateLoanCarApprovalStatus(loan_id, status);
         setApprovedLoanIds(prev => [...prev, loan_id]);
+
+        // ✅ Ubah is_read menjadi '1' secara lokal
+        item.is_read = '1';
+
+        // ✅ Callback ke parent agar data di-refresh (opsional tapi direkomendasikan)
+        onAfterApproval();
 
         setModalData({
           title: 'Status Diperbarui',
