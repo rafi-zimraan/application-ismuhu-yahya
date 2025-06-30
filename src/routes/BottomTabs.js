@@ -28,7 +28,7 @@ export default function BottomTabs() {
           ...lisences,
           ...payrol,
           ...loan_car,
-        ].filter(item => item?.is_read === '0');
+        ].filter(item => item?.is_read == '0');
         return unreadNotifications.length;
       }
       return 0;

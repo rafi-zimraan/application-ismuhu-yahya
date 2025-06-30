@@ -2,7 +2,8 @@ import axios from 'axios';
 import EncryptedStorage from 'react-native-encrypted-storage';
 
 const api = axios.create({
-  baseURL: 'https://app.simpondok.com/api',
+  // baseURL: 'https://app.simpondok.com/api',
+  baseURL: 'https://f375-182-2-164-181.ngrok-free.app/api',
 
   headers: {
     'Content-Type': 'application/json',
@@ -14,7 +15,7 @@ api.interceptors.request.use(
   async config => {
     try {
       const token = await EncryptedStorage.getItem('token');
-      console.log('TOKEN LOGIN', token);
+      // console.log('TOKEN LOGIN', token);
       if (token) config.headers.Authorization = `Bearer ${JSON.parse(token)}`;
       return config;
     } catch (error) {

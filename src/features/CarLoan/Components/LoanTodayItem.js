@@ -11,12 +11,12 @@ export default function LoanTodayItem({
   onPress,
 }) {
   const getStatusText = () => {
-    switch (status) {
-      case '0':
+    switch (Number(status)) {
+      case 0:
         return 'Menunggu';
-      case '1':
+      case 1:
         return 'Setuju';
-      case '2':
+      case 2:
         return 'Ditolak';
       default:
         return 'Menunggu';
@@ -24,12 +24,12 @@ export default function LoanTodayItem({
   };
 
   const getStatusColor = status => {
-    switch (status) {
-      case '0':
+    switch (Number(status)) {
+      case 0:
         return '#007AFF';
-      case '1':
+      case 1:
         return COLORS.greenBoy;
-      case '2':
+      case 2:
         return COLORS.red;
       default:
         return COLORS.black;

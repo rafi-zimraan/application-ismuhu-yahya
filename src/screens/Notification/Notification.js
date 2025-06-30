@@ -81,7 +81,7 @@ export default function Notification({navigation}) {
 
   const countCategoryItems = category => {
     return Array.isArray(notifications?.[category])
-      ? notifications[category].filter(item => item?.is_read === '0').length
+      ? notifications[category].filter(item => item?.is_read == '0').length
       : 0;
   };
 

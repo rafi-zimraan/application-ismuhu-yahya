@@ -5,15 +5,19 @@ import {
   TouchableOpacity,
   Image,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {useSelector} from 'react-redux';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {COLORS, DIMENS} from '../../../utils';
 import {Gap, ModalCustom, Text, View} from '../../../Component';
 import {ICON_NOTFOUND_DATA} from '../../../assets';
-import {updateLoanCarApprovalStatus} from '../services/notificationApiSlice';
+import {
+  cancelLoanCarApprovalStatus,
+  updateLoanCarApprovalStatus,
+} from '../services/notificationApiSlice';
 
 export default function CarLoanApprovalListScreen({
+  approvalMe = [],
   loanCarNotifications = [],
   loading,
   onAfterApproval = () => {},
@@ -21,6 +25,9 @@ export default function CarLoanApprovalListScreen({
   const {mode} = useSelector(state => state.theme);
   const [modalVisible, setModalVisible] = useState(false);
   const [approvedLoanIds, setApprovedLoanIds] = useState([]);
+  const [approvedStatusMap, setApprovedStatusMap] = useState({});
+  const [confirmCancelVisible, setConfirmCancelVisible] = useState(false);
+  const [cancelData, setCancelData] = useState({loan_id: null, status: null});
 
   const [modalData, setModalData] = useState({
     title: '',
@@ -28,6 +35,81 @@ export default function CarLoanApprovalListScreen({
     icon: 'check-circle-outline',
     color: COLORS.greenConfirm,
   });
+
+  useEffect(() => {
+    const initialApprovedMap = {};
+
+    loanCarNotifications.forEach(notif => {
+      try {
+        const msg = JSON.parse(notif.message);
+        const loanId = msg.loan_id;
+
+        const foundApproval = approvalMe.find(
+          item =>
+            item.approveable_id === loanId &&
+            item.approveable_type.includes('LoanCar') &&
+            item.approveable?.status,
+        );
+
+        if (foundApproval) {
+          const status = foundApproval.approveable.status;
+          // status 1 = disetujui, 2 = ditolak
+          if (status == 1 || status == 2) {
+            initialApprovedMap[loanId] = status;
+          }
+        }
+      } catch (e) {
+        console.log('Error parsing loan approval', e);
+      }
+    });
+
+    setApprovedStatusMap(initialApprovedMap);
+    setApprovedLoanIds(Object.keys(initialApprovedMap).map(id => parseInt(id)));
+  }, [loanCarNotifications, approvalMe]);
+
+  const confirmCancelAction = async () => {
+    const {loan_id, status} = cancelData;
+    const loanIdNum = Number(loan_id);
+    try {
+      const response = await cancelLoanCarApprovalStatus(loan_id, status);
+
+      setApprovedLoanIds(prev => {
+        const updatedIds = prev.filter(id => id !== loanIdNum);
+        return updatedIds;
+      });
+
+      setApprovedStatusMap(prev => {
+        const newMap = {...prev};
+        delete newMap[loanIdNum];
+        return newMap;
+      });
+
+      setModalData({
+        title: 'Persetujuan Dibatalkan',
+        description:
+          status === 1
+            ? 'Persetujuan peminjaman mobil telah dibatalkan.'
+            : 'Penolakan peminjaman mobil telah dibatalkan.',
+        icon: 'check-circle-outline',
+        color: COLORS.greenConfirm,
+      });
+
+      setConfirmCancelVisible(false);
+      setModalVisible(true);
+      onAfterApproval();
+    } catch (error) {
+      console.log('❌ Error canceling approval:', error);
+      setModalData({
+        title: 'Gagal Membatalkan',
+        description:
+          'Terjadi kesalahan saat membatalkan persetujuan. Silakan coba lagi.',
+        icon: 'alert-circle-outline',
+        color: COLORS.red,
+      });
+      setConfirmCancelVisible(false);
+      setModalVisible(true);
+    }
+  };
 
   const renderItem = ({item}) => {
     let parsedMessage = {};
@@ -46,12 +128,12 @@ export default function CarLoanApprovalListScreen({
     const getLoanIdFromNotification = item => {
       try {
         const message = JSON.parse(item.message);
-
         return message.loan_id || null;
       } catch (err) {
         console.log('Error parsing message:', err);
       }
     };
+
     const handleApproval = async (item, status) => {
       const loan_id = getLoanIdFromNotification(item);
 
@@ -81,11 +163,10 @@ export default function CarLoanApprovalListScreen({
       try {
         await updateLoanCarApprovalStatus(loan_id, status);
         setApprovedLoanIds(prev => [...prev, loan_id]);
+        setApprovedStatusMap(prev => ({...prev, [loan_id]: status}));
 
         // ✅ Ubah is_read menjadi '1' secara lokal
         item.is_read = '1';
-
-        // ✅ Callback ke parent agar data di-refresh (opsional tapi direkomendasikan)
         onAfterApproval();
 
         setModalData({
@@ -99,18 +180,20 @@ export default function CarLoanApprovalListScreen({
         });
         setModalVisible(true);
       } catch (err) {
-        setModalData({
-          title: 'Gagal Memperbarui',
-          description: 'Terjadi kesalahan saat memperbarui status.',
-          icon: 'alert-circle-outline',
-          color: COLORS.red,
-        });
+        console.log('Error updating approval status:', err);
         setModalVisible(true);
       }
     };
 
+    const handleCancelApproval = (loan_id, status) => {
+      setCancelData({loan_id, status: 0});
+      setConfirmCancelVisible(true);
+    };
+
     const loan_id = parsedMessage.loan_id || null;
-    const isAlreadyApproved = approvedLoanIds.includes(loan_id);
+    const status = approvedStatusMap[loan_id];
+    const isApproved = status === 1;
+    const isRejected = status === 2;
 
     return (
       <View
@@ -119,6 +202,24 @@ export default function CarLoanApprovalListScreen({
           {shadowColor: mode === 'dark' ? COLORS.white : COLORS.black},
         ]}
         section={true}>
+        {isApproved && (
+          <View
+            style={{
+              ...styles.viewActiveText,
+              backgroundColor: COLORS.greenConfirm,
+            }}>
+            <Text style={styles.textActive}>Digunakan</Text>
+          </View>
+        )}
+        {isRejected && (
+          <View
+            style={{
+              ...styles.viewActiveText,
+              backgroundColor: COLORS.redLight,
+            }}>
+            <Text style={styles.textActive}>Ditolak</Text>
+          </View>
+        )}
         <Text style={styles.title}>{parsedMessage.car_name || '-'}</Text>
 
         <View style={styles.infoContainer} section={true}>
@@ -139,50 +240,49 @@ export default function CarLoanApprovalListScreen({
         </View>
 
         <Gap height={5} />
-        <View style={styles.actions} section={true}>
-          <TouchableOpacity
-            disabled={isAlreadyApproved}
-            style={[styles.button, styles.buttonSuccess]}
-            onPress={() => handleApproval(item, 1)}>
-            <View style={styles.iconWithText} useBackgroundApproved={true}>
-              <Icon
-                name="check-circle-outline"
-                size={16}
-                color={COLORS.black}
-              />
-              <Gap width={6} />
-              <Text style={styles.txtApproved}>Setujui</Text>
-            </View>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            disabled={isAlreadyApproved}
-            style={[styles.button, styles.buttonDanger]}
-            onPress={() => handleApproval(item, 2)} // 2 = tolak
-          >
-            <View style={styles.iconWithText} useBackgroundReject={true}>
-              <Icon
-                name="close-circle-outline"
-                size={16}
-                color={COLORS.black}
-              />
-              <Gap width={6} />
-              <Text style={styles.txtReject}>Tolak</Text>
-            </View>
-          </TouchableOpacity>
-
-          {/* <TouchableOpacity
-            style={[
-              styles.button,
-              styles.buttonPrimary,
-              {paddingHorizontal: 13},
-            ]}>
-            <View style={styles.iconWithText} useBackgroundReturned={true}>
-              <Icon name="arrow-u-left-top" size={16} color={COLORS.black} />
-              <Gap width={3} />
-              <Text style={styles.returned}>Dikembalikan</Text>
-            </View>
-          </TouchableOpacity> */}
+        <View style={styles.actions}>
+          {isApproved || isRejected ? (
+            <TouchableOpacity
+              style={[
+                styles.button,
+                styles.buttonFullWidth,
+                isApproved ? styles.buttonApproved : styles.buttonRejected,
+              ]}
+              onPress={() => handleCancelApproval(loan_id, status)}>
+              <Text style={styles.txtBatal}>
+                {isApproved ? 'Batal Setuju' : 'Batal Tolak'}
+              </Text>
+            </TouchableOpacity>
+          ) : (
+            <>
+              <TouchableOpacity
+                style={[styles.button, styles.buttonSuccess]}
+                onPress={() => handleApproval(item, 1)}>
+                <View style={styles.iconWithText} useBackgroundApproved={true}>
+                  <Icon
+                    name="check-circle-outline"
+                    size={16}
+                    color={COLORS.black}
+                  />
+                  <Gap width={6} />
+                  <Text style={styles.txtApproved}>Setujui</Text>
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.button, styles.buttonDanger]}
+                onPress={() => handleApproval(item, 2)}>
+                <View style={styles.iconWithText} useBackgroundReject={true}>
+                  <Icon
+                    name="close-circle-outline"
+                    size={16}
+                    color={COLORS.black}
+                  />
+                  <Gap width={6} />
+                  <Text style={styles.txtReject}>Tolak</Text>
+                </View>
+              </TouchableOpacity>
+            </>
+          )}
         </View>
       </View>
     );
@@ -191,11 +291,13 @@ export default function CarLoanApprovalListScreen({
   return (
     <View style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor="transparent" />
+
       <FlatList
         data={loanCarNotifications.slice().reverse()}
         keyExtractor={item => item.id.toString()}
         contentContainerStyle={{padding: 16}}
         renderItem={renderItem}
+        extraData={[approvedLoanIds, approvedStatusMap]}
         ListEmptyComponent={
           loading && loanCarNotifications.length === 0 ? (
             <View style={styles.viewLoadingData}>
@@ -225,11 +327,37 @@ export default function CarLoanApprovalListScreen({
         buttonTitle="Tutup"
         buttonSubmit={() => setModalVisible(false)}
       />
+
+      <ModalCustom
+        visible={confirmCancelVisible}
+        onRequestClose={() => setConfirmCancelVisible(false)}
+        title="Konfirmasi Pembatalan"
+        description="Apakah kamu yakin ingin membatalkan persetujuan ini?"
+        iconModalName="alert-circle-outline"
+        ColorIcon={COLORS.red}
+        buttonTitle="Ya, Batalkan"
+        BackgroundButtonAction={COLORS.red}
+        TextColorButton={COLORS.white}
+        buttonSubmit={confirmCancelAction}
+      />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
+  viewActiveText: {
+    position: 'absolute',
+    right: 10,
+    top: 10,
+    borderRadius: 15,
+    width: '28%',
+  },
+  textActive: {
+    color: COLORS.white,
+    fontWeight: '500',
+    textAlign: 'center',
+    fontSize: DIMENS.s,
+  },
   dashedLine: {
     borderBottomWidth: 0.4,
     borderBottomColor: COLORS.mediumGrey,
@@ -343,10 +471,28 @@ const styles = StyleSheet.create({
     fontStyle: 'italic',
     marginBottom: 10,
   },
-  buttonSuccessDisabled: {
-    backgroundColor: COLORS.greenConfirm + '80', // transparansi
+  buttonFullWidth: {
+    backgroundColor: COLORS.mediumGrey,
+    paddingVertical: 12,
+    borderRadius: 10,
+    alignItems: 'center',
+    flex: 1,
   },
-  buttonDangerDisabled: {
-    backgroundColor: COLORS.red + '80',
+
+  buttonApproved: {
+    backgroundColor: COLORS.greenConfirm,
+  },
+  buttonRejected: {
+    backgroundColor: COLORS.red,
+  },
+  txtBatal: {
+    color: COLORS.white,
+    fontWeight: '600',
+    fontSize: DIMENS.s,
+  },
+  iconTopRight: {
+    position: 'absolute',
+    top: 10,
+    right: 10,
   },
 });
