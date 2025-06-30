@@ -2,8 +2,7 @@ import axios from 'axios';
 import EncryptedStorage from 'react-native-encrypted-storage';
 
 const api = axios.create({
-  // baseURL: 'https://app.simpondok.com/api',
-  baseURL: 'https://f375-182-2-164-181.ngrok-free.app/api',
+  baseURL: 'https://app.simpondok.com/api',
 
   headers: {
     'Content-Type': 'application/json',
