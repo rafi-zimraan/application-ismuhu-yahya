@@ -21,7 +21,7 @@ export default function AvailableCarSection({carList, navigation, loading}) {
             }}>
             <Text style={styles.loadingText}>Memuat data...</Text>
           </View>
-        ) : carList.length === 0 ? (
+        ) : carList.length == 0 ? (
           <View style={styles.contentNotFound}>
             <Text style={styles.txtNotFound}>
               Mobil Operasional tidak tersedia
@@ -47,12 +47,10 @@ export default function AvailableCarSection({carList, navigation, loading}) {
                   style={{
                     ...styles.viewActiveText,
                     backgroundColor:
-                      item.status === '0'
-                        ? COLORS.greenConfirm
-                        : COLORS.darkGrey,
+                      item.status == 0 ? COLORS.greenConfirm : COLORS.darkGrey,
                   }}>
                   <Text style={styles.textActive}>
-                    {item.status === '0' ? 'Tersedia' : 'Digunakan'}
+                    {item.status == 0 ? 'Tersedia' : 'Digunakan'}
                   </Text>
                 </View>
                 <Image
@@ -79,15 +77,13 @@ export default function AvailableCarSection({carList, navigation, loading}) {
                 </View>
                 <Gap height={13} />
                 <TouchableOpacity
-                  disabled={item?.status !== '0'}
-                  activeOpacity={item?.status === '0' ? 0.7 : 1}
+                  disabled={item?.status != 0}
+                  activeOpacity={item?.status == 0 ? 0.7 : 1}
                   style={[
                     styles.viewContentRent,
                     {
                       backgroundColor:
-                        item?.status === '0'
-                          ? COLORS.blueLight
-                          : COLORS.darkGrey,
+                        item?.status == 0 ? COLORS.blueLight : COLORS.darkGrey,
                     },
                   ]}
                   onPress={() => {
@@ -98,9 +94,7 @@ export default function AvailableCarSection({carList, navigation, loading}) {
                       styles.textRent,
                       {
                         color:
-                          item?.status === '0'
-                            ? COLORS.white
-                            : COLORS.mediumGrey,
+                          item?.status == 0 ? COLORS.white : COLORS.mediumGrey,
                       },
                     ]}>
                     Pinjam sekarang

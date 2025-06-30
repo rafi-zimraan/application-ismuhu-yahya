@@ -160,15 +160,55 @@ export const updateLoanCarApprovalStatus = async (loan_id, status) => {
     );
 
     if (response.data?.status === true) {
+      console.log('RESPONSE UPDATE', response.data.message);
       return response.data;
     } else {
-      throw new Error('Gagal memperbarui status approval peminjaman mobil');
+      throw new Error(
+        response.data?.message ||
+          'Gagal memperbarui status approval peminjaman mobil',
+      );
     }
   } catch (error) {
     if (error.response && error.response.data && error.response.data.message) {
       console.log('Error from server', error.response.data.message);
     } else {
       console.log('Err code', error.message);
+    }
+    throw error;
+  }
+};
+
+export const cancelLoanCarApprovalStatus = async (loan_id, status) => {
+  try {
+    const token = await EncryptedStorage.getItem('token');
+    if (!token) {
+      throw new Error('Token expired, silahkan login terlebih dahulu');
+    }
+
+    const response = await api.post(
+      `mobile/loan-cars/${loan_id}/update-approval/${status}`,
+      null,
+      {
+        headers: {
+          Authorization: `Bearer ${JSON.parse(token)}`,
+        },
+      },
+    );
+
+    if (response.data?.status === true) {
+      console.log('✅ RESPONSE CANCEL APPROVAL:', response.data.message);
+      return response.data;
+    } else {
+      throw new Error(
+        response.data?.message ||
+          'Gagal membatalkan status approval peminjaman mobil',
+      );
+    }
+  } catch (error) {
+    if (error.response?.data?.message) {
+      console.log('❌ Error from server:', error.response.data.message);
+    } else {
+      console.log('❌ Error cancelLoanCarApprovalStatus:', error.message);
     }
     throw error;
   }
