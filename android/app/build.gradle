@@ -79,8 +79,8 @@ android {
         applicationId "com.ismuhuyahyadev"
         minSdkVersion  rootProject.ext.minSdkVersion
         targetSdkVersion  rootProject.ext.targetSdkVersion
-        versionCode 8
-        versionName "1.3-simpondok"
+        versionCode 9
+        versionName "1.4-simpondok"
     }
     signingConfigs {
         debug {

@@ -160,7 +160,6 @@ export const updateLoanCarApprovalStatus = async (loan_id, status) => {
     );
 
     if (response.data?.status === true) {
-      console.log('RESPONSE UPDATE', response.data.message);
       return response.data;
     } else {
       throw new Error(
@@ -196,7 +195,6 @@ export const cancelLoanCarApprovalStatus = async (loan_id, status) => {
     );
 
     if (response.data?.status === true) {
-      console.log('✅ RESPONSE CANCEL APPROVAL:', response.data.message);
       return response.data;
     } else {
       throw new Error(

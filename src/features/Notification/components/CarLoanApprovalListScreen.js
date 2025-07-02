@@ -40,26 +40,20 @@ export default function CarLoanApprovalListScreen({
     const initialApprovedMap = {};
 
     loanCarNotifications.forEach(notif => {
-      try {
-        const msg = JSON.parse(notif.message);
-        const loanId = msg.loan_id;
+      const notifId = notif.id;
 
-        const foundApproval = approvalMe.find(
-          item =>
-            item.approveable_id === loanId &&
-            item.approveable_type.includes('LoanCar') &&
-            item.approveable?.status,
-        );
+      const foundApproval = approvalMe.find(
+        item =>
+          item.notification_id == notifId &&
+          item.approveable_type.includes('LoanCar') &&
+          item.approveable?.status,
+      );
 
-        if (foundApproval) {
-          const status = foundApproval.approveable.status;
-          // status 1 = disetujui, 2 = ditolak
-          if (status == 1 || status == 2) {
-            initialApprovedMap[loanId] = status;
-          }
+      if (foundApproval) {
+        const status = foundApproval.approveable.status;
+        if (status == 1 || status == 2) {
+          initialApprovedMap[notifId] = status;
         }
-      } catch (e) {
-        console.log('Error parsing loan approval', e);
       }
     });
 
@@ -71,8 +65,7 @@ export default function CarLoanApprovalListScreen({
     const {loan_id, status} = cancelData;
     const loanIdNum = Number(loan_id);
     try {
-      const response = await cancelLoanCarApprovalStatus(loan_id, status);
-
+      await cancelLoanCarApprovalStatus(loan_id, status);
       setApprovedLoanIds(prev => {
         const updatedIds = prev.filter(id => id !== loanIdNum);
         return updatedIds;
@@ -82,16 +75,6 @@ export default function CarLoanApprovalListScreen({
         const newMap = {...prev};
         delete newMap[loanIdNum];
         return newMap;
-      });
-
-      setModalData({
-        title: 'Persetujuan Dibatalkan',
-        description:
-          status === 1
-            ? 'Persetujuan peminjaman mobil telah dibatalkan.'
-            : 'Penolakan peminjaman mobil telah dibatalkan.',
-        icon: 'check-circle-outline',
-        color: COLORS.greenConfirm,
       });
 
       setConfirmCancelVisible(false);
@@ -135,6 +118,19 @@ export default function CarLoanApprovalListScreen({
     };
 
     const handleApproval = async (item, status) => {
+      const notifId = item.id;
+      // ✅ Cek apakah sudah pernah approve berdasarkan notifId
+      if (approvedLoanIds.includes(notifId)) {
+        setModalData({
+          title: 'Sudah Diapprove',
+          description: 'Data ini sudah pernah kamu approve/tolak sebelumnya.',
+          icon: 'information-outline',
+          color: COLORS.mediumGrey,
+        });
+        setModalVisible(true);
+        return;
+      }
+
       const loan_id = getLoanIdFromNotification(item);
 
       if (!loan_id) {
@@ -172,7 +168,7 @@ export default function CarLoanApprovalListScreen({
         setModalData({
           title: 'Status Diperbarui',
           description:
-            status === 1
+            status == 1
               ? 'Peminjaman mobil berhasil disetujui.'
               : 'Peminjaman mobil berhasil ditolak.',
           icon: 'check-circle-outline',
@@ -185,15 +181,35 @@ export default function CarLoanApprovalListScreen({
       }
     };
 
-    const handleCancelApproval = (loan_id, status) => {
+    const handleCancelApproval = (notifId, status) => {
+      // Cari approval yang sesuai berdasarkan notification_id
+      const foundApproval = approvalMe.find(
+        item =>
+          item.notification_id == notifId &&
+          item.approveable_type.includes('LoanCar'),
+      );
+
+      if (!foundApproval) {
+        setModalData({
+          title: 'Data Tidak Ditemukan',
+          description: 'ID peminjaman mobil tidak ditemukan.',
+          icon: 'alert-circle-outline',
+          color: COLORS.red,
+        });
+        setModalVisible(true);
+        return;
+      }
+
+      // Ambil loan_id yang benar dari approveable_id
+      const loan_id = foundApproval.approveable_id;
       setCancelData({loan_id, status: 0});
       setConfirmCancelVisible(true);
     };
 
-    const loan_id = parsedMessage.loan_id || null;
-    const status = approvedStatusMap[loan_id];
-    const isApproved = status === 1;
-    const isRejected = status === 2;
+    const notifId = item.id;
+    const status = approvedStatusMap[notifId];
+    const isApproved = status == 1;
+    const isRejected = status == 2;
 
     return (
       <View
@@ -248,7 +264,7 @@ export default function CarLoanApprovalListScreen({
                 styles.buttonFullWidth,
                 isApproved ? styles.buttonApproved : styles.buttonRejected,
               ]}
-              onPress={() => handleCancelApproval(loan_id, status)}>
+              onPress={() => handleCancelApproval(notifId, status)}>
               <Text style={styles.txtBatal}>
                 {isApproved ? 'Batal Setuju' : 'Batal Tolak'}
               </Text>
@@ -299,7 +315,7 @@ export default function CarLoanApprovalListScreen({
         renderItem={renderItem}
         extraData={[approvedLoanIds, approvedStatusMap]}
         ListEmptyComponent={
-          loading && loanCarNotifications.length === 0 ? (
+          loading && loanCarNotifications.length == 0 ? (
             <View style={styles.viewLoadingData}>
               <Text style={styles.LoadingText}>Loading data...</Text>
             </View>
