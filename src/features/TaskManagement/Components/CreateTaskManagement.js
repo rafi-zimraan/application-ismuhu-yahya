@@ -1,7 +1,7 @@
 import {Picker} from '@react-native-picker/picker';
 import {useNavigation} from '@react-navigation/native';
 import React, {useEffect, useState} from 'react';
-import {ScrollView, StyleSheet, TouchableOpacity} from 'react-native';
+import {Platform, ScrollView, StyleSheet, TouchableOpacity} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useSelector} from 'react-redux';
 import {TextInputTaskManagement, addTaskManagement} from '..';
@@ -115,11 +115,17 @@ export default function CreateTaskManagement({route}) {
         show={showAlert}
         message="Harap isi jam mulai dan jam selesai jika ingin menambahkan waktu!"
       />
-      <HeaderTransparent
-        title={'Tambah Rencana Harian'}
-        icon="arrow-left-circle-outline"
-        onPress={() => navigation.goBack()}
-      />
+      <View
+        style={[
+          styles.navbarContainer,
+          {backgroundColor: colors[mode].background_header},
+        ]}>
+        <HeaderTransparent
+          title={'Tambah Rencana Harian'}
+          icon="arrow-left-circle-outline"
+          onPress={() => navigation.goBack()}
+        />
+      </View>
 
       <View style={styles.formContainer} showImageBackground={true}>
         <ScrollView contentContainerStyle={{padding: 15}}>
@@ -239,6 +245,10 @@ export default function CreateTaskManagement({route}) {
 }
 
 const styles = StyleSheet.create({
+  navbarContainer: {
+    paddingTop: Platform.OS === 'android' ? 0 : 50,
+    height: '12%',
+  },
   dropDown: {
     color: COLORS.black,
     fontSize: DIMENS.l,

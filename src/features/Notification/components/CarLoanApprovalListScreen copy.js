@@ -28,73 +28,6 @@ export default function CarLoanApprovalListScreen({
   const [approvedStatusMap, setApprovedStatusMap] = useState({});
   const [confirmCancelVisible, setConfirmCancelVisible] = useState(false);
   const [cancelData, setCancelData] = useState({loan_id: null, status: null});
-  const [selectedMonth, setSelectedMonth] = useState('All');
-  const [monthDropdownVisible, setMonthDropdownVisible] = useState(false);
-
-  const getUniqueMonths = () => {
-    const monthsSet = new Set();
-    loanCarNotifications.forEach(item => {
-      const foundApproval = approvalMe.find(
-        approval =>
-          approval.notification_id == item.id && approval.approveable != null,
-      );
-
-      const approveable = foundApproval ? foundApproval.approveable : null;
-
-      if (approveable && approveable.use_date) {
-        const month = approveable.use_date.slice(0, 7);
-        monthsSet.add(month);
-      }
-    });
-
-    const monthsArray = Array.from(monthsSet).sort((a, b) =>
-      b.localeCompare(a),
-    );
-
-    return [
-      {label: 'Semua', value: 'All'},
-      ...monthsArray.map(month => ({
-        label: formatMonthLabel(month),
-        value: month,
-      })),
-    ];
-  };
-
-  const formatMonthLabel = monthString => {
-    const [year, month] = monthString.split('-');
-    const monthNames = [
-      'Januari',
-      'Februari',
-      'Maret',
-      'April',
-      'Mei',
-      'Juni',
-      'Juli',
-      'Agustus',
-      'September',
-      'Oktober',
-      'November',
-      'Desember',
-    ];
-    return `${monthNames[parseInt(month) - 1]} ${year}`;
-  };
-
-  const monthOptions = getUniqueMonths();
-
-  const filteredNotifications = loanCarNotifications.filter(item => {
-    if (selectedMonth === 'All') return true;
-
-    const foundApproval = approvalMe.find(
-      approval =>
-        approval.notification_id == item.id && approval.approveable != null,
-    );
-
-    const approveable = foundApproval ? foundApproval.approveable : null;
-    if (!approveable) return false;
-
-    const itemMonth = approveable.use_date?.slice(0, 7);
-    return itemMonth === selectedMonth;
-  });
 
   const [modalData, setModalData] = useState({
     title: '',
@@ -421,49 +354,8 @@ export default function CarLoanApprovalListScreen({
     <View style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor="transparent" />
 
-      <View style={{padding: 16}}>
-        <TouchableOpacity
-          style={styles.viewButtonFilter}
-          onPress={() => setMonthDropdownVisible(!monthDropdownVisible)}>
-          <Text>
-            {selectedMonth === 'All'
-              ? 'Semua Bulan'
-              : formatMonthLabel(selectedMonth)}
-          </Text>
-          <Icon
-            name={monthDropdownVisible ? 'chevron-up' : 'chevron-down'}
-            size={20}
-            color={COLORS.black}
-          />
-        </TouchableOpacity>
-
-        {monthDropdownVisible && (
-          <View style={styles.viewContentFilter}>
-            {monthOptions.map(option => (
-              <TouchableOpacity
-                key={option.value}
-                style={styles.buttonActionFilter}
-                onPress={() => {
-                  setSelectedMonth(option.value);
-                  setMonthDropdownVisible(false);
-                }}>
-                <Text
-                  style={{
-                    color:
-                      selectedMonth === option.value
-                        ? COLORS.goldenOrange
-                        : COLORS.black,
-                  }}>
-                  {option.label}
-                </Text>
-              </TouchableOpacity>
-            ))}
-          </View>
-        )}
-      </View>
-
       <FlatList
-        data={filteredNotifications.slice().reverse()}
+        data={loanCarNotifications.slice().reverse()}
         keyExtractor={item => item.id.toString()}
         contentContainerStyle={{padding: 16}}
         renderItem={renderItem}
@@ -515,27 +407,6 @@ export default function CarLoanApprovalListScreen({
 }
 
 const styles = StyleSheet.create({
-  viewContentFilter: {
-    borderWidth: 1,
-    borderColor: COLORS.mediumGrey,
-    borderRadius: 8,
-    marginTop: 8,
-  },
-  buttonActionFilter: {
-    paddingVertical: 12,
-    paddingHorizontal: 8,
-    borderBottomWidth: 0.5,
-    borderBottomColor: COLORS.mediumGrey,
-  },
-  viewButtonFilter: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: COLORS.goldenOrange,
-    borderRadius: 8,
-    padding: 12,
-  },
   ViewClockAndDate: {
     flexDirection: 'row',
     alignItems: 'center',

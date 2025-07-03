@@ -31,13 +31,11 @@ import {
 import {FecthMe} from '../../features/authentication';
 import {COLORS, DIMENS} from '../../utils';
 import Toast from 'react-native-toast-message';
-import {SafeAreaView, useSafeAreaInsets} from 'react-native-safe-area-context';
 
-const {height} = Dimensions.get('window');
+const {height, width} = Dimensions.get('window');
 
 export default function AmalYaumi({navigation}) {
   const today = moment().format('YYYY-MM-DD');
-  const insets = useSafeAreaInsets();
   const {colors, mode} = useSelector(state => state.theme);
   const [selectedDate, setSelectedDate] = useState(today);
   const [modalVisible, setModalVisible] = useState(false);
@@ -309,7 +307,7 @@ const styles = StyleSheet.create({
     width: 48,
     borderRadius: 27.5,
     borderWidth: 2,
-    top: 15,
+    top: Platform.OS === 'ios' ? 0 : 15,
     borderColor: COLORS.white,
   },
   CreateTextAmalYaumi: {
@@ -326,9 +324,12 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.gold,
     borderRadius: 4,
     padding: 3,
-    width: '38%',
     alignItems: 'center',
     flexDirection: 'row',
+    justifyContent: 'center',
+    alignSelf: 'flex-end',
+    width: width * 0.4,
+    maxWidth: 140,
   },
   ProgresTitle: {
     fontSize: DIMENS.xxl,

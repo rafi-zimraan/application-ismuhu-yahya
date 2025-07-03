@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {
   Image,
+  Platform,
   RefreshControl,
   ScrollView,
   StyleSheet,
@@ -23,9 +24,11 @@ import {ICON_NOTFOUND_DATA} from '../../../assets';
 import {COLORS, DIMENS} from '../../../utils';
 import {FecthMe} from '../../authentication';
 import Toast from 'react-native-toast-message';
+import {useSelector} from 'react-redux';
 
 export default function ListAmalYaumi({navigation}) {
   const [data, setData] = useState([]);
+  const {colors, mode} = useSelector(state => state.theme);
   const [selectedOptions, setSelectedOptions] = useState({});
   const [dropdownVisible, setDropdownVisible] = useState({});
   const [selectedDropdown, setSelectedDropdown] = useState({});
@@ -220,11 +223,17 @@ export default function ListAmalYaumi({navigation}) {
 
   return (
     <View style={styles.container}>
-      <HeaderTransparent
-        title="List Amal Yaumi"
-        icon="arrow-left-circle-outline"
-        onPress={() => navigation.goBack()}
-      />
+      <View
+        style={[
+          styles.navbarContainer,
+          {backgroundColor: colors[mode].background_header},
+        ]}>
+        <HeaderTransparent
+          title="List Amal Yaumi"
+          icon="arrow-left-circle-outline"
+          onPress={() => navigation.goBack()}
+        />
+      </View>
       <ModalLoading visible={loading} />
 
       {userGender === 'Perempuan' && (
@@ -507,12 +516,14 @@ export default function ListAmalYaumi({navigation}) {
         )}
       </View>
 
-      <ButtonActionYaumi
-        title="Kirim Data"
-        dataYaumi={data}
-        userSelections={prepareUserSelections()}
-      />
-      <Gap height={10} />
+      <View style={{bottom: Platform.OS === 'ios' ? 25 : 15}}>
+        <ButtonActionYaumi
+          title="Kirim Data"
+          dataYaumi={data}
+          userSelections={prepareUserSelections()}
+        />
+      </View>
+      {/* <Gap height={25} /> */}
 
       <ModalCustom
         visible={modalVisible}
@@ -548,6 +559,10 @@ export default function ListAmalYaumi({navigation}) {
 }
 
 const styles = StyleSheet.create({
+  navbarContainer: {
+    paddingTop: Platform.OS === 'android' ? 0 : 50,
+    height: '12%',
+  },
   imgNotFound: {
     height: 250,
     width: 230,

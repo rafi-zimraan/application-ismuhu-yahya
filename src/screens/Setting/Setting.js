@@ -16,11 +16,9 @@ import {getAllDataSpa} from '../../features/Profile';
 import {FecthMe, logout} from '../../features/authentication';
 import {COLORS} from '../../utils';
 import {DIMENS} from '../../utils/dimens';
-import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 export default function Settings({navigation}) {
   const dispatch = useDispatch();
-  const insets = useSafeAreaInsets();
   const currentLanguage = useSelector(state => state.language.currentLanguage);
   const {mode, colors} = useSelector(state => state.theme);
   const [logoutModalVisible, setLogoutModalVisible] = useState(false);

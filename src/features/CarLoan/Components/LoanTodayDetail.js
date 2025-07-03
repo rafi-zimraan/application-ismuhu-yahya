@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {StyleSheet, ScrollView, Image} from 'react-native';
+import {StyleSheet, ScrollView, Image, Platform} from 'react-native';
 import {
   HeaderTransparent,
   ModalCustom,
@@ -13,10 +13,12 @@ import {getCarLoanDetail} from '../Services/CarLoanApiSlice';
 import {FecthMe} from '../../authentication';
 import {COLORS, DIMENS} from '../../../utils';
 import StatusBadge from './StatusBadge';
+import {useSelector} from 'react-redux';
 
 export default function LoanTodayDetail({navigation}) {
   const route = useRoute();
   const {id} = route.params;
+  const {colors, mode} = useSelector(state => state.theme);
   const [carLoanDetail, setCarLoanDetail] = useState(null);
   const [modalLoading, setModalLoading] = useState(true);
   const [tokenExpired, setTokenExpired] = useState(false);
@@ -55,11 +57,17 @@ export default function LoanTodayDetail({navigation}) {
       {modalLoading && (
         <ModalLoading visible={modalLoading} withSpinner={true} />
       )}
-      <HeaderTransparent
-        icon="arrow-left-circle-outline"
-        title="Status Peminjaman Saya"
-        onPress={() => navigation.goBack()}
-      />
+      <View
+        style={[
+          styles.navbarContainer,
+          {backgroundColor: colors[mode].background_header},
+        ]}>
+        <HeaderTransparent
+          icon="arrow-left-circle-outline"
+          title="Status Peminjaman Saya"
+          onPress={() => navigation.goBack()}
+        />
+      </View>
       {modalLoading ? (
         <View style={{alignItems: 'center'}}>
           <Text style={styles.loadingText}>Memuat data...</Text>
@@ -160,6 +168,10 @@ export default function LoanTodayDetail({navigation}) {
 }
 
 const styles = StyleSheet.create({
+  navbarContainer: {
+    paddingTop: Platform.OS === 'android' ? 0 : 50,
+    height: '12%',
+  },
   desc: {
     fontSize: DIMENS.s,
     color: COLORS.black,
