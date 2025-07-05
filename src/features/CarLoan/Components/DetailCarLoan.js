@@ -169,7 +169,7 @@ export default function DetailCarLoan({navigation}) {
               <Text style={styles.loadingText}>Loading History</Text>
             )}
 
-            {!loadingHistory && loanHistory?.length === 0 && (
+            {!loadingHistory && loanHistory?.length == 0 && (
               <View style={styles.contentNotFound}>
                 <Text style={styles.txtNotFound}>
                   History peminjaman belum tersedia
@@ -217,14 +217,14 @@ export default function DetailCarLoan({navigation}) {
             styles.buttonAction,
             {
               backgroundColor:
-                mobilDetail?.status === '0'
+                mobilDetail?.status == '0'
                   ? COLORS.goldenOrange
                   : COLORS.lightGrey2,
             },
           ]}
-          activeOpacity={mobilDetail?.status === '0' ? 0.8 : 1}
+          activeOpacity={mobilDetail?.status == '0' ? 0.8 : 1}
           onPress={() => {
-            if (mobilDetail?.status !== '0') {
+            if (mobilDetail?.status != '0') {
               setModalUnavailableVisible(true);
               return;
             } else {
@@ -236,9 +236,7 @@ export default function DetailCarLoan({navigation}) {
               styles.buttonText,
               {
                 color:
-                  mobilDetail?.status === '0'
-                    ? COLORS.white
-                    : COLORS.mediumGrey,
+                  mobilDetail?.status == '0' ? COLORS.white : COLORS.mediumGrey,
               },
             ]}>
             Pinjam
@@ -336,7 +334,7 @@ const styles = StyleSheet.create({
   },
   footerText: {
     fontSize: DIMENS.m,
-    fontWeight: '400',
+    fontWeight: '700',
   },
   buttonAction: {
     paddingHorizontal: 20,

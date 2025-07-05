@@ -4,8 +4,37 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {Gap, Text, View} from '../../../Component';
 import {ICON_NOTFOUND_DATA} from '../../../assets';
 import {COLORS, DIMENS} from '../../../utils';
+import {cancelLoanCarApprovalStatus} from '../../Notification';
+import Toast from 'react-native-toast-message';
 
-export default function AvailableCarSection({carList, navigation, loading}) {
+export default function AvailableCarSection({
+  carList,
+  navigation,
+  loading,
+  userLoanData = {loan_car: []},
+  currentUserId,
+  fetchCars,
+}) {
+  const showToast = (message, type = 'info') => {
+    Toast.show({
+      type: type,
+      text1: message,
+      position: 'bottom',
+      visibilityTime: 2000,
+    });
+  };
+
+  const getUserLoanByCarId = carId => {
+    if (!Array.isArray(userLoanData?.loan_car)) return null;
+
+    return userLoanData.loan_car.find(
+      loan =>
+        loan.car_id == carId &&
+        loan.is_return == 0 && // Masih dipinjam
+        loan.user_id == currentUserId, // Dipinjam oleh user saat ini
+    );
+  };
+
   return (
     <View>
       <Text style={styles.TextTitleMenuCar}>Mobil Operasional</Text>
@@ -75,31 +104,61 @@ export default function AvailableCarSection({carList, navigation, loading}) {
                 <View section={true}>
                   <Text style={styles.textPlat}>{item.number_plate}</Text>
                 </View>
+
                 <Gap height={13} />
-                <TouchableOpacity
-                  disabled={item?.status != 0}
-                  activeOpacity={item?.status == 0 ? 0.7 : 1}
-                  style={[
-                    styles.viewContentRent,
-                    {
-                      backgroundColor:
-                        item?.status == 0 ? COLORS.blueLight : COLORS.darkGrey,
-                    },
-                  ]}
-                  onPress={() => {
-                    navigation.navigate('CreateCarLoan', {carId: item.id});
-                  }}>
-                  <Text
+                {item?.status == 0 ? (
+                  // Kondisi mobil tersedia
+                  <TouchableOpacity
+                    activeOpacity={0.7}
                     style={[
-                      styles.textRent,
-                      {
-                        color:
-                          item?.status == 0 ? COLORS.white : COLORS.mediumGrey,
-                      },
+                      styles.viewContentRent,
+                      {backgroundColor: COLORS.blueLight},
+                    ]}
+                    onPress={() =>
+                      navigation.navigate('CreateCarLoan', {carId: item.id})
+                    }>
+                    <Text style={[styles.textRent, {color: COLORS.white}]}>
+                      Pinjam sekarang
+                    </Text>
+                  </TouchableOpacity>
+                ) : getUserLoanByCarId(item.id) ? (
+                  // Kondisi mobil sedang dipinjam oleh user saat ini
+                  <TouchableOpacity
+                    activeOpacity={0.7}
+                    style={[
+                      styles.viewContentRent,
+                      {backgroundColor: COLORS.red},
+                    ]}
+                    onPress={async () => {
+                      try {
+                        await cancelLoanCarApprovalStatus(
+                          getUserLoanByCarId(item.id).id,
+                          0,
+                        );
+                        showToast(
+                          '✅ Mobil berhasil dikembalikan. Peminjaman sudah diselesaikan',
+                        );
+                        await fetchCars();
+                      } catch (error) {
+                        console.log('Gagal mengembalikan mobil', error);
+                      }
+                    }}>
+                    <Text style={[styles.textRent, {color: COLORS.white}]}>
+                      Kembalikan
+                    </Text>
+                  </TouchableOpacity>
+                ) : (
+                  // Kondisi mobil sedang dipinjam oleh user lain
+                  <View
+                    style={[
+                      styles.viewContentRent,
+                      {backgroundColor: COLORS.darkGrey},
                     ]}>
-                    Pinjam sekarang
-                  </Text>
-                </TouchableOpacity>
+                    <Text style={[styles.textRent, {color: COLORS.mediumGrey}]}>
+                      Sedang Digunakan
+                    </Text>
+                  </View>
+                )}
               </TouchableOpacity>
             </View>
           ))

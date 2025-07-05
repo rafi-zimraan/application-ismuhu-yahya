@@ -118,7 +118,6 @@ export default function CreateCarLoan({navigation}) {
       };
 
       const res = await addCarLoan(payload);
-      console.log('RESPONSE PEMINJAMAN MOBILE', res);
 
       if (
         res?.message === 'Anda belum terdaftar sebagai user peminjaman mobil'
