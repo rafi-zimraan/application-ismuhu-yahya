@@ -211,3 +211,37 @@ export const cancelLoanCarApprovalStatus = async (loan_id, status) => {
     throw error;
   }
 };
+
+export const returnLoanCar = async loan_id => {
+  try {
+    const token = await EncryptedStorage.getItem('token');
+    if (!token) {
+      throw new Error('Token expired, silahkan login terlebih dahulu');
+    }
+
+    const response = await api.patch(
+      `mobile/loan-cars/${loan_id}/update-status`,
+      null,
+      {
+        headers: {
+          Authorization: `Bearer ${JSON.parse(token)}`,
+        },
+      },
+    );
+
+    if (response.data?.status === true) {
+      return response.data;
+    } else {
+      throw new Error(
+        response.data?.message || 'Gagal mengembalikan status peminjaman mobil',
+      );
+    }
+  } catch (error) {
+    if (error.response?.data?.message) {
+      console.log('❌ Error from server:', error.response.data.message);
+    } else {
+      console.log('❌ Error returnLoanCar:', error.message);
+    }
+    throw error;
+  }
+};

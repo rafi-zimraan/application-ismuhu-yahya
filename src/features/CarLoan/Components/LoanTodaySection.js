@@ -11,6 +11,7 @@ export default function LoanTodaySection({
   navigation,
   colors,
   mode,
+  onReturned,
 }) {
   return (
     <>
@@ -21,7 +22,7 @@ export default function LoanTodaySection({
             styles.TextTitleMenuCar,
             {color: colors[mode].textSectionTitleSett},
           ]}>
-          Peminjaman Hari Ini
+          Peminjaman Saya
         </Text>
         <Gap height={10} />
         {loading ? (
@@ -31,22 +32,25 @@ export default function LoanTodaySection({
             }}>
             <Text style={styles.loadingText}>Memuat data...</Text>
           </View>
-        ) : userLoanData?.loan_car?.length > 0 ? (
-          userLoanData.loan_car
-            .slice()
-            .reverse()
-            .map(item => (
-              <LoanTodayItem
-                key={item.id}
-                loaner={item.loaner}
-                status={item.status || '-'}
-                carName={item.car?.name || '-'}
-                timeUse={item.time_use ? item.time_use.substring(0, 5) : '-'}
-                onPress={() => {
-                  navigation.navigate('LoanTodayDetail', {id: item.id});
-                }}
-              />
-            ))
+        ) : userLoanData?.length > 0 ? (
+          userLoanData.map(item => (
+            <LoanTodayItem
+              key={item.id}
+              id={item?.id}
+              loaner={item?.loaner}
+              status={item?.status || '-'}
+              isReturn={item?.is_return}
+              onReturned={onReturned}
+              carName={item?.car?.name || '-'}
+              timeUse={item?.time_use ? item?.time_use.substring(0, 5) : '-'}
+              returnTime={
+                item?.time_return ? item?.time_return.substring(0, 5) : '-'
+              }
+              onPress={() => {
+                navigation.navigate('LoanTodayDetail', {id: item.id});
+              }}
+            />
+          ))
         ) : (
           <View style={styles.viewContentNotFound}>
             <Image

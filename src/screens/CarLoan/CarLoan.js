@@ -32,12 +32,10 @@ export default function CarLoan({navigation}) {
   const [loading, setLoading] = useState(true);
   const [mostCarLoans, setMostCarLoans] = useState([]);
   const [userLoanData, setUserLoanData] = useState(null);
-  const [currentUserId, setCurrentUserId] = useState(null);
 
   const fetchCars = useCallback(async () => {
     try {
       const response = await FecthMe();
-      setCurrentUserId(response?.user_id);
       if (response.message === 'Silahkan login terlebih dahulu') {
         setTokenExpired(true);
         return;
@@ -123,9 +121,6 @@ export default function CarLoan({navigation}) {
           carList={carList}
           navigation={navigation}
           loading={loading}
-          userLoanData={userLoanData}
-          currentUserId={currentUserId}
-          fetchCars={fetchCars}
         />
 
         <LoanTodaySection
@@ -134,6 +129,7 @@ export default function CarLoan({navigation}) {
           navigation={navigation}
           colors={colors}
           mode={mode}
+          onReturned={fetchCars}
         />
 
         <FrequentCarLoansSection

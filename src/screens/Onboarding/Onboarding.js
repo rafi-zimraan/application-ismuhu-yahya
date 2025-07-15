@@ -24,6 +24,7 @@ import Toast from 'react-native-toast-message';
 export default function OnBoarding({navigation}) {
   const [currentScreen, setCurrentScreen] = useState(0);
   const fadeAnim = useRef(new Animated.Value(1)).current;
+  const [isLoading, setIsLoading] = useState(false);
 
   const showToast = (message, type = 'info') => {
     Toast.show({
@@ -59,6 +60,8 @@ export default function OnBoarding({navigation}) {
   };
 
   const handleNext = async () => {
+    if (isLoading) return; // mencegah spam click
+
     if (currentScreen < screens.length - 1) {
       Animated.timing(fadeAnim, {
         toValue: 0,
@@ -83,7 +86,8 @@ export default function OnBoarding({navigation}) {
     <View
       style={{
         flex: 1,
-        backgroundColor: screens[currentScreen].backgroundColor,
+        backgroundColor:
+          screens[currentScreen]?.backgroundColor || 'transparent',
       }}>
       <StatusBar barStyle={'light-content'} backgroundColor={'transparent'} />
 
