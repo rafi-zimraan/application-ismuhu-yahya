@@ -20,8 +20,10 @@ import IMG_LOGIN from '../assets/onboarding/LOGIN.png';
 import IMGBGONBOARDING from '../assets/onboarding/onBoard1.jpeg';
 import IMG_ONBOARDING_TREESECONDRY from '../assets/onboarding/onBoard2.jpeg';
 import IMG_ONBOARDING_SECONDRY from '../assets/onboarding/onBoard3.jpeg';
+import IMG_APPLICATION from '../assets/modalApplication.png';
 
 export {
+  IMG_APPLICATION,
   IMG_BACKGROUND_AFTERNOON_DARK,
   IMG_BACKGROUND_MORNING_DARK,
   IMG_BACKGROUND_NIGHT_DARK,

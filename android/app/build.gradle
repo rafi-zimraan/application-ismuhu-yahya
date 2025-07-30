@@ -80,7 +80,7 @@ android {
         minSdkVersion  rootProject.ext.minSdkVersion
         targetSdkVersion  rootProject.ext.targetSdkVersion
         versionCode 12
-        versionName "1.6-simpondok"
+        versionName "1.7-simpondok"
     }
     signingConfigs {
         debug {
@@ -115,6 +115,7 @@ android {
 dependencies {
     // The version of react-native is set by the React Native Gradle Plugin
     implementation("com.facebook.react:react-android")
+    implementation 'androidx.appcompat:appcompat:1.4.1'
     // implementation project(':react-native-push-notification')
 
     if (hermesEnabled.toBoolean()) {

@@ -20,11 +20,13 @@ import {
 } from '../../features/OnBoarding';
 import {COLORS, DIMENS} from '../../utils';
 import Toast from 'react-native-toast-message';
+import Video from 'react-native-video';
 
 export default function OnBoarding({navigation}) {
   const [currentScreen, setCurrentScreen] = useState(0);
   const fadeAnim = useRef(new Animated.Value(1)).current;
   const [isLoading, setIsLoading] = useState(false);
+  const [isVideoFinished, setIsVideoFinished] = useState(false);
 
   const showToast = (message, type = 'info') => {
     Toast.show({
@@ -83,84 +85,184 @@ export default function OnBoarding({navigation}) {
   };
 
   return (
-    <View
-      style={{
-        flex: 1,
-        backgroundColor:
-          screens[currentScreen]?.backgroundColor || 'transparent',
-      }}>
+    <View style={{flex: 1, backgroundColor: 'black'}}>
       <StatusBar barStyle={'light-content'} backgroundColor={'transparent'} />
 
-      {/* Backgrounds dirender bersamaan dengan opacity */}
-      <View style={StyleSheet.absoluteFill}>
-        <Animated.View
-          style={[
-            StyleSheet.absoluteFill,
-            {opacity: currentScreen === 0 ? fadeAnim : 0},
-          ]}>
-          <BGOnBoarding />
-        </Animated.View>
-        <Animated.View
-          style={[
-            StyleSheet.absoluteFill,
-            {opacity: currentScreen === 1 ? fadeAnim : 0},
-          ]}>
-          <BGOnBoardingSecond />
-        </Animated.View>
-        <Animated.View
-          style={[
-            StyleSheet.absoluteFill,
-            {opacity: currentScreen === 2 ? fadeAnim : 0},
-          ]}>
-          <BGOnBoardingThrid />
-        </Animated.View>
-      </View>
-
-      {/* Logo hanya muncul di screen pertama */}
-      {currentScreen === 0 && (
-        <View
-          style={[
-            styles.safeAreaLogoWrapper,
-            {top: Platform.OS === 'ios' ? 50 : 43},
-          ]}>
-          <Image source={IMG_PONDOK_DIGITAL} style={styles.imgPondokDigital} />
-        </View>
-      )}
-
-      {/* Tombol skip hanya di screen ke-2 */}
-      {currentScreen === 1 && (
-        <TouchableOpacity
-          style={styles.skipButton}
-          activeOpacity={0.6}
-          onPress={handleSkip}>
-          <Text style={styles.skipText}>Skip</Text>
-        </TouchableOpacity>
-      )}
-
-      {/* Pagination */}
-      <View style={styles.viewPagination}>
-        <View style={styles.paginationWrapper}>
-          {screens.map((_, index) => (
-            <View
-              key={index}
+      {!isVideoFinished ? (
+        <Video
+          source={require('../../assets/videos/pembukaanApps.mp4')}
+          style={StyleSheet.absoluteFill}
+          resizeMode="cover"
+          onEnd={() => setIsVideoFinished(true)}
+          onError={err => {
+            console.log('Video error:', err);
+            setIsVideoFinished(true); // fallback kalau error
+          }}
+          controls={false}
+          muted={false}
+          repeat={false}
+          paused={false}
+        />
+      ) : (
+        <>
+          {/* Backgrounds */}
+          <View style={StyleSheet.absoluteFill}>
+            <Animated.View
               style={[
-                styles.paginationDot,
-                currentScreen === index ? styles.activeDot : styles.inactiveDot,
-              ]}
-            />
-          ))}
-        </View>
-      </View>
+                StyleSheet.absoluteFill,
+                {opacity: currentScreen === 0 ? fadeAnim : 0},
+              ]}>
+              <BGOnBoarding />
+            </Animated.View>
+            <Animated.View
+              style={[
+                StyleSheet.absoluteFill,
+                {opacity: currentScreen === 1 ? fadeAnim : 0},
+              ]}>
+              <BGOnBoardingSecond />
+            </Animated.View>
+            <Animated.View
+              style={[
+                StyleSheet.absoluteFill,
+                {opacity: currentScreen === 2 ? fadeAnim : 0},
+              ]}>
+              <BGOnBoardingThrid />
+            </Animated.View>
+          </View>
 
-      <TouchableOpacity
-        activeOpacity={0.6}
-        style={styles.button}
-        onPress={handleNext}>
-        <Text style={styles.buttonText}>{screens[currentScreen].text}</Text>
-        <Icon name="chevron-right" size={24} color={COLORS.white} />
-      </TouchableOpacity>
+          {/* Logo */}
+          {currentScreen === 0 && (
+            <View
+              style={[
+                styles.safeAreaLogoWrapper,
+                {top: Platform.OS === 'ios' ? 50 : 43},
+              ]}>
+              <Image
+                source={IMG_PONDOK_DIGITAL}
+                style={styles.imgPondokDigital}
+              />
+            </View>
+          )}
+
+          {/* Tombol skip */}
+          {currentScreen === 1 && (
+            <TouchableOpacity
+              style={styles.skipButton}
+              activeOpacity={0.6}
+              onPress={handleSkip}>
+              <Text style={styles.skipText}>Skip</Text>
+            </TouchableOpacity>
+          )}
+
+          {/* Pagination */}
+          <View style={styles.viewPagination}>
+            <View style={styles.paginationWrapper}>
+              {screens.map((_, index) => (
+                <View
+                  key={index}
+                  style={[
+                    styles.paginationDot,
+                    currentScreen === index
+                      ? styles.activeDot
+                      : styles.inactiveDot,
+                  ]}
+                />
+              ))}
+            </View>
+          </View>
+
+          {/* Button next */}
+          <TouchableOpacity
+            activeOpacity={0.6}
+            style={styles.button}
+            onPress={handleNext}>
+            <Text style={styles.buttonText}>{screens[currentScreen].text}</Text>
+            <Icon name="chevron-right" size={24} color={COLORS.white} />
+          </TouchableOpacity>
+        </>
+      )}
     </View>
   );
+
+  // return (
+  //   <View
+  //     style={{
+  //       flex: 1,
+  //       backgroundColor:
+  //         screens[currentScreen]?.backgroundColor || 'transparent',
+  //     }}>
+  //     <StatusBar barStyle={'light-content'} backgroundColor={'transparent'} />
+
+  //     {/* Backgrounds dirender bersamaan dengan opacity */}
+  //     <View style={StyleSheet.absoluteFill}>
+  //       <Animated.View
+  //         style={[
+  //           StyleSheet.absoluteFill,
+  //           {opacity: currentScreen === 0 ? fadeAnim : 0},
+  //         ]}>
+  //         <BGOnBoarding />
+  //       </Animated.View>
+  //       <Animated.View
+  //         style={[
+  //           StyleSheet.absoluteFill,
+  //           {opacity: currentScreen === 1 ? fadeAnim : 0},
+  //         ]}>
+  //         <BGOnBoardingSecond />
+  //       </Animated.View>
+  //       <Animated.View
+  //         style={[
+  //           StyleSheet.absoluteFill,
+  //           {opacity: currentScreen === 2 ? fadeAnim : 0},
+  //         ]}>
+  //         <BGOnBoardingThrid />
+  //       </Animated.View>
+  //     </View>
+
+  //     {/* Logo hanya muncul di screen pertama */}
+  //     {currentScreen === 0 && (
+  //       <View
+  //         style={[
+  //           styles.safeAreaLogoWrapper,
+  //           {top: Platform.OS === 'ios' ? 50 : 43},
+  //         ]}>
+  //         <Image source={IMG_PONDOK_DIGITAL} style={styles.imgPondokDigital} />
+  //       </View>
+  //     )}
+
+  //     {/* Tombol skip hanya di screen ke-2 */}
+  //     {currentScreen === 1 && (
+  //       <TouchableOpacity
+  //         style={styles.skipButton}
+  //         activeOpacity={0.6}
+  //         onPress={handleSkip}>
+  //         <Text style={styles.skipText}>Skip</Text>
+  //       </TouchableOpacity>
+  //     )}
+
+  //     {/* Pagination */}
+  //     <View style={styles.viewPagination}>
+  //       <View style={styles.paginationWrapper}>
+  //         {screens.map((_, index) => (
+  //           <View
+  //             key={index}
+  //             style={[
+  //               styles.paginationDot,
+  //               currentScreen === index ? styles.activeDot : styles.inactiveDot,
+  //             ]}
+  //           />
+  //         ))}
+  //       </View>
+  //     </View>
+
+  //     <TouchableOpacity
+  //       activeOpacity={0.6}
+  //       style={styles.button}
+  //       onPress={handleNext}>
+  //       <Text style={styles.buttonText}>{screens[currentScreen].text}</Text>
+  //       <Icon name="chevron-right" size={24} color={COLORS.white} />
+  //     </TouchableOpacity>
+  //   </View>
+  // );
 }
 
 const styles = StyleSheet.create({

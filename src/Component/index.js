@@ -15,10 +15,12 @@ import SearchInput from './screens/SearchInput';
 import Text from './screens/Text';
 import View from './screens/View';
 import Icon from './screens/Icon';
+import BottomSheetUpdate from './screens/BottomSheetUpdate';
 import {toastConfig} from './screens/toastConfig';
 
 export {
   toastConfig,
+  BottomSheetUpdate,
   Icon,
   View,
   Text,
