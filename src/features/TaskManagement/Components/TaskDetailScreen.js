@@ -153,8 +153,11 @@ export default function TaskDetailScreen({route, navigation}) {
                   />
                   <Text style={styles.sectionTitle}>Aktivitas</Text>
                 </View>
-                <Text style={styles.taskTitle}>{taskDetail?.activity}</Text>
-
+                <Text style={styles.taskTitle}>
+                  {taskDetail?.activity ||
+                    taskDetail?.daily_tasks?.task ||
+                    'Tanpa Judul'}
+                </Text>
                 <Gap height={3} />
                 <View style={styles.dashedLine} />
                 <View style={styles.row} section={true}>

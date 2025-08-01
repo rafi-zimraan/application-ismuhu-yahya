@@ -3,6 +3,7 @@ import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {Gap} from '../../../Component';
 import {COLORS, DIMENS} from '../../../utils';
+import Toast from 'react-native-toast-message';
 
 export default function TaskItem({
   item,
@@ -15,10 +16,30 @@ export default function TaskItem({
   setModalUploadVisible,
   setSelectedTaskId,
 }) {
+  const getTaskTitle = item => {
+    return item?.activity || item?.daily_tasks?.task || 'Tanpa Judul';
+  };
+
+  const showToast = (message, type = 'info') => {
+    Toast.show({
+      type: type,
+      text1: message,
+      position: 'bottom',
+      visibilityTime: 2000,
+    });
+  };
   return (
     <TouchableOpacity
       activeOpacity={0.6}
-      onPress={() => navigation.navigate('TaskDetailScreen', {taskId: item.id})}
+      onPress={() => {
+        if (item?.activity) {
+          navigation.navigate('TaskDetailScreen', {taskId: item.id});
+        } else {
+          showToast(
+            'Aktivitas ini tidak memiliki detail yang bisa ditampilkan.',
+          );
+        }
+      }}
       onLongPress={e => handleLongPress(index, e, item.id)}>
       <View
         style={[
@@ -32,7 +53,7 @@ export default function TaskItem({
                 : COLORS.white,
           },
         ]}>
-        <Text style={styles.cardTitle}>{item?.activity}</Text>
+        <Text style={styles.cardTitle}>{getTaskTitle(item)}</Text>
         <Gap height={10} />
         <View style={styles.leftContainer}>
           <TouchableOpacity
