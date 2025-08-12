@@ -78,7 +78,7 @@ export default function Navigator() {
         statusBarColor: 'transparent',
         statusBarTranslucent: true,
       }}
-      initialRouteName={'SplashScreen'}>
+      initialRouteName={'LibDemo'}>
       <Stack.Screen name="LibDemo" component={LibDemo} />
 
       {/* Auth */}

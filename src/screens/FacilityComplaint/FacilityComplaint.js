@@ -4,7 +4,9 @@ import {
   ActivityIndicator,
   FlatList,
   Image,
+  Platform,
   RefreshControl,
+  ScrollView,
   StatusBar,
   StyleSheet,
   TouchableOpacity,
@@ -21,8 +23,14 @@ import {
   View,
 } from '../../Component';
 import {ICON_NOTFOUND_DATA} from '../../assets';
-import {getAllSuggestions} from '../../features/FacilityComplaint';
+import {
+  getAllSuggestions,
+  HeaderUserInfo,
+  ProgressItem,
+  SectionTitle,
+} from '../../features/FacilityComplaint';
 import {COLORS, DIMENS} from '../../utils';
+import ComplaintCard from '../../features/FacilityComplaint/Components/ComplaintCard';
 
 export default function FacilityComplaint({navigation}) {
   const {colors, mode} = useSelector(state => state.theme);
@@ -107,14 +115,85 @@ export default function FacilityComplaint({navigation}) {
         backgroundColor={'transparent'}
       />
       <ModalLoading visible={isModalLoading} />
-      <HeaderTransparent
-        title="Pengaduan Fasilitas"
-        icon="arrow-left-circle-outline"
-        onPress={() => navigation.goBack()}
-      />
-      <Gap height={10} />
+      <View
+        style={[
+          styles.navbarContainer,
+          {backgroundColor: colors[mode].background_header},
+        ]}>
+        <HeaderTransparent
+          title="Pengaduan Fasilitas"
+          icon="arrow-left-circle-outline"
+          onPress={() => navigation.goBack()}
+        />
+      </View>
+
       <View style={styles.content} useBackgroundTransparent={true}>
-        <View style={styles.viewContentTitle}>
+        <View style={{padding: 10}}>
+          <View style={styles.viewHeader}>
+            <Text style={styles.titleOverView}>OverView</Text>
+            <TouchableOpacity onPress={() => {}} style={styles.monthButton}>
+              <Text style={styles.monthText}>Agustus</Text>
+              <Icon name="chevron-down" size={16} color={COLORS.black} />
+            </TouchableOpacity>
+          </View>
+          <Gap height={10} />
+          <ProgressItem
+            title="Maintenance"
+            total={16}
+            done={3}
+            color="#FFA500"
+            percentColor="#FFA500"
+          />
+          <ProgressItem
+            title="Complaint"
+            total={24}
+            done={16}
+            color="#00BFFF"
+            percentColor="#00BFFF"
+          />
+        </View>
+
+        <View
+          style={{
+            backgroundColor: '#eee',
+            flex: 1,
+            borderTopLeftRadius: 35,
+            borderTopRightRadius: 35,
+          }}>
+          <Gap height={25} />
+          <SectionTitle title="New Complaint" showMore onPressMore={() => {}} />
+          <Gap height={20} />
+
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            style={{padding: 16}}>
+            <ComplaintCard
+              title="Macbook Pro 2017"
+              reporter="Ahmad Bayu (Reporter)"
+              note="Sensor light is not working. please check again."
+              img={
+                'https://asani.co.id/wp-content/uploads/2023/02/Perbedaan-MacBook-Pro-dan-MacBook-Air-scaled.jpg'
+              }
+              urgent
+              onAccept={() => {}}
+              onDecline={() => {}}
+            />
+            <ComplaintCard
+              title="Macbook Pro 2017"
+              reporter="Ahmad Bayu (Reporter)"
+              note="Sensor rusak"
+              img={
+                'https://asani.co.id/wp-content/uploads/2023/02/Perbedaan-MacBook-Pro-dan-MacBook-Air-scaled.jpg'
+              }
+              urgent
+              onAccept={() => {}}
+              onDecline={() => {}}
+            />
+          </ScrollView>
+        </View>
+
+        {/* <View style={styles.viewContentTitle}>
           <Text style={styles.txtHistory}>History Pengaduan</Text>
           <TouchableOpacity
             activeOpacity={0.7}
@@ -154,13 +233,13 @@ export default function FacilityComplaint({navigation}) {
               />
             }
           />
-        )}
+        )} */}
       </View>
 
-      <FloatingButton
+      {/* <FloatingButton
         onPress={() => navigation.navigate('CreateFacilityComplaint')}
         iconName="plus"
-      />
+      /> */}
 
       <ModalCustom
         visible={tokenExpired}
@@ -179,6 +258,31 @@ export default function FacilityComplaint({navigation}) {
 }
 
 const styles = StyleSheet.create({
+  viewHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  titleOverView: {
+    fontWeight: 'bold',
+    fontSize: DIMENS.xl,
+  },
+  monthButton: {
+    flexDirection: 'row',
+    alignSelf: 'flex-end',
+    backgroundColor: COLORS.greenConfirm,
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+  },
+  monthText: {
+    color: COLORS.black,
+    marginRight: 4,
+  },
+  navbarContainer: {
+    paddingTop: Platform.OS === 'android' ? 0 : 50,
+    height: '12%',
+  },
   viewLoadingData: {
     alignItems: 'center',
     justifyContent: 'center',
@@ -241,7 +345,6 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-    padding: 15,
   },
   historyItem: {
     padding: 15,

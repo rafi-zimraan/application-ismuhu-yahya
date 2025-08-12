@@ -363,7 +363,6 @@ const styles = StyleSheet.create({
   monthText: {
     fontSize: DIMENS.xxl,
     fontWeight: '800',
-    // color: COLORS.black,
     marginRight: 5,
   },
 });

@@ -2,12 +2,14 @@ import {TouchableNativeFeedback} from 'react-native';
 
 const COLORS = {
   greenDark: '#0d6b27',
-  redDark: '#7a0000',
   PRIMARY_COLOR: '#130057',
+
   // Red Shades
+  redDark: '#7a0000',
   red: '#FC2D2D',
   softRed: '#FF8A80',
   redLight: '#FF6666',
+  accentRedColor: '#FF5733',
 
   // Green Shades
   darkGreen: '#1C2522',
@@ -47,6 +49,7 @@ const COLORS = {
   lightGrey2: '#D3D3D3',
   extraExtraLightGrey: '#EFEFEF',
   warmGrey: '#EBE8E8',
+  neutralLightGrey: '#e0e0e0',
 
   // Black & White
   black: '#000000',
@@ -55,21 +58,36 @@ const COLORS = {
 
   // Text Colors
   textPrimary: '#333333',
+  textGreyDark: '#555555',
   textSecondary: '#888888',
+  lightGray: '#eeeeee',
+  textDark: '#222222',
+  textMedium: '#444444',
+  textLight: '#9b9b9b',
 
   // Background Colors
   backgroundLight: '#F5F5F5',
   backgroundDark: '#1E1E1E',
   darkBackground: '#1E1E1E',
+  backgroundLightest: '#f7f7f7',
+  backgroundMedium: '#dddddd',
 
   // Neutral & Beige Shades
   champagne: '#F7E7CE',
+  borderLight: '#cccccc',
   beige: '#F5F5DC',
 
   // Primary Colors
   primary: '#f0c800',
   primary_dark: '#b8a500',
   header: '#ffe500',
+
+  badgeDoneBg: '#cfeffb',
+  badgeDoneText: '#0b9adf',
+  badgePendingBg: '#fff1e0',
+  badgePendingText: '#ff8a00',
+  buttonAccept: '#fdbb3d',
+  progress: '#FFA500',
 
   // Ripple Effect
   ripple: TouchableNativeFeedback.Ripple('#0000001a', false),

@@ -10,13 +10,27 @@ import {
   getSuggestionDetail,
   updateSuggestion,
 } from './Services/FacilityComplaintApi';
+import ProgressItem from './Components/ProgressItem';
+import HeaderUserInfo from './Components/HeaderUserInfo';
+import SectionTitle from './Components/SectionTitle';
+import FacilityComplaintItem from './Components/FacilityComplaintItem';
+import FacilityComplaintStatusBadge from './Components/FacilityComplaintStatusBadge';
+import ComplaintHistory from './Components/ComplaintHistory';
+import ScanQRFacilityComplaint from './Components/ScanQRFacilityComplaint';
 
 // component
 export {
+  ProgressItem,
+  HeaderUserInfo,
+  SectionTitle,
   CreateFacilityComplaint,
   Complaints,
   DetailFacilityComplaint,
   UpdateFacilityComplaint,
+  FacilityComplaintItem,
+  FacilityComplaintStatusBadge,
+  ComplaintHistory,
+  ScanQRFacilityComplaint,
 };
 // slice
 export {
