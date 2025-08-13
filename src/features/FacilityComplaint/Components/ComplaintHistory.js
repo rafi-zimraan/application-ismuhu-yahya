@@ -44,7 +44,7 @@ const SAMPLE_DATA = [
   },
 ];
 
-export default function ComplaintHistory() {
+export default function ComplainHistory() {
   const {colors, mode} = useSelector(state => state.theme);
   return (
     <SafeAreaView style={styles.safe}>

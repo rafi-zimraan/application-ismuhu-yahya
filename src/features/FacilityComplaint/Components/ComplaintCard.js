@@ -49,7 +49,9 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
     shadowOffset: {width: 0, height: 2},
-    elevation: 3,
+    elevation: 1,
+    borderColor: COLORS.goldenOrange,
+    borderWidth: 0.4,
   },
   imageWrapper: {
     position: 'relative',

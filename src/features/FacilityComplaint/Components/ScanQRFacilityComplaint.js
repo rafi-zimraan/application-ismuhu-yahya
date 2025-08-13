@@ -154,7 +154,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
     textAlign: 'center',
     paddingHorizontal: 20,
-    fontSize: 14,
+    fontSize: DIMENS.m,
   },
   buttonGroup: {
     width: '100%',

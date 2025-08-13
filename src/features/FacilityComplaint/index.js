@@ -17,6 +17,8 @@ import FacilityComplaintItem from './Components/FacilityComplaintItem';
 import FacilityComplaintStatusBadge from './Components/FacilityComplaintStatusBadge';
 import ComplaintHistory from './Components/ComplaintHistory';
 import ScanQRFacilityComplaint from './Components/ScanQRFacilityComplaint';
+import ComplaintDetailScreen from './Components/ComplaintDetailScreen';
+import ReportFacilityComplaintScreen from './Components/ReportFacilityComplaintScreen';
 
 // component
 export {
@@ -31,6 +33,8 @@ export {
   FacilityComplaintStatusBadge,
   ComplaintHistory,
   ScanQRFacilityComplaint,
+  ComplaintDetailScreen,
+  ReportFacilityComplaintScreen,
 };
 // slice
 export {

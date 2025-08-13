@@ -127,22 +127,29 @@ export default function FacilityComplaint({navigation}) {
         />
       </View>
 
-      <View style={styles.content} useBackgroundTransparent={true}>
-        <View style={{padding: 10}}>
+      <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+        <View style={styles.overviewCard}>
           <View style={styles.viewHeader}>
-            <Text style={styles.titleOverView}>OverView</Text>
+            <Text style={styles.titleOverView}>Overview</Text>
             <TouchableOpacity onPress={() => {}} style={styles.monthButton}>
+              <Icon
+                name="calendar-month-outline"
+                size={16}
+                color={COLORS.black}
+              />
               <Text style={styles.monthText}>Agustus</Text>
               <Icon name="chevron-down" size={16} color={COLORS.black} />
             </TouchableOpacity>
           </View>
-          <Gap height={10} />
+          <Gap height={16} />
+
           <ProgressItem
             title="Maintenance"
             total={16}
             done={3}
             color="#FFA500"
             percentColor="#FFA500"
+            style={{marginBottom: 12}}
           />
           <ProgressItem
             title="Complaint"
@@ -153,24 +160,13 @@ export default function FacilityComplaint({navigation}) {
           />
         </View>
 
-        <View
-          style={{
-            backgroundColor: '#eee',
-            flex: 1,
-            borderTopLeftRadius: 35,
-            borderTopRightRadius: 35,
-          }}>
-          <Gap height={25} />
+        <View style={styles.newComplaintSection}>
           <SectionTitle title="New Complaint" showMore onPressMore={() => {}} />
-          <Gap height={20} />
-
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            style={{padding: 16}}>
+          <Gap height={16} />
+          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
             <ComplaintCard
               title="Macbook Pro 2017"
-              reporter="Ahmad Bayu (Reporter)"
+              reporter="Ahmad Bayu (Supervisor)"
               note="Sensor light is not working. please check again."
               img={
                 'https://asani.co.id/wp-content/uploads/2023/02/Perbedaan-MacBook-Pro-dan-MacBook-Air-scaled.jpg'
@@ -181,7 +177,18 @@ export default function FacilityComplaint({navigation}) {
             />
             <ComplaintCard
               title="Macbook Pro 2017"
-              reporter="Ahmad Bayu (Reporter)"
+              reporter="Ahmad Bayu (Staff)"
+              note="Sensor rusak"
+              img={
+                'https://asani.co.id/wp-content/uploads/2023/02/Perbedaan-MacBook-Pro-dan-MacBook-Air-scaled.jpg'
+              }
+              urgent
+              onAccept={() => {}}
+              onDecline={() => {}}
+            />
+            <ComplaintCard
+              title="Macbook Pro 2017"
+              reporter="Ahmad Bayu (Leader)"
               note="Sensor rusak"
               img={
                 'https://asani.co.id/wp-content/uploads/2023/02/Perbedaan-MacBook-Pro-dan-MacBook-Air-scaled.jpg'
@@ -192,8 +199,9 @@ export default function FacilityComplaint({navigation}) {
             />
           </ScrollView>
         </View>
+      </ScrollView>
 
-        {/* <View style={styles.viewContentTitle}>
+      {/* <View style={styles.viewContentTitle}>
           <Text style={styles.txtHistory}>History Pengaduan</Text>
           <TouchableOpacity
             activeOpacity={0.7}
@@ -234,7 +242,6 @@ export default function FacilityComplaint({navigation}) {
             }
           />
         )} */}
-      </View>
 
       {/* <FloatingButton
         onPress={() => navigation.navigate('CreateFacilityComplaint')}
@@ -258,27 +265,6 @@ export default function FacilityComplaint({navigation}) {
 }
 
 const styles = StyleSheet.create({
-  viewHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  titleOverView: {
-    fontWeight: 'bold',
-    fontSize: DIMENS.xl,
-  },
-  monthButton: {
-    flexDirection: 'row',
-    alignSelf: 'flex-end',
-    backgroundColor: COLORS.greenConfirm,
-    borderRadius: 8,
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-  },
-  monthText: {
-    color: COLORS.black,
-    marginRight: 4,
-  },
   navbarContainer: {
     paddingTop: Platform.OS === 'android' ? 0 : 50,
     height: '12%',
@@ -346,27 +332,41 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
   },
-  historyItem: {
-    padding: 15,
-    marginBottom: 10,
-    borderRadius: 15,
-    elevation: 3,
-    borderWidth: 0.4,
-    borderColor: COLORS.goldenOrange,
+  overviewCard: {
+    backgroundColor: COLORS.white,
+    borderRadius: 12,
+    margin: 16,
+    padding: 16,
+    shadowColor: COLORS.black,
+    shadowOpacity: 0.05,
+    shadowRadius: 5,
+    shadowOffset: {height: 2, width: 0},
+    elevation: 2,
   },
-  row: {
+  viewHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  titleOverView: {
+    fontWeight: 'bold',
+    fontSize: DIMENS.l,
+  },
+  monthButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
+    backgroundColor: COLORS.lightGray,
+    borderRadius: 8,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
   },
-  historyStatus: {
-    top: 30,
-    fontSize: DIMENS.s,
-    fontWeight: 'bold',
-    color: COLORS.goldenOrange,
-  },
-  historyDate: {
-    fontSize: DIMENS.s,
+  monthText: {
     color: COLORS.black,
+    marginHorizontal: 4,
+    fontWeight: '500',
+  },
+  newComplaintSection: {
+    flex: 1,
+    padding: 10,
   },
 });

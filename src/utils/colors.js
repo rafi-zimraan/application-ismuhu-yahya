@@ -64,6 +64,7 @@ const COLORS = {
   textDark: '#222222',
   textMedium: '#444444',
   textLight: '#9b9b9b',
+  greyMuted: '#777777',
 
   // Background Colors
   backgroundLight: '#F5F5F5',
