@@ -19,9 +19,12 @@ const hijriMonthMapping = {
 // Utility untuk normalisasi string dari API
 const normalize = str =>
   str
-    .normalize('NFD') // pisahkan accent dan huruf dasar
-    .replace(/[\u0300-\u036f]/g, '') // hilangkan diakritik
-    .toLowerCase(); // ke lowercase
+    .normalize('NFD') // pisakan accent dan huruf dasar
+    .replace(/[\u0300-\u036f]/g, '') // hilangkan aksen
+    .replace(/[^a-zA-Z -]/g, '') // biarkan huruf, spasi, dan strip "-"
+    // .replace(/[^a-zA-Z ]/g, '') // hilangkan simbol selain huruf & spasi
+    .toLowerCase() // ke lowerCase
+    .trim();
 
 export const fetchHijriDate = async () => {
   const today = moment().format('DD-MM-YYYY');
@@ -29,9 +32,14 @@ export const fetchHijriDate = async () => {
     `https://api.aladhan.com/v1/gToH?date=${today}`,
   );
   const hijri = response.data.data.hijri;
+  console.log('Data Hijriah mentah:', response.data.data);
 
   const normalizedMonth = normalize(hijri.month.en);
   const hijriMonth = hijriMonthMapping[normalizedMonth] || hijri.month.en;
+  console.log('Tanggal Hijriah:', hijriMonth);
+  console.log('Asli:', hijri.month.en);
+  console.log('Normalized:', normalizedMonth);
+  console.log('Mapping ketemu?:', hijriMonthMapping[normalizedMonth]);
 
   return `${hijri.day} ${hijriMonth} ${hijri.year} H`;
 };
