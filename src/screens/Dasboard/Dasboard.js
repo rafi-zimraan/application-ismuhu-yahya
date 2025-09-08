@@ -191,6 +191,7 @@ export default function Dasboard({navigation}) {
               colors={colors}
               mode={mode}
             />
+            {/*             
             <ButtonMenu
               title="Pengaduan Fasilitas"
               iconName="clipboard-alert-outline"
@@ -200,7 +201,7 @@ export default function Dasboard({navigation}) {
               onPress={() => navigation.navigate('FacilityComplaint')}
               colors={colors}
               mode={mode}
-            />
+            /> */}
 
             {listMemberLoan === 1 && (
               <ButtonMenu
