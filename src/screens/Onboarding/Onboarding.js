@@ -62,7 +62,7 @@ export default function OnBoarding({navigation}) {
   };
 
   const handleNext = async () => {
-    if (isLoading) return; // mencegah spam click
+    if (isLoading) return;
 
     if (currentScreen < screens.length - 1) {
       Animated.timing(fadeAnim, {
@@ -183,86 +183,6 @@ export default function OnBoarding({navigation}) {
       )}
     </View>
   );
-
-  // return (
-  //   <View
-  //     style={{
-  //       flex: 1,
-  //       backgroundColor:
-  //         screens[currentScreen]?.backgroundColor || 'transparent',
-  //     }}>
-  //     <StatusBar barStyle={'light-content'} backgroundColor={'transparent'} />
-
-  //     {/* Backgrounds dirender bersamaan dengan opacity */}
-  //     <View style={StyleSheet.absoluteFill}>
-  //       <Animated.View
-  //         style={[
-  //           StyleSheet.absoluteFill,
-  //           {opacity: currentScreen === 0 ? fadeAnim : 0},
-  //         ]}>
-  //         <BGOnBoarding />
-  //       </Animated.View>
-  //       <Animated.View
-  //         style={[
-  //           StyleSheet.absoluteFill,
-  //           {opacity: currentScreen === 1 ? fadeAnim : 0},
-  //         ]}>
-  //         <BGOnBoardingSecond />
-  //       </Animated.View>
-  //       <Animated.View
-  //         style={[
-  //           StyleSheet.absoluteFill,
-  //           {opacity: currentScreen === 2 ? fadeAnim : 0},
-  //         ]}>
-  //         <BGOnBoardingThrid />
-  //       </Animated.View>
-  //     </View>
-
-  //     {/* Logo hanya muncul di screen pertama */}
-  //     {currentScreen === 0 && (
-  //       <View
-  //         style={[
-  //           styles.safeAreaLogoWrapper,
-  //           {top: Platform.OS === 'ios' ? 50 : 43},
-  //         ]}>
-  //         <Image source={IMG_PONDOK_DIGITAL} style={styles.imgPondokDigital} />
-  //       </View>
-  //     )}
-
-  //     {/* Tombol skip hanya di screen ke-2 */}
-  //     {currentScreen === 1 && (
-  //       <TouchableOpacity
-  //         style={styles.skipButton}
-  //         activeOpacity={0.6}
-  //         onPress={handleSkip}>
-  //         <Text style={styles.skipText}>Skip</Text>
-  //       </TouchableOpacity>
-  //     )}
-
-  //     {/* Pagination */}
-  //     <View style={styles.viewPagination}>
-  //       <View style={styles.paginationWrapper}>
-  //         {screens.map((_, index) => (
-  //           <View
-  //             key={index}
-  //             style={[
-  //               styles.paginationDot,
-  //               currentScreen === index ? styles.activeDot : styles.inactiveDot,
-  //             ]}
-  //           />
-  //         ))}
-  //       </View>
-  //     </View>
-
-  //     <TouchableOpacity
-  //       activeOpacity={0.6}
-  //       style={styles.button}
-  //       onPress={handleNext}>
-  //       <Text style={styles.buttonText}>{screens[currentScreen].text}</Text>
-  //       <Icon name="chevron-right" size={24} color={COLORS.white} />
-  //     </TouchableOpacity>
-  //   </View>
-  // );
 }
 
 const styles = StyleSheet.create({
